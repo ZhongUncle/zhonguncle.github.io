@@ -1,2 +1,3 @@
 # 忽略桌面配置文件
 .DS_Store
+.Trash	
