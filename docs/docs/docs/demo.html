@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Linux 和 macOS 中，常见的 man pages 本质是什么格式的文件？以及如何写一个 man page</title>
+    <link rel="stylesheet" type="text/css" href="headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="blogstyle.css" />
+</head>
+
+<body class="stackedit">
+    <div class="stackedit__left">
+        <div class="stackedit__toc">
+
+            <ul>
+                <li><a href="#1">前言</a></li>
+                <li><a href="#2">man page 是一个什么格式的文件？</a></li>
+                <li><a href="#3">如何编写 manpage</a></li>
+                <li><a href="#4">manpage 存放在什么地方</a></li>
+                <li><a href="#5">结尾</a></li>
+            </ul>
+
+        </div>
+    </div>
+    <div class="stackedit__right">
+        <div class="stackedit__html">
+            <h2><a id="1"></a>前言</h2>
+            <p>在 Linux 和 macOS
+                中，经常需要使用<code>man xxx</code>来查看一个程序、系统调用等的介绍和使用方法。而这个界面被称为<code>manual page</code>，但是有时候会被简称为<code>manpage</code>。
+            </p>
+            <p>在日常使用中，我很好奇：</p>
+            <ol>
+                <li><code>man page</code>是一个什么格式的文件？</li>
+                <li>如何编写它？</li>
+                <li>它一般存放在什么地方？</li>
+            </ol>
+            <p><code>man page</code>可以说是 UNIX 和 Linux 的一个很重要的部分了，想要深入了解 UNIX 和 Linux
+                的话，我觉得这是需要了解的一部分内容。接下来就来逐一研究解释这些问题。相信当你读完这篇博客之后，你会对<code>man</code>程序和<code>man page</code>有较为深入的理解，并且可以加深对
+                Linux 的理解。</p>
+            <h2><a id="man_page_10"></a>man page 是一个什么格式的文件？</h2>
+            <blockquote>
+                <p>真正的 UNIX 书籍应该是用 troff 写成的。</p>
+            </blockquote>
+            <p>这句话出自UNIX 之父 W.Richard Stevens《UNIX 环境高级编程（第一版）》的前言的感谢部分。这本书也是经典中的经典，很多人不管看没看过，但书架上或者硬盘里都会有一本。<br>
+                那么这句话告诉了一个关键信息：UNIX 有一个非常重要的文本处理器 troff。</p>
+            <p>troff 是一个排版系统。类似现在比较流行的 Markdown，以及学术上使用较多的LaTex。</p>
+            <p>但是就像 UNIX 以及很多诞生于 UNIX 的程序一样，由于历史原因（想知道可以看《UNIX 传奇》这本书，作者就是当初贝尔实验室其中的一员，也是 UNIX 系统的9号用户），troff
+                也有了现代版本——<strong>groff</strong>。</p>
+            <p>groff 是 GNU版本的 troff，对 troff 在功能上兼容，但是有很多扩展，具体差别可以在终端中使用命令<code>man 7 groff_diff</code>来查看。</p>
+            <p>**而<code>manpage</code>的格式，也正是 troff。Ubuntu 里是 nroff（也是 troff 的衍生品）。</p>
+            <p>为了证明这一点，Mac 用户<br>
+                可以使用以下命令来查看 pwd(1) 的<code>manpage</code>的文件类型：</p>
+            <pre><code class="prism language-bash">$ <span class="token function">file</span> /usr/share/man/man1/pwd.1
+/usr/share/man/man1/pwd.1: troff or preprocessor input text, ASCII text
+</code></pre>
+            <p>Linux 用户可以使用以下命令查看文件内容，因为 Ubuntu 把文件用 gzip 归档，查看之后可以看到是 troff 语法的：</p>
+            <pre><code class="prism language-bash">$ <span class="token function">less</span> /usr/share/man/man1/pwd.1
+</code></pre>
+            <p>不过现在<code>man</code>支持读取 HTML 文件，所以也可以利用 HTML 来编写<code>manpage</code>，但是不常见。</p>
+            <h2><a id="3"></a>如何编写 manpage</h2>
+            <p>在知道<code>manpage</code>是 troff 格式之后，那么知道 troff/groff 语法之后，就可以编写了。</p>
+            <p>关于 groff 的使用方法，可以使用<code>info groff</code>来查看非常详细的教程。<br>
+                关于 groff 的语法，可以使用<code>man 7 groff</code>来查看。<br>
+                groff 的官网：<a
+                    href="https://www.gnu.org/software/groff/#documentation">https://www.gnu.org/software/groff/#documentation</a>
+            </p>
+            <p>这里演示一下：<br>
+                <img src="SwiftUI/images/1.png"
+                    alt="源码">
+            </p>
+            <p>运行效果：<br>
+                <img src="SwiftUI/images/2.png"
+                    alt="运行效果">
+            </p>
+            <p>HTML的话就不赘述了。</p>
+            <h2><a id="4"></a>manpage 存放在什么地方</h2>
+            <p><code>man</code>命令通过环境变量<code>$MANPATH</code>和配置文件<code>/private/etc/man.conf</code>文件（macOS）或者<code>/etc/manpath.config</code>（Ubuntu）来找到存放<code>manpage</code>的目录们。<br>
+                所以查看二者就知道存在哪里来。并且，我们也可以通过修改二者，或者向制定目录来添加<code>manpage</code>。</p>
+            <h2><a id="5"></a>结尾</h2>
+            <p>好啦，这样就可以写一个<code>manpage</code>啦。<br>
+                希望能帮到有需要的人～</p>
+
+        </div>
+    </div>
+</body>
+
+</html>

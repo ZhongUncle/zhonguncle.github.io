@@ -20,7 +20,7 @@
         </div>
         <h>{{ "hi" | capitalize }}</h>
         <div class="blogslist">
-            <ul>
+            <!-- <ul>
                 <li>
                     <a href="SwiftUI/SwiftUI_得到屏幕尺寸(bounds和nativeBounds).html">2021.02.07「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)</a>
                 </li>
@@ -33,6 +33,13 @@
                 <li>
                     <a href="demo.html"><span>2021.02.07</span>Linux 和 macOS 中，常见的 man pages 本质是什么格式的文件？以及如何写一个 man page
                 </li>
+            </ul> -->
+            <ul>
+                {% for blog in site.swiftui %}
+                <li>
+                    <h2>{{ blog.title }}</h2>
+                </li>
+                {% endfor %}
             </ul>
         </div>
     </body>
