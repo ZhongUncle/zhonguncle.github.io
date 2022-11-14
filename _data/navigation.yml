@@ -1,2 +1,4 @@
-- name: Blog
-  link: blogs.html
+- name: 主页
+  link: /index.html
+- name: 博客
+  link: /blogs.html
