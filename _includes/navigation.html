@@ -1,12 +1,8 @@
+<!-- 这个文件里是用来生成头栏的 -->
 <div class="header">
-    <a href="/index.html" class="headerItem">主页</a>
     {% for item in site.data.navigation %}
         <a href="{{ item.link }}" class="headerItem">
             {{ item.name }}
         </a>
     {% endfor %}
-        <!-- <a href="" class="headerItem">SwiftUI</a>
-        <a href="" class="headerItem">C</a>
-        <a href="" class="headerItem">Linux</a>
-        <a href="" class="headerItem">Windows</a> -->
 </div>
