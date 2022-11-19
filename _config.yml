@@ -1,8 +1,6 @@
 destination: docs
 
-collections_dir: blogs
-collections:
-  swiftui:
-    output: true
-  unix:
-    output: true
+# collections_dir: /
+# collections:
+#   blogs:
+#     output: true
