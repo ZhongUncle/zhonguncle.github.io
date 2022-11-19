@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Jekyll 的机制、转换步骤和结构介绍</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+</div>
+            <h1>Jekyll 的机制、转换步骤和结构介绍</h1>
+            <div class="bloginfo">
+                <p class="info">2022-11-17 ｜ <a href="/web.html"> Web</a></p>
+            </div>
+            
+            <p>Jekyll 是一个转换器，用来生成网站，使用的是一种解释语言。</p>
+
+<p>本文将从三个方面来介绍 Jekyll：机制、转换顺序（解释顺序）和项目的文件结构。在项目的文件结构中，将会讲述一下每个关键目录和文件的作用。</p>
+<h2 id="机制">机制</h2>
+<p><strong>Jekyll 通过在生成静态 HTML 输出时，渲染 Liquid、Markdown 和进行其他转换，从而将原始的一堆文本文件转换为静态网站。</strong> 所以Jekyll 的运行机制可以大致总结成：<strong>将使用 Jekyll 和 HTML、CSS 语句混合写成的源文件，转换成纯 HTML、CSS 语言文件，以此来生成静态网站。</strong></p>
+
+<p>因此，在工作流程上便是典型的“三步走”：</p>
+<ol>
+  <li>设计、开发页面和调整配置文件；</li>
+  <li>生成网站（使用<code class="language-plaintext highlighter-rouge">jekyll build</code>或<code class="language-plaintext highlighter-rouge">jekyll server</code>）；</li>
+  <li>查看生成网站的效果。</li>
+</ol>
+
+<h2 id="转换顺序解释顺序">转换顺序（解释顺序）</h2>
+<p>Jekyll 将按照以下顺序进行转换：</p>
+<ol>
+  <li>通过查看你的文件来确定并赋予站点变量的值。站点变量有<code class="language-plaintext highlighter-rouge">site</code>、<code class="language-plaintext highlighter-rouge">page</code>等，官方文档为<a href="https://jekyllrb.com/docs/variables/#site-variables">《Site VariablesPermalink》</a>。</li>
+  <li>处理页面文件的前事项中包含的的 Liquid 语句；</li>
+  <li>将 Markdown 文件转换为 HTML 文件；</li>
+  <li>将每个页面的内容放入 Layout 布局的`&lt;h2 id="前言"&gt;前言&lt;/h2&gt;</li>
+</ol>
+<p>之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：<a href="https://blog.csdn.net/qq_33919450/article/details/113743159">《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》</a>，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。</p>
+
+<h2 id="原因及分析">原因及分析</h2>
+<p>最近一个开源项目收到一个issue，说有个bug，我想不能够啊。一检查还真有一个bug，研究了一下发现是苹果改了<code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.height</code>的值。但是苹果官方没有提到过这一点，还是说整个屏幕的边界。如下：
+<img src="https://img-blog.csdnimg.cn/ef8efb9e1367425e975ee7a51bbccca2.png" alt="请添加图片描述" />
+以 iPhone 11 Pro 为例，<code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.height</code>的值从 1125pt 变成 812pt（举 iPhone 11 Pro 的例子是因为原博客刚好只记录了这个数据），而<code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.width</code>却还是 375pt。这时候可能你会想会不会是减去了上下的 Bar 的安全区域，但是实测不是，就是整个屏幕的高。并且 iPhone 14 Pro 也是同样的情况，所以并不是只属于老设备的。
+暂且不知道是 Bug 还是就是硬改了。个人猜测应该是 Bug，原因有 2 点：</p>
+<ol>
+  <li>原本 iPhone 11 Pro 不论是<code class="language-plaintext highlighter-rouge">bounds</code>还是<code class="language-plaintext highlighter-rouge">nativeBounds</code>的高比宽的比率都是<code class="language-plaintext highlighter-rouge">3</code>。但是现在的<code class="language-plaintext highlighter-rouge">bounds</code>比率是大约<code class="language-plaintext highlighter-rouge">2.1</code>。</li>
+  <li><code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.height</code>的值是 812pt，但是 iPhone 11 Pro 原本的<code class="language-plaintext highlighter-rouge">UIScreen.main.nativeBounds.height</code>的值就是 812px，很怀疑是不是数据输入错误了。</li>
+</ol>
+
+<p>基于这些怀疑原因，也向苹果进行了报告。</p>
+
+<h2 id="解决方案">解决方案</h2>
+<p>这种情况下，如果你使用的比例来控制组件大小，基本上不影响代码。但是如果你使用具体的值来控制组件的大小，或者使用到屏幕的比例了，那么就需要一些解决方案，下面就分别针对二者提出解决方案（如果你有补充欢迎评论哦）：</p>
+
+<ol>
+  <li>针对使用具体的值来控制组件的大小的情况，可以使用一个<code class="language-plaintext highlighter-rouge">scale</code>来乘在原本的值上。<code class="language-plaintext highlighter-rouge">scale</code>的表达式是一个简单的数学问题，各位拿草稿纸写一下就能知道。<code class="language-plaintext highlighter-rouge">scale</code>的表达式是<code class="language-plaintext highlighter-rouge">(UIScreen.main.bounds.height/UIScreen.main.bounds.width)/(UIScreen.main.nativeBounds.height/UIScreen.main.nativeBounds.width)</code>。这里带入 iPhone 11 Pro 原本屏幕的高度来验证一下：iPhone 11 Pro 的<code class="language-plaintext highlighter-rouge">scale</code>计算之后得到<code class="language-plaintext highlighter-rouge">2.16533.../3</code>的四舍五入的值<code class="language-plaintext highlighter-rouge">0.72177...</code>，这时候将其乘上原本的高度值<code class="language-plaintext highlighter-rouge">1125</code>就可以得到现在的<code class="language-plaintext highlighter-rouge">812</code>。</li>
+  <li>针对使用到比例的代码，要么麻烦一点，对高和宽使用不同的比例；要么使用第一种办法。比如说我做的图片裁剪器，需要使用图片部分 View 的尺寸和比例，但是由于这个地方比例变了，导致出现了 Bug，所以对高和宽使用了不同的比例。</li>
+</ol>
+
+<p>这个情况如果后续有变化这里会说明的，希望能帮到有需要的人～</p>
+
+<p>Hi, I met a trouble when I generate an excerpt of page. If I have a Markdown title or some rich text at the beginning of the content, the excerpt will show it.</p>
+
+<p>For example, if the Markdown file is:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>---
+layout: article
+---
+## Introduction
+This is the test content.
+</code></pre></div></div>
+<p>You can see the content of page below.</p>
+
+<p>Is there any method to ignore it? Or using a syntax to select specified content? I have tried the <code class="language-plaintext highlighter-rouge">page_excerpts</code>, but it just specify the content from the beginning, and can’t solve the problem.</p>
+<p>`标签中；</p>
+<ol>
+  <li>最后，将转换生成的内容放入指定的目录下。以<code class="language-plaintext highlighter-rouge">_</code>开头的目录将不会出现在生成文件中。</li>
+</ol>
+
+<h2 id="项目结构">项目结构</h2>
+<p>一个 Jekyll 项目的文件结构应该大致如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">.</span>
+├── _config.yml
+├── _data
+│   └── members.yml
+├── _drafts
+│   ├── begin-with-the-crazy-ideas.md
+│   └── on-simplicity-in-technology.md
+├── _includes
+│   ├── footer.html
+│   └── header.html
+├── _layouts
+│   ├── default.html
+│   └── post.html
+├── _posts
+│   ├── 2007-10-29-why-every-programmer-should-play-nethack.md
+│   └── 2009-04-26-barcamp-boston-4-roundup.md
+├── _sass
+│   ├── _base.scss
+│   └── _layout.scss
+├── _site
+├── .jekyll-cache
+│   └── Jekyll
+│       └── Cache
+│           └── <span class="o">[</span>...]
+├── .jekyll-metadata
+├── assets
+│   ├── css
+│   └── image
+└── index.html或者index.md（需要在前事项中进行说明）
+</code></pre></div></div>
+<p>下面依次来介绍一下每个文件夹和文件的作用：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">_config.yml</code>：项目配置文件。</li>
+  <li><code class="language-plaintext highlighter-rouge">_data</code>：存放网站数据。Jekyll 将会自动加载此目录下的所有数据文件（后缀为<code class="language-plaintext highlighter-rouge">.yml</code>、<code class="language-plaintext highlighter-rouge">.yaml</code>、<code class="language-plaintext highlighter-rouge">.json</code>、<code class="language-plaintext highlighter-rouge">.csv</code>、<code class="language-plaintext highlighter-rouge">.tsv</code>），并且可以通过站点变量<code class="language-plaintext highlighter-rouge">site.data</code>访问这些文件。
+    <ul>
+      <li>members.yml：如果<code class="language-plaintext highlighter-rouge">_data</code>目录下有该文件，那么可以通过站点变量<code class="language-plaintext highlighter-rouge">site.data.members</code>访问文件内容。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">_drafts</code>：该目录下存放未发布的博客的草稿。这些文件的名称不写日期，格式为：<code class="language-plaintext highlighter-rouge">title.MARKUP</code>。
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">begin-with-the-crazy-ideas.md</code>和<code class="language-plaintext highlighter-rouge">on-simplicity-in-technology.md</code>是存放在<code class="language-plaintext highlighter-rouge">_drafts</code>目录下的草稿。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">_includes</code>：该目录下存放的文件，由layout布局文件和帖子混合，以方便重用。比如导航栏等需要重复使用的源码。
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">footer.html</code>：该文件便是用于重复使用的脚注源码。</li>
+      <li><code class="language-plaintext highlighter-rouge">header.html</code>：该文件便是用于重复使用的眉头源码。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">_layouts</code>：该目录存储页面模板。
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">default.html</code>是默认的页面模版，也就是网站中几乎每个页面都会重复的部分。</li>
+      <li><code class="language-plaintext highlighter-rouge">post.html</code>是用在帖子页面的模板。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">_posts</code>：该目录存放的是帖子，搭配上<code class="language-plaintext highlighter-rouge">post</code>模板便可生成一个个帖子页面。该目录下的文件名应该按照<code class="language-plaintext highlighter-rouge">YEAR-MONTH-DAY-title.MARKUP</code>的格式，这样在记录标题的同时，还可以记录帖子的发布时间。
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">2007-10-29-why-every-programmer-should-play-nethack.md</code>便表示的是 2007 年 10 月 29 日发布的一篇名为《why every programmer should play nethack》帖子。</li>
+      <li><code class="language-plaintext highlighter-rouge">2009-04-26-barcamp-boston-4-roundup.md</code>便表示的是 2009 年 4 月 26 日发布的一篇名为《barcamp Boston 4 roundup》帖子。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">_sass</code>：该目录下用于存放 Sass 文件（Sass 是一个 CSS 扩展语言，后缀有三种，分别是<code class="language-plaintext highlighter-rouge">.sass</code>、<code class="language-plaintext highlighter-rouge">.scss</code>或<code class="language-plaintext highlighter-rouge">.coffee</code>），可以将其处理成单个的 CSS 文件。该目录也可以直接命名为<code class="language-plaintext highlighter-rouge">css</code>。
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">_base.scss</code>是用于生成基础 CSS 的 Sass 文件。</li>
+      <li><code class="language-plaintext highlighter-rouge">_layout.scss</code>是用于生成布局 CSS 的 Sass。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">_site</code>：该目录下便是默认生成的站点。</li>
+  <li><code class="language-plaintext highlighter-rouge">.jekyll-cache</code>：保留例如<code class="language-plaintext highlighter-rouge">jekyll serve</code>时生成的页面和标记（例如 Markdown）的副本，以便更快推送服务。可以使用<code class="language-plaintext highlighter-rouge">--disable-disk-cache</code>选项，或者在<code class="language-plaintext highlighter-rouge">_config.yml</code>中使用<code class="language-plaintext highlighter-rouge">disable_disk_cache: BOOL</code>来不生成副本。</li>
+  <li><code class="language-plaintext highlighter-rouge">.jekyll-metadata</code>：该文件帮助 Jekyll 跟踪上次构建之后，哪些文件没有被修改，哪些文件需要在下一次构建中重新生成。</li>
+  <li><code class="language-plaintext highlighter-rouge">assets</code>：该目录下存放网站需要的 CSS、JS 和图像文件。
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">css</code>：该目录下存放网站使用的 CSS 文件（这个和前面的<code class="language-plaintext highlighter-rouge">_sass</code>不同，这个和一般的网站 CSS 文件是一个东西）</li>
+      <li><code class="language-plaintext highlighter-rouge">image</code>：该目录下存放网站使用的图像文件。</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">index.html或者index.md</code>：这便是要生成的站点的首页面。</li>
+</ul>
+
+<p>官方文档为：<a href="https://jekyllrb.com/docs/structure/">《Directory Structure》</a></p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

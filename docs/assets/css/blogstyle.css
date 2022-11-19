@@ -1739,6 +1739,7 @@ h2:after {
     border-bottom: 1px solid hsla(0, 0%, 50%, .33)
 }
 
+
 .info {
     margin-bottom: 0;
 }
@@ -1763,8 +1764,9 @@ dt {
 }
 
 a {
-    color: #0c93e4;
-    text-decoration: underline;
+    text-decoration: none;
+    color: #06c;
+    /* text-decoration: underline; */
     text-decoration-skip: ink
 }
 

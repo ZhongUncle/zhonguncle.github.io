@@ -1,17 +1,15 @@
 ---
-layout: default
+layout: category
 title: SwiftUI
+info: 本专栏存放的是 Swift/SwiftUI 相关内容的笔记、问题及其解决方案
 ---
 
-<h1>{{ page.title }}</h1>
-
-<ul>
-    {% for blog in site.blogs %}
-        {% if blog.category == "SwiftUI" %}
-            <li>
-                <h2><a href="{{ blog.url }}">{{ blog.title }}</a></h2>
-                {{ blog.excerpt }}
-            </li>
-        {% endif %}
-    {% endfor %}
-</ul>
+{% for blog in site.blogs %}
+    {% if blog.category == "SwiftUI" %}
+        <li>
+            <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
+            <p class="info">{{ blog.date | date: "%Y-%m-%d" }}</p>
+            {{ blog.excerpt }}
+        </li>
+    {% endif %}
+{% endfor %}

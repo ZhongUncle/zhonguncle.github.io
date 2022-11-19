@@ -4,20 +4,15 @@
         <meta charset="utf-8">
         <title>{{ page.title }}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="/assets/css/blogslist.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
-        <style type="text/css">
-
-        </style>
     </head>
     <body>
         <div class="stackedit__html">
             {% include navigation.html %}
             <h1>{{ page.title }}</h1>
             <div class="bloginfo">
-                <p class="info">{{ page.date | date: "%Y-%m-%d" }} <a href="">{{page.column}}</a></p>
-                
+                <p class="info">{{ page.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ page.category | downcase }}.html"> {{ page.category }}</a></p>
             </div>
             
             {{ content }}
