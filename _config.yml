@@ -1,6 +1,5 @@
 destination: docs
 
-# collections_dir: /
-# collections:
-#   blogs:
-#     output: true
+collections:
+  blogs:
+    output: true
