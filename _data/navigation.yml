@@ -1,4 +1,6 @@
 - name: 主页
   link: /index.html
-- name: 博客专栏
-  link: /blogs.html
+- name: SwiftUI
+  link: /swiftui.html
+- name: UNIX
+  link: /unix.html

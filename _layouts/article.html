@@ -7,12 +7,19 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/blogslist.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <style type="text/css">
+
+        </style>
     </head>
     <body>
         <div class="stackedit__html">
             {% include navigation.html %}
             <h1>{{ page.title }}</h1>
-            <p class="info">{{ page.date | date: "%Y-%m-%d" }} 专栏</p>
+            <div class="bloginfo">
+                <p class="info">{{ page.date | date: "%Y-%m-%d" }} <a href="">{{page.column}}</a></p>
+                
+            </div>
+            
             {{ content }}
         </div>
     </body>
