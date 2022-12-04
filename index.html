@@ -11,7 +11,8 @@ title: ZhongUncle 的博客主页
     {% for blog in site.blogs %}
     <li>
         <h2><a href="{{ blog.url }}">{{ blog.title }}</a></h2>
-        {{ blog.excerpt }}
+        <p>{{ blog.excerpt | strip_html }}</p>
+        
     </li>
     {% endfor %}
 </ul>
