@@ -1,0 +1,42 @@
+/* 针对每篇博客的“日期-专栏”部分 */
+.info {
+    margin-bottom: 0;
+}
+
+.info:after {
+    content: "";
+    display: block;
+    position: relative;
+    top: .33em;
+    border-bottom: 1px solid hsla(0, 0%, 50%, .33)
+}
+
+/* 针对标题，不要让间隙过大 */
+h1
+{
+    margin: 1.8em 0;
+    margin-bottom: 0;
+    line-height: 1.33
+}
+
+h1:after,
+h2:after {
+    content: "";
+    display: block;
+    position: relative;
+    top: .33em;
+    border-bottom: 1px solid hsla(0, 0%, 50%, .33)
+}
+
+/* 调整连接的颜色和样式，这样好看一点 */
+a {
+    text-decoration: none;
+    color: #06c;
+    /* text-decoration: underline; */
+    text-decoration-skip: ink
+}
+
+a:focus,
+a:hover {
+    text-decoration: none
+}

@@ -1368,11 +1368,6 @@ pre {
     font-size: 1em
 }
 
-a {
-    background-color: transparent;
-    -webkit-text-decoration-skip: objects
-}
-
 abbr[title] {
     border-bottom: none;
     text-decoration: underline;
@@ -1579,39 +1574,6 @@ ul {
     margin: 1.2em 0
 }
 
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-    margin: 1.8em 0;
-    margin-bottom: 0;
-    line-height: 1.33
-}
-
-h1:after,
-h2:after {
-    content: "";
-    display: block;
-    position: relative;
-    top: .33em;
-    border-bottom: 1px solid hsla(0, 0%, 50%, .33)
-}
-
-
-.info {
-    margin-bottom: 0;
-}
-
-.info:after {
-    content: "";
-    display: block;
-    position: relative;
-    top: .33em;
-    border-bottom: 1px solid hsla(0, 0%, 50%, .33)
-}
-
 ol ol,
 ol ul,
 ul ol,
@@ -1621,18 +1583,6 @@ ul ul {
 
 dt {
     font-weight: 700
-}
-
-a {
-    text-decoration: none;
-    color: #06c;
-    /* text-decoration: underline; */
-    text-decoration-skip: ink
-}
-
-a:focus,
-a:hover {
-    text-decoration: none
 }
 
 code,

@@ -9,7 +9,7 @@ info: 本专栏存放的是 Swift/SwiftUI 相关内容的笔记、问题及其�
         <li>
             <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
             <p class="info">{{ blog.date | date: "%Y-%m-%d" }}</p>
-            {{ blog.excerpt }}
+            <p>{{ blog.excerpt | strip_html }}</p>
         </li>
     {% endif %}
 {% endfor %}
