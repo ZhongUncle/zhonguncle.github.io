@@ -2,6 +2,7 @@
 layout: article
 category: SwiftUI
 ---
+<!-- excerpt-start -->
 苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：[Core Image Filter Reference](https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorClamp)
 
 首先是如何看这个网页，也就是说这个网页提供了哪些信息，这对我们使用时非常有帮助的。以下面这个截图为例，来讲一下如何看。

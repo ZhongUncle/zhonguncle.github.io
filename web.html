@@ -9,7 +9,8 @@ info: 本专栏 存放 Web 相关内容的笔记、问题及其解决方案，�
         <li>
             <h2><a href="{{ blog.url }}">{{ blog.title }}</a></h2>
             <p class="info">{{ blog.date | date: "%Y-%m-%d" }}</p>
-            <p>{{ blog.excerpt | strip_html }}</p>
+            {% assign excerptParts = blog.excerpt | split: "<!-- excerpt-start -->" %}
+            <p>{{ excerptParts[1] | strip_html }}</p>
         </li>
     {% endif %}
 {% endfor %}

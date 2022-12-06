@@ -9,7 +9,8 @@ info: UNIX 相关的内容就在该专栏，包括但不限于 Linux 各种发�
         <li>
             <h2><a href="{{ blog.url }}">{{ blog.title }}</a></h2>
             <p class="info">{{ blog.date | date: "%Y-%m-%d" }}</p>
-            <p>{{ blog.excerpt | strip_html }}</p>
+            {% assign excerptParts = blog.excerpt | split: "<!-- excerpt-start -->" %}
+            <p>{{ excerptParts[1] | strip_html }}</p>
         </li>
     {% endif %}
 {% endfor %}
