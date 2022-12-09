@@ -1,0 +1,31 @@
+/* Swift和SwiftUI代码的CSS文件 */
+/* 注释 */
+.language-swift .c1
+{
+    color: #5D6C79;
+}
+/* 字符串 */
+.language-swift .s
+{
+    color: #C41A16;
+}
+/* 关键词 */
+.language-swift .k,.kd
+{
+    color: #9B2393;   
+    font-weight: bolder;
+}
+.language-swift .kt, .n
+{
+    color: #0B4F79;
+}
+/* 通用字符类名（Regex Literal Character Class Names） */
+.language-swift .nv
+{
+    color: #326D74;
+}
+/* 数字 */
+.language-swift .mi
+{
+    color: #1C00CF;
+}

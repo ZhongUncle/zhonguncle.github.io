@@ -79,6 +79,7 @@ struct FilterView: View {
 ```
 我们就能看到处理之后的图片显示在屏幕上啦！我们来处理一下之前的截图。
 ![请添加图片描述](https://img-blog.csdnimg.cn/12a8a4dd2e3c445abaf86ffd2375d5de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_19,color_FFFFFF,t_70,g_se,x_16)
+
 效果还不错！
 
 由于这些API都非常古早了，和SwiftUI搭配使用会有一些小坑，之前查阅了半天没找到解决办法，也是自己研究了才发现解决之道。
