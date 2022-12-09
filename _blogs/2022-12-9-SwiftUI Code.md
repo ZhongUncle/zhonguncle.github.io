@@ -2,11 +2,8 @@
 layout: article
 category: SwiftUI
 ---
-```python
-#12
->>> from urllib import parse
->>> paral=parse.parse_qsl(url.query)
->>> paral
-[('keyword', 'abc'), ('id', 12)]
 
+```swift
+/* This is the start of the first multiline comment.
+This is the second, nested multiline comment. */
 ```

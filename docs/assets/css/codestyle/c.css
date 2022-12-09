@@ -1,0 +1,32 @@
+/* C 代码的 CSS 文件 */
+/* 注释 */
+.language-c .cm, .language-c .c1
+{
+    color: #5D6C79;
+}
+/* 预处理部分 */
+.language-c .cp
+{
+    color: #6E200D;
+}
+/* 库或者头文件 */
+.language-c .cpf
+{
+    color: #BA0011;
+}
+/* 类型（关键字） */
+.language-c .k, .language-c .kt
+{
+    color: #B40062; 
+    font-weight: bolder;
+}
+/* 函数名和变量名 */
+.language-c .n, .language-c .nf
+{
+    color: #0F68A0;
+}
+/* 数字和一些字符 */
+.language-c .mi, .language-c .sc 
+{
+    color: #1C00CF;
+}

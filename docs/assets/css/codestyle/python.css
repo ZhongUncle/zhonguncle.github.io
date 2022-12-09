@@ -1,6 +1,6 @@
 /* Python 代码的 CSS 文件 */
 /* 注释 */
-.language-python .c1
+.language-python .c1, .language-python .cm
 {
     color: #5D6C79;
 }

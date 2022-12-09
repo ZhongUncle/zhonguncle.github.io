@@ -1,6 +1,6 @@
 /* Swift 和 SwiftUI 代码的 CSS 文件 */
 /* 注释 */
-.language-swift .c1
+.language-swift .c1, .language-swift .cm
 {
     color: #5D6C79;
 }
