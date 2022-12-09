@@ -10,12 +10,12 @@
     color: #C41A16;
 }
 /* 关键词 */
-.language-swift .k,.kd
+.language-swift .k, .language-swift .kd
 {
     color: #9B2393;   
     font-weight: bolder;
 }
-.language-swift .kt, .n
+.language-swift .kt, .language-swift .n
 {
     color: #0B4F79;
 }

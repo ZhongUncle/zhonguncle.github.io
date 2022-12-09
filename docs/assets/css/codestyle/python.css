@@ -1,0 +1,25 @@
+/* Python 代码的 CSS 文件 */
+/* 注释 */
+.language-python .c1
+{
+    color: #5D6C79;
+}
+/* 字符串 */
+.language-python .s
+{
+    color: #C41A16;
+}
+.language-python .kn
+{
+    color: #0B4F79;
+}
+/* 数字 */
+.language-python .mi
+{
+    color: #1C00CF;
+}
+/* 符号 */
+.language-python .o, .language-python .p
+{
+    color: #643820;
+}

@@ -1171,48 +1171,6 @@ body {
     counter-reset: a b
 }
 
-@font-face {
-    font-family: Lato;
-    font-style: normal;
-    font-weight: 400;
-    src: url(/static/fonts/lato-normal.27bd77b.woff) format("woff")
-}
-
-@font-face {
-    font-family: Lato;
-    font-style: italic;
-    font-weight: 400;
-    src: url(/static/fonts/lato-normal-italic.f28f2d6.woff) format("woff")
-}
-
-@font-face {
-    font-family: Lato;
-    font-style: normal;
-    font-weight: 600;
-    src: url(/static/fonts/lato-black.f80bda6.woff) format("woff")
-}
-
-@font-face {
-    font-family: Lato;
-    font-style: italic;
-    font-weight: 600;
-    src: url(/static/fonts/lato-black-italic.798eafd.woff) format("woff")
-}
-
-@font-face {
-    font-family: Roboto Mono;
-    font-style: normal;
-    font-weight: 400;
-    src: url(/static/fonts/RobotoMono-Regular.0b6a547.woff) format("woff")
-}
-
-@font-face {
-    font-family: Roboto Mono;
-    font-style: normal;
-    font-weight: 600;
-    src: url(/static/fonts/RobotoMono-Bold.819f3b2.woff) format("woff")
-}
-
 .prism *,
 .token.pre.gfm * {
     font-weight: inherit !important

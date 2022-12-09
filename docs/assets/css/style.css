@@ -1,6 +1,7 @@
 /* 导入各种代码高亮CSS文件 */
 @import "/assets/css/codestyle/swift.css";
 @import "/assets/css/codestyle/bash.css";
+@import "/assets/css/codestyle/python.css";
 /* 针对每篇博客的“日期-专栏”部分 */
 .info {
     margin-bottom: 0;
