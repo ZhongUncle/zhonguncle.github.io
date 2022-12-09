@@ -1,0 +1,38 @@
+/* bash 以及其他 Shell 代码的 CSS 文件 */
+/* 注释 */
+.language-bash .c
+{
+    color: #5D6C79;
+}
+/* 字符串 */
+.language-bash .s
+{
+    color: #C41A16;
+}
+/* 关键词 */
+.language-bash .k
+{
+    color: #9B2393;   
+    font-weight: bolder;
+}
+
+/* 通用字符类名（Regex Literal Character Class Names），变量 */
+.language-bash .nv
+{
+    color: #836C28;
+}
+/* 数字、符号等 */
+.language-bash .o
+{
+    color: #004975;
+}
+/* 调用程序 */
+.language-bash .nb
+{
+    color: #643820;
+}
+/* 选项 */
+.language-bash .nt
+{
+    color: #836C28;
+}
