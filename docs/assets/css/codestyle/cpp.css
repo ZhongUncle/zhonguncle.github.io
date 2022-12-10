@@ -1,0 +1,32 @@
+/* C++ 代码的 CSS 文件 */
+/* 注释 */
+.language-cpp .cm, .language-cpp .c1
+{
+    color: #5D6C79;
+}
+/* 预处理部分 */
+.language-cpp .cp
+{
+    color: #6E200D;
+}
+/* 库或者头文件 */
+.language-cpp .cpf
+{
+    color: #BA0011;
+}
+/* 类型（关键字） */
+.language-cpp .k, .language-cpp .kt
+{
+    color: #B40062; 
+    font-weight: bolder;
+}
+/* 函数名和变量名 */
+.language-cpp .n, .language-cpp .nf
+{
+    color: #0F68A0;
+}
+/* 数字和一些字符 */
+.language-cpp .mi, .language-cpp .sc 
+{
+    color: #1C00CF;
+}

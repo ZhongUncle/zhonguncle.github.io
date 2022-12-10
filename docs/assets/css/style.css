@@ -3,6 +3,7 @@
 @import "/assets/css/codestyle/bash.css";
 @import "/assets/css/codestyle/python.css";
 @import "/assets/css/codestyle/c.css";
+@import "/assets/css/codestyle/cpp.css";
 /* 针对每篇博客的“日期-专栏”部分 */
 .info {
     margin-bottom: 0;
