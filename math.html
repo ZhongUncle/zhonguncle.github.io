@@ -1,0 +1,16 @@
+---
+layout: category
+title: Math
+info: 本专栏存放的是 Math 相关的博客，包括但不限于数学问题的解决方案或者概念的笔记。
+---
+
+{% for blog in site.blogs %}
+    {% if blog.category == "Math" %}
+        <li>
+            <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
+            <p class="info">{{ blog.date | date: "%Y-%m-%d" }}</p>
+            {% assign excerptParts = blog.excerpt | split: "<!-- excerpt-start -->" %}
+            <p>{{ excerptParts[1] | strip_html }}</p>
+        </li>
+    {% endif %}
+{% endfor %}

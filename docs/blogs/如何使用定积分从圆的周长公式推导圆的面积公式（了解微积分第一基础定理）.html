@@ -1,0 +1,108 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>如何使用定积分从圆的周长公式推导圆的面积公式（了解微积分第一基础定理）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/math.html" class="headerItem">
+            Math
+        </a>
+    
+</div>
+            <h1>如何使用定积分从圆的周长公式推导圆的面积公式（了解微积分第一基础定理）</h1>
+            <div class="bloginfo">
+                <p class="info">2022-12-15 ｜ <a href="/math.html"> Math</a></p>
+            </div>
+            
+            <p>公元前三世纪，Archimedes已经研究了曲线轮廓的面积（定积分）；三角函数的正切也造就被研究发现了（因为是从正切引导出来了导数），那么为什么牛顿和莱布尼兹被认为是各自独立发现微积分的第一人呢？
+因为他们发现了定积分和导数之间的关系，这个关系被总结为 <strong>“微积分第一基础定理（The First Fundamental Theorem of Calculus）”</strong>。</p>
+
+<p>微积分第一基础定理的如下：</p>
+
+<blockquote>
+  <p>Let f be continuous on the closed interval [a, b] and let x be a (variable) point in (a, b). Then
+\(\begin{align}
+\tfrac{d}{dx} \int_{a}^x f(t) \ dt = f(x) 
+\end{align}\)</p>
+</blockquote>
+
+<p>简单来说就是：在$t=x$时，函数曲线下方面积的积累速度等于函数在$t=x$的值。</p>
+
+<p>下面就以圆的周长和面积的关系举个例子。</p>
+
+<p>圆的周长公式为：
+\(C = 2 \pi r\)</p>
+
+<p>圆的面积公式为：
+\(C = \pi r^2\)</p>
+
+<p>那么如何使用周长公式推导出面积公式？为什么周长能推导出来面积？
+不过在此之前，来确定一些前置知识和共识，以免有概念和理解的偏差。</p>
+
+<h2 id="前置知识">前置知识</h2>
+<p>第一，导数表示的是一个函数在某一点时，函数值的<strong>变化率</strong>，可以用来表示函数变化的快慢。导数的定义式为：
+\(\begin{align}
+f'(x) = \lim_{h \to 0} \tfrac{f(x+h)-f(x)}{h}
+\end{align}\)</p>
+
+<p>第二，定积分在图像上的含义是函数曲线、横轴和限制（limit）围出来的<strong>面积大小</strong>，与不定积分的区别是有没有限制。定积分的定义为：
+\(\begin{align}
+\int_{a}^b f(x) \ dx = \lim_{\|p\| \to 0} \sum_{i=1}^{n} f(\stackrel{-}x_i)\Delta x_i 
+\end{align}\)</p>
+
+<p>定积分又被称为黎曼积分的原因是使用了黎曼和（Riemann Sum），而上面定义中的这部分（下面列出）其实就是黎曼和的定义：
+\(\begin{align}
+\sum_{i=1}^{n} f(\stackrel{-}x_i)\Delta x_i
+\end{align}\)</p>
+
+<p>那么根据黎曼和的定义，定积分的定义式可以变形成：
+\(\begin{align}
+\int_{a}^b f(x) \ dx = \lim_{n \to \infty} \sum_{i=1}^{n} f(x_i)\Delta x_i
+\end{align}\)</p>
+
+<p>如果这里不理解为什么这么变形，以及其中符号的含义，建议去了解一下黎曼和的概念和定义，这里不赘述了。</p>
+
+<h2 id="推导过程">推导过程</h2>
+<p>那么下面先进行推导，再进行借此解释为导数和定积分之间的关系。推导就是求圆的周长公式的定积分，其中$r$为圆的半径，$n$ 也是一个常数（不知道 $n$ 的概念可以查一下黎曼和的概念）：
+<img src="/assets/images/pir2dein.png" alt="mathimg" /></p>
+
+<h2 id="导数和定积分的关系">导数和定积分的关系</h2>
+<p>这时候如果你细心的话会发现对函数 $2\pi r$求得的定积分 $\pi r^2$ 求导之后就是原函数 $2\pi r$，恭喜你自己发现了<strong>“微积分第一基础定理（The First Fundamental Theorem of Calculus）”</strong>。可能此时你还一脸懵，没注意自己发现了这个划时代的东西。所以下面来解释一下开头提到的第二个问题“为什么周长能推导出来面积”，听完你就会明白了。</p>
+
+<p>这里介绍一下前面推导的图像含义：面积是由线构成的，那么一个圆的面积就是不同半径的圆圈构成的，就像下图这样：</p>
+
+<p><img src="/assets/images/圆圈组合图.jpg" alt="mathimg" /></p>
+
+<p>推导过程中的这个求和中的每一项，表示上图中的一个圆圈，将他们加在一起求和，就得到了圆的面积。而每个圆圈变化的地方就是每个圆圈的半径，而这个半径的范围则是$[0, r]$，也就是定积分的区间。
+\(\sum_{i=1}^{n} f(x_i)\Delta x_i\)
+所以半径 $r$ 每增大一点，圆的面积就增加 $2\pi r$，而这个 $2\pi r$ 则是定积分的变化率，也就是定积分的导数。至此，我们发现了定积分和导数之间的关系：定积分的导数就是原函数，因为它在某点的增量正是原函数在这点的的值。而这就是 <strong>“微积分第一基础定理”</strong>。</p>
+
+<p>这与很多人学习圆的时候了解的概念不太一样。很多人知道的是：圆的面积是一个线段绕着一个端点旋转一周得到的。当然这种方法也可以推导出圆的面积，不过不使用黎曼和，所以简单很多，感兴趣可以自己试试看。方法如下（可以先别看，先自己想想）：</p>
+
+<p><img src="/assets/images/pir2lim.png" alt="mathimg" /></p>
+
+
+        </div>
+    </body>
+</html>
