@@ -6,7 +6,7 @@
 @import "/assets/css/codestyle/cpp.css";
 /* 针对每篇博客的“日期-专栏”部分 */
 .info {
-    margin-bottom: 0;
+    font-size: smaller;
 }
 
 .info:after {
@@ -20,22 +20,23 @@
 /* 针对标题，不要让间隙过大 */
 h1
 {
-    font-size: 2em;
-    margin: 1.8em 0;
+    font-size: 1.5em;
+    margin: 2.1em 0;
     margin-bottom: 0;
     line-height: 1.33
 }
 
 h2
 {
-    font-size: 1.5em;
+    font-size: 1.3em;
     margin: 1.8em 0;
     margin-bottom: 0;
     line-height: 1
 }
 
 h1:after,
-h2:after {
+h2:after
+{
     content: "";
     display: block;
     position: relative;
@@ -63,16 +64,12 @@ img {
     max-width: 600px;
     box-shadow: 0px 0px 10px 5px rgba(98, 98, 98, 0.33);
 }
-img[alt="mathimg"] {
-    margin: 1em 0;
-    max-height: 450px;
-    max-width: 600px;
-}
+
 /* 代码样式 */
 code
 {
     font-size: 1em;
-    color: #000000;
+    color: #666;
     padding: 2px 4px
 }
 

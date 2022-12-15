@@ -132,7 +132,7 @@
     font-style: normal
 }
 
-/* .katex .vlist-t {
+.katex .vlist-t {
     display: inline-table;
     table-layout: fixed;
     border-collapse: collapse
@@ -146,7 +146,7 @@
     display: table-cell;
     vertical-align: bottom;
     position: relative
-} */
+}
 
 .katex .vlist>span {
     display: block;

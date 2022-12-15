@@ -4,5 +4,14 @@ layout: default
 <h1>{{ page.title }} 专栏</h1>
 <p>{{ page.info }}</p>
 <ul>
-    {{ content }}
+    {% for blog in site.blogs reversed %}
+        {% if blog.category == page.title %}
+            <li>
+                <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
+                <p class="info">{{ blog.date | date: "%Y-%m-%d" }} ｜ {{ blog.content | number_of_words: "auto" }} 字</p>
+                {% assign excerptParts = blog.excerpt | split: "<!-- excerpt-start -->" %}
+                <p>{{ excerptParts[1] | strip_html }}</p>
+            </li>
+        {% endif %}
+    {% endfor %}
 </ul>

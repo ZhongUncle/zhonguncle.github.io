@@ -3,15 +3,18 @@ layout: default
 title: ZhongUncle 的博客主页
 ---
 <h1>介绍</h1>
-<p>我是 ZhongUncle，欢迎来到我的博客。本站点主要用于备份我发在 CSDN 上的博客，以及一些有趣尝试的纪录。</p>
+<p>我是 ZhongUncle，欢迎来到我的博客。本站点主要用于备份我发在 CSDN 上的博客（大多是关于计算机方面的），此外还会有一些尝试的纪录、书籍的推荐等值得记录的内容。</p>
+<p>由于出于备份的目的，所以在使用到非 Markdown 通用功能的情况下，为了防止不兼容或者未来框架的变化，会贴出 PDF，这样无论浏览器、服务器框架如何变化，都可以最大限度的保留内容。</p>
 
 <h1>最新</h1>
 
 <ul>
-    {% for blog in site.blogs %}
+    {% for blog in site.blogs reversed %}
     <li>
-        <h2><a href="{{ blog.url }}">{{ blog.title }}</a></h2>
-        <p>{{ blog.excerpt | strip_html }}</p>
+        <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
+        <p class="info">{{ blog.date | date: "%Y-%m-%d" }} ｜ {{ blog.content | number_of_words: "auto" }} 字</p>
+        {% assign excerptParts = blog.excerpt | split: "<!-- excerpt-start -->" %}
+        <p>{{ excerptParts[1] | strip_html }}</p>
     </li>
     {% endfor %}
 </ul>

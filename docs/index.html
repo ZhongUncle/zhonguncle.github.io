@@ -24,28 +24,57 @@
             UNIX
         </a>
     
-        <a href="/math.html" class="headerItem">
-            Math
-        </a>
-    
 </div>
         <div class="stackedit__html">
             <h1>介绍</h1>
-<p>我是 ZhongUncle，欢迎来到我的博客。本站点主要用于备份我发在 CSDN 上的博客，以及一些有趣尝试的纪录。</p>
+<p>我是 ZhongUncle，欢迎来到我的博客。本站点主要用于备份我发在 CSDN 上的博客（大多是关于计算机方面的），此外还会有一些尝试的纪录、书籍的推荐等值得记录的内容。</p>
+<p>由于出于备份的目的，所以在使用到非 Markdown 通用功能的情况下，为了防止不兼容或者未来框架的变化，会贴出 PDF，这样无论浏览器、服务器框架如何变化，都可以最大限度的保留内容。</p>
 
 <h1>最新</h1>
 
 <ul>
     
     <li>
-        <h2><a href="/blogs/2022-02-22-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Core%20Image%E5%AE%98%E6%96%B9%E6%BB%A4%E9%95%9C%EF%BC%88CIFilter%EF%BC%89%E6%9D%A5%E5%A4%84%E7%90%86%E7%85%A7%E7%89%87.html">如何使用core image官方滤镜（cifilter）来处理照片</a></h2>
+        <h2><a class="blog" href="/blogs/2022-11-17-Jekyll%20%E7%9A%84%E6%9C%BA%E5%88%B6%E3%80%81%E8%BD%AC%E6%8D%A2%E6%AD%A5%E9%AA%A4%E5%92%8C%E7%BB%93%E6%9E%84%E4%BB%8B%E7%BB%8D.html">Jekyll 的机制、转换步骤和结构介绍</a></h2>
+        <p class="info">2022-11-17 ｜ 1411 字</p>
+        
         <p>
-苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference
+Jekyll 是一个转换器，用来生成网站，使用的是一种解释语言。
 </p>
     </li>
     
     <li>
-        <h2><a href="/blogs/2022-08-05-%E7%95%8C%E9%9D%A2%E9%97%B4%E7%9A%84%E2%80%9C%E9%97%AA%E8%BD%AC%E8%85%BE%E6%8C%AA%E2%80%9D%EF%BC%88%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC%E7%9A%84%E5%90%84%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%89.html">界面间的“闪转腾挪”（页面跳转的各种方法）</a></h2>
+        <h2><a class="blog" href="/blogs/2022-11-07-%E5%85%B3%E4%BA%8EUIScreen.main.bounds.height%E7%9A%84%E5%80%BC%E5%8F%91%E7%94%9F%E4%BA%86%E5%8F%98%E5%8C%96%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html">关于uiscreen.main.bounds.height的值发生了变化的原因和解决方案</a></h2>
+        <p class="info">2022-11-07 ｜ 860 字</p>
+        
+        <p>
+之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：
+《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-09-16-%E5%A6%82%E4%BD%95%E5%B0%86%E5%B7%B2%E7%BB%8F%E5%AE%89%E8%A3%85%E7%9A%84%20WSL%EF%BC%88Ubuntu%EF%BC%89%E7%A7%BB%E5%8A%A8%E5%88%B0%E5%85%B6%E4%BB%96%E7%9A%84%E7%9B%98%E6%88%96%E4%BD%8D%E7%BD%AE.html">如何将已经安装的 wsl（ubuntu）移动到其他的盘或位置</a></h2>
+        <p class="info">2022-09-16 ｜ 742 字</p>
+        
+        <p>
+随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“无法移动”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-08-14-%E5%9C%A8Ubuntu%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%EF%BC%8C%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8Nginx%E5%92%8CPHP7%EF%BC%8C%E4%BB%A5%E5%8F%8A%E9%83%A8%E5%88%86%E6%8E%92%E9%94%99%E6%96%B9%E6%B3%95.html">在ubuntu服务器上，安装和使用nginx和php7，以及部分排错方法</a></h2>
+        <p class="info">2022-08-14 ｜ 1778 字</p>
+        
+        <p>
+最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-08-05-%E7%95%8C%E9%9D%A2%E9%97%B4%E7%9A%84%E2%80%9C%E9%97%AA%E8%BD%AC%E8%85%BE%E6%8C%AA%E2%80%9D%EF%BC%88%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC%E7%9A%84%E5%90%84%E7%A7%8D%E6%96%B9%E6%B3%95%EF%BC%89.html">界面间的“闪转腾挪”（页面跳转的各种方法）</a></h2>
+        <p class="info">2022-08-05 ｜ 1903 字</p>
+        
         <p>
 在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：
 
@@ -56,47 +85,11 @@
     </li>
     
     <li>
-        <h2><a href="/blogs/2022-08-14-%E5%9C%A8Ubuntu%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%EF%BC%8C%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8Nginx%E5%92%8CPHP7%EF%BC%8C%E4%BB%A5%E5%8F%8A%E9%83%A8%E5%88%86%E6%8E%92%E9%94%99%E6%96%B9%E6%B3%95.html">在ubuntu服务器上，安装和使用nginx和php7，以及部分排错方法</a></h2>
+        <h2><a class="blog" href="/blogs/2022-02-22-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8Core%20Image%E5%AE%98%E6%96%B9%E6%BB%A4%E9%95%9C%EF%BC%88CIFilter%EF%BC%89%E6%9D%A5%E5%A4%84%E7%90%86%E7%85%A7%E7%89%87.html">如何使用core image官方滤镜（cifilter）来处理照片</a></h2>
+        <p class="info">2022-02-22 ｜ 1418 字</p>
+        
         <p>
-最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。
-</p>
-    </li>
-    
-    <li>
-        <h2><a href="/blogs/2022-09-16-%E5%A6%82%E4%BD%95%E5%B0%86%E5%B7%B2%E7%BB%8F%E5%AE%89%E8%A3%85%E7%9A%84%20WSL%EF%BC%88Ubuntu%EF%BC%89%E7%A7%BB%E5%8A%A8%E5%88%B0%E5%85%B6%E4%BB%96%E7%9A%84%E7%9B%98%E6%88%96%E4%BD%8D%E7%BD%AE.html">如何将已经安装的 wsl（ubuntu）移动到其他的盘或位置</a></h2>
-        <p>
-随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“无法移动”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。
-</p>
-    </li>
-    
-    <li>
-        <h2><a href="/blogs/2022-11-07-%E5%85%B3%E4%BA%8EUIScreen.main.bounds.height%E7%9A%84%E5%80%BC%E5%8F%91%E7%94%9F%E4%BA%86%E5%8F%98%E5%8C%96%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.html">关于uiscreen.main.bounds.height的值发生了变化的原因和解决方案</a></h2>
-        <p>前言
-
-之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。
-</p>
-    </li>
-    
-    <li>
-        <h2><a href="/blogs/2022-11-17-Jekyll%20%E7%9A%84%E6%9C%BA%E5%88%B6%E3%80%81%E8%BD%AC%E6%8D%A2%E6%AD%A5%E9%AA%A4%E5%92%8C%E7%BB%93%E6%9E%84%E4%BB%8B%E7%BB%8D.html">Jekyll 的机制、转换步骤和结构介绍</a></h2>
-        <p>
-Jekyll 是一个转换器，用来生成网站，使用的是一种解释语言。
-</p>
-    </li>
-    
-    <li>
-        <h2><a href="/blogs/2022-12-9-SwiftUI%20Code.html">Swiftui code</a></h2>
-        <p>```cpp
-#include 
-#include 
-#include 
-</p>
-    </li>
-    
-    <li>
-        <h2><a href="/blogs/%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E5%AE%9A%E7%A7%AF%E5%88%86%E4%BB%8E%E5%9C%86%E7%9A%84%E5%91%A8%E9%95%BF%E5%85%AC%E5%BC%8F%E6%8E%A8%E5%AF%BC%E5%9C%86%E7%9A%84%E9%9D%A2%E7%A7%AF%E5%85%AC%E5%BC%8F%EF%BC%88%E4%BA%86%E8%A7%A3%E5%BE%AE%E7%A7%AF%E5%88%86%E7%AC%AC%E4%B8%80%E5%9F%BA%E7%A1%80%E5%AE%9A%E7%90%86%EF%BC%89.html">如何使用定积分从圆的周长公式推导圆的面积公式（了解微积分第一基础定理）</a></h2>
-        <p>公元前三世纪，Archimedes已经研究了曲线轮廓的面积（定积分）；三角函数的正切也造就被研究发现了（因为是从正切引导出来了导数），那么为什么牛顿和莱布尼兹被认为是各自独立发现微积分的第一人呢？
-因为他们发现了定积分和导数之间的关系，这个关系被总结为 “微积分第一基础定理（The First Fundamental Theorem of Calculus）”。
+苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference
 </p>
     </li>
     
