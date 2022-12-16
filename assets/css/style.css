@@ -75,7 +75,8 @@ code
 
 /* 代码部分的灰色背景 */
 pre>code {
-    background-color: rgba(0, 0, 0, .02);
+    color: #111;
+    background-color: rgba(0, 0, 0, .05);
     display: block;
     padding: .5em;
     -webkit-text-size-adjust: none;

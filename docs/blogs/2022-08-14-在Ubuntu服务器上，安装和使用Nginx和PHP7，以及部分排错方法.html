@@ -28,7 +28,7 @@
 </div>
             <h1>在ubuntu服务器上，安装和使用nginx和php7，以及部分排错方法</h1>
             <div class="bloginfo">
-                <p class="info">2022-08-14 ｜ <a href="/unix.html"> UNIX</a> ｜ 1778 字</p>
+                <p class="info">2022-08-14 ｜ <a href="/unix.html"> UNIX</a> ｜ 1779 字</p>
             </div>
             
             <!-- excerpt-start -->
@@ -64,7 +64,9 @@
 </code></pre></div></div>
 
 <h2 id="安装-php">安装 PHP</h2>
-<p>然后就是安装 PHP。如果你阅读过其他文章，会发现很多人会提到需要安装 PHP-FPM（FastCGI 进程管理器，用来处理一些用户请求，一般就是处理 PHP 脚本的沟通协议）。但是从 PHP 5.3.3 开始，PHP-FPM 就包含在PHP core中，按理来说不用自己安装了（问题本节后面说，一定要看一下），下面图是官网机翻：<img src="https://img-blog.csdnimg.cn/d75e5fbe075e424b86b524a3220bbfe9.png" alt="请添加图片描述" /></p>
+<p>然后就是安装 PHP。如果你阅读过其他文章，会发现很多人会提到需要安装 PHP-FPM（FastCGI 进程管理器，用来处理一些用户请求，一般就是处理 PHP 脚本的沟通协议）。但是从 PHP 5.3.3 开始，PHP-FPM 就包含在PHP core中，按理来说不用自己安装了（问题本节后面说，一定要看一下），下面图是官网机翻：</p>
+
+<p><img src="https://img-blog.csdnimg.cn/d75e5fbe075e424b86b524a3220bbfe9.png" alt="请添加图片描述" /></p>
 
 <p>PHP 可以直接使用<code class="language-plaintext highlighter-rouge">apt</code>来安装，依次执行以下命令：</p>
 
@@ -132,8 +134,10 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>listen <span class="o">=</span> 9000
 </code></pre></div></div>
-<p>如下：
-<img src="https://img-blog.csdnimg.cn/b53f908df689444a89d9f8e1200ef445.png" alt="请添加图片描述" /></p>
+
+<p>如下：</p>
+
+<p><img src="https://img-blog.csdnimg.cn/b53f908df689444a89d9f8e1200ef445.png" alt="请添加图片描述" /></p>
 
 <h2 id="使用">使用</h2>
 <p>然后就是简单的使用了。

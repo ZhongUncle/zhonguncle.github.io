@@ -6,7 +6,9 @@ category: SwiftUI
 苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：[Core Image Filter Reference](https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorClamp)
 
 首先是如何看这个网页，也就是说这个网页提供了哪些信息，这对我们使用时非常有帮助的。以下面这个截图为例，来讲一下如何看。
+
 ![请添加图片描述](https://img-blog.csdnimg.cn/b760cad550984160a1702ba628f4d912.jpg?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_20,color_FFFFFF,t_70,g_se,x_16)
+
 按照各部分来介绍：
 
  1. 滤镜名称。一般情况下，和部分3的本地名称一样。
@@ -78,6 +80,7 @@ struct FilterView: View {
 }
 ```
 我们就能看到处理之后的图片显示在屏幕上啦！我们来处理一下之前的截图。
+
 ![请添加图片描述](https://img-blog.csdnimg.cn/12a8a4dd2e3c445abaf86ffd2375d5de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_19,color_FFFFFF,t_70,g_se,x_16)
 
 效果还不错！

@@ -39,7 +39,9 @@ $ sudo systemctl restart nginx.service
 ```
 
 ## 安装 PHP
-然后就是安装 PHP。如果你阅读过其他文章，会发现很多人会提到需要安装 PHP-FPM（FastCGI 进程管理器，用来处理一些用户请求，一般就是处理 PHP 脚本的沟通协议）。但是从 PHP 5.3.3 开始，PHP-FPM 就包含在PHP core中，按理来说不用自己安装了（问题本节后面说，一定要看一下），下面图是官网机翻：![请添加图片描述](https://img-blog.csdnimg.cn/d75e5fbe075e424b86b524a3220bbfe9.png)
+然后就是安装 PHP。如果你阅读过其他文章，会发现很多人会提到需要安装 PHP-FPM（FastCGI 进程管理器，用来处理一些用户请求，一般就是处理 PHP 脚本的沟通协议）。但是从 PHP 5.3.3 开始，PHP-FPM 就包含在PHP core中，按理来说不用自己安装了（问题本节后面说，一定要看一下），下面图是官网机翻：
+
+![请添加图片描述](https://img-blog.csdnimg.cn/d75e5fbe075e424b86b524a3220bbfe9.png)
 
 PHP 可以直接使用`apt`来安装，依次执行以下命令：
 
@@ -114,7 +116,9 @@ www.conf
 ```bash
 listen = 9000
 ```
+
 如下：
+
 ![请添加图片描述](https://img-blog.csdnimg.cn/b53f908df689444a89d9f8e1200ef445.png)
 
 ## 使用
