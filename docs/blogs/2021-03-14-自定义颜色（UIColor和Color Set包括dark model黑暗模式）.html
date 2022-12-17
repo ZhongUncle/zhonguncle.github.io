@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>自定义颜色（uicolor和color set包括dark model黑暗模式）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+</div>
+            <h1>自定义颜色（uicolor和color set包括dark model黑暗模式）</h1>
+            <div class="bloginfo">
+                <p class="info">2021-03-14 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 1100 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>苹果官方不建议自定义颜色，而是使用官方提供的颜色。详情参见：<a href="https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/color/">Color - Foundations - Human Interface Guidelines - Design - Apple Developer</a>
+但是还是可以SwiftUI里自定义一些属性的颜色（例如背景），有两种办法：</p>
+
+<h2 id="uicolor">UIColor</h2>
+
+<p>第一种方法定义起来比较简单，如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="nv">secondThinkView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">brightRed</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="nv">displayP3Red</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nv">green</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nv">blue</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nv">alpha</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span><span class="p">{</span>  
+                <span class="kt">Spacer</span><span class="p">()</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="k">do</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"1111"</span><span class="p">)</span>
+                <span class="p">}</span>
+                <span class="o">.</span><span class="nf">padding</span><span class="p">()</span>
+                <span class="o">.</span><span class="nf">background</span><span class="p">(</span><span class="kt">Color</span><span class="p">(</span><span class="n">brightRed</span><span class="p">))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>   
+</code></pre></div></div>
+
+<p>或者这种格式：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="nv">secondThinkView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span><span class="p">{</span>  
+                <span class="kt">Spacer</span><span class="p">()</span>
+                <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="k">do</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"1111"</span><span class="p">)</span>
+                <span class="p">}</span>
+                <span class="o">.</span><span class="nf">padding</span><span class="p">()</span>
+                <span class="o">.</span><span class="nf">background</span><span class="p">(</span><span class="kt">Color</span><span class="p">(</span><span class="kt">UIColor</span><span class="p">(</span><span class="nv">displayP3Red</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">,</span> <span class="nv">green</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nv">blue</span><span class="p">:</span> <span class="mf">0.0</span><span class="p">,</span> <span class="nv">alpha</span><span class="p">:</span> <span class="mf">1.0</span><span class="p">)))</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>这是 P3 色域下的格式。透明度部分（alpha）可以删掉。</p>
+
+<p>不过需要注意，这里不是用的数字 0 到 255 定义 RGB。而是 0.0 到 1.0（包含小数），如果想使用 255 表示 rgb，就用分数，比如 123/255 这样。</p>
+
+<p>如果需要仅需要 RGB 格式，删除 displayP3 就可以了。</p>
+
+<p>如果需要 HSB 格式，如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">UIColor</span><span class="p">(</span><span class="nv">hue</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span> <span class="nv">saturation</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span> <span class="nv">brightness</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">,</span> <span class="nv">alpha</span><span class="p">:</span> <span class="kt">CGFloat</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="color-set">Color Set</h2>
+
+<p>第二种方法虽然麻烦一点，但是是一种非常方便的色彩管理手段。</p>
+
+<p>在Xcode里，选择Assets.xcassets，并在图中区域右击，选择“Color Set”：</p>
+
+<p><img src="/assets/images/20210408233250839.png" alt="" /></p>
+
+<p>然后出现下图：</p>
+
+<p><img src="/assets/images/20210408233546748.png" alt="" /></p>
+
+<p>这样可以在右边侧栏的设置里设定该颜色集的相关属性和颜色：</p>
+
+<p>Color Set：这里是Color Set（颜色集）相关属性。</p>
+
+<p>Name：自定义该颜色的名字，例如greenBlue。
+Devices：使用该颜色的设备，一般选择Universal（通用）就可以了。
+Appearances：这里面有“None”、“Any，Dark”和“Any，Light，Dark”三个选项，推荐选择“Any，Dark”就可以了。因为第三个的Any和Light的颜色设置应该是一样的。“Any Appearance”就是通用模式（包含了Light Mode）下显示的颜色，“Dark Appearance”就说设备设置为Dark Mode下显示的颜色。
+High Contrast：高对比度，这个设置一般UI设计用不到，一般用在图像处理。选择这个会让你设置四个颜色（luminosity意思是发光），如下：</p>
+
+<p><img src="/assets/images/20210409000657258.png" alt="" /></p>
+
+<p>Gamut：这里设置色彩范围/色域。可选为“Any”和“sRGB and Display P3”，一般选Any即可。
+Localization：本地化/本土化。这个选项是可以设置在不同语言环境下显示不同颜色。默认只有English，想要添加或者更改该选项，点击左边侧栏最上面项目文件，选择Info，如下图：</p>
+
+<p><img src="/assets/images/20210409001810941.png" alt="" /></p>
+
+<p>然后如图所示位置，可以更改Localization属性。</p>
+
+<p>Color：这里是定义颜色的部分。</p>
+
+<p>Content：这部分可以选择色域、颜色范围和一些系统自带的颜色。一般自定义颜色，选择“Display P3”。
+Input Method：如果Content选择色域或者范围，那么就会出现该属性。这里有“Floating point（0.0-1.0）”、“8-bit（0-255）”和“8-bit Hexadec”三个可选项，分别表示“浮点值（用0.0-1.0之间的值表示颜色的相关值）”、“8bit（用0-255表示颜色相关值）”和“十六进制表示法”。推荐“8-bit（0-255）”，因为很多网上的颜色都是用这种格式给的值，比较方便。
+使用“Color Set”的方法如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//假如设定背景为自定义的颜色————字符串为定义的Color Set的Name属性</span>
+<span class="o">.</span><span class="nf">background</span><span class="p">(</span><span class="kt">Color</span><span class="p">(</span><span class="s">"customColor"</span><span class="p">))</span>
+</code></pre></div></div>
+
+<p>或者</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// macOS</span>
+<span class="k">let</span> <span class="nv">aColor</span> <span class="o">=</span> <span class="kt">NSColor</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="kt">NSColor</span><span class="o">.</span><span class="kt">Name</span><span class="p">(</span><span class="s">"customColor"</span><span class="p">))</span>
+ 
+<span class="c1">// iOS</span>
+<span class="k">let</span> <span class="nv">aColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="s">"customColor"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>​</p>
+
+        </div>
+    </body>
+</html>
