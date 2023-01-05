@@ -20,7 +20,7 @@
 /* 针对标题，不要让间隙过大 */
 h1
 {
-    font-size: 1.5em;
+    font-size: 1.8em;
     margin: 2.1em 0;
     margin-bottom: 0;
     line-height: 1.33
@@ -69,7 +69,8 @@ img {
 code
 {
     font-size: 1em;
-    color: #666;
+    color: #ba4746;
+    background-color: rgba(0, 0, 0, .05);
     padding: 2px 4px
 }
 

@@ -3,3 +3,4 @@ destination: docs
 collections:
   blogs:
     output: true
+

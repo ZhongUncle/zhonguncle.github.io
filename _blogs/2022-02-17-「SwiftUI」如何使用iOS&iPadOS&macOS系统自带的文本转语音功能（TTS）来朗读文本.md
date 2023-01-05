@@ -1,0 +1,31 @@
+---
+layout: article
+category: SwiftUI
+---
+<!-- excerpt-start -->
+作为独立开发者，有些时候需要大量读音的时候，就可以使用一些语音合成技术，虽然讯飞、谷歌的语音合成技术似乎更好一点，但是需要联网从云端获取，这有时候会影响软件的效率和成本。好在iOS自带语音合成技术，支持的语言包括各个地区口音的英语、中文（普通话）、日语、法语等。
+
+在SwiftUI中使用非常滴方便，如下（我这是为了演示，用的时候可以写一个函数，别像我这么写）：
+```swift
+import SwiftUI
+import AVFoundation
+
+struct ContentView: View {
+    var body: some View {
+        Button("Play Voice", action: {
+			//需要阅读的文本
+            let utterance = AVSpeechUtterance(string: "你好")
+            //指定发音
+            utterance.voice = AVSpeechSynthesisVoice(language: "zh-CN")
+            //控制速度
+            utterance.rate = 0.4
+
+            let synthesizer = AVSpeechSynthesizer()
+            synthesizer.speak(utterance)
+        })
+    }
+}
+```
+指定发音部分的语言代码可以查阅这个网址：[http://www.lingoes.cn/zh/translator/langcode.htm](http://www.lingoes.cn/zh/translator/langcode.htm)
+
+**需要注意的是，控制速率的部分可能会修改了代码没有变化，有时候关闭Xcode重开还是一样，但是久一点就又好了。。。**
