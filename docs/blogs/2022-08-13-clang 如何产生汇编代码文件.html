@@ -1,0 +1,61 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>clang 如何产生汇编代码文件</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+</div>
+            <h1>clang 如何产生汇编代码文件</h1>
+            <div class="bloginfo">
+                <p class="info">2022-08-13 ｜ <a href="/unix.html"> UNIX</a> ｜ 207 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>有时候为了学习或者调试，需要查看程序的汇编代码。这在很多 GUI 的 IDE 中很方便实现，例如在 Xcode 中，点击“Product”-“Perform Action”-“Assemble 文件名”就可以，如下：
+<img src="/assets/images/93db5877530445b2a632510ff74b7bfc.png" alt="请添加图片描述" /></p>
+
+<p>那么在终端中呢？</p>
+
+<p>首先写一个 C 源码文件 test.c。内容如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"hello world!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>然后使用以下命令：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>cc <span class="nt">-S</span> test.c
+</code></pre></div></div>
+<p>这时候会产生一个名为test.s的文件，里面就是汇编语言，如下：
+<img src="/assets/images/bc699ec23ca04c13b43fce463aa2ef2b.png" alt="请添加图片描述" /></p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

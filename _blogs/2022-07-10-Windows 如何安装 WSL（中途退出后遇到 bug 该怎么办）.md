@@ -4,7 +4,7 @@ category: UNIX
 title: Windows 如何安装 WSL（中途退出后遇到 bug 该怎么办）
 ---
 <!-- excerpt-start -->
-适用于 Linux 的 Windows 子系统，被简称为WSL。安装方式很简单。
+适用于 Linux 的 Windows 子系统，被简称为WSL，安装方式很简单。但是 WSL 还是不如原生的 Linux，只能某些时候临时用一下。
 
 如果你是第一次安装，打开Windows PowerShell（推荐使用Windows Termianl，可以使用商店下载安装），输入以下命令会自动安装Ubuntu：
 
@@ -17,7 +17,9 @@ wsl --install
 ```bash
 wsl --list --online
 ```
+
 结果如下：
+
 ```bash
 以下是可安装的有效分发的列表。
 请使用“wsl --install -d <分发>”安装。

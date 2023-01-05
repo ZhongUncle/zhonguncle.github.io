@@ -1,7 +1,7 @@
 ---
 layout: article
 category: SwiftUI
-title: iOS 15 新版Animation制作动画介绍
+title: 「SwiftUI」iOS 15 新版Animation制作动画介绍
 ---
 <!-- excerpt-start -->
 从iOS 15.0开始，苹果废弃了之前的`.animation(Animation?)`，建议开发者使用`.animation(Animation?, value: Equatable)`或者`withAnimation`替代。

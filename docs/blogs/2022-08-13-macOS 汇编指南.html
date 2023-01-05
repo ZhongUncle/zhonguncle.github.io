@@ -1,0 +1,301 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>macOS 汇编指南</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+</div>
+            <h1>macOS 汇编指南</h1>
+            <div class="bloginfo">
+                <p class="info">2022-08-13 ｜ <a href="/unix.html"> UNIX</a> ｜ 3836 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>现在很多汇编的学习资料、途径和工具都是关于 Windows 下的，所以这里来介绍一下 macOS 上学习使用汇编需要的资料和工具。</p>
+
+<p>本文持续更新中，也是作为个人笔记来使用的。</p>
+
+<h2 id="为什么需要学习汇编使用途径">为什么需要学习汇编（使用途径）</h2>
+<p>汇编是计算机的“魔法”，虽然做个只会高级语言的“战士”也可以，但是当给“武器”附魔之后，战斗力也会大大增加（当然也有“玩火自焚”的）。</p>
+
+<p>在现代，学习汇编之后的<strong>使用途径</strong>有几种：</p>
+
+<ul>
+  <li>直接用汇编指令写程序的代码，然后使用汇编器（Assembler）汇编成程序（这种学习的过程中可能使用比较多，在实际情况下很少用，因为太复杂了）。</li>
+  <li>用在 C 语言代码中，提高性能和速度，或者实现一些特别的功能。例如 UNIX 和 Linux 中的汇编代码就是为了提高运行速度，不然完全可以用纯 C 语言写出来；还有苹果不让开发者 iOS 平台获取 CPU 频率之后，一些开发者通过在 Objective-C 代码中使用汇编指令来推测频率。</li>
+</ul>
+
+<blockquote>
+  <p>注1：不过苹果后来加了转换，让推测的结果很不准，让这种 app 彻底完犊子了。
+注2：Objective-C 是 C 语言的一个超集，就像 C++ 也是 C 语言的一个超集，它们都属于 C 语言家族。在苹果推出 Swift 之前，苹果平台的开发全靠 Objective-C。</p>
+</blockquote>
+
+<ul>
+  <li>能看懂反编译出来的内容（这种一般常规程序员用不到）。</li>
+</ul>
+
+<p>不过在现在，汇编并不是编程的门槛，而是通往高手的必修课。但是新手还是建议先学会 C 语言再接触汇编（这里的学会是指能看明白各种结构即可）。</p>
+
+<h2 id="相关资料推荐">相关资料推荐</h2>
+<p>在现在各种高级语言、脚本语言遍地开花的今天，汇编语言越来越不受欢迎，因为繁琐、复杂，学习成本极高。例如， Intel CPU 开发手册就有 5000 页（每次发新的 CPU 之后都会更新，或增或减）。</p>
+
+<p>第一个推荐的是苹果官方的汇编指南：《Mac OS X Assembler Guide》，下载地址在<a href="http://personal.denison.edu/~bressoud/cs281-s07/Assembler.pdf">这里</a>。
+这本指南包含了 Mac OS X 汇编器<code class="language-plaintext highlighter-rouge">as</code>的使用，汇编指令和地址模式的介绍等内容。
+需要注意的是，它不光包括了 Intel CPU 的汇编内容，还包括更早期的 Power PC 的汇编内容。
+但是由于该指南最新版本是 2005 年的，Intel 的指令有了巨大的更新，例如 AVX 等。并且苹果也已经在转向自己的 M1 芯片了（有意思的是，OS X 的汇编器手册最新更新时间是 2020 年6月23日，而这就是 M1 更新的日子，不知道苹果会不会在稳定之后再次更新）。</p>
+
+<p>第二个推荐的是 Intel 的 <a href="https://www.intel.com/content/dam/develop/external/us/en/documents/introduction-to-x64-assembly-181178.pdf">《Introduction to x64 Assembly》</a>，这是一篇汇编快速入门。新手可以看看，干货浓度极高。</p>
+
+<p>第三个是：Intel 的开发手册。
+这个手册虽然很长，但是一个很不错的资料，而且更新频率很高，如果需要了解新的 Intel 指令，那么这就是必须要看的了。所以这篇属于经常需要翻阅的。当然如果想见识见识也可以看看。链接是：<a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">Intel 64 和 IA-32 处理器相关的文档</a>
+可以直接<a href="https://cdrdv2.intel.com/v1/dl/getContent/671200">下载合订本</a>当作存档，不过这样不方便阅读。（关于这个，曾经 Intel 可以免费提供纸质版，只要你发邮件提供地址即可，有不少人定，不过大多都垫了显示器或者吃灰了。现在 Intel 不提供这个福利了，挺可惜的）
+第一卷是一些大致的介绍，以及 Intel CPU 发展历程和区别，如果是初学者可以瞅瞅；第二卷开始就是指令的介绍了。第2卷的日常使用率比较高，需要经常查阅。<strong>具体区别在之前的<a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">链接</a>中的界面可以看到。</strong></p>
+
+<p>这里需要注意的是，虽然常说 Intel 挤牙膏，但是 Intel 几乎每一代都会有指令、寄存器的更新和更改。所以文档的更新频率比较高，如果你需要使用最新的指令，那么请及时更新自己存储的文档。</p>
+
+<p>第四个是一组关于 ARM 汇编的文档。
+首先因为 Mac 现在以及转向自研的 M1 芯片了，M1 芯片是 ARM 架构的。
+其次因为 ARM 现在并不像 Intel 一样提供了汇编指南<a href="https://developer.arm.com/documentation/dui0068/b">《ARM ® DeveloperSuite Assembler Guide
+Version 1.2》</a>（这篇指南最新的b版本是2001年的），而是分散开了。如果想入门，阅读这本2001年的指南即可。
+如果想深入了解最新的指令，那么查看这里<a href="https://developer.arm.com/architectures/instruction-sets">https://developer.arm.com/architectures/instruction-sets</a>。</p>
+
+<h2 id="汇编器以及实用工具介绍">汇编器以及实用工具介绍</h2>
+
+<blockquote>
+  <p>汇编器（Assembler）和编译器（Complier）是不同的。如果搞不明白的话，可以简单理解成汇编器是将汇编指令转换成程序的；编译器是将高级语言的代码（例如 C/C++、Java 等的代码）转换成程序的。</p>
+</blockquote>
+
+<p>这里介绍一下汇编器以及可能用得到的实用工具们（包括编辑器）。</p>
+
+<h3 id="as">as：</h3>
+<p>Mac OS X 的汇编器，需要在“终端”中使用，类似于 Windows 的 masm。支持 Intel 处理器的汇编以及 Power PC 处理器的汇编。放在<code class="language-plaintext highlighter-rouge">/usr/bin/as</code>目录下。在《Mac OS X Assembler Guide》中有使用方法的介绍。</p>
+
+<h3 id="ld">ld：</h3>
+<p>连接器。</p>
+
+<h3 id="clang">clang:</h3>
+<p>clang 有个状态就是汇编器，而且可以 C 语言等代码预处理成汇编语言代码，详细操作请看这里<a href="https://blog.csdn.net/qq_33919450/article/details/124358476">《clang 如何产生汇编代码文件》</a>。使用 clang 可能对你更方便，不过需要自己判断了。</p>
+
+<h3 id="gcc">gcc:</h3>
+<p>gcc 和 clang具体区别这里不赘述，gcc 有个选项：<code class="language-plaintext highlighter-rouge">-nostartfiles</code>，使用这个命令可以直接忽略被链接的标准库文件和初始化行为。这是因为有时候会出现不需要连接 C 标准库，直接汇编即可，那么就需要这样。最后会有相关演示。</p>
+
+<h3 id="size">size:</h3>
+<p>输出对象文件的各部分大小，如下：</p>
+
+<p><img src="/assets/images/e3de2338d8054a01b7be017cc5fe5880.png" alt="请添加图片描述" /></p>
+
+<h3 id="otool">otool：</h3>
+<p>查看某部分大小和内容，类似 Windows 中的 debug.exe。例如查看<code class="language-plaintext highlighter-rouge">__TEXT,__text</code>部分的内容：</p>
+
+<p><img src="/assets/images/03f673d8ac154d5fa4f67be59e28b960.png" alt="请添加图片描述" /></p>
+
+<p>我们也可以使用<code class="language-plaintext highlighter-rouge">otool</code>来查看其他部分的内容，用以下命令格式：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ otool -v -s __TEXT __cstring a.out
+a.out:
+Contents of (__TEXT,__cstring) section
+0000000000000025  hello world!\n
+</code></pre></div></div>
+
+<h3 id="clang-或-gcc">clang 或 gcc：</h3>
+<p>Mac OS X 上，默认的 C、C++、Objective-C 编译器。如果在“终端”里使用命令<code class="language-plaintext highlighter-rouge">cc</code>，那么会调用 clang，而不是 gcc。</p>
+
+<h3 id="xcode">Xcode：</h3>
+<p>苹果自己的 IDE，有图形界面，也有一些终端命令行工具，可以编写 C、C++、Objective-C 和 Swift 语言的程序。可以利用 Xcode 来编写含有汇编代码的程序和 App。</p>
+
+<p><img src="/assets/images/ecd23a611ef7430eb8c667d0e9676718.png" alt="请添加图片描述" /></p>
+
+<h2 id="语法区别">语法区别</h2>
+<p>很多人可能对汇编有所了解，但可能都是基于 Windows 的。但是在 Mac OS X 或者 C 语言（这里 C 语言编译器是 clang）内嵌汇编语言的语法中是不一样的，这里来说一下：</p>
+<h3 id="1-寄存器写法">1. 寄存器写法</h3>
+<p>事先声明一下，如果不是用<code class="language-plaintext highlighter-rouge">as</code>汇编，而是在 C 语言中或者其他情况下使用 clang 或者 gcc 来处理，那么不用管这条内容。
+在 Windows 和 C 的汇编语法中，寄存器的名称是直接写的，例如<code class="language-plaintext highlighter-rouge">mov ax,2</code>。但是在<code class="language-plaintext highlighter-rouge">as</code>中，为了不与标识符（identifier，其实就是常说的变量）搞混，需要在寄存器前加上百分号<code class="language-plaintext highlighter-rouge">%</code>，例如<code class="language-plaintext highlighter-rouge">mov %ax,2</code>。并且所有的寄存器都得写成<strong>小写字母</strong>，不能像 Windows 或 C 里一样不分大小写。</p>
+
+<h3 id="十六进制写法">十六进制写法</h3>
+<p>在 Windows 中，十六进制被写成以<code class="language-plaintext highlighter-rouge">H</code>或<code class="language-plaintext highlighter-rouge">h</code>结尾的，例如<code class="language-plaintext highlighter-rouge">5c0dH</code>。但是在 Mac OS X 中，需要写成<code class="language-plaintext highlighter-rouge">0x</code>开头的，例如<code class="language-plaintext highlighter-rouge">0x1234</code>。而在 C 语言中，二者皆可。</p>
+
+<h2 id="来用汇编写一个-hello-world-吧">来用汇编写一个 Hello World 吧！</h2>
+
+<h3 id="写代码">写代码</h3>
+<p>最后会给出完整代码，现在先分步讲解。</p>
+
+<p>首先新建一个名为<code class="language-plaintext highlighter-rouge">helloworld.s</code>的文件，汇编代码文件的后缀一般是<code class="language-plaintext highlighter-rouge">.asm</code>或者<code class="language-plaintext highlighter-rouge">.s</code>。这时候就可以来写第一部分的内容啦。
+先是需要指明第一部分是——<strong>可执行命令</strong>：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.section	__TEXT,__text,regular,pure_instructions
+</code></pre></div></div>
+<p>然后指明创建的目标平台：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.build_version macos, 12, 0	sdk_version 12, 1
+</code></pre></div></div>
+
+<p>然后新建一个外部符号名称<code class="language-plaintext highlighter-rouge">_main</code>用作程序的入口，就像 C 语言程序必须要有<code class="language-plaintext highlighter-rouge">main()</code>函数一样。注意这里的下划线不可以省略。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.globl	_main                           ## -- Begin function main
+</code></pre></div></div>
+<p>然后使用对齐（align）命令将位置计数器移到下一个边界<code class="language-plaintext highlighter-rouge">4, 0x90</code>（一般来说都是地址）。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.p2align	4, 0x90
+</code></pre></div></div>
+<p>然后我们就可以开始写<code class="language-plaintext highlighter-rouge">_main</code>部分包含的内容啦，也就是开始写<code class="language-plaintext highlighter-rouge">main()</code>函数了：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_main:                                  ## @main
+	.cfi_startproc					 ##表示函数的开头。会初始化一些内部的数据结构，发出架构依赖的初始CFI 指令
+## %bb.0:
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset %rbp, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register %rbp
+	subq	$16, %rsp
+	movl	$0, -4(%rbp)
+	leaq	L_.str(%rip), %rdi
+	movb	$0, %al
+	callq	_printf
+	xorl	%eax, %eax
+	addq	$16, %rsp
+	popq	%rbp
+	retq
+	.cfi_endproc				##结束函数
+</code></pre></div></div>
+
+<p>这部分包含一些 cfi 相关的指令，可以在这里看到：<a href="https://web.mit.edu/rhel-doc/3/rhel-as-en-3/cfi-directives.html">https://web.mit.edu/rhel-doc/3/rhel-as-en-3/cfi-directives.html</a>
+此外，CFA是规范框架地址（Canonical Frame Address），相关资料可以看这里：<a href="https://www.keil.com/support/man/docs/armasm/armasm_dom1361290010153.htm">
+https://www.keil.com/support/man/docs/armasm/armasm_dom1361290010153.htm</a></p>
+
+<p>接下来开始第二部分——<strong>可执行命令包含的字符串</strong>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.section	__TEXT,__cstring,cstring_literals
+L_.str:                                 ## @.str
+	.asciz	"hello world!\n"
+</code></pre></div></div>
+<p>这里就是准备输出的字符串：<code class="language-plaintext highlighter-rouge">hello world!\n</code>了。
+如果这里使用的是<code class="language-plaintext highlighter-rouge">.ascii</code>命令，那么这行应该改成<code class="language-plaintext highlighter-rouge">.asciz	"hello world!\n\0"</code>。
+因为<code class="language-plaintext highlighter-rouge">.asciz</code>自动补上了字符串末尾的<code class="language-plaintext highlighter-rouge">\0</code>，如果被用于 C 程序的话，就使用这个。</p>
+
+<p>最后我们可以加上这么一行：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.subsections_via_symbols
+</code></pre></div></div>
+<p>这行命令会告诉静态连接编辑器，这部分对象文件（object file）能被分割成几块。不过这里用不用无所谓，不影响结果。但是出于严谨可以加上。</p>
+
+<p>完整代码如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	.section	__TEXT,__text,regular,pure_instructions
+	.build_version macos, 12, 0	sdk_version 12, 1
+	.globl	_main                           ## -- Begin function main
+	.p2align	4, 0x90
+_main:                                  ## @main
+    .cfi_startproc                     ## 表示函数的开头。会初始化一些内部的数据结构，发出架构依赖的初始CFI 指令
+## %bb.0:
+    pushq    %rbp
+    .cfi_def_cfa_offset 16
+    .cfi_offset %rbp, -16
+    movq    %rsp, %rbp
+    .cfi_def_cfa_register %rbp
+    subq    $16, %rsp
+    movl    $0, -4(%rbp)
+    leaq    L_.str(%rip), %rdi
+    movb    $0, %al
+    callq    _printf
+    xorl    %eax, %eax
+    addq    $16, %rsp
+    popq    %rbp
+    retq
+    .cfi_endproc                ## 结束函数
+	.section	__TEXT,__cstring,cstring_literals
+L_.str:                                 ## @.str
+	.asciz	"hello world!\n"
+
+.subsections_via_symbols
+
+</code></pre></div></div>
+
+<h3 id="汇编成可执行文件">汇编成可执行文件</h3>
+<p>在 Windows 中，现在主流的可执行文件的格式是 PE（Portable Executable File Format），而其中的“Executable”缩写就是很多人熟知的 EXE。在 macOS 中，可执行文件被称为<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。
+如果使用<code class="language-plaintext highlighter-rouge">file</code>命令来查看一个可执行文件的话就可以看到，这里我们查看 Xcode：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 可执行文件
+$ file /Applications/Xcode.app/Contents/MacOS/Xcode 
+Xcode: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64:Mach-O 64-bit executable arm64]
+Xcode (for architecture x86_64):	Mach-O 64-bit executable x86_64
+Xcode (for architecture arm64):	Mach-O 64-bit executable arm64
+</code></pre></div></div>
+<p>所以最终目标是要把<code class="language-plaintext highlighter-rouge">hello.s</code>这个汇编文件，“变”成一个<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。</p>
+
+<p>这里有两种方法：</p>
+<h4 id="方法-1">方法 1</h4>
+<p>由于这个程序十分简单，也没有链接特殊的库，可以直接使用以下命令来：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -nostartfiles helloworld.s
+$ chmod 755 a.out
+$ file a.out 
+a.out: Mach-O 64-bit executable x86_64
+</code></pre></div></div>
+<p>这时候可以看到，<code class="language-plaintext highlighter-rouge">a.out</code>便是需要的<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。
+运行一下看看：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./a.out 
+hello world!
+</code></pre></div></div>
+<p>非常不错。</p>
+
+<h4 id="方法-2">方法 2</h4>
+<p>这种方法是常规做法，首先使用<code class="language-plaintext highlighter-rouge">as</code>来汇编代码，并且修改权限：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ as hello.s
+$ chmod 755 a.out 
+</code></pre></div></div>
+<p><strong>这里需要注意一点，<code class="language-plaintext highlighter-rouge">as</code>生成的是 Mach-O 对象文件（Mach-O object file），而不是<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>，是不能直接运行的，如果直接运行会提示<code class="language-plaintext highlighter-rouge">cannot execute binary file</code>。在 Windows 中，对象文件被称为 COFF（Common Object File Format）。</strong></p>
+
+<p>这时候需要使用连接器<code class="language-plaintext highlighter-rouge">ld</code>来处理对象文件。但是，如果简单的使用<code class="language-plaintext highlighter-rouge">ld </code>会出现以下情况：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ld a.out
+Undefined symbols for architecture x86_64:
+  "_printf", referenced from:
+      _main in a.out
+ld: symbol(s) not found for architecture x86_64
+</code></pre></div></div>
+<p>这是因为使用了 C 标准库的<code class="language-plaintext highlighter-rouge">_printf</code>，但是<code class="language-plaintext highlighter-rouge">ld</code>默认搜不到。所以加上库地址就可以，如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ld a.out -o hello -lSystem -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
+</code></pre></div></div>
+<p><strong>特别注意！一般<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>是不加任何后缀的。</strong>
+这时候得到的<code class="language-plaintext highlighter-rouge">hello</code>便是需要的<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。使用<code class="language-plaintext highlighter-rouge">file</code>命令来检查一下：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ file hello
+hello: Mach-O 64-bit executable x86_64
+</code></pre></div></div>
+<p>然后运行一下看看：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./hello
+hello world!
+</code></pre></div></div>
+<p>运行完美～</p>
+
+<h2 id="结尾">结尾</h2>
+<p>本文还会时不时更新一下，修改一些问题，添加一些内容。</p>
+
+<p>总之，希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
