@@ -68,7 +68,7 @@ img {
 /* 代码样式 */
 code
 {
-    font-size: 1em;
+    font-size: 0.8em;
     color: #ba4746;
     background-color: rgba(0, 0, 0, .05);
     padding: 2px 4px
@@ -76,6 +76,7 @@ code
 
 /* 代码部分的灰色背景 */
 pre>code {
+    font-size: 1em;
     color: #111;
     background-color: rgba(0, 0, 0, .05);
     display: block;

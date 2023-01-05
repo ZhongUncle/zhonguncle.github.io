@@ -47,4 +47,3 @@ var height: CGFloat = UIScreen.main.nativeBounds.height
 |-|-|-|
 | width | 375 |	812 |
 | height | 1125 | 2436 |
-​

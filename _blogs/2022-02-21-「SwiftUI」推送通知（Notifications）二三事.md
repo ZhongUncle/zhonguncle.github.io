@@ -17,6 +17,7 @@ title: 「SwiftUI」推送通知（Notifications）二三事
 首先来讲述一下最基础的推送，也是最常用的。样式如下：
 
 ![请添加图片描述](/assets/images/b98af0a25c2b49049246400ad2045c34.png)
+
 代码如下：
 
 ```swift
