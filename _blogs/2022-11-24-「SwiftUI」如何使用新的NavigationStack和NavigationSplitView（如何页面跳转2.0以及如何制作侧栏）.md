@@ -1,6 +1,7 @@
 ---
 layout: article
 category: SwiftUI
+title: 「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）
 ---
 <!-- excerpt-start -->
 从 iOS 16 开始，苹果开始弃用原先的`NavigationView`，以后会逐渐完全淘汰掉。现在开始使用`NavigationStack`和`NavigationSplitView`。`NavigationStack`的效果和原本的`NavigationView`一样，而`NavigationSplitView`则和现在 iPadOS 上的`NavigationView`效果一样。

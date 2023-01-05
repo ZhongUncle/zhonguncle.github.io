@@ -1,6 +1,7 @@
 ---
 layout: article
 category: SwiftUI
+title: 「SwiftUI」UIDevice的一些属性（设备系统名称以及电池电量）
 ---
 <!-- excerpt-start -->
 UIDevice是获取设备信息的一个API。

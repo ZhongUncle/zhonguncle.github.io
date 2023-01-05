@@ -1,6 +1,7 @@
 ---
 layout: article
 category: SwiftUI
+title: 「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)
 ---
 <!-- excerpt-start -->
 ​

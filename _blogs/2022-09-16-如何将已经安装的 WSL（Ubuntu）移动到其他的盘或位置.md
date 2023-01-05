@@ -1,6 +1,7 @@
 ---
 layout: article
 category: UNIX
+title: 如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置
 ---
 <!-- excerpt-start -->
 随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“**无法移动**”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。

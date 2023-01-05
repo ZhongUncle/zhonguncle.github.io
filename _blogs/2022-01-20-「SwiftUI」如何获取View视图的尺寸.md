@@ -1,6 +1,7 @@
 ---
 layout: article
 category: SwiftUI
+title: 「SwiftUI」如何获取View视图的尺寸
 ---
 <!-- excerpt-start -->
 我们可能在一些情况下需要获取SwiftUI的一个View的尺寸，我们可以用以下方法获取：

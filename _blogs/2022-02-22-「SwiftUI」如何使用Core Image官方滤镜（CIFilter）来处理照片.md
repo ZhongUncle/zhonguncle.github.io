@@ -1,6 +1,7 @@
 ---
 layout: article
 category: SwiftUI
+title: 「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片
 ---
 <!-- excerpt-start -->
 苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：[Core Image Filter Reference](https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorClamp)

@@ -1,6 +1,7 @@
 ---
 layout: article
 category: SwiftUI
+title: 「SwiftUI」关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案
 ---
 ## 前言
 <!-- excerpt-start -->
