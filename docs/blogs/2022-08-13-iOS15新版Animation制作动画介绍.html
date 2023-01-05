@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>iOS 15 新版Animation制作动画介绍</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+</div>
+            <h1>iOS 15 新版Animation制作动画介绍</h1>
+            <div class="bloginfo">
+                <p class="info">2022-08-13 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 2019 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>从iOS 15.0开始，苹果废弃了之前的<code class="language-plaintext highlighter-rouge">.animation(Animation?)</code>，建议开发者使用<code class="language-plaintext highlighter-rouge">.animation(Animation?, value: Equatable)</code>或者<code class="language-plaintext highlighter-rouge">withAnimation</code>替代。</p>
+
+<p>个人感觉改版之后虽然可能有些不习惯，但是开发的可能性和自由度更大了。</p>
+
+<p>但是在讲二者区别之前，我们需要了解一下UI动画。如果你了解这部分可以跳过。</p>
+<h2 id="何为动画">何为动画</h2>
+<p>动画是由各种位移、颜色变化、大小变化等属性变化的过程。
+具体到SwiftUI的View，就是它们的<code class="language-plaintext highlighter-rouge">.offset</code>、<code class="language-plaintext highlighter-rouge">.foregroundColor</code>、<code class="language-plaintext highlighter-rouge">.frame</code>等属性逐渐变化的时候产生的效果。
+但是如果你直接改变变量，属性会直接变化，非常生硬，这不能被称为动画。苹果提供了非常简单的实现过度动画的办法，那就是<code class="language-plaintext highlighter-rouge">.animation</code>。</p>
+
+<p><strong>可以理解成我们设定好关键帧，然后设置中间帧就可以做出动画啦！</strong></p>
+
+<h2 id="不同样式的过度动画中间帧">不同样式的过度动画（中间帧）</h2>
+<p>苹果提供了很简单的方式，但是或许是太简单了，就没有人详细说说这个。</p>
+
+<p>首先动画运动节奏也分很多种，例如缓进缓出、匀速运动等，所以这里介绍一下苹果提供的几种模式（如果是<code class="language-plaintext highlighter-rouge">nil</code>就是无动画）：</p>
+
+<p><img src="/assets/images/56dff93f681c4d97a7b889fac62f84a0.gif" alt="请添加图片描述" /></p>
+
+<p><strong>具体的代码后面会列出来，因为有一个特性这里还没提，所以这里先不列出代码。</strong></p>
+
+<h2 id="新旧版本不同之处">新旧版本不同之处</h2>
+<p>现在我们具体说明一下<code class="language-plaintext highlighter-rouge">.animation(Animation?，)</code>和<code class="language-plaintext highlighter-rouge">.animation(Animation?, value: Equatable)</code>二者之间的不同之处。
+老版的<code class="language-plaintext highlighter-rouge">.animation(Animation?)</code>是放在需要运动或者改变的View下面，当View改变的时候，出现过渡动画，过渡动画包括运动、样式、颜色等属性。
+新版<code class="language-plaintext highlighter-rouge">.animation(Animation?, value: Equatable)</code>比老版多了一个参数，那就是<code class="language-plaintext highlighter-rouge">value</code>。
+这个参数<code class="language-plaintext highlighter-rouge">value</code>的作用是当这个值发生改变的时候，才会出现应用我们指定的过度动画，过渡动画也包括运动、样式、颜色等属性。如果View的其他属性发生变化，则不会出现动画。
+所以上面那个动画的代码如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">AnimationView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">offsetX</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="mi">150</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">VStack</span> <span class="p">{</span>
+            <span class="kt">VStack</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">".default（默认）"</span><span class="p">)</span>
+                <span class="kt">Rectangle</span><span class="p">()</span>
+                    <span class="o">.</span><span class="nf">frame</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">30</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">offset</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+                    <span class="cm">/* 如果是`nil`就是无动画 */</span>
+                    <span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="k">default</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                
+                <span class="kt">Text</span><span class="p">(</span><span class="s">".linear（匀速）"</span><span class="p">)</span>
+                <span class="kt">Rectangle</span><span class="p">()</span>
+                    <span class="o">.</span><span class="nf">frame</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">30</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">offset</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="n">linear</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                
+                <span class="kt">Text</span><span class="p">(</span><span class="s">".easeIn（开头缓慢，逐渐加速）"</span><span class="p">)</span>
+                <span class="kt">Rectangle</span><span class="p">()</span>
+                    <span class="o">.</span><span class="nf">frame</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">30</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">offset</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="n">easeIn</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                
+                <span class="kt">Text</span><span class="p">(</span><span class="s">".easeOut（结尾逐渐减速，缓慢结束）"</span><span class="p">)</span>
+                <span class="kt">Rectangle</span><span class="p">()</span>
+                    <span class="o">.</span><span class="nf">frame</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">30</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">offset</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="n">easeOut</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                
+                <span class="kt">Text</span><span class="p">(</span><span class="s">".easeInOut（缓出缓进，上面的融合体）"</span><span class="p">)</span>
+                <span class="kt">Rectangle</span><span class="p">()</span>
+                    <span class="o">.</span><span class="nf">frame</span><span class="p">(</span><span class="nv">width</span><span class="p">:</span> <span class="mi">30</span><span class="p">,</span> <span class="nv">height</span><span class="p">:</span> <span class="mi">30</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">offset</span><span class="p">(</span><span class="nv">x</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="n">easeInOut</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+            <span class="p">}</span>
+            
+            <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                <span class="n">offsetX</span> <span class="o">=</span> <span class="o">-</span><span class="mi">150</span>
+            <span class="p">},</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
+                <span class="kt">Text</span><span class="p">(</span><span class="s">"开始运动"</span><span class="p">)</span>
+                    <span class="o">.</span><span class="nf">padding</span><span class="p">()</span>
+                    <span class="o">.</span><span class="nf">overlay</span><span class="p">(</span>
+                        <span class="kt">RoundedRectangle</span><span class="p">(</span><span class="nv">cornerRadius</span><span class="p">:</span> <span class="mi">15</span><span class="p">)</span>
+                            <span class="o">.</span><span class="nf">stroke</span><span class="p">(</span><span class="nv">lineWidth</span><span class="p">:</span> <span class="mi">3</span><span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="p">})</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>但是由于这个<code class="language-plaintext highlighter-rouge">value</code>，我们只能当这个值发生变化的时候才能有动画，那么如果我们需要在观察到几个值当中的某一个发生变化就有动画的话，那该怎么办呢？</p>
+
+<p>如果你要观察的值是同一个类型的话，那么可以使用数组，例如<code class="language-plaintext highlighter-rouge">[offsetX, offsetY]</code>，这样的话就相当于观察这个数组有没有变化了，只要有一个值发生变化，那么数组就会变化。这样可以达到我们需要的效果。</p>
+
+<h2 id="需要观察多个值该怎么办">需要观察多个值该怎么办</h2>
+<p>如果需要观察的值不是同一个类型的，例如我们要观察位移和颜色，一个是<code class="language-plaintext highlighter-rouge">CGFloat</code>类型，一个是<code class="language-plaintext highlighter-rouge">Color</code>类型。这样就很麻烦了。所以这里列举有几个解决方案，以防在某种情况下，某种方法会更加麻烦：</p>
+
+<p><strong>第一种：</strong>
+可以搞个数据结构，然后观察数据。或许某种情况你用这种方法很方便，
+首先新建一个结构体，协议是<code class="language-plaintext highlighter-rouge">Equatable</code>，如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">Test</span><span class="p">:</span> <span class="kt">Equatable</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">offsetX</span><span class="p">:</span> <span class="kt">CGFloat</span>
+    <span class="k">var</span> <span class="nv">color</span><span class="p">:</span> <span class="kt">Color</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>然后是View部分：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="k">default</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="kt">Test</span><span class="p">(</span><span class="nv">offsetX</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">,</span> <span class="nv">color</span><span class="p">:</span> <span class="n">color</span><span class="p">))</span>
+</code></pre></div></div>
+<p>这种方法相对来说通用一些，而且可以观察多次变化，就是有点麻烦。</p>
+
+<p><strong>第二种：</strong>
+由于<code class="language-plaintext highlighter-rouge">value</code>是符合<code class="language-plaintext highlighter-rouge">Equatable</code>协议的，也就是说这里的<code class="language-plaintext highlighter-rouge">value</code>其实是个<code class="language-plaintext highlighter-rouge">Bool</code>值，我们虽然写作<code class="language-plaintext highlighter-rouge">value: color</code>这种，但是实际上它是在判断这个值有没有发生变化，相当于<code class="language-plaintext highlighter-rouge">color == 之前的color</code>，通过这个来返回一个<code class="language-plaintext highlighter-rouge">Bool</code>值（很经典的C语言编程技巧，如果你熟悉C语言应该很容易就明白了）。
+但是我们不能直接放个<code class="language-plaintext highlighter-rouge">Bool</code>值在这，就想它必须出动画或者不出动画，那是不会的。<strong>它是必须要判断这个值有没有发生变化的。</strong>
+所以我们可以写成这样：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="k">default</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span> <span class="o">==</span> <span class="mi">150</span> <span class="o">&amp;&amp;</span> <span class="n">color</span> <span class="o">==</span> <span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+</code></pre></div></div>
+<p>这种方法的写法相对简单，但是由于只对比一个值，所以某些情况下可能不好用。</p>
+
+<h2 id="动画时间长度">动画时间长度</h2>
+<p>我们可以设置过渡动画的时长，来控制动画的快慢和节奏，这个很简单。老版本的可能很多人都会用，但是新版本由于官方没提，网上也没人说，所以这里讲一下。</p>
+
+<p>在动画样式的后面加个<code class="language-plaintext highlighter-rouge">(duration: 时长)</code>即可，时长的单位是<strong>秒</strong>。</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//这里表示动画时长为3秒</span>
+<span class="o">.</span><span class="nf">animation</span><span class="p">(</span><span class="o">.</span><span class="nf">linear</span><span class="p">(</span><span class="nv">duration</span><span class="p">:</span> <span class="mi">3</span><span class="p">),</span> <span class="nv">value</span><span class="p">:</span> <span class="n">offsetX</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="总结">总结</h2>
+<p>看到这里你应该就可以做出简单的动画啦，不过我还会写一些相关的概念、技巧的博客，来帮助需要的人。</p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
