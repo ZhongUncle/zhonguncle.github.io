@@ -24,6 +24,14 @@
             UNIX
         </a>
     
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
 </div>
         <div class="stackedit__html">
             <h1>介绍</h1>
@@ -33,6 +41,15 @@
 <h1>最新</h1>
 
 <ul>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/C%E8%AF%AD%E8%A8%80%E4%B8%AD%E5%87%BD%E6%95%B0main%E7%9A%84%E5%8F%82%E6%95%B0argc%E5%92%8Cargv%E6%98%AF%E4%BB%80%E4%B9%88.html">C语言中函数main的参数argc和argv是什么</a></h2>
+        <p class="info">2023-02-04 ｜ <a href="/unix.html"> UNIX</a> ｜ 1567 字</p>
+        
+        <p>
+在 Xcode 中新建一个 macOS 平台 Command Line Tool，使用 C 语言，会发现 main 带了两个参数：argc和argv。如下：
+</p>
+    </li>
     
     <li>
         <h2><a class="blog" href="/blogs/2022-11-24-%E3%80%8CSwiftUI%E3%80%8D%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%B0%E7%9A%84NavigationStack%E5%92%8CNavigationSplitView%EF%BC%88%E5%A6%82%E4%BD%95%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC2.0%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%BE%A7%E6%A0%8F%EF%BC%89.html">「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</a></h2>
@@ -148,6 +165,70 @@
         
         <p>
 适用于 Linux 的 Windows 子系统，被简称为WSL，安装方式很简单。但是 WSL 还是不如原生的 Linux，只能某些时候临时用一下。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-25-%E5%9C%A8Ubuntu%E6%9C%8D%E5%8A%A1%E5%99%A8%E4%B8%8A%EF%BC%8C%E5%AE%89%E8%A3%85%E5%92%8C%E4%BD%BF%E7%94%A8Nginx%E5%92%8CPHP7%EF%BC%8C%E4%BB%A5%E5%8F%8A%E9%83%A8%E5%88%86%E6%8E%92%E9%94%99%E6%96%B9%E6%B3%95.html">在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</a></h2>
+        <p class="info">2022-06-25 ｜ <a href="/web.html"> Web</a> ｜ 1779 字</p>
+        
+        <p>
+最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-16-Type-C%20%E6%8E%A5%E5%8F%A3%E4%B8%BA%E4%BB%80%E4%B9%88%E5%9C%A8%E4%B8%8D%E5%90%8C%E7%9A%84%E5%8D%8F%E8%AE%AE%E4%B8%8B%E5%B8%A6%E5%AE%BD%E4%B8%8D%E5%90%8C%EF%BC%88%E5%BC%95%E8%84%9A%E5%AE%9A%E4%B9%89%E3%80%81%E5%8D%8F%E8%AE%AE%E7%AD%89%EF%BC%89.html">Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）</a></h2>
+        <p class="info">2022-06-16 ｜ <a href="/research.html"> Research</a> ｜ 3445 字</p>
+        
+        <p>
+其实 Thunderbolt 3是一个扩展集解决方案，它包括了 USB 3.1（10Gbps），并在单个 Type-C 接口中增加了 40Gbps 的 Thunderbolt 3/4 和 DisplayPort 1.2，还有PCIe。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-12-%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%20Javascript%20%E8%8E%B7%E5%8F%96%20URL%20%E5%8F%82%E6%95%B0.html">如何使用 Javascript 获取 URL 参数</a></h2>
+        <p class="info">2022-06-12 ｜ <a href="/web.html"> Web</a> ｜ 934 字</p>
+        
+        <p>
+JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。
+所以分为两步：
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-09-Python%20%E8%A7%A3%E6%9E%90%E8%8E%B7%E5%8F%96%20URL%20%E5%8F%82%E6%95%B0%E4%BB%A5%E5%8F%8A%E4%BD%BF%E7%94%A8.html">Python 解析获取 URL 参数以及使用</a></h2>
+        <p class="info">2022-06-09 ｜ <a href="/web.html"> Web</a> ｜ 630 字</p>
+        
+        <p>
+Python 解析获取 URL 参数的步骤如下：
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-03-Python%20%E5%A6%82%E4%BD%95%E8%BE%93%E5%87%BA%E6%95%B0%E6%8D%AE.html">Python 如何输出数据</a></h2>
+        <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 2076 字</p>
+        
+        <p>
+输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的printf函数名中的f就是 formatted（被格式化）的意思，可以通过%d等换算符（conversions）来打印不同的数据类型。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-03-Python%20%E5%A6%82%E4%BD%95%E5%AF%B9%E6%96%87%E4%BB%B6%E8%AF%BB%E5%8F%96%E5%92%8C%E5%86%99%E5%85%A5.html">Python 如何对文件读取和写入</a></h2>
+        <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 915 字</p>
+        
+        <p>
+Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。
+</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2022-06-03-Python%20%E4%B8%AD%E7%9A%84%20try%E2%80%A6except%E2%80%A6finally%20%E8%AF%AD%E5%8F%A5.html">Python 中的 try…except…finally 语句</a></h2>
+        <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 170 字</p>
+        
+        <p>
+try…except…finally语句被用于处理错误，返回信息。格式如下：
 </p>
     </li>
     
