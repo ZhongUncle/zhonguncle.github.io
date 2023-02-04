@@ -1575,26 +1575,6 @@ hr {
     padding-left: 20px
 }
 
-table {
-    background-color: transparent;
-    border-collapse: collapse;
-    border-spacing: 0
-}
-
-td,
-th {
-    border-right: 1px solid #dcdcdc;
-    padding: 8px 12px
-}
-
-td:last-child,
-th:last-child {
-    border-right: 0
-}
-
-td {
-    border-top: 1px solid #dcdcdc
-}
 
 mark {
     background-color: #f8f840

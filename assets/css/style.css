@@ -85,3 +85,33 @@ pre>code {
     overflow-x: auto;
     white-space: pre
 }
+
+/* 表格 */
+table {
+    background-color: transparent;
+    border-collapse: collapse;
+    border-spacing: 0
+}
+
+td,
+th {
+    border-right: 1px solid #dcdcdc;
+    border-left: 1px solid #dcdcdc;
+    border-top: 1px solid #dcdcdc;
+    border-bottom: 1px solid #dcdcdc;
+    padding: 8px 12px
+}
+
+/* 头行颜色 */
+thead {
+    background-color: #BEC0BF
+}
+
+/* 隔行颜色 */
+tbody>tr:nth-child(even) {
+    background-color: #F5F5F5
+}
+
+tbody>tr:nth-child(odd) {
+    background-color: #FFFFFF
+}
