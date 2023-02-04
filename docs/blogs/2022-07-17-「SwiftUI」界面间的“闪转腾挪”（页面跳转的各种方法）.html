@@ -36,13 +36,13 @@
 </div>
             <h1>「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）</h1>
             <div class="bloginfo">
-                <p class="info">2022-08-05 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 1901 字</p>
+                <p class="info">2022-07-17 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 1901 字</p>
             </div>
             
             <!-- excerpt-start -->
 <p>在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：</p>
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">NavigationView</code>法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。<strong>这个方法从 iOS 16 开始被废弃了，新的办法请移步：<a href="https://blog.csdn.net/qq_33919450/article/details/128010630">《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》</a></strong>（2022-11-24更新）。</li>
+  <li><code class="language-plaintext highlighter-rouge">NavigationView</code>法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。<strong>这个方法从 iOS 16 开始被废弃了，新的办法请移步：<a href="/blogs/2022-11-24-%E3%80%8CSwiftUI%E3%80%8D%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%B0%E7%9A%84NavigationStack%E5%92%8CNavigationSplitView%EF%BC%88%E5%A6%82%E4%BD%95%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC2.0%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%BE%A7%E6%A0%8F%EF%BC%89.html">《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》</a></strong>（2022-11-24更新）。</li>
   <li>指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。</li>
 </ul>
 

@@ -1,0 +1,89 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>如何使用 PHP 解析获取 URL 参数</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+</div>
+            <h1>如何使用 PHP 解析获取 URL 参数</h1>
+            <div class="bloginfo">
+                <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ 302 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>PHP 和 Python 一样提供了函数<code class="language-plaintext highlighter-rouge">parse_url(string $url, int $component = -1)</code>，就很方便。</p>
+
+<p>这个函数有两个参数：</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">url</code>：这个参数是要被解析的 URL（以 string 格式）。</li>
+  <li><code class="language-plaintext highlighter-rouge">component</code>：使用<code class="language-plaintext highlighter-rouge">PHP_URL_SCHEME</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_HOST</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_PORT</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_USER</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_PASS</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_PATH</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_QUERY</code>，<code class="language-plaintext highlighter-rouge">PHP_URL_FRAGMENT</code> 来指定输出的 URL 部分（除了 <code class="language-plaintext highlighter-rouge">PHP_URL_PORT</code> 为 int 类型，其他均以 string 类型输出）。</li>
+  <li>如果不带<code class="language-plaintext highlighter-rouge">component</code>，则该参数默认为<code class="language-plaintext highlighter-rouge">-1</code>，将会输出一个数组。</li>
+</ol>
+
+<p>举些例子帮助理解。假设 URL 为<code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc&amp;id=12</code>。代码如下：</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$url</span><span class="o">=</span><span class="s2">"https://www.example.com/?keyword=abc&amp;id=12"</span><span class="p">;</span>
+
+<span class="c1">//显示格式化之后的数组</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nb">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">));</span>
+<span class="c1">//输出格式化之后的数组的'query'对应的内容</span>
+<span class="k">echo</span> <span class="nb">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">)[</span><span class="s1">'query'</span><span class="p">];</span>
+	
+<span class="c1">//换行</span>
+<span class="k">echo</span> <span class="s1">'&lt;br&gt;'</span><span class="p">;</span>
+	
+<span class="c1">//这里指定输出的内容为 host 部分</span>
+<span class="k">echo</span> <span class="nb">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">,</span><span class="kc">PHP_URL_HOST</span><span class="p">);</span> 
+<span class="cp">?&gt;</span> 
+</code></pre></div></div>
+<p>输出内容如下：</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array(4) {
+  ["scheme"]=&gt;
+  string(5) "https"
+  ["host"]=&gt;
+  string(15) "www.example.com"
+  ["path"]=&gt;
+  string(1) "/"
+  ["query"]=&gt;
+  string(17) "keyword=abc<span class="err">&amp;</span>id=12"
+}
+keyword=abc<span class="err">&amp;</span>id=12
+www.example.com 
+</code></pre></div></div>
+
+<p>希望可以帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

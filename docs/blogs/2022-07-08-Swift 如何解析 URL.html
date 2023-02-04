@@ -1,0 +1,66 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Swift 如何解析 URL</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+</div>
+            <h1>Swift 如何解析 URL</h1>
+            <div class="bloginfo">
+                <p class="info">2022-07-08 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 196 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>虽然 Swift 并不是一个常见的服务器后端使用语言，但是它也能解析 URL。为了以防万一，研究了一下还是</p>
+
+<p>假设被解析的 URL 为：<code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc</code>。代码如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">UIKit</span>
+
+<span class="c1">//把 URL 字符串变成一个 URL 类型的常量（变量也可以）</span>
+<span class="k">let</span> <span class="nv">url</span> <span class="o">=</span> <span class="kt">URL</span><span class="p">(</span><span class="nv">string</span><span class="p">:</span> <span class="s">"https://www.example.com/?keyword=abc"</span><span class="p">)</span>
+
+<span class="c1">//输出 query 部分（这里最好不要使用感叹号来强制为“有”，防止出错）</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">url</span><span class="p">?</span><span class="o">.</span><span class="n">query</span> <span class="p">??</span> <span class="s">"No query"</span><span class="p">)</span>
+</code></pre></div></div>
+<p>输出如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">keyword</span><span class="o">=</span><span class="n">abc</span>
+</code></pre></div></div>
+
+<p><img src="/assets/images/21ada1b24325494597d318118b54f023.png" alt="请添加图片描述" /></p>
+
+<p>希望可以帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
