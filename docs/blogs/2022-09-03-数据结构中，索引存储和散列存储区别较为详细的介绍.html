@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>数据结构中，索引存储和散列存储区别较为详细的介绍</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+</div>
+            <h1>数据结构中，索引存储和散列存储区别较为详细的介绍</h1>
+            <div class="bloginfo">
+                <p class="info">2022-09-03 ｜ <a href="/unix.html"> UNIX</a> ｜ 770 字</p>
+            </div>
+            
+            <!-- excerpt-start -->
+<p>数据结构中有两种存储结构很容易搞混，那就是索引存储结构和散列存储结构（哈希存储结构）。</p>
+
+<h2 id="索引存储">索引存储</h2>
+<p>根据地址就可以找到对应的关键字。可以理解成一个黄页，你根据一个人的名字，就可以找到他的电话。<strong>所以索引存储又被称为直接寻址。</strong> 数组就是一个常见的索引存储结构，可以通过下标来直接访问，下标（也就是关键字和地址相关）</p>
+
+<h2 id="散列存储">散列存储</h2>
+<p>“散列存储”名字中的“散列”就是常听到的 hash（哈希值），hash 是通过一种算法来运算出来的，比如 MD5。在这种存储格式下，地址会通过 hash 算法来运算成一个相同长度的 hash 值，然后存放这个 hash 值，而不是直接存放地址。在访问关键字的时候会通过运算解码 hash 值，然后再访问。<strong>这个时候，节点的存储地址和关键字是有某种映射关系的。</strong></p>
+
+<h2 id="二者区别">二者区别</h2>
+<p>二者区别可以说就是多了一个 hash 函数运算的过程。但是为什么要多这一步操作，而且还会“浪费”计算机的性能呢？</p>
+
+<p>答案是<strong>节省空间</strong>。</p>
+
+<p>因为计算机的存储空间是有限的，如果不考虑存储空间的限制，那么可以创建一个字典，为每个可能的关键字保留一个位置，然后通过索引直接寻址。
+但是在一些情况下，实际存储的关键字数目往往比可能的关键字数目要少很多很多，就造成了巨大的空间浪费。如果这时候使用散列存储来替代索引存储。例如散列表使用一个长度与实际存储的关键字数目<strong>成比例</strong>的数组来存储，访问的时候将哈希值转换成对应的下标。
+散列技术还有一个好处就是有优异的平均情况性能，而且在关键字集合是静态的时候，散列技术也可以提供出色的最坏性能。</p>
+
+<p>在时间复杂度上，完全散列（perfect hashing）和基本的字典操作所需的都是O(1)的时间，也就是说，并没有太大时间上的区别。</p>
+
+<p>而且二者有时还需要混用，所以区别不大。</p>
+
+<p>不过有些人需要考试，考试里会出现相关题目，只要记得<strong>散列存储结构的存储地址和关键字存在某种映射关系即可。</strong></p>
+
+<p>希望可以帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
