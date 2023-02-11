@@ -17,15 +17,15 @@
 body,
 html {
     /* 正文文本颜色 */
-    color: rgba(0, 0, 0, .90);
+    color: rgba(0, 0, 0, .95);
     /* 正文文本字体大小 */
-    font-size: 16px;
+    font-size: 17px;
     /* 调用字体 */
     font-family: Lato, Helvetica Neue, Helvetica, sans-serif;
     /* 文字表现 */
-    font-variant-ligatures: common-ligatures;
+    font-variant-ligatures: no-common-ligatures;
     /* 行高 */
-    line-height: 1.6;
+    line-height: 1.67;
     -webkit-text-size-adjust: 100%;
     /* 字体边缘效果 */
     -webkit-font-smoothing: antialiased;
@@ -94,7 +94,6 @@ a:hover {
 
 /* 博客中的图片样式，加阴影，限制尺寸 */
 img {
-    margin: 1em 0;
     max-height: 450px;
     max-width: 600px;
     box-shadow: 0px 0px 10px 5px rgba(98, 98, 98, 0.33);

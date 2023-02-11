@@ -15,10 +15,12 @@ title: ZhongUncle 的博客主页
     <li>
         <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
         <p class="info">{{ blog.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ blog.category | downcase }}.html"> {{ blog.category }}</a> ｜ {{ blog.content | number_of_words: "auto" }} 字</p>
+        
         {% assign excerptParts = blog.excerpt | split: "<!-- excerpt-start -->" %}
-        <p style="margin-bottom: 4px;">{{ excerptParts[1] | strip_html }}</p>
+        <p>{{ excerptParts[1] | strip_html }}</p>
+
         {% if blog.image != nil %}
-        <img src="{{ blog.image }}" style="box-shadow: 0px 0px 0px 0px; max-height: 500px; margin-left: 0px; margin-top: 10px;">
+        <img src="{{ blog.image }}" style="box-shadow: 0px 0px 0px 0px; max-height: 500px; margin: 0px;">
         {% endif %}
         
     </li>
