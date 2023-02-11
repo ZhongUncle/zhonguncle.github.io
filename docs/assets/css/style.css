@@ -25,10 +25,18 @@ html {
     /* 文字表现 */
     font-variant-ligatures: common-ligatures;
     /* 行高 */
-    line-height: 1.67;
-    /* 字体bian效果 */
+    line-height: 1.6;
+    -webkit-text-size-adjust: 100%;
+    /* 字体边缘效果 */
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale
+    -moz-osx-font-smoothing: grayscale;
+}
+
+/* 加粗字体样式 */
+b,
+strong {
+    font-weight: inherit;
+    font-weight: bolder
 }
 
 /* 针对每篇博客的“日期-专栏”部分 */
@@ -127,6 +135,13 @@ th {
     border-top: 1px solid #dcdcdc;
     border-bottom: 1px solid #dcdcdc;
     padding: 8px 12px
+}
+
+/* 表格样式 */
+ul {
+    margin: 1.2em 0;
+    list-style-type: none;
+    padding-left: 0px;
 }
 
 /* 头行颜色 */

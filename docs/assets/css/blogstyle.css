@@ -1,18 +1,4 @@
-/* body {
-    counter-reset: a b
-} */
-
-/*! normalize-scss | MIT/GPLv2 License | bit.ly/normalize-scss */
-html {
-    line-height: 1.15;
-    -ms-text-size-adjust: 100%;
-    -webkit-text-size-adjust: 100%
-}
-
-body {
-    margin: 0
-}
-
+/* ! normalize-scss | MIT/GPLv2 License | bit.ly/normalize-scss */
 article,
 aside,
 footer,
@@ -51,13 +37,6 @@ abbr[title] {
     text-decoration: underline;
     text-decoration: underline dotted
 }
-
-b,
-strong {
-    font-weight: inherit;
-    font-weight: bolder
-}
-
 
 kbd,
 samp {
@@ -130,58 +109,6 @@ select {
     text-transform: none
 }
 
-[type=reset],
-[type=submit],
-button,
-html [type=button] {
-    -webkit-appearance: button
-}
-
-[type=button]::-moz-focus-inner,
-[type=reset]::-moz-focus-inner,
-[type=submit]::-moz-focus-inner,
-button::-moz-focus-inner {
-    border-style: none;
-    padding: 0
-}
-
-[type=button]:-moz-focusring,
-[type=reset]:-moz-focusring,
-[type=submit]:-moz-focusring,
-button:-moz-focusring {
-    outline: 1px dotted ButtonText
-}
-
-input {
-    overflow: visible
-}
-
-[type=checkbox],
-[type=radio] {
-    box-sizing: border-box;
-    padding: 0
-}
-
-[type=number]::-webkit-inner-spin-button,
-[type=number]::-webkit-outer-spin-button {
-    height: auto
-}
-
-[type=search] {
-    -webkit-appearance: textfield;
-    outline-offset: -2px
-}
-
-[type=search]::-webkit-search-cancel-button,
-[type=search]::-webkit-search-decoration {
-    -webkit-appearance: none
-}
-
-::-webkit-file-upload-button {
-    -webkit-appearance: button;
-    font: inherit
-}
-
 fieldset {
     padding: .35em .75em .625em
 }
@@ -220,23 +147,12 @@ canvas {
     display: inline-block
 }
 
-[hidden],
-template {
-    display: none
-}
-
-.app--dark .layout__panel--editor,
-.app--dark .layout__panel--preview {
-    color: hsla(0, 0%, 100%, .75)
-}
-
 blockquote,
 dl,
 ol,
 p,
-pre,
-ul {
-    margin: 1.2em 0
+pre {
+    margin: 1.2em 0;
 }
 
 ol ol,
