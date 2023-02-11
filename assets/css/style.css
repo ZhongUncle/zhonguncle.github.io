@@ -4,6 +4,33 @@
 @import "/assets/css/codestyle/python.css";
 @import "/assets/css/codestyle/c.css";
 @import "/assets/css/codestyle/cpp.css";
+/* 整体页面样式 */
+.stackedit__html {
+    margin-bottom: 180px;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 30px;
+    padding-right: 30px;
+    max-width: 750px
+}
+
+body,
+html {
+    /* 正文文本颜色 */
+    color: rgba(0, 0, 0, .90);
+    /* 正文文本字体大小 */
+    font-size: 16px;
+    /* 调用字体 */
+    font-family: Lato, Helvetica Neue, Helvetica, sans-serif;
+    /* 文字表现 */
+    font-variant-ligatures: common-ligatures;
+    /* 行高 */
+    line-height: 1.67;
+    /* 字体边缘效果 */
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
 /* 针对每篇博客的“日期-专栏”部分 */
 .info {
     font-size: smaller;
@@ -21,7 +48,7 @@
 h1
 {
     font-size: 1.8em;
-    margin: 2.1em 0;
+    margin: 1.8em 0;
     margin-bottom: 0;
     line-height: 1.33
 }
@@ -29,7 +56,7 @@ h1
 h2
 {
     font-size: 1.3em;
-    margin: 1.8em 0;
+    margin: 1.7em 0;
     margin-bottom: 0;
     line-height: 1
 }
@@ -57,7 +84,7 @@ a:hover {
     text-decoration: none
 }
 
-/* 图片样式，加阴影，限制尺寸 */
+/* 博客中的图片样式，加阴影，限制尺寸 */
 img {
     margin: 1em 0;
     max-height: 450px;
