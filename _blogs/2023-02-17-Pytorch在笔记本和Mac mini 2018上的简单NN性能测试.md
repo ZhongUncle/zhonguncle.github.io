@@ -25,10 +25,9 @@ title: 在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试
 此外，显存带宽也真的很重要（虽然大小也重要），MX250 带宽太小，毕竟就 64-bit 的 GDDR5（也就是48GB/s），加迭代和降低学习速度等操作之后，CUDA 计算速率都上不去。不过一般消费级显卡的显存带宽也够用，只是 MX250 定位是轻薄本用。
 这让我想到了我之前看别人做的测试 [Running PyTorch on the M1 GPU](https://sebastianraschka.com/blog/2022/pytorch-m1-gpu.html)，其中有个数据是 RTX 3080 Laptop 要比 RTX 2080Ti 稍慢一些：
 
-![](/assets/images/vgg-benchmark-training.png)
+<img src="/assets/images/vgg-benchmark-training.png" style="box-shadow: 0px 0px 0px 0px">
 
 上图中各显卡参数和成绩如下：
-
 | |GTX 1080Ti|Titan V|RTX 2080Ti|RTX 3060 Laptop|RTX 3080 Laptop|
 |-|-|-|-|-|-|
 |Cuda Cores|3584|5120|4352|3840|6144|
@@ -39,19 +38,16 @@ title: 在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试
 
 因为显存大小都为 10 GiB 左右，就不列出了，而且这里也没有超过显存大小。
 
+<img src="/assets/images/%E6%88%AA%E5%B1%8F2023-02-17%2006.06.51.png" style="box-shadow: 0px 0px 0px 0px">
+
+
 下图中“比例”部分关于“分钟/epoch”使用标准性能计算公式（如果你想质疑这个公式麻烦写论文去发 JACM）:
 
-$$\begin{align*}
-性能 = 1/运行时间 \\
-性能a/性能b = 运行时间b/运行时间a = n 
-\end{align*}$$
-
-
-![](/assets/images/%E6%88%AA%E5%B1%8F2023-02-17%2006.06.51.png)
+<img src="/assets/images/t27e187te8712.png" style="box-shadow: 0px 0px 0px 0px">
 
 这样看可能不是很清楚，所以只保留“Cuda Cores”、“显存带宽”和“性能”来一张图，因为其他部分也都是与“显存带宽”相关的，所以就忽略掉：
 
-![](/assets/images/%E6%88%AA%E5%B1%8F2023-02-17%2006.06.39.png)
+<img src="/assets/images/%E6%88%AA%E5%B1%8F2023-02-17%2006.06.39.png" style="box-shadow: 0px 0px 0px 0px">
 
 这样可以很清楚的看到，训练模型的性能和显存带宽、Cuda 数量的关系非常大。
 
