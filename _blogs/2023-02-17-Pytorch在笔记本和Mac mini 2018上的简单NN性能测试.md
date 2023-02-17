@@ -1,7 +1,7 @@
 ---
 layout: article
 category: Research
-title: 2023-02-17-在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试
+title: 在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试
 ---
 <!-- excerpt-start -->
 测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。
