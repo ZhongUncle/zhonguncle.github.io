@@ -36,19 +36,45 @@
 </div>
             <h1>在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试</h1>
             <div class="bloginfo">
-                <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ 800 字</p>
+                <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ 824 字</p>
             </div>
             
             <!-- excerpt-start -->
 <p>测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。</p>
 
-<p>首先是各个设备的性能：
-| |Dell Inspiron 7490|Mac mini 2018|
-|-|-|-|
-|CPU|i7 10510U 4C8T 2.30-4.90GHz|i5 8500B 6C6T 3.00-4.10GHz|
-|Cache|8 MB|9MB|
-|内存|16GB DDR3 2133MHz|32GB DDR4 2666MHz|
-|最优 GPU|MX250 4SM 384 CUDA Core 64-bit 2GB GDDR5|Intel® UHD Graphics 630 1.10 GHz|</p>
+<p>首先是各个设备的性能：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Dell Inspiron 7490</th>
+      <th>Mac mini 2018</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>CPU</td>
+      <td>i7 10510U 4C8T 2.30-4.90GHz</td>
+      <td>i5 8500B 6C6T 3.00-4.10GHz</td>
+    </tr>
+    <tr>
+      <td>Cache</td>
+      <td>8 MB</td>
+      <td>9MB</td>
+    </tr>
+    <tr>
+      <td>内存</td>
+      <td>16GB DDR3 2133MHz</td>
+      <td>32GB DDR4 2666MHz</td>
+    </tr>
+    <tr>
+      <td>最优 GPU</td>
+      <td>MX250 4SM 384 CUDA Core 64-bit 2GB GDDR5</td>
+      <td>Intel® UHD Graphics 630 1.10 GHz</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>下面结果取最好/中间值，唯一可惜的是 iMac 5K 卖早了，不然可以测一下 mps 加速的结果。因为 Python 的 mps 加速只在苹果芯片和搭载了 AMD 显卡的设备上支持。</p>
 

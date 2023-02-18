@@ -7,6 +7,7 @@ title: 在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试
 测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。
 
 首先是各个设备的性能：
+
 | |Dell Inspiron 7490|Mac mini 2018|
 |-|-|-|
 |CPU|i7 10510U 4C8T 2.30-4.90GHz|i5 8500B 6C6T 3.00-4.10GHz|
