@@ -29,6 +29,7 @@ title: 在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试
 <img src="/assets/images/vgg-benchmark-training.png" style="box-shadow: 0px 0px 0px 0px">
 
 上图中各显卡参数和成绩如下：
+
 | |GTX 1080Ti|Titan V|RTX 2080Ti|RTX 3060 Laptop|RTX 3080 Laptop|
 |-|-|-|-|-|-|
 |Cuda Cores|3584|5120|4352|3840|6144|
