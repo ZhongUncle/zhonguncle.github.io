@@ -7,6 +7,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Mac 上，Xcode 导致“系统数据”占用太大</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Mac 上，Xcode 导致“系统数据”占用太大" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="今天突然发现系统占用居然有一百多个g，所以打算清理一下。经过排查发现是 Xcode 导致的。（一般软件缓存会放在~/Library下，所以找出这个目录下最大的文件即可）" />
+<meta property="og:description" content="今天突然发现系统占用居然有一百多个g，所以打算清理一下。经过排查发现是 Xcode 导致的。（一般软件缓存会放在~/Library下，所以找出这个目录下最大的文件即可）" />
+<link rel="canonical" href="http://localhost:4000/blogs/2022-05-06-Mac%20%E4%B8%8A,Xcode%20%E5%AF%BC%E8%87%B4%E2%80%9C%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E2%80%9D%E5%8D%A0%E7%94%A8%E5%A4%AA%E5%A4%A7.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/2022-05-06-Mac%20%E4%B8%8A,Xcode%20%E5%AF%BC%E8%87%B4%E2%80%9C%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E2%80%9D%E5%8D%A0%E7%94%A8%E5%A4%AA%E5%A4%A7.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-06T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Mac 上，Xcode 导致“系统数据”占用太大" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-06T00:00:00+08:00","datePublished":"2022-05-06T00:00:00+08:00","description":"今天突然发现系统占用居然有一百多个g，所以打算清理一下。经过排查发现是 Xcode 导致的。（一般软件缓存会放在~/Library下，所以找出这个目录下最大的文件即可）","headline":"Mac 上，Xcode 导致“系统数据”占用太大","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/2022-05-06-Mac%20%E4%B8%8A,Xcode%20%E5%AF%BC%E8%87%B4%E2%80%9C%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E2%80%9D%E5%8D%A0%E7%94%A8%E5%A4%AA%E5%A4%A7.html"},"url":"http://localhost:4000/blogs/2022-05-06-Mac%20%E4%B8%8A,Xcode%20%E5%AF%BC%E8%87%B4%E2%80%9C%E7%B3%BB%E7%BB%9F%E6%95%B0%E6%8D%AE%E2%80%9D%E5%8D%A0%E7%94%A8%E5%A4%AA%E5%A4%A7.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
