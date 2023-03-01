@@ -4,5 +4,8 @@ collections:
   blogs:
     output: true
 
+url: "https://zhonguncle.github.io"
+
 plugins:
   - jekyll-seo-tag
+  - jekyll-sitemap
