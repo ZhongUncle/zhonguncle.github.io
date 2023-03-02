@@ -1,0 +1,402 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="阅读建议和提示 可以利用侧边的目录来跳转哦！ 本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。 本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。" />
+<meta property="og:description" content="阅读建议和提示 可以利用侧边的目录来跳转哦！ 本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。 本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/6995c132acf4bd24e2b21e69b315eae1.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/6995c132acf4bd24e2b21e69b315eae1.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-23T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-23T00:00:00+08:00","datePublished":"2022-03-23T00:00:00+08:00","description":"阅读建议和提示 可以利用侧边的目录来跳转哦！ 本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。 本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。","headline":"「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/6995c132acf4bd24e2b21e69b315eae1.html"},"url":"https://zhonguncle.github.io/blogs/6995c132acf4bd24e2b21e69b315eae1.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+</div>
+            <h1>「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等</h1>
+            <div class="bloginfo">
+                <p class="info">2022-03-23 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 4043 字</p>
+            </div>
+            
+            <h2 id="阅读建议和提示">阅读建议和提示</h2>
+<!-- excerpt-start -->
+<ol>
+  <li><strong>可以利用侧边的目录来跳转哦！</strong></li>
+  <li>本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。</li>
+  <li>本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。</li>
+</ol>
+
+<h2 id="如何创建简单的-tabview">如何创建简单的 TabView</h2>
+<p>在SwiftUI中，我们可以很方便地实现标签页效果TabView，如下：</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">TabView</span> <span class="p">{</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"第一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">badge</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="cm">/* 这是 iOS 15.0 新增的，之前的版本用不了 */</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"1.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第一页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"另一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"2.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第二页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"最后一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"3.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第三页"</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>实现的界面是这样的：</p>
+
+<p><img src="/assets/images/a78cceb4cab243e78ac8bc81407818fe.png" alt="请添加图片描述" /></p>
+
+<blockquote>
+  <p>.tabItem { }只能包含一个 Image 和 Text，或者反过来。</p>
+</blockquote>
+
+<p>但是当我们需要修改他的一些属性的时候，却发现不能修改。例如我们想修改一个tabItem的颜色，使用<code class="language-plaintext highlighter-rouge">.foregroundColor()</code>发现没有变化。</p>
+
+<p>这可能是由于SwiftUI还不够完善，所以这时候我们需要使用一下UIKit。这里有两种方式来修改：</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">UITabBar.appearance()</code>（只能大致修改）</li>
+  <li><code class="language-plaintext highlighter-rouge">UITabBarItemAppearance()UITabBarAppearance()</code>（可以细致地修改。推荐使用这种）</li>
+</ol>
+
+<h2 id="用于大致修改的uitabbarappearance">用于大致修改的<code class="language-plaintext highlighter-rouge">UITabBar.appearance()</code></h2>
+<p>第一种是直接修改<code class="language-plaintext highlighter-rouge">UITabBar.appearance()</code>的属性来修改，但是能修改的内容很少，基本上只用来修改TabBar的背景颜色。</p>
+
+<p><strong>为了代码简洁，本节最后附上完整使用代码。</strong></p>
+
+<h3 id="修改标签栏背景色">修改标签栏背景色</h3>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//修改标签栏背景色</span>
+<span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
+</code></pre></div></div>
+<p>修改后的样式如下：</p>
+
+<p><img src="/assets/images/483f1bffff13462caeec6346a0c2db0a.png" alt="请添加图片描述" /></p>
+
+<h3 id="修改未选择的项的颜色">修改未选择的项的颜色</h3>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//修改未选择的项的颜色</span>
+<span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">unselectedItemTintColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+</code></pre></div></div>
+<p>修改后的样式如下：</p>
+
+<p><img src="/assets/images/5618f0bc688a4b00b3aa6f9397ff7169.png" alt="请添加图片描述" /></p>
+
+<p><strong>我们能发现还有其他属性，但是修改发现并没有变化。</strong></p>
+
+<p>可以通过<code class="language-plaintext highlighter-rouge">init()</code>或者<code class="language-plaintext highlighter-rouge">.onAppear(perform:)</code>来使用。
+所以，完整的使用代码如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//修改标签栏背景色</span>
+        <span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
+        <span class="c1">//修改未选择的项的颜色</span>
+        <span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">unselectedItemTintColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+    <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">TabView</span> <span class="p">{</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"第一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">badge</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="cm">/* 这是 iOS 15.0 新增的，之前的版本用不了 */</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"1.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第一页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"另一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"2.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第二页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"最后一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"3.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第三页"</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>或者使用<code class="language-plaintext highlighter-rouge">.onAppear(perform:)</code>：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">TabView</span> <span class="p">{</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"第一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">badge</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="cm">/* 这是 iOS 15.0 新增的，之前的版本用不了 */</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"1.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第一页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"另一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"2.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第二页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"最后一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"3.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第三页"</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+        <span class="o">.</span><span class="nf">onAppear</span><span class="p">(</span><span class="nv">perform</span><span class="p">:</span> <span class="p">{</span>
+        	<span class="c1">//修改标签栏背景色</span>
+            <span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">gray</span><span class="p">)</span>
+            
+            <span class="c1">//修改未选择的项的颜色</span>
+            <span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">unselectedItemTintColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+        <span class="p">})</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>这种方法太简单了，所以推荐下面这种</p>
+
+<h2 id="用于细致修改的uitabbaritemappearance和uitabbarappearance">用于细致修改的<code class="language-plaintext highlighter-rouge">UITabBarItemAppearance()</code>和<code class="language-plaintext highlighter-rouge">UITabBarAppearance()</code></h2>
+<p>这种方法的使用方法比较复杂，所以篇幅比较长。为了代码整洁分散来写，最后列出完整的代码。</p>
+
+<p>首先是TabBar 中的物件（<code class="language-plaintext highlighter-rouge">tabItem</code>）们，例如图标文本。我们需要先声明一个变量<code class="language-plaintext highlighter-rouge">itemAppearance</code>，如下：</p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">itemAppearance</span> <span class="o">=</span> <span class="kt">UITabBarItemAppearance</span><span class="p">()</span>
+</code></pre></div></div>
+<p>然后先介绍<code class="language-plaintext highlighter-rouge">tabItem</code>的属性：</p>
+
+<h3 id="设置tabitem的属性">设置<code class="language-plaintext highlighter-rouge">tabItem</code>的属性</h3>
+<h4 id="图标的颜色也就是image的颜色">图标的颜色，也就是Image的颜色</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//未选中的标签的图标的颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">iconColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">green</span><span class="p">)</span>
+<span class="c1">//选中的标签的图标的颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">iconColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="文本的属性也就是text部分的属性">文本的属性，也就是Text部分的属性</h4>
+<p>为了代码简练，这里只演示了修改文本颜色。
+除了能修改颜色之外，由于是<code class="language-plaintext highlighter-rouge">NSAttributedString</code>类型，所以还能修改字体类型、大小、阴影、背景，甚至是内容。<code class="language-plaintext highlighter-rouge">NSAttributedString</code>的更多使用方法可以查看： <a href="https://www.hackingwithswift.com/articles/113/nsattributedstring-by-example">https://www.hackingwithswift.com/articles/113/nsattributedstring-by-example</a></p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//未选中的标签的标题的颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">titleTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">green</span><span class="p">)]</span>
+<span class="c1">//选中的标签的标题的颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">titleTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<h3 id="气泡">气泡</h3>
+<p><strong>需要注意的是，如果这部分的属性只设置了 normal 或者 selected 状态下的值，那么不论状态是什么，都用这个值！</strong></p>
+
+<h4 id="背景颜色">背景颜色</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//未选中的标签的气泡的背景颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgeBackgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+<span class="c1">//选中的标签的气泡的背景颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgeBackgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">yellow</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="文本属性">文本属性</h4>
+<p>为了代码简练，这里只演示了修改文本颜色。
+除了能修改颜色之外，由于是<code class="language-plaintext highlighter-rouge">NSAttributedString</code>类型，所以还能修改字体类型、大小、阴影、背景，甚至是内容。<code class="language-plaintext highlighter-rouge">NSAttributedString</code>的更多使用方法可以查看： <a href="https://www.hackingwithswift.com/articles/113/nsattributedstring-by-example">https://www.hackingwithswift.com/articles/113/nsattributedstring-by-example</a></p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//选中的标签的气泡的文本颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgeTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">gray</span><span class="p">)]</span>
+<span class="c1">//选中的标签的气泡的文本颜色</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgeTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">black</span><span class="p">)]</span>
+</code></pre></div></div>
+
+<h4 id="位置">位置</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//未选中的标签的气泡的位置</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1">//未选中的标签的气泡的位置</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="标题的位置">标题的位置</h4>
+<p><strong>需要注意的是，这个偏移是叠加在气泡的位置偏移上的，但是二者的参考系的横轴是反的。</strong></p>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//未选中的标签的气泡标题的位置</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgeTitlePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span>
+<span class="c1">//未选中的标签的气泡标题的位置</span>
+<span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgeTitlePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">barItem</code>们设置完之后，就要开始设置TabBar的属性了，也就是<code class="language-plaintext highlighter-rouge">UITabBarAppearance()</code>部分了。</p>
+
+<h3 id="设置tabview整体的属性">设置<code class="language-plaintext highlighter-rouge">TabView</code>整体的属性</h3>
+<p>同样，我们需要先声明一个变量<code class="language-plaintext highlighter-rouge">appeareance</code>，如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">appeareance</span> <span class="o">=</span> <span class="kt">UITabBarAppearance</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h4 id="应用之前的-baritem-们的设置">应用之前的 barItem 们的设置</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//这里就可以将我们上面设置的 itemAppearance 应用到 UITabBarAppearance() 的 stackedLayoutAppearance 属性中</span>
+<span class="n">appeareance</span><span class="o">.</span><span class="n">stackedLayoutAppearance</span> <span class="o">=</span> <span class="n">itemAppearance</span>
+</code></pre></div></div>
+
+<h4 id="tabbar-的背景图片">TabBar 的背景图片</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//TabBar的背景图片</span>
+<span class="n">appeareance</span><span class="o">.</span><span class="n">backgroundImage</span> <span class="o">=</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="s">"test"</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="tabbar-的背景颜色">TabBar 的背景颜色</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//TabBar 的背景颜色</span>
+<span class="n">appeareance</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="tabbar-的阴影就是最上面的那条线">TabBar 的阴影，就是最上面的那条“线”</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//TabBar的阴影，就是最上面的那条“线”</span>
+<span class="n">appeareance</span><span class="o">.</span><span class="n">shadowColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h4 id="tabitem-们的摆放格式">tabItem 们的摆放格式</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tabItem们的摆放格式。.automatic就是默认格式；.centered表示尽量往中间靠；.fill表示尽量填满TabBar。</span>
+<span class="n">appeareance</span><span class="o">.</span><span class="n">stackedItemPositioning</span> <span class="o">=</span> <span class="o">.</span><span class="n">centered</span>
+</code></pre></div></div>
+
+<h4 id="tabitem-们的摆放格式-1">tabItem 们的摆放格式</h4>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//tabItem们的间距，不过最大的效果就是和.fill格式一样，不会超出视图</span>
+<span class="n">appeareance</span><span class="o">.</span><span class="n">stackedItemSpacing</span> <span class="o">=</span> <span class="mi">2000</span>
+</code></pre></div></div>
+
+<h3 id="最后应用所有的设置到视图中">最后，应用所有的设置到视图中</h3>
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//来把之前的设置全部应用到视图中</span>
+<span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">scrollEdgeAppearance</span> <span class="o">=</span> <span class="n">appeareance</span>
+</code></pre></div></div>
+<p>不过这里需要注意一点，有的人会想使用以下代码来应用设置：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//不要用。因为使用这个会无法应用我们对 UITabBarAppearance() 的设置</span>
+<span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">standardAppearance</span> <span class="o">=</span> <span class="n">appeareance</span>
+</code></pre></div></div>
+<p><strong>赋值给<code class="language-plaintext highlighter-rouge">standardAppearance</code>会让我们对 <code class="language-plaintext highlighter-rouge">UITabBarAppearance()</code> 的设置不能应用成功。</strong></p>
+
+<h2 id="完整代码以及演示截图">完整代码以及演示截图</h2>
+<p>完整代码如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="nf">init</span><span class="p">()</span> <span class="p">{</span>
+        <span class="c1">//修改 TabBar 中的物件，例如图标文本等</span>
+        <span class="k">let</span> <span class="nv">itemAppearance</span> <span class="o">=</span> <span class="kt">UITabBarItemAppearance</span><span class="p">()</span>
+        <span class="c1">//标签</span>
+        <span class="c1">//图标的颜色————也就是Image的颜色</span>
+            <span class="c1">//未选中的标签的图标的颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">iconColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">green</span><span class="p">)</span>
+            <span class="c1">//选中的标签的图标的颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">iconColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)</span>
+        <span class="c1">//文本的颜色————也就是Text的颜色</span>
+        <span class="c1">//为了代码简练，这里只演示了修改文本颜色。除了能修改颜色之外，还能修改字体类型、大小、阴影、背景，甚至是内容。详情可以查看 https://www.hackingwithswift.com/articles/113/nsattributedstring-by-example</span>
+            <span class="c1">//未选中的标签的标题的颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">titleTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">green</span><span class="p">)]</span>
+            <span class="c1">//选中的标签的标题的颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">titleTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">pink</span><span class="p">)]</span>
+        
+        <span class="c1">//气泡</span>
+        <span class="c1">//需要注意的是，如果只设置了 normal 或者 selected 状态下的值，那么不论状态是什么，都用这个值！</span>
+        <span class="c1">//背景颜色</span>
+            <span class="c1">//未选中的标签的气泡的背景颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgeBackgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+            <span class="c1">//选中的标签的气泡的背景颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgeBackgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">yellow</span><span class="p">)</span>
+        <span class="c1">//文本属性————为了代码简练，这里只演示了修改文本颜色。除了能修改颜色之外，还能修改字体类型、大小、阴影、背景，甚至是内容。详情可以查看 https://www.hackingwithswift.com/articles/113/nsattributedstring-by-example</span>
+            <span class="c1">//选中的标签的气泡的文本颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgeTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">gray</span><span class="p">)]</span>
+            <span class="c1">//选中的标签的气泡的文本颜色</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgeTextAttributes</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="nv">foregroundColor</span><span class="p">:</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">black</span><span class="p">)]</span>
+        <span class="c1">//位置</span>
+            <span class="c1">//未选中的标签的气泡的位置</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span>
+            <span class="c1">//未选中的标签的气泡的位置</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="c1">//标题的位置————这个偏移是叠加在气泡的位置偏移上的，但是二者的参考系的横轴是反的</span>
+            <span class="c1">//未选中的标签的气泡标题的位置</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">normal</span><span class="o">.</span><span class="n">badgeTitlePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="o">-</span><span class="mi">10</span><span class="p">)</span>
+            <span class="c1">//未选中的标签的气泡标题的位置</span>
+            <span class="n">itemAppearance</span><span class="o">.</span><span class="n">selected</span><span class="o">.</span><span class="n">badgeTitlePositionAdjustment</span> <span class="o">=</span> <span class="kt">UIOffset</span><span class="p">(</span><span class="nv">horizontal</span><span class="p">:</span> <span class="mi">10</span><span class="p">,</span> <span class="nv">vertical</span><span class="p">:</span> <span class="mi">10</span><span class="p">)</span>
+            
+        <span class="k">let</span> <span class="nv">appeareance</span> <span class="o">=</span> <span class="kt">UITabBarAppearance</span><span class="p">()</span>
+        <span class="c1">//这里就可以将我们上面设置的 itemAppearance 应用到 UITabBarAppearance() 的 stackedLayoutAppearance 属性中</span>
+        <span class="n">appeareance</span><span class="o">.</span><span class="n">stackedLayoutAppearance</span> <span class="o">=</span> <span class="n">itemAppearance</span>
+        <span class="c1">//TabBar的背景图片</span>
+        <span class="n">appeareance</span><span class="o">.</span><span class="n">backgroundImage</span> <span class="o">=</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="s">"test"</span><span class="p">)</span>
+        <span class="c1">//TabBar的背景颜色</span>
+        <span class="n">appeareance</span><span class="o">.</span><span class="n">backgroundColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">white</span><span class="p">)</span>
+        <span class="c1">//TabBar的阴影，就是最上面的那条“线”</span>
+        <span class="n">appeareance</span><span class="o">.</span><span class="n">shadowColor</span> <span class="o">=</span> <span class="kt">UIColor</span><span class="p">(</span><span class="kt">Color</span><span class="o">.</span><span class="n">black</span><span class="p">)</span>
+        <span class="c1">//tabItem们的摆放格式。.automatic就是默认格式；.centered表示尽量往中间靠；.fill表示尽量填满TabBar。</span>
+        <span class="n">appeareance</span><span class="o">.</span><span class="n">stackedItemPositioning</span> <span class="o">=</span> <span class="o">.</span><span class="n">centered</span>
+        <span class="c1">//tabItem们的间距，不过最大的效果就是和.fill格式一样，不会超出视图</span>
+        <span class="n">appeareance</span><span class="o">.</span><span class="n">stackedItemSpacing</span> <span class="o">=</span> <span class="mi">2000</span>
+
+        <span class="c1">//来把之前的设置全部应用到视图中</span>
+        <span class="c1">//使用这个会无法应用我们对 UITabBarAppearance() 的设置</span>
+<span class="c1">//        UITabBar.appearance().standardAppearance = appeareance</span>
+        <span class="kt">UITabBar</span><span class="o">.</span><span class="nf">appearance</span><span class="p">()</span><span class="o">.</span><span class="n">scrollEdgeAppearance</span> <span class="o">=</span> <span class="n">appeareance</span>
+    <span class="p">}</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">TabView</span> <span class="p">{</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"第一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">badge</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>  <span class="cm">/* 这是 iOS 15.0 新增的，之前的版本用不了 */</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"1.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第一页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"另一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"2.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第二页"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="kt">Text</span><span class="p">(</span><span class="s">"最后一个 Tab"</span><span class="p">)</span>
+                <span class="o">.</span><span class="nf">badge</span><span class="p">(</span><span class="mi">22</span><span class="p">)</span>  <span class="cm">/* 这是 iOS 15.0 新增的，之前的版本用不了 */</span>
+                <span class="o">.</span><span class="n">tabItem</span> <span class="p">{</span>
+                    <span class="kt">Image</span><span class="p">(</span><span class="nv">systemName</span><span class="p">:</span> <span class="s">"3.square.fill"</span><span class="p">)</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"第三页"</span><span class="p">)</span>
+                <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>运行截图如下：</p>
+
+<p><img src="/assets/images/c1b6a04cd8af45688e50bebc5585e648.png" alt="请添加图片描述" /></p>
+
+<h2 id="结尾">结尾</h2>
+<p>好啦看完本文，相信你一定可以做出自己想要的 TabView 了～
+希望可以帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
