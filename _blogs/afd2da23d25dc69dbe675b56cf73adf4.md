@@ -2,7 +2,7 @@
 layout: article
 category: Research
 date: 2023-02-09
-title: Sony A7R 评测（对自己相机需求的考量）
+title: Sony A7R 评测（对自己相机需求的考量） - ZhongUncle
 ---
 <!-- excerpt-start -->
 最近借用了一台 A7R，这是我第一次使用专业相机（不是卡片机那种小型娱乐的），而且就是全画幅的。所以事先在家使用学习了如何使用和各种设置下的效果如何。

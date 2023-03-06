@@ -5,4 +5,5 @@
     代码高亮：Swift✅、Bash✅、Python✅、C✅、C++✅、HTML、CSS、Javascript；
     显示每篇文章的字数✅；
     搬运自己的博客✅；
+    修复错误 : 缺少 Meta Description 标记✅；
     为图像添加Alt属性

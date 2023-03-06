@@ -2,7 +2,8 @@
 <html>
     <head>
         <meta charset="utf-8">
-        <title>{{ page.title }}</title>
+        <meta http-equiv='content-language' content='zh-CN'>
+        <!-- <title>{{ page.title }}</title> 因为有了seo生成的 -->
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
@@ -16,7 +17,6 @@
             <div class="bloginfo">
                 <p class="info">{{ page.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ page.category | downcase }}.html"> {{ page.category }}</a> ｜ {{ content | number_of_words: "auto" }} 字</p>
             </div>
-            
             {{ content }}
         </div>
     </body>
