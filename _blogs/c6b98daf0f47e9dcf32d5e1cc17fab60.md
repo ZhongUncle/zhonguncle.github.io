@@ -2,7 +2,7 @@
 layout: article
 category: SwiftUI
 date: 2022-02-21
-title: 「SwiftUI」推送通知（Notifications）二三事 - ZhongUncle
+title: 「SwiftUI」推送通知（Notifications）二三事
 ---
 <!-- excerpt-start -->
 有很多需要推送通知的情况，但是关于SwiftUI的通知推送说的人却不多，这里就说一些相关内容。一方面是为了自己能以后再查阅，另外一方面也是想能帮到有需要的人。
