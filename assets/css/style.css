@@ -95,7 +95,7 @@ a:hover {
 /* 博客中的图片样式，加阴影，限制尺寸 */
 img {
     max-height: 450px;
-    max-width: 600px;
+    max-width: 750px;
     box-shadow: 0px 0px 10px 5px rgba(98, 98, 98, 0.33);
 }
 
