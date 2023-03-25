@@ -9,3 +9,6 @@ url: "https://zhonguncle.github.io"
 plugins:
   - jekyll-seo-tag
   - jekyll-sitemap
+
+kmarkdown:
+  gfm_quirks: [paragraph_end]

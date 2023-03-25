@@ -1,0 +1,85 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='zh-CN'>
+        <title>阅读《The Go Programming Language》的感受和笔记</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="阅读《The Go Programming Language》的感受和笔记" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="考虑到版权问题，本博客不会附带任何《The Go Programming Language》内容的图像。" />
+<meta property="og:description" content="考虑到版权问题，本博客不会附带任何《The Go Programming Language》内容的图像。" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/0%E9%98%85%E8%AF%BB%E3%80%8AThe%20Go%20Programming%20Language%E3%80%8B%E7%9A%84%E6%84%9F%E5%8F%97%E5%92%8C%E7%AC%94%E8%AE%B0.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/0%E9%98%85%E8%AF%BB%E3%80%8AThe%20Go%20Programming%20Language%E3%80%8B%E7%9A%84%E6%84%9F%E5%8F%97%E5%92%8C%E7%AC%94%E8%AE%B0.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-24T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="阅读《The Go Programming Language》的感受和笔记" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-03-24T00:00:00+08:00","datePublished":"2023-03-24T00:00:00+08:00","description":"考虑到版权问题，本博客不会附带任何《The Go Programming Language》内容的图像。","headline":"阅读《The Go Programming Language》的感受和笔记","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0%E9%98%85%E8%AF%BB%E3%80%8AThe%20Go%20Programming%20Language%E3%80%8B%E7%9A%84%E6%84%9F%E5%8F%97%E5%92%8C%E7%AC%94%E8%AE%B0.html"},"url":"https://zhonguncle.github.io/blogs/0%E9%98%85%E8%AF%BB%E3%80%8AThe%20Go%20Programming%20Language%E3%80%8B%E7%9A%84%E6%84%9F%E5%8F%97%E5%92%8C%E7%AC%94%E8%AE%B0.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/book.html" class="headerItem">
+            Book
+        </a>
+    
+</div>
+            <h1>阅读《The Go Programming Language》的感受和笔记</h1>
+            <div class="bloginfo">
+                <p class="info">2023-03-24 ｜ <a href="/book.html"> Book</a> ｜ 525 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>考虑到版权问题，本博客不会附带任何《The Go Programming Language》内容的图像。</p>
+
+<p>2023-03-24：
+这篇博客不会一次写完，因为不可能一口气全部看完，目前也没时间去看。</p>
+
+<p>因为原版书太贵，要四五百，所以买了国内出的英文版（也就是影印版），只要四十块。但是吧，拿到书看了几眼大致内容。</p>
+
+<h2 id="封皮干扰项太多">封皮干扰项太多</h2>
+<p>这就是一个很主观的看法了。</p>
+
+<p>现在很多书的背后或者后勒口都会附有一些评论，来凸显这本书真的很权威，很值得购买，这也是正常的营销手段，无可厚非。但是这本书的评论没有一个大家，后勒口全是网上的评论，唯一权威的语句是 Go 官网上的一句话，这样的话我觉得可以不放这些评论。我觉得这样不如什么都不放（当然最好别放），还显得干净整洁，就像《The C Programming Language》。使用 Go 的人想买自然会在网上找到评价来购买，而且本书也是 Go 官网推荐的第一本书（本人就是在官网看到才买的）。</p>
+
+<p><img src="/assets/images/5415d9927f3b840e8e6cfded75ab5653.png" alt="Go官网推荐书籍" /></p>
+
+<p>现在专业书在书店里也很少，主要是网上专业书打折很多，书店里买太贵了。当前书店里主要是文学、艺术，或者一些新晋作家的书。所以我觉得出版社在出版这种专业型的书时，不如简洁一些。</p>
+
+<p>当然人是要有主观能动性的，我选择自己动手把勒口裁了，弄成《The C Programming Language》的影印版一样。唯一缺憾就是第一次裁书，没有裁得很好。</p>
+
+<p><img src="/assets/images/IMG_3689.jpeg" alt="裁的不是很成功的勒口" /></p>
+
+        </div>
+    </body>
+</html>
