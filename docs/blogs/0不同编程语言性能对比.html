@@ -1,0 +1,272 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='zh-CN'>
+        <title>不同编程语言性能对比</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="不同编程语言性能对比" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="突然好奇不同语言之间的性能对比，比较很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来看看实际情况。当然这个实验是没法一次做完的，毕竟我并不能一次性列出自己想做的所有测试项目，而且可能还会有新的语言加入，甚至是加入汇编语言作为基准，以及脚本语言作为对比。所以这可能是一个时间跨度很长的项目。" />
+<meta property="og:description" content="突然好奇不同语言之间的性能对比，比较很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来看看实际情况。当然这个实验是没法一次做完的，毕竟我并不能一次性列出自己想做的所有测试项目，而且可能还会有新的语言加入，甚至是加入汇编语言作为基准，以及脚本语言作为对比。所以这可能是一个时间跨度很长的项目。" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-31T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="不同编程语言性能对比" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-03-31T00:00:00+08:00","datePublished":"2023-03-31T00:00:00+08:00","description":"突然好奇不同语言之间的性能对比，比较很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来看看实际情况。当然这个实验是没法一次做完的，毕竟我并不能一次性列出自己想做的所有测试项目，而且可能还会有新的语言加入，甚至是加入汇编语言作为基准，以及脚本语言作为对比。所以这可能是一个时间跨度很长的项目。","headline":"不同编程语言性能对比","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html"},"url":"https://zhonguncle.github.io/blogs/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/book.html" class="headerItem">
+            Book
+        </a>
+    
+</div>
+            <h1>不同编程语言性能对比</h1>
+            <div class="bloginfo">
+                <p class="info">2023-03-31 ｜ <a href="/research.html"> Research</a> ｜ 1378 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>突然好奇不同语言之间的性能对比，比较很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来看看实际情况。当然这个实验是没法一次做完的，毕竟我并不能一次性列出自己想做的所有测试项目，而且可能还会有新的语言加入，甚至是加入汇编语言作为基准，以及脚本语言作为对比。所以这可能是一个时间跨度很长的项目。</p>
+
+<h2 id="关于数据和测试的一些情况">关于数据和测试的一些情况</h2>
+<h3 id="各编译器或框架版本">各编译器或框架版本</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>语言</th>
+      <th>编译器版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>C/C++</td>
+      <td>Apple clang version 14.0.0 (clang-1400.0.29.102)</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>javac 19.0.1</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>go version go1.20.2 darwin/amd64</td>
+    </tr>
+    <tr>
+      <td>Python3</td>
+      <td>Python 3.9.10</td>
+    </tr>
+    <tr>
+      <td>Swift</td>
+      <td>Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="时间之和不对">时间之和不对</h3>
+<p>记录时间是使用<code class="language-plaintext highlighter-rouge">time</code>命令统计其运行时间。由于一些程序运行时间太短，可以跑三次及以上，取中间值或者最常出现的值。<strong>由于存在四舍五入，所以会存在简单将用户时长和系统时长加起来不等于总时长的情况。</strong></p>
+
+<h3 id="第一次运行时间显示不正确">第一次运行时间显示不正确</h3>
+<p>有些语言的测试结果有一个很有意思的地方，不清楚是什么原因，第一次记录的总时长会很大（不是误差的程度），但是用户时长和系统时长都是正常的。所以忽略第一次运行的结果。</p>
+
+<h3 id="swift使用调用函数的方式">Swift使用调用函数的方式</h3>
+<p>Swift 使用调用函数的方式，因为是否使用函数来处理会导致性能有可能十倍的差距，如下是轻度循环测试的两种情况下的结果（运行了十几次，确保不是误差导致的）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Swift是否使用函数</th>
+      <th>总时长（秒）</th>
+      <th>用户时长（秒）</th>
+      <th>系统时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>不使用函数</td>
+      <td>0.286</td>
+      <td>0.283</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <td>使用函数</td>
+      <td>0.029</td>
+      <td>0.026</td>
+      <td>0.001</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="循环测试">循环测试</h2>
+<p>一般来说，循环语句是由跳转指令（一般是带判断的跳转指令）和一些其他指令构成的。而且像<code class="language-plaintext highlighter-rouge">while</code>、<code class="language-plaintext highlighter-rouge">for</code>这样的循环语句的使用率也很高，也是很多代码运行长时间运行的原因之一。</p>
+
+<h3 id="轻度循环测试">轻度循环测试</h3>
+<p>第一个项目是对不同编程语言进行1000000（一千万）次<code class="language-plaintext highlighter-rouge">while</code>循环和自增，并且打印出最后的和。由于每次循环的操作简单，就算是循环了一千万次，但还是一种轻度测试。</p>
+
+<p>这里之所以 Swift 使用<code class="language-plaintext highlighter-rouge">while</code>循环,是因为 Swift 使用的 For-In 在简单的循环上要比 While 慢得多，因为设计目的是为了遍历数组之类的数据结构。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>语言</th>
+      <th>总时长（秒）</th>
+      <th>用户时长（秒）</th>
+      <th>系统时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>C/C++</td>
+      <td>0.020</td>
+      <td>0.018</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>0.053</td>
+      <td>0.031</td>
+      <td>0.021</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>0.007</td>
+      <td>0.004</td>
+      <td>0.002</td>
+    </tr>
+    <tr>
+      <td>Python3</td>
+      <td>0.837</td>
+      <td>0.827</td>
+      <td>0.009</td>
+    </tr>
+    <tr>
+      <td>Swift（不使用函数）</td>
+      <td>0.286</td>
+      <td>0.283</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <td>Swift（使用函数）</td>
+      <td>0.029</td>
+      <td>0.026</td>
+      <td>0.001</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>可以看到所有编程语言都大幅领先脚本语言。在这次测试中，Go 语言甚至比 C/C++ 还快三倍（加大循环次数，比例还是三倍）。这个速度真的是非常之快了</p>
+
+<p>下面是各语言代码：
+C/C++：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+	<span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10000000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+	<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Java：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
+    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">argv</span><span class="o">)</span> <span class="o">{</span>
+        <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
+        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
+            <span class="n">j</span><span class="o">++;</span>
+        <span class="o">}</span>
+        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">j</span><span class="o">);</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Go：</p>
+
+<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">main</span>
+
+<span class="kn">import</span> <span class="err">"</span><span class="nn">fmt</span><span class="err">"</span>
+
+<span class="n">func</span> <span class="nf">main</span><span class="o">()</span> <span class="o">{</span>
+	<span class="n">j</span> <span class="o">:=</span> <span class="mi">0</span>
+	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++</span> <span class="o">{</span>
+		<span class="n">j</span><span class="o">++</span>
+	<span class="o">}</span>
+	
+	<span class="n">fmt</span><span class="o">.</span><span class="na">Println</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>Python：</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/python3
+</span> 
+<span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+<span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">):</span>
+    <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span>
+
+<span class="k">print</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Swift:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span>
+
+    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000000</span> <span class="p">{</span>
+        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
+    <span class="p">}</span>
+
+    <span class="nf">print</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
+<span class="p">}</span>
+
+<span class="nf">loop</span><span class="p">()</span>
+
+</code></pre></div></div>
+
+<h3 id="中度循环测试">中度循环测试</h3>
+
+        </div>
+    </body>
+</html>

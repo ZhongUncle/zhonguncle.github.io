@@ -166,19 +166,6 @@ dt {
     font-weight: 700
 }
 
-code,
-pre,
-samp {
-    font-family: Roboto Mono, Lucida Sans Typewriter, Lucida Console, monaco, Courrier, monospace;
-    font-size: .85em
-}
-
-code *,
-pre *,
-samp * {
-    font-size: inherit
-}
-
 blockquote {
     color: rgba(0, 0, 0, .5);
     padding-left: 1.5em;
