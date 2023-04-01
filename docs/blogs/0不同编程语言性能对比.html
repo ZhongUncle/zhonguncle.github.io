@@ -57,7 +57,7 @@
 </div>
             <h1>不同编程语言性能对比</h1>
             <div class="bloginfo">
-                <p class="info">2023-03-31 ｜ <a href="/research.html"> Research</a> ｜ 2171 字</p>
+                <p class="info">2023-03-31 ｜ <a href="/research.html"> Research</a> ｜ 2078 字</p>
             </div>
             <!-- excerpt-start -->
 <p>突然好奇不同语言之间的性能对比，比较很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来看看实际情况。当然这个实验是没法一次做完的，毕竟我并不能一次性列出自己想做的所有测试项目，而且可能还会有新的语言加入，甚至是加入汇编语言作为基准，以及脚本语言作为对比。所以这可能是一个时间跨度很长的项目。</p>
@@ -97,6 +97,8 @@
 </table>
 
 <h3 id="测试设备信息">测试设备信息</h3>
+
+<p><img alt="测试设备为 Mac mini 2018 i5 32GB 512GB" src="/assets/images/6f2d7d1340f9bf31c514e309bbcadf45.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="主要看哪个时间呢">主要看哪个时间呢</h3>
 <p>记录时间是使用<code class="language-plaintext highlighter-rouge">time</code>命令统计其运行时间。由于一些程序运行时间太短，可以跑三次及以上，取中间值或者最常出现的值。</p>
@@ -153,8 +155,8 @@ sys	0m0.011s
 <h2 id="循环测试">循环测试</h2>
 <p>一般来说，循环语句是由跳转指令（一般是带判断的跳转指令）和一些其他指令构成的。而且像<code class="language-plaintext highlighter-rouge">while</code>、<code class="language-plaintext highlighter-rouge">for</code>这样的循环语句的使用率也很高，也是很多代码运行长时间运行的原因之一。</p>
 
-<h3 id="轻度循环测试">轻度循环测试</h3>
-<p>第一个项目是对不同编程语言进行1000000（一千万）次<code class="language-plaintext highlighter-rouge">while</code>循环和自增，并且打印出最后的和。由于每次循环的操作简单，就算是循环了一千万次，但还只是一种轻度测试，代表性不强。</p>
+<h3 id="轻度循环测试单纯测一下循环速度">轻度循环测试（单纯测一下循环速度）</h3>
+<p>第一个项目是对不同编程语言进行1000000（一千万）次<code class="language-plaintext highlighter-rouge">while</code>循环和自增，并且打印出最后的和。由于每次循环的操作简单，就算是循环了一千万次，但还只是一种轻度测试，代表性不强，只是为了测试对比一下各语言的循环快慢。</p>
 
 <p>这里之所以 Swift 使用<code class="language-plaintext highlighter-rouge">while</code>循环,是因为 Swift 使用的 For-In 在简单的循环上要比 While 慢得多，因为设计目的是为了遍历数组之类的数据结构。</p>
 
@@ -203,83 +205,10 @@ sys	0m0.011s
 
 <p>可以看到所有编程语言都大幅领先脚本语言。在这次测试中，Go 语言甚至比 C/C++ 还快（加大循环次数，快的比例还是一样）。这个速度真的是有点惊喜，查阅了一些资料发现，Go 在轻度任务里确实非常快。</p>
 
-<p>下面是各语言代码：
-C/C++：</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
-</span>
-<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
-	<span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
-    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10000000</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-        <span class="n">j</span><span class="o">++</span><span class="p">;</span>
-    <span class="p">}</span>
-    
-	<span class="n">std</span><span class="o">::</span><span class="n">cout</span><span class="o">&lt;&lt;</span><span class="n">j</span><span class="o">&lt;&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
-    
-	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
-<span class="p">}</span>
-</code></pre></div></div>
-
-<p>Java：</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">public</span> <span class="kd">class</span> <span class="nc">test</span> <span class="o">{</span>
-    <span class="kd">public</span> <span class="kd">static</span> <span class="kt">void</span> <span class="nf">main</span><span class="o">(</span><span class="nc">String</span><span class="o">[]</span> <span class="n">argv</span><span class="o">)</span> <span class="o">{</span>
-        <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="o">;</span>
-        <span class="k">for</span> <span class="o">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="o">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">10000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++)</span> <span class="o">{</span>
-            <span class="n">j</span><span class="o">++;</span>
-        <span class="o">}</span>
-        <span class="nc">System</span><span class="o">.</span><span class="na">out</span><span class="o">.</span><span class="na">println</span><span class="o">(</span><span class="n">j</span><span class="o">);</span>
-    <span class="o">}</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p>Go：</p>
-
-<div class="language-java highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">package</span> <span class="nn">main</span>
-
-<span class="kn">import</span> <span class="err">"</span><span class="nn">fmt</span><span class="err">"</span>
-
-<span class="n">func</span> <span class="nf">main</span><span class="o">()</span> <span class="o">{</span>
-	<span class="n">j</span> <span class="o">:=</span> <span class="mi">0</span>
-	<span class="k">for</span> <span class="n">i</span> <span class="o">:=</span> <span class="mi">0</span><span class="o">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000000</span><span class="o">;</span> <span class="n">i</span><span class="o">++</span> <span class="o">{</span>
-		<span class="n">j</span><span class="o">++</span>
-	<span class="o">}</span>
-	
-	<span class="n">fmt</span><span class="o">.</span><span class="na">Println</span><span class="o">(</span><span class="n">j</span><span class="o">)</span>
-<span class="o">}</span>
-</code></pre></div></div>
-
-<p>Swift:</p>
-
-<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">loop</span><span class="p">()</span> <span class="p">{</span>
-    <span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="k">var</span> <span class="nv">j</span> <span class="o">=</span> <span class="mi">0</span>
-
-    <span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">10000000</span> <span class="p">{</span>
-        <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
-        <span class="n">j</span> <span class="o">+=</span> <span class="mi">1</span>
-    <span class="p">}</span>
-
-    <span class="nf">print</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-<span class="p">}</span>
-
-<span class="nf">loop</span><span class="p">()</span>
-</code></pre></div></div>
-
-<p>Python：</p>
-
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/python3
-</span> 
-<span class="n">j</span> <span class="o">=</span> <span class="mi">0</span>
-
-<span class="k">for</span> <span class="n">number</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">10000000</span><span class="p">):</span>
-    <span class="n">j</span><span class="o">=</span><span class="n">j</span><span class="o">+</span><span class="mi">1</span>
-
-<span class="k">print</span><span class="p">(</span><span class="n">j</span><span class="p">)</span>
-</code></pre></div></div>
+<p>下面是各语言的代码参见仓库 Language_Benchmark（还未公开）。</p>
 
 <h3 id="中度循环测试lomuto-partition-快速排序">中度循环测试（Lomuto-Partition 快速排序）</h3>
-<p>中度的测试就得加强每次循环中的操作了。那么可以来写一个快速排序进行测试，使用 Lomuto-Partition 方法，然后输出排序结果。</p>
+<p>中度的测试就得加强每次循环中的操作了，也比较贴近现实中的情况。那么可以来写一个快速排序进行测试，使用 Lomuto-Partition 方法，然后输出排序结果。</p>
 
 <p>测试数据如下，35 个整数：</p>
 
@@ -322,9 +251,9 @@ C/C++：</p>
     </tr>
     <tr>
       <td>Python3</td>
-      <td> </td>
-      <td> </td>
-      <td> </td>
+      <td>0.031</td>
+      <td>0.020</td>
+      <td>0.009</td>
     </tr>
     <tr>
       <td>Swift</td>
@@ -335,7 +264,9 @@ C/C++：</p>
   </tbody>
 </table>
 
-<p>这里由于 C/C++ 运行时间太短了，几乎还没跑起来就完了。所以加大数量，使用 2000 个整数排序，由于一些语言的时间本身就长，就不做测试了，只测试 C/C++、Go 和 Swift。结果如下：</p>
+<p>这里由于 C/C++ 运行时间太短了，几乎还没跑起来就完了。所以加大数量，使用 2000 个整数排序，由于 Python 有迭代次数限制，以及 Java 时间较长，就不测试 Python 和 Java 了，只测试 C/C++、Go 和 Swift。</p>
+
+<p>结果如下：</p>
 
 <table>
   <thead>
@@ -368,13 +299,18 @@ C/C++：</p>
   </tbody>
 </table>
 
+<p>结果 C/C++ 还是没用多久就跑完了。可以看到，在上了一些强度之后，C/C++ 展现出了高性能的一面，能比其他语言快 10～15 倍。</p>
+
 <p>本来想看看能有多少次循环，结果 Swift Playground 用了很长时间和很多内存还没跑完：</p>
 
 <p><img src="/assets/images/ac61c9a01dcf8f45f86c34ab35a0d2fb.png" alt="Swift Playground 用了很长时间和很多内存还没跑完" /></p>
 
 <p>所以就换一种方法，我给上面三处地方加了计数（就是三处数不一样的地方），这样就可以加快速度。</p>
 
-<p>最后得到的数据是：迭代 663040 次，所有划分数组函数中的 while 语句累计执行了 442360097 次（万幸没继续用 Swift Playground 跑）。</p>
+<p>最后得到的数据是：迭代 663040 次，所有划分数组函数中的 while 语句累计执行了 442360097 次（快 4.5 亿次，万幸没继续用 Swift Playground 跑）。如果统计所有的加法（不含减法），比如自增、相加的情况，那么总计有 886695669 次（约 8.87 亿次）加法计算。</p>
+
+<h3 id="重度循环测试">重度循环测试</h3>
+<p>还没想好测什么，等汇编部分出来再测吧</p>
 
         </div>
     </body>
