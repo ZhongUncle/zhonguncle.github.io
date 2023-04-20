@@ -4,6 +4,8 @@
   link: /swiftui.html
 - name: UNIX
   link: /unix.html
+- name: Plan 9
+  link: /plan9.html
 - name: Web
   link: /web.html
 - name: Research
