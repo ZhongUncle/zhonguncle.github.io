@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ThunderBolt 3/4 和 USB Type-C 有什么区别 其实 Thunderbolt 3是一个扩展集解决方案，它包括了 USB 3.1（10Gbps），并在单个 Type-C 接口中增加了 40Gbps 的 Thunderbolt 3/4 和 DisplayPort 1.2，还有PCIe。" />
+<meta property="og:description" content="ThunderBolt 3/4 和 USB Type-C 有什么区别 其实 Thunderbolt 3是一个扩展集解决方案，它包括了 USB 3.1（10Gbps），并在单个 Type-C 接口中增加了 40Gbps 的 Thunderbolt 3/4 和 DisplayPort 1.2，还有PCIe。" />
+<link rel="canonical" href="http://localhost:4000/blogs/79a38810a7833cdfcee6b2d243c34855.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/79a38810a7833cdfcee6b2d243c34855.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-16T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-16T00:00:00+08:00","datePublished":"2022-06-16T00:00:00+08:00","description":"ThunderBolt 3/4 和 USB Type-C 有什么区别 其实 Thunderbolt 3是一个扩展集解决方案，它包括了 USB 3.1（10Gbps），并在单个 Type-C 接口中增加了 40Gbps 的 Thunderbolt 3/4 和 DisplayPort 1.2，还有PCIe。","headline":"Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/79a38810a7833cdfcee6b2d243c34855.html"},"url":"http://localhost:4000/blogs/79a38810a7833cdfcee6b2d243c34855.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）</h1>
             <div class="bloginfo">
-                <p class="info">2022-06-16 ｜ <a href="/research.html"> Research</a> ｜ 3445 字</p>
+                <p class="info">2022-06-16 ｜ <a href="/research.html"> Research</a> ｜ 3512 字</p>
             </div>
             <h2 id="thunderbolt-34-和-usb-type-c-有什么区别">ThunderBolt 3/4 和 USB Type-C 有什么区别</h2>
 <!-- excerpt-start -->
@@ -64,7 +77,7 @@
 <h2 id="引脚定义">引脚定义</h2>
 <p>Type-C 接收端接口的引脚定义如下：</p>
 
-<p><img src="/assets/images/e3ff917528894adc88c1d2bf789a33f6.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/e3ff917528894adc88c1d2bf789a33f6.png" alt="Type-C 接收端接口的引脚定义" /></p>
 
 <table>
   <thead>
@@ -157,7 +170,7 @@ VBUS 是面向上游端口（Power Upstream Facing Port，UFP）供电，也就�
 CC 是 Configuration Channel 的缩写。例如可以用于传输 Power Delivery Protocol 的信号，实现例如 PD 协议。其他功能还有：检测线缆是否插入，检测线缆的方向等。更多信息可以看：<a href="https://www.microchipdeveloper.com/usb:tc-pins">https://www.microchipdeveloper.com/usb:tc-pins</a>
 D+/D- 是 USB 2.0 传统信号，也用于 USB 3.x，有 2 对。需要注意的是，如果是呼叫方（就是发送端），只有 a6 和 a7 两个会被使用，但是接收方 a6、a7、b6、b7 都会使用，如下（下图是一个被动线缆的公头插到一个PCB上的母口）：</p>
 
-<p><img src="/assets/images/c47cce22adc041f79775ad4d58b15f09.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/c47cce22adc041f79775ad4d58b15f09.png" alt="一个被动线缆的公头插到一个PCB上的母口" /></p>
 
 <p>SBU 是 Sideband Use 的缩写，USB 不会使用这两个接口，仅被用于备用模式（Alt-modes）。SBU 在 DP Alt 模式时，会作为 DP 协议中 AUX_P/AUX_N 差分线(它的极性是可以根据正反插方向修改的)，负责传输设备的 DPCD，EDID 等关键信息。</p>
 
@@ -167,7 +180,7 @@ D+/D- 是 USB 2.0 传统信号，也用于 USB 3.x，有 2 对。需要注意的
 
 <p>以 NS 的电源适配器为例，NS 电源适配器支持 5V1.5A（7.5W）或 15V2.6A（39W）输出。下图是 Type-C 接头接线图：</p>
 
-<p><img src="/assets/images/f7a31b5e3e5140cb818ec374440dc83e.jpeg" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/f7a31b5e3e5140cb818ec374440dc83e.jpeg" alt="Nintendo Switch电源适配器的 Type-C 接头接线图" /></p>
 
 <p>可以看到接到了 G（地线）、cc（用于实现充电协议）和 V（传输电流的），然后这三个焊点通过 PCB 上的铜线连接到 Type-C 的引脚。</p>
 
@@ -236,7 +249,7 @@ HBR 决定了 DP 占用的每个高速差分线上的带宽。</p>
 
 <h2 id="thunderbolt-3-和-4-区别">ThunderBolt 3 和 4 区别</h2>
 
-<p><img src="/assets/images/1163b5d206fb47568e4e67aa9d2d4437.jpeg" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/1163b5d206fb47568e4e67aa9d2d4437.jpeg" alt="ThunderBolt 4 与 3 区别" /></p>
 
 <p>如果查阅的话，会发现 ThunderBolt 4 与 3 相比有两个重大更新：</p>
 
@@ -261,7 +274,7 @@ CPU 的这 16 条 PCIe 3.0 极少被用于连接 ThunderBolt 控制器。因为�
 比如说 DP HBR2 模式下，4 条通道一共带宽就是 21.6 Gbps，两个显示器也就是 43.2 Gbps。
 <a href="https://www.dell.com/support/kbdoc/zh-cn/000149848/thunderbolt3usb-c%E7%9A%84%E6%9C%80%E5%A4%A7%E6%95%B0%E6%8D%AE%E4%BC%A0%E8%BE%93%E9%80%9F%E7%8E%87-%E5%9C%A8%E6%88%B4%E5%B0%94%E7%B3%BB%E7%BB%9F%E4%B8%8A">Dell</a> 说实际 PCIe 带宽或者数据传输带宽只有 7-22 Gbps，而且是官方限制的）。另外在论坛上看到了相同的言论，只是说明了原因——因为有些控制器支持两个输出接口，所以留了 10 Gbps 给 USB 3.1 Gen 2。</p>
 
-<p><img src="/assets/images/45076ddeda6041c19c82cc50ab03f9b0.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/45076ddeda6041c19c82cc50ab03f9b0.png" alt="另外在论坛上看到了相同的言论，只是说明了原因——因为有些控制器支持两个输出接口，所以留了 10 Gbps 给 USB 3.1 Gen 2" /></p>
 
 <p>也就是说 ThunderBolt 3 哪怕给了 4 条 PCIe 通道，直接连接在 CPU 上，也只能跑到 22 Gbps 左右。
 ThunderBolt 4 的提升主要就是因为把最低 PCIe 带宽强制限制在 32 Gbps，这样对很多外接 PCIe 设备来说提升很多（而且可能移除了那 10 Gbps 的预留）。</p>
@@ -270,7 +283,7 @@ ThunderBolt 4 的提升主要就是因为把最低 PCIe 带宽强制限制在 32
 因为 Intel 从 Tiger Lake 开始就直接把 ThunderBolt 3/4 控制器放入 CPU 中，不占用任何可分配的 PCIe 通道。这样 Tiger Lake 的 ThunderBolt 3 就可以完整的使用 4 条 PCIe 3.0 的带宽了，也可以达到 32 Gbps。
 而且如果查阅 ThunderBolt 4 的外置控制器，例如 <a href="https://ark.intel.com/content/www/us/en/ark/products/193684/intel-jhl8540-thunderbolt-4-controller.html">Intel® JHL8540 Thunderbolt™ 4 Controller</a>，会发现其是 PCIe 3.0 x4，如下图所示：</p>
 
-<p><img src="/assets/images/268466f0de0a4c65afce2b4fa4269bfb.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/268466f0de0a4c65afce2b4fa4269bfb.png" alt="Intel文档显示JHL8540雷电4控制器为PCIe 3.0 x4" /></p>
 
 <p>哦对这里还有一个帖子，里面介绍了一些显卡通过 ThunderBolt 连接的损耗：<a href="https://egpu.io/forums/mac-setup/pcie-slot-dgpu-vs-thunderbolt-3-egpu-internal-display-test/">eGPU Performance Loss - PCI Express vs. Thunderbolt</a></p>
 

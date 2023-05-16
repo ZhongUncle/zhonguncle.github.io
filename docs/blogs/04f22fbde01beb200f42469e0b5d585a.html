@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Python 如何对文件读取和写入</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Python 如何对文件读取和写入" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。" />
+<meta property="og:description" content="Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。" />
+<link rel="canonical" href="http://localhost:4000/blogs/04f22fbde01beb200f42469e0b5d585a.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/04f22fbde01beb200f42469e0b5d585a.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-03T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Python 如何对文件读取和写入" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-03T00:00:00+08:00","datePublished":"2022-06-03T00:00:00+08:00","description":"Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。","headline":"Python 如何对文件读取和写入","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/04f22fbde01beb200f42469e0b5d585a.html"},"url":"http://localhost:4000/blogs/04f22fbde01beb200f42469e0b5d585a.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>Python 如何对文件读取和写入</h1>
             <div class="bloginfo">
-                <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 915 字</p>
+                <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 926 字</p>
             </div>
             <!-- excerpt-start -->
 <p>Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。</p>
@@ -66,20 +79,52 @@
 <p>使用<code class="language-plaintext highlighter-rouge">open()</code>会返回一个文件对象，最长使用的方式是配合两个参数：<code class="language-plaintext highlighter-rouge">open(filename,mode)</code>。</p>
 
 <p>举个例子，假设有一个名为<code class="language-plaintext highlighter-rouge">hello.txt</code>，对其创建一个文件对象<code class="language-plaintext highlighter-rouge">f</code>：</p>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">f</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s">'hello.txt'</span><span class="p">,</span><span class="s">'r'</span><span class="p">)</span>
 </code></pre></div></div>
+
 <p>这里的<code class="language-plaintext highlighter-rouge">'hello.txt'</code>就是文件名称，后面的<code class="language-plaintext highlighter-rouge">'r'</code>表示在阅读模式下读取。</p>
 
-<p>各字符含义如下：
-| 字符 | 含义 |
-|–|–|
-| <code class="language-plaintext highlighter-rouge">'r'</code> | 在阅读模式下，打开文件进行读取（也是默认模式） |
-| <code class="language-plaintext highlighter-rouge">'w'</code> | 打开文件进行写入（如果文件已经存在，那么从开头删减） |
-| <code class="language-plaintext highlighter-rouge">'a'</code> | 打开文件进行写入，如果文件已经存在，那么将内容附加到文件末尾 |
-| <code class="language-plaintext highlighter-rouge">'x'</code> | 打开文件进行唯一的创建，如果文件已经存在，那么将会失败 |
-| <code class="language-plaintext highlighter-rouge">'b'</code> | 二进制模式 |
-| <code class="language-plaintext highlighter-rouge">'t'</code> | 文本模式（默认） |
-| <code class="language-plaintext highlighter-rouge">'+'</code> | 打开文件进行更新（也就是同时开启读取和写入） |</p>
+<p>各字符含义如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>字符</th>
+      <th>含义</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'r'</code></td>
+      <td>在阅读模式下，打开文件进行读取（也是默认模式）</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'w'</code></td>
+      <td>打开文件进行写入（如果文件已经存在，那么从开头删减）</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'a'</code></td>
+      <td>打开文件进行写入，如果文件已经存在，那么将内容附加到文件末尾</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'x'</code></td>
+      <td>打开文件进行唯一的创建，如果文件已经存在，那么将会失败</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'b'</code></td>
+      <td>二进制模式</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'t'</code></td>
+      <td>文本模式（默认）</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">'+'</code></td>
+      <td>打开文件进行更新（也就是同时开启读取和写入）</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>默认模式是<code class="language-plaintext highlighter-rouge">'r'</code>，其实等价于<code class="language-plaintext highlighter-rouge">'rt'</code>。</p>
 
@@ -101,12 +146,15 @@
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">fr</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span><span class="s">'r'</span><span class="p">)</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">fw</span><span class="o">=</span><span class="nb">open</span><span class="p">(</span><span class="s">'1.txt'</span><span class="p">,</span><span class="s">'w'</span><span class="p">)</span>
 </code></pre></div></div>
+
 <p>然后写入“Hello World!”，可以看到返回了写入的长度，12 个字符。</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">fw</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="s">'Hello World!'</span><span class="p">)</span>
 <span class="mi">12</span>
 </code></pre></div></div>
+
 <p>读取查看一下：</p>
+
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">fr</span><span class="p">.</span><span class="n">read</span><span class="p">()</span>
 <span class="s">'Hello World!'</span>
 </code></pre></div></div>

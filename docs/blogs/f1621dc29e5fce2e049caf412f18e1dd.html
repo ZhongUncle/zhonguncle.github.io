@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“无法移动”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。" />
+<meta property="og:description" content="随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“无法移动”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。" />
+<link rel="canonical" href="http://localhost:4000/blogs/f1621dc29e5fce2e049caf412f18e1dd.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/f1621dc29e5fce2e049caf412f18e1dd.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-16T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-16T00:00:00+08:00","datePublished":"2022-09-16T00:00:00+08:00","description":"随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“无法移动”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。","headline":"如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/f1621dc29e5fce2e049caf412f18e1dd.html"},"url":"http://localhost:4000/blogs/f1621dc29e5fce2e049caf412f18e1dd.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,10 +63,6 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置</h1>
             <div class="bloginfo">
@@ -79,6 +92,7 @@
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --export 已安装的WSL名称 目标位置\自定义名称.tar
 </code></pre></div></div>
+
 <p>举个例子，当前有一个 WSL 名为“<code class="language-plaintext highlighter-rouge">Ubuntu</code>”，位置在<code class="language-plaintext highlighter-rouge">C</code>盘。我们想将其移动到<code class="language-plaintext highlighter-rouge">G</code>盘，并且输出的 tar 文件名为“<code class="language-plaintext highlighter-rouge">myUbuntu.tar</code>”：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --export Ubuntu G:\\WSL\myUbuntu.tar
@@ -101,6 +115,7 @@
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --import WSL名称 安装目录 WSL压缩包文件地址
 </code></pre></div></div>
+
 <p>继续举个例子：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --import Ubuntu G:\\WSL G:\\WSL\myUbuntu.tar

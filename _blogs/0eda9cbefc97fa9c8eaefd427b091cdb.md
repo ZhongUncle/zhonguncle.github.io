@@ -68,12 +68,12 @@ gcc 和 clang具体区别这里不赘述，gcc 有个选项：`-nostartfiles`，
 ### size:
 输出对象文件的各部分大小，如下：
 
-![请添加图片描述](/assets/images/e3de2338d8054a01b7be017cc5fe5880.png)
+![size命令运行效果](/assets/images/e3de2338d8054a01b7be017cc5fe5880.png)
 
 ### otool：
 查看某部分大小和内容，类似 Windows 中的 debug.exe。例如查看`__TEXT,__text`部分的内容：
 
-![请添加图片描述](/assets/images/03f673d8ac154d5fa4f67be59e28b960.png)
+![otool查看`__TEXT,__text`部分的内容](/assets/images/03f673d8ac154d5fa4f67be59e28b960.png)
 
 我们也可以使用`otool`来查看其他部分的内容，用以下命令格式：
 
@@ -90,7 +90,7 @@ Mac OS X 上，默认的 C、C++、Objective-C 编译器。如果在“终端”
 ### Xcode：
 苹果自己的 IDE，有图形界面，也有一些终端命令行工具，可以编写 C、C++、Objective-C 和 Swift 语言的程序。可以利用 Xcode 来编写含有汇编代码的程序和 App。
 
-![请添加图片描述](/assets/images/ecd23a611ef7430eb8c667d0e9676718.png)
+![Xcode编写汇编代码](/assets/images/ecd23a611ef7430eb8c667d0e9676718.png)
 
 ## 语法区别
 很多人可能对汇编有所了解，但可能都是基于 Windows 的。但是在 Mac OS X 或者 C 语言（这里 C 语言编译器是 clang）内嵌汇编语言的语法中是不一样的，这里来说一下：
@@ -109,9 +109,11 @@ Mac OS X 上，默认的 C、C++、Objective-C 编译器。如果在“终端”
 
 首先新建一个名为`helloworld.s`的文件，汇编代码文件的后缀一般是`.asm`或者`.s`。这时候就可以来写第一部分的内容啦。
 先是需要指明第一部分是——**可执行命令**：
+
 ```
 .section	__TEXT,__text,regular,pure_instructions
 ```
+
 然后指明创建的目标平台：
 
 ```
@@ -123,11 +125,13 @@ Mac OS X 上，默认的 C、C++、Objective-C 编译器。如果在“终端”
 ```
 .globl	_main                           ## -- Begin function main
 ```
+
 然后使用对齐（align）命令将位置计数器移到下一个边界`4, 0x90`（一般来说都是地址）。
 
 ```
 .p2align	4, 0x90
 ```
+
 然后我们就可以开始写`_main`部分包含的内容啦，也就是开始写`main()`函数了：
 
 ```
@@ -162,6 +166,7 @@ https://www.keil.com/support/man/docs/armasm/armasm_dom1361290010153.htm](https:
 L_.str:                                 ## @.str
 	.asciz	"hello world!\n"
 ```
+
 这里就是准备输出的字符串：`hello world!\n`了。
 如果这里使用的是`.ascii`命令，那么这行应该改成`.asciz	"hello world!\n\0"`。
 因为`.asciz`自动补上了字符串末尾的`\0`，如果被用于 C 程序的话，就使用这个。
@@ -171,6 +176,7 @@ L_.str:                                 ## @.str
 ```
 .subsections_via_symbols
 ```
+
 这行命令会告诉静态连接编辑器，这部分对象文件（object file）能被分割成几块。不过这里用不用无所谓，不影响结果。但是出于严谨可以加上。
 
 完整代码如下：
@@ -203,12 +209,12 @@ L_.str:                                 ## @.str
 	.asciz	"hello world!\n"
 
 .subsections_via_symbols
-
 ```
 
 ### 汇编成可执行文件
 在 Windows 中，现在主流的可执行文件的格式是 PE（Portable Executable File Format），而其中的“Executable”缩写就是很多人熟知的 EXE。在 macOS 中，可执行文件被称为`Mach-O executable file`。
 如果使用`file`命令来查看一个可执行文件的话就可以看到，这里我们查看 Xcode：
+
 ```
 # 可执行文件
 $ file /Applications/Xcode.app/Contents/MacOS/Xcode 
@@ -216,6 +222,7 @@ Xcode: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit execu
 Xcode (for architecture x86_64):	Mach-O 64-bit executable x86_64
 Xcode (for architecture arm64):	Mach-O 64-bit executable arm64
 ```
+
 所以最终目标是要把`hello.s`这个汇编文件，“变”成一个`Mach-O executable file`。
 
 这里有两种方法：
@@ -228,6 +235,7 @@ $ chmod 755 a.out
 $ file a.out 
 a.out: Mach-O 64-bit executable x86_64
 ```
+
 这时候可以看到，`a.out`便是需要的`Mach-O executable file`。
 运行一下看看：
 
@@ -235,6 +243,7 @@ a.out: Mach-O 64-bit executable x86_64
 $ ./a.out 
 hello world!
 ```
+
 非常不错。
 
 #### 方法 2
@@ -244,6 +253,7 @@ hello world!
 $ as hello.s
 $ chmod 755 a.out 
 ```
+
 **这里需要注意一点，`as`生成的是 Mach-O 对象文件（Mach-O object file），而不是`Mach-O executable file`，是不能直接运行的，如果直接运行会提示`cannot execute binary file`。在 Windows 中，对象文件被称为 COFF（Common Object File Format）。**
 
 这时候需要使用连接器`ld`来处理对象文件。但是，如果简单的使用`ld `会出现以下情况：
@@ -255,23 +265,28 @@ Undefined symbols for architecture x86_64:
       _main in a.out
 ld: symbol(s) not found for architecture x86_64
 ```
+
 这是因为使用了 C 标准库的`_printf`，但是`ld`默认搜不到。所以加上库地址就可以，如下：
 
 ```
 $ ld a.out -o hello -lSystem -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 ```
+
 **特别注意！一般`Mach-O executable file`是不加任何后缀的。**
 这时候得到的`hello`便是需要的`Mach-O executable file`。使用`file`命令来检查一下：
+
 ```
 $ file hello
 hello: Mach-O 64-bit executable x86_64
 ```
+
 然后运行一下看看：
 
 ```
 $ ./hello
 hello world!
 ```
+
 运行完美～
 
 

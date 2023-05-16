@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。" />
+<meta property="og:description" content="测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。" />
+<link rel="canonical" href="http://localhost:4000/blogs/50809ae558e6bc2de8441aaad7a19d39.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/50809ae558e6bc2de8441aaad7a19d39.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-02-17T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-17T00:00:00+08:00","datePublished":"2023-02-17T00:00:00+08:00","description":"测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。","headline":"在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/50809ae558e6bc2de8441aaad7a19d39.html"},"url":"http://localhost:4000/blogs/50809ae558e6bc2de8441aaad7a19d39.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试</h1>
             <div class="bloginfo">
-                <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ 870 字</p>
+                <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ 908 字</p>
             </div>
             <!-- excerpt-start -->
 <p>测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。</p>
@@ -116,7 +129,7 @@
 <p>此外，显存带宽也真的很重要（虽然大小也重要），MX250 带宽太小，毕竟就 64-bit 的 GDDR5（也就是48GB/s），加迭代和降低学习速度等操作之后，CUDA 计算速率都上不去。不过一般消费级显卡的显存带宽也够用，只是 MX250 定位是轻薄本用。
 这让我想到了我之前看别人做的测试 <a href="https://sebastianraschka.com/blog/2022/pytorch-m1-gpu.html">Running PyTorch on the M1 GPU</a>，其中有个数据是 RTX 3080 Laptop 要比 RTX 2080Ti 稍慢一些：</p>
 
-<p><img src="/assets/images/vgg-benchmark-training.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="别人测试的图" src="/assets/images/vgg-benchmark-training.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>上图中各显卡参数和成绩如下：</p>
 
@@ -177,15 +190,15 @@
 
 <p>因为显存大小都为 10 GiB 左右，就不列出了，而且这里也没有超过显存大小。</p>
 
-<p><img src="/assets/images/%E6%88%AA%E5%B1%8F2023-02-17%2006.06.51.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img src="/assets/images/bc6ba17af8cdca3cccbe0a980fda184b.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>下图中“比例”部分关于“分钟/epoch”使用标准性能计算公式（如果你想质疑这个公式麻烦写论文去发 JACM）:</p>
 
-<p><img src="/assets/images/t27e187te8712.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="标准性能计算公式" src="/assets/images/t27e187te8712.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>这样看可能不是很清楚，所以只保留“Cuda Cores”、“显存带宽”和“性能”来一张图，因为其他部分也都是与“显存带宽”相关的，所以就忽略掉：</p>
 
-<p><img src="/assets/images/%E6%88%AA%E5%B1%8F2023-02-17%2006.06.39.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="“Cuda Cores”、“显存带宽”、“性能”和运行结果的曲线图" src="/assets/images/2485e6c0d1e87391fac8337c7079b2e0.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>这样可以很清楚的看到，训练模型的性能和显存带宽、Cuda 数量的关系非常大。</p>
 

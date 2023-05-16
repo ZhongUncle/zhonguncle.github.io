@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。" />
+<meta property="og:description" content="最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。" />
+<link rel="canonical" href="http://localhost:4000/blogs/5485ea7ed82502b2890d737b6db02b56.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/5485ea7ed82502b2890d737b6db02b56.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-14T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-14T00:00:00+08:00","datePublished":"2022-08-14T00:00:00+08:00","description":"最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。","headline":"在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/5485ea7ed82502b2890d737b6db02b56.html"},"url":"http://localhost:4000/blogs/5485ea7ed82502b2890d737b6db02b56.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</h1>
             <div class="bloginfo">
-                <p class="info">2022-08-14 ｜ <a href="/unix.html"> UNIX</a> ｜ 1779 字</p>
+                <p class="info">2022-08-14 ｜ <a href="/web.html"> Web</a> ｜ 1787 字</p>
             </div>
             <!-- excerpt-start -->
 <p>最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。</p>
@@ -70,18 +83,21 @@
 </code></pre></div></div>
 
 <p>安装完成之后，使用以下命令启动 nginx 服务：</p>
+
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 二者都可</span>
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl start nginx
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl start nginx.service
 </code></pre></div></div>
 
 <p>关闭 nginx 服务：</p>
+
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 二者都可</span>
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl stop nginx
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl stop nginx.service
 </code></pre></div></div>
 
 <p>重启 nginx 服务：</p>
+
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 二者都可</span>
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl restart nginx
 <span class="nv">$ </span><span class="nb">sudo </span>systemctl restart nginx.service
@@ -90,7 +106,7 @@
 <h2 id="安装-php">安装 PHP</h2>
 <p>然后就是安装 PHP。如果你阅读过其他文章，会发现很多人会提到需要安装 PHP-FPM（FastCGI 进程管理器，用来处理一些用户请求，一般就是处理 PHP 脚本的沟通协议）。但是从 PHP 5.3.3 开始，PHP-FPM 就包含在PHP core中，按理来说不用自己安装了（问题本节后面说，一定要看一下），下面图是官网机翻：</p>
 
-<p><img src="https://img-blog.csdnimg.cn/d75e5fbe075e424b86b524a3220bbfe9.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/d75e5fbe075e424b86b524a3220bbfe9.png" alt="官网PHP版本介绍的机翻" /></p>
 
 <p>PHP 可以直接使用<code class="language-plaintext highlighter-rouge">apt</code>来安装，依次执行以下命令：</p>
 
@@ -106,6 +122,7 @@ Copyright <span class="o">(</span>c<span class="o">)</span> The PHP Group
 Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> Zend Technologies
     with Zend OPcache v7.4.3, Copyright <span class="o">(</span>c<span class="o">)</span>, by Zend Technologies
 </code></pre></div></div>
+
 <p>这时候 PHP 就安装好了。</p>
 
 <p>但是！如果你直接部署，之后查看会显示“502 Bad Gateway”。
@@ -121,6 +138,7 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>vi /etc/nginx/nginx.conf
 </code></pre></div></div>
+
 <p>在里面找一个位置，写入以下代码：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>		server <span class="o">{</span>
@@ -141,6 +159,7 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
                 <span class="o">}</span>
         <span class="o">}</span>
 </code></pre></div></div>
+
 <p>Nginx 就算简单部署完成了。</p>
 
 <h3 id="php-fpm">PHP-FPM</h3>
@@ -150,6 +169,7 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
 <span class="nv">$ </span><span class="nb">ls
 </span>www.conf
 </code></pre></div></div>
+
 <p>会看到有一个名为<code class="language-plaintext highlighter-rouge">www.conf</code>的文件，这个文件控制着 PHP-FPM 的一些行为。</p>
 
 <p>因为前面配置 Nginx 的时候，让 fastcgi（也就是 PHP-FPM 监听本机的端口 9000）。但是在<code class="language-plaintext highlighter-rouge">www.conf</code>中只让其监听<code class="language-plaintext highlighter-rouge">/run/php/php7.4-fpm.sock</code>，这是一个 socket，但是一般是空的。</p>
@@ -161,7 +181,7 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
 
 <p>如下：</p>
 
-<p><img src="https://img-blog.csdnimg.cn/b53f908df689444a89d9f8e1200ef445.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/b53f908df689444a89d9f8e1200ef445.png" alt="添加在图中位置来监听端口 9000" /></p>
 
 <h2 id="使用">使用</h2>
 <p>然后就是简单的使用了。
@@ -176,8 +196,10 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xxx.x.x.x/index.php
 </code></pre></div></div>
-<p>然后就可以看到以下画面：
-<img src="https://img-blog.csdnimg.cn/14476407844c45f4b26c9af74d0b0eb5.png" alt="请添加图片描述" /></p>
+
+<p>然后就可以看到以下画面：</p>
+
+<p><img src="/assets/images/14476407844c45f4b26c9af74d0b0eb5.png" alt="新建之后的页面效果" /></p>
 
 <h2 id="一些排错方法">一些排错方法</h2>
 <p>在配置和使用的时候可能会出现一些奇怪的问题，这里来介绍一些可能会使用到的方法。</p>
@@ -187,7 +209,6 @@ Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> 
 例如在<code class="language-plaintext highlighter-rouge">/etc/nginx/nginx.conf</code>中有“日志设置”部分，这部分说明了错误日志的位置：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Logging Settings</span>
-<span class="c">##</span>
 
 access_log /var/log/nginx/access.log<span class="p">;</span>
 <span class="c"># 这个就是错误日志</span>
@@ -202,8 +223,8 @@ error_log /var/log/nginx/error.log<span class="p">;</span>
 <p>可能会出现的问题如下（连接不到推送流）：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2022/06/23 19:33:39 <span class="o">[</span>error] 6972#6972: <span class="k">*</span>1 connect<span class="o">()</span> failed <span class="o">(</span>111: Connection refused<span class="o">)</span> <span class="k">while </span>connecting to upstream, client: xxx.xxx.xxx.xx, server: xxx.x.x.x, request: <span class="s2">"GET /index.php HTTP/1.1"</span>, upstream: <span class="s2">"fastcgi://127.0.0.1:9000"</span>, host: <span class="s2">"xxx.x.x.x"</span>
-
 </code></pre></div></div>
+
 <p>这个问题就是因为没有安装 PHP-FPM 导致的，并且有时还有可能导致以下这种问题（协议不对）：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2022/06/23 19:33:39 <span class="o">[</span>error] 6972#6972: <span class="k">*</span>1 upstream sent unsupported FastCGI protocol version: 72 <span class="k">while </span>reading response header from upstream, client: xxx.xxx.xxx.xx, server: xxx.x.x.x, request: <span class="s2">"GET /index.php HTTP/1.1"</span>, upstream: <span class="s2">"fastcgi://127.0.0.1:9000"</span>, host: <span class="s2">"xxx.x.x.x"</span>
@@ -212,6 +233,7 @@ error_log /var/log/nginx/error.log<span class="p">;</span>
 
 <h3 id="查找-php-配置文件phpini">查找 PHP 配置文件<code class="language-plaintext highlighter-rouge">php.ini</code></h3>
 <p>有些时候需要调整 PHP 的配置文件，使用以下命令可以直接查看<code class="language-plaintext highlighter-rouge">php.ini</code>，如下：</p>
+
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>php <span class="nt">-ini</span>
 phpinfo<span class="o">()</span>
 PHP Version <span class="o">=&gt;</span> 7.4.3
@@ -224,6 +246,7 @@ Configuration File <span class="o">(</span>php.ini<span class="o">)</span> Path 
 Loaded Configuration File <span class="o">=&gt;</span> /etc/php/7.4/cli/php.ini
 ......
 </code></pre></div></div>
+
 <p>特别长，但是在开头能看到上文这一部分。</p>
 
 <p>其中：</p>

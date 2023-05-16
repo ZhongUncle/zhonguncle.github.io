@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>macOS 汇编指南</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="macOS 汇编指南" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="现在很多汇编的学习资料、途径和工具都是关于 Windows 下的，所以这里来介绍一下 macOS 上学习使用汇编需要的资料和工具。" />
+<meta property="og:description" content="现在很多汇编的学习资料、途径和工具都是关于 Windows 下的，所以这里来介绍一下 macOS 上学习使用汇编需要的资料和工具。" />
+<link rel="canonical" href="http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-13T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="macOS 汇编指南" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-13T00:00:00+08:00","datePublished":"2022-08-13T00:00:00+08:00","description":"现在很多汇编的学习资料、途径和工具都是关于 Windows 下的，所以这里来介绍一下 macOS 上学习使用汇编需要的资料和工具。","headline":"macOS 汇编指南","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html"},"url":"http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>macOS 汇编指南</h1>
             <div class="bloginfo">
-                <p class="info">2022-08-13 ｜ <a href="/unix.html"> UNIX</a> ｜ 3836 字</p>
+                <p class="info">2022-08-13 ｜ <a href="/unix.html"> UNIX</a> ｜ 3835 字</p>
             </div>
             <!-- excerpt-start -->
 <p>现在很多汇编的学习资料、途径和工具都是关于 Windows 下的，所以这里来介绍一下 macOS 上学习使用汇编需要的资料和工具。</p>
@@ -127,12 +140,12 @@ Version 1.2》</a>（这篇指南最新的b版本是2001年的），而是分散
 <h3 id="size">size:</h3>
 <p>输出对象文件的各部分大小，如下：</p>
 
-<p><img src="/assets/images/e3de2338d8054a01b7be017cc5fe5880.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/e3de2338d8054a01b7be017cc5fe5880.png" alt="size命令运行效果" /></p>
 
 <h3 id="otool">otool：</h3>
 <p>查看某部分大小和内容，类似 Windows 中的 debug.exe。例如查看<code class="language-plaintext highlighter-rouge">__TEXT,__text</code>部分的内容：</p>
 
-<p><img src="/assets/images/03f673d8ac154d5fa4f67be59e28b960.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/03f673d8ac154d5fa4f67be59e28b960.png" alt="otool查看`__TEXT,__text`部分的内容" /></p>
 
 <p>我们也可以使用<code class="language-plaintext highlighter-rouge">otool</code>来查看其他部分的内容，用以下命令格式：</p>
 
@@ -148,7 +161,7 @@ Contents of (__TEXT,__cstring) section
 <h3 id="xcode">Xcode：</h3>
 <p>苹果自己的 IDE，有图形界面，也有一些终端命令行工具，可以编写 C、C++、Objective-C 和 Swift 语言的程序。可以利用 Xcode 来编写含有汇编代码的程序和 App。</p>
 
-<p><img src="/assets/images/ecd23a611ef7430eb8c667d0e9676718.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/ecd23a611ef7430eb8c667d0e9676718.png" alt="Xcode编写汇编代码" /></p>
 
 <h2 id="语法区别">语法区别</h2>
 <p>很多人可能对汇编有所了解，但可能都是基于 Windows 的。但是在 Mac OS X 或者 C 语言（这里 C 语言编译器是 clang）内嵌汇编语言的语法中是不一样的，这里来说一下：</p>
@@ -166,8 +179,10 @@ Contents of (__TEXT,__cstring) section
 
 <p>首先新建一个名为<code class="language-plaintext highlighter-rouge">helloworld.s</code>的文件，汇编代码文件的后缀一般是<code class="language-plaintext highlighter-rouge">.asm</code>或者<code class="language-plaintext highlighter-rouge">.s</code>。这时候就可以来写第一部分的内容啦。
 先是需要指明第一部分是——<strong>可执行命令</strong>：</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.section	__TEXT,__text,regular,pure_instructions
 </code></pre></div></div>
+
 <p>然后指明创建的目标平台：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.build_version macos, 12, 0	sdk_version 12, 1
@@ -177,10 +192,12 @@ Contents of (__TEXT,__cstring) section
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.globl	_main                           ## -- Begin function main
 </code></pre></div></div>
+
 <p>然后使用对齐（align）命令将位置计数器移到下一个边界<code class="language-plaintext highlighter-rouge">4, 0x90</code>（一般来说都是地址）。</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.p2align	4, 0x90
 </code></pre></div></div>
+
 <p>然后我们就可以开始写<code class="language-plaintext highlighter-rouge">_main</code>部分包含的内容啦，也就是开始写<code class="language-plaintext highlighter-rouge">main()</code>函数了：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>_main:                                  ## @main
@@ -213,6 +230,7 @@ https://www.keil.com/support/man/docs/armasm/armasm_dom1361290010153.htm</a></p>
 L_.str:                                 ## @.str
 	.asciz	"hello world!\n"
 </code></pre></div></div>
+
 <p>这里就是准备输出的字符串：<code class="language-plaintext highlighter-rouge">hello world!\n</code>了。
 如果这里使用的是<code class="language-plaintext highlighter-rouge">.ascii</code>命令，那么这行应该改成<code class="language-plaintext highlighter-rouge">.asciz	"hello world!\n\0"</code>。
 因为<code class="language-plaintext highlighter-rouge">.asciz</code>自动补上了字符串末尾的<code class="language-plaintext highlighter-rouge">\0</code>，如果被用于 C 程序的话，就使用这个。</p>
@@ -221,6 +239,7 @@ L_.str:                                 ## @.str
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>.subsections_via_symbols
 </code></pre></div></div>
+
 <p>这行命令会告诉静态连接编辑器，这部分对象文件（object file）能被分割成几块。不过这里用不用无所谓，不影响结果。但是出于严谨可以加上。</p>
 
 <p>完整代码如下：</p>
@@ -252,18 +271,19 @@ L_.str:                                 ## @.str
 	.asciz	"hello world!\n"
 
 .subsections_via_symbols
-
 </code></pre></div></div>
 
 <h3 id="汇编成可执行文件">汇编成可执行文件</h3>
 <p>在 Windows 中，现在主流的可执行文件的格式是 PE（Portable Executable File Format），而其中的“Executable”缩写就是很多人熟知的 EXE。在 macOS 中，可执行文件被称为<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。
 如果使用<code class="language-plaintext highlighter-rouge">file</code>命令来查看一个可执行文件的话就可以看到，这里我们查看 Xcode：</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 可执行文件
 $ file /Applications/Xcode.app/Contents/MacOS/Xcode 
 Xcode: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64:Mach-O 64-bit executable arm64]
 Xcode (for architecture x86_64):	Mach-O 64-bit executable x86_64
 Xcode (for architecture arm64):	Mach-O 64-bit executable arm64
 </code></pre></div></div>
+
 <p>所以最终目标是要把<code class="language-plaintext highlighter-rouge">hello.s</code>这个汇编文件，“变”成一个<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。</p>
 
 <p>这里有两种方法：</p>
@@ -275,12 +295,14 @@ $ chmod 755 a.out
 $ file a.out 
 a.out: Mach-O 64-bit executable x86_64
 </code></pre></div></div>
+
 <p>这时候可以看到，<code class="language-plaintext highlighter-rouge">a.out</code>便是需要的<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。
 运行一下看看：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./a.out 
 hello world!
 </code></pre></div></div>
+
 <p>非常不错。</p>
 
 <h4 id="方法-2">方法 2</h4>
@@ -289,6 +311,7 @@ hello world!
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ as hello.s
 $ chmod 755 a.out 
 </code></pre></div></div>
+
 <p><strong>这里需要注意一点，<code class="language-plaintext highlighter-rouge">as</code>生成的是 Mach-O 对象文件（Mach-O object file），而不是<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>，是不能直接运行的，如果直接运行会提示<code class="language-plaintext highlighter-rouge">cannot execute binary file</code>。在 Windows 中，对象文件被称为 COFF（Common Object File Format）。</strong></p>
 
 <p>这时候需要使用连接器<code class="language-plaintext highlighter-rouge">ld</code>来处理对象文件。但是，如果简单的使用<code class="language-plaintext highlighter-rouge">ld </code>会出现以下情况：</p>
@@ -299,20 +322,25 @@ Undefined symbols for architecture x86_64:
       _main in a.out
 ld: symbol(s) not found for architecture x86_64
 </code></pre></div></div>
+
 <p>这是因为使用了 C 标准库的<code class="language-plaintext highlighter-rouge">_printf</code>，但是<code class="language-plaintext highlighter-rouge">ld</code>默认搜不到。所以加上库地址就可以，如下：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ld a.out -o hello -lSystem -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 </code></pre></div></div>
+
 <p><strong>特别注意！一般<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>是不加任何后缀的。</strong>
 这时候得到的<code class="language-plaintext highlighter-rouge">hello</code>便是需要的<code class="language-plaintext highlighter-rouge">Mach-O executable file</code>。使用<code class="language-plaintext highlighter-rouge">file</code>命令来检查一下：</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ file hello
 hello: Mach-O 64-bit executable x86_64
 </code></pre></div></div>
+
 <p>然后运行一下看看：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./hello
 hello world!
 </code></pre></div></div>
+
 <p>运行完美～</p>
 
 <h2 id="结尾">结尾</h2>

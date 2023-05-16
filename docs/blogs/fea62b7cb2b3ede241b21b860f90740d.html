@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法： NavigationView法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。这个方法从 iOS 16 开始被废弃了，新的办法请移步：《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》（2022-11-24更新）。 指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。" />
+<meta property="og:description" content="在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法： NavigationView法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。这个方法从 iOS 16 开始被废弃了，新的办法请移步：《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》（2022-11-24更新）。 指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。" />
+<link rel="canonical" href="http://localhost:4000/blogs/fea62b7cb2b3ede241b21b860f90740d.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/fea62b7cb2b3ede241b21b860f90740d.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-07-17T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-17T00:00:00+08:00","datePublished":"2022-07-17T00:00:00+08:00","description":"在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法： NavigationView法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。这个方法从 iOS 16 开始被废弃了，新的办法请移步：《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》（2022-11-24更新）。 指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。","headline":"「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/fea62b7cb2b3ede241b21b860f90740d.html"},"url":"http://localhost:4000/blogs/fea62b7cb2b3ede241b21b860f90740d.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）</h1>
             <div class="bloginfo">
-                <p class="info">2022-07-17 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 1901 字</p>
+                <p class="info">2022-07-17 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 1895 字</p>
             </div>
             <!-- excerpt-start -->
 <p>在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：</p>
@@ -63,20 +76,22 @@
 </ul>
 
 <h2 id="navigationview-法">NavigationView 法：</h2>
-
 <p>这个方法使用<code class="language-plaintext highlighter-rouge">Navigationlink</code>来指定需要跳转到的界面，也是最常见的方法。使用起来有两种方法，不过这两种方法都需要包裹在<code class="language-plaintext highlighter-rouge">NavigationView</code>中：</p>
 <h3 id="直接把navigationlink当按钮点击跳转">直接把<code class="language-plaintext highlighter-rouge">NavigationLink</code>当按钮，点击跳转</h3>
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">NavigationLink</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">需要跳转到的界面</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span> <span class="o">&lt;</span><span class="n">跳转链接样式</span><span class="o">&gt;</span> <span class="p">}</span>
 </code></pre></div></div>
+
 <p>这个太简单了，一般很少用。使用方法和按钮<code class="language-plaintext highlighter-rouge">Button</code>一样。</p>
 
 <h3 id="推荐用一个布尔值触发跳转根据条件跳转界面">【推荐】用一个布尔值触发跳转（根据条件跳转界面）</h3>
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">NavigationLink</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">需要跳转到的界面</span><span class="o">&gt;</span><span class="p">,</span> <span class="nv">isActive</span><span class="p">:</span> <span class="o">&lt;</span><span class="n">用于激活跳转的一个布尔值</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span> <span class="kt">EmptyView</span><span class="p">()</span> <span class="p">}</span>
 </code></pre></div></div>
+
 <p>这种方法使用一个<code class="language-plaintext highlighter-rouge">EmptyView()</code>让其不显示在界面中，但是可以被触发，有时候需要使用<code class="language-plaintext highlighter-rouge">ZStack</code>压到最下面。
 这种方法使用场景就多了，比如说达到一定条件可以跳转到某个界面。</p>
 
 <p>比如下面这个点击按钮就可以跳转哦。</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
 	<span class="c1">//这个就是触发跳转的布尔值</span>
     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">isShowingDetailView</span> <span class="o">=</span> <span class="kc">false</span>
@@ -104,9 +119,10 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/2a83f4b57f1245df8b9c97f17762b17f.gif" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/2a83f4b57f1245df8b9c97f17762b17f.gif" alt="点击跳转" /></p>
 
 <h2 id="指定跳转法">指定跳转法</h2>
 
@@ -156,6 +172,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>这个方法其实就是通过使用<code class="language-plaintext highlighter-rouge">switch</code>语句来更改当前显示的 View，被更改的则是之前新建结构体<code class="language-plaintext highlighter-rouge">ViewRouter</code>中的<code class="language-plaintext highlighter-rouge">currentView</code>。结构体<code class="language-plaintext highlighter-rouge">ViewRouter</code>中的<code class="language-plaintext highlighter-rouge">@Published var currentView: Views = .view1</code>表示默认显示<code class="language-plaintext highlighter-rouge">.view1</code>。</p>
 
 <p>然后列出三个界面的代码，这里需要在按钮上更改结构体<code class="language-plaintext highlighter-rouge">ViewRouter</code>中的<code class="language-plaintext highlighter-rouge">currentView</code>。</p>
@@ -238,6 +255,7 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>或者：</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">@main</span>
@@ -250,9 +268,10 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/01b510bb0324429d948c52aba7f41de1.gif" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/01b510bb0324429d948c52aba7f41de1.gif" alt="点击跳转" /></p>
 
 <p>希望可以帮到有需要的人～</p>
 

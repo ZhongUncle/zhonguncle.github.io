@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何在 LaTeX 中画一个树状图（使用tikz和tikz-qtree包中的宏绘制树、森林、二叉树）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何在 LaTeX 中画一个树状图（使用tikz和tikz-qtree包中的宏绘制树、森林、二叉树）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="简单介绍 在计算机相关的文章中，树状图是最常见的几种图之一。树状图经常被用来用来演示结构、层次、算法等内容。而二叉树是最基础的树状图之一，掌握二叉树的画法就可以用图像展示一些算法或者数据结构了。" />
+<meta property="og:description" content="简单介绍 在计算机相关的文章中，树状图是最常见的几种图之一。树状图经常被用来用来演示结构、层次、算法等内容。而二叉树是最基础的树状图之一，掌握二叉树的画法就可以用图像展示一些算法或者数据结构了。" />
+<link rel="canonical" href="http://localhost:4000/blogs/b99739ec9b25d0367d6162708ebbd965.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/b99739ec9b25d0367d6162708ebbd965.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-12-01T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何在 LaTeX 中画一个树状图（使用tikz和tikz-qtree包中的宏绘制树、森林、二叉树）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-12-01T00:00:00+08:00","datePublished":"2022-12-01T00:00:00+08:00","description":"简单介绍 在计算机相关的文章中，树状图是最常见的几种图之一。树状图经常被用来用来演示结构、层次、算法等内容。而二叉树是最基础的树状图之一，掌握二叉树的画法就可以用图像展示一些算法或者数据结构了。","headline":"如何在 LaTeX 中画一个树状图（使用tikz和tikz-qtree包中的宏绘制树、森林、二叉树）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/b99739ec9b25d0367d6162708ebbd965.html"},"url":"http://localhost:4000/blogs/b99739ec9b25d0367d6162708ebbd965.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>如何在 LaTeX 中画一个树状图（使用tikz和tikz-qtree包中的宏绘制树、森林、二叉树）</h1>
             <div class="bloginfo">
-                <p class="info">2022-12-01 ｜ <a href="/research.html"> Research</a> ｜ 2778 字</p>
+                <p class="info">2022-12-01 ｜ <a href="/research.html"> Research</a> ｜ 2921 字</p>
             </div>
             <!-- excerpt-start -->
 <h2 id="简单介绍">简单介绍</h2>
@@ -83,11 +96,13 @@
  
 \end{document}
 </code></pre></div></div>
+
 <p>下面演示的所有的代码，除非特殊说明，不然都是放在上述结构中的<code class="language-plaintext highlighter-rouge">%在这里输入绘制树的代码</code>的位置。</p>
 <h3 id="绘制一颗简单的树">绘制一颗简单的树</h3>
 <p>绘制树的语句由表示树开始的<code class="language-plaintext highlighter-rouge">\node </code>、节点信息和表示一颗树结束的分号<code class="language-plaintext highlighter-rouge">;</code>组成。大括号里写的是节点名称和信息。</p>
 
 <p>比如下面这个语句会生成一颗有四个叶节点的树：</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\node 
 %这里的parent是要显示的文本内容
 {parent}
@@ -98,9 +113,10 @@
     child {node {child 4}}
 ;
 </code></pre></div></div>
+
 <p>生成效果如下：</p>
 
-<p><img src="/assets/images/b69f313544f448b0ae512b9a1f0eaf0a.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="简单的树" src="/assets/images/b69f313544f448b0ae512b9a1f0eaf0a.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="生成森林">生成森林</h3>
 <p>上文说到，<code class="language-plaintext highlighter-rouge">\node </code>表示树的开始，分号<code class="language-plaintext highlighter-rouge">;</code>表示树的结束。所以直接有几棵树写几段树的语句即可。只需要注意森林中每棵树的位置即可。</p>
@@ -124,9 +140,10 @@
     child {node {4}}
 ;
 </code></pre></div></div>
+
 <p>生成的森林如下：</p>
 
-<p><img src="/assets/images/9d89007407e1467ba989e1751a2c0863.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="森林" src="/assets/images/9d89007407e1467ba989e1751a2c0863.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="绘制基础的二叉树">绘制基础的二叉树</h3>
 <p>一棵基础的二叉树由一个父节点和两个字节点构成，生成代码如下：</p>
@@ -137,34 +154,39 @@
     child {node {child 2}}
 ;
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/bcee30a45690419097ff14e9767447dd.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="简单的二叉树" src="/assets/images/bcee30a45690419097ff14e9767447dd.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="自定义某部分的颜色">自定义某部分的颜色</h3>
 <p>如果想自定义颜色，在父节点类型<code class="language-plaintext highlighter-rouge">{parent}</code>前面或子节点类型名称<code class="language-plaintext highlighter-rouge">child</code>后面加个<code class="language-plaintext highlighter-rouge">[]</code>，然后将颜色写在其中。</p>
 
 <p>比如说用红色标记父节点：</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\node 
 [red]{parent}
     child {node {child 1}}
     child {node {child 2}}
 ;
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/d0773fc7439f4d71a745f81fc5725251.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="自定义树某个部分的颜色" src="/assets/images/d0773fc7439f4d71a745f81fc5725251.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>再比如说用红色标记左子节点：</p>
+
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\node 
 {parent}
     child [red]{node {child 1}}
     child {node {child 2}}
 ;
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/7752913f8cd143faa6ebbc65f6a087bc.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="左子节点为红色的树" src="/assets/images/7752913f8cd143faa6ebbc65f6a087bc.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="线的样式">线的样式</h3>
 <p>可以使用下面代码来调整树中线段的样式，比如实线、虚线等。</p>
@@ -177,9 +199,10 @@
     child {node {child 2} edge from parent [dashed]}
 ;
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/5dc3d85336604195a7834f3858c56024.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="连接右子节点的线段为虚线的树" src="/assets/images/5dc3d85336604195a7834f3858c56024.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>别看这里很简单，但是支持或可以实现的样式非常非常多，这里细说太冗余了，还请移步：<a href="https://tikz.dev/tikz-actions">https://tikz.dev/tikz-actions</a>。</p>
 
@@ -192,9 +215,10 @@
     child {node[draw, circle] {child 2}}
 ;
 </code></pre></div></div>
+
 <p>效果如下：</p>
 
-<p><img src="/assets/images/9638bd9c8123404a8be76c97fe973223.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="给节点添加圆圈" src="/assets/images/9638bd9c8123404a8be76c97fe973223.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="绘制复杂二叉树嵌套使用">绘制复杂二叉树（嵌套使用）</h3>
 <p>二叉树不可能只有这种基础组成，所以还要来嵌套使用。而嵌套就是在某个子节点中（也就是大括号中<code class="language-plaintext highlighter-rouge">{}</code>），写它的子节点。看看下面的例子你就能懂了：</p>
@@ -211,7 +235,7 @@
 
 <p>生成的二叉树效果如下：</p>
 
-<p><img src="/assets/images/d5b94026cb5741d7b6d4a7293e48726f.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="复杂二叉树" src="/assets/images/d5b94026cb5741d7b6d4a7293e48726f.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h2 id="tikz-qtree">tikz-qtree</h2>
 <p>可以看到，使用<code class="language-plaintext highlighter-rouge">tikz</code>包画复杂的树很很麻烦，要打一堆<code class="language-plaintext highlighter-rouge">node</code>、<code class="language-plaintext highlighter-rouge">child</code>等词，所以<code class="language-plaintext highlighter-rouge">tikz-qtree</code>进行了改进，使用简单的语法即可画出复杂的树。</p>
@@ -233,6 +257,7 @@
  
 \end{document}
 </code></pre></div></div>
+
 <p>下面演示的所有的代码，除非特殊说明，不然都是放在上述结构中的<code class="language-plaintext highlighter-rouge">%在这里输入绘制树的代码</code>的位置。</p>
 
 <h3 id="绘制一颗简单的树-1">绘制一颗简单的树</h3>
@@ -245,9 +270,10 @@
 [.2 ] [.3 ] [.4 ] [.5 ] 
 ]
 </code></pre></div></div>
+
 <p>生成树如下：</p>
 
-<p><img src="/assets/images/446e532556484aa388fa7c22f3805440.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="简单的树" src="/assets/images/446e532556484aa388fa7c22f3805440.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="生成森林-1">生成森林</h3>
 <p><code class="language-plaintext highlighter-rouge">tikz-qtree</code>生成森林的方式和<code class="language-plaintext highlighter-rouge">tikz</code>不一样，因为一个<code class="language-plaintext highlighter-rouge">tikzpicture</code>作用域中只能有一颗树。所以要写在多个<code class="language-plaintext highlighter-rouge">tikzpicture</code>中。如果想水平摆放，可以直接连着写：</p>
@@ -276,9 +302,10 @@
  
 \end{document}
 </code></pre></div></div>
+
 <p>生成效果如下：</p>
 
-<p><img src="/assets/images/2e04932452774154ba8dff8c9cf38f04.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="森林" src="/assets/images/2e04932452774154ba8dff8c9cf38f04.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>如果想指定树叶的方向和排列位置，可以在<code class="language-plaintext highlighter-rouge">tikzpicture</code>后面加上<code class="language-plaintext highlighter-rouge">[grow=]</code>或<code class="language-plaintext highlighter-rouge">[grow'=]</code>来指定，参数为<code class="language-plaintext highlighter-rouge">up</code>、<code class="language-plaintext highlighter-rouge">down</code>、<code class="language-plaintext highlighter-rouge">left</code>、<code class="language-plaintext highlighter-rouge">right</code>来表示开口向上下左右方向。
 并且这两种参数不太一样，</p>
@@ -305,9 +332,10 @@
 ]
 \end{tikzpicture}
 </code></pre></div></div>
+
 <p>生成图如下：</p>
 
-<p><img src="/assets/images/d433e5c84d0b455bb812df835efd2ec2.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="上下排列、子节点逆时针排列的两个二叉树" src="/assets/images/d433e5c84d0b455bb812df835efd2ec2.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>但是给语句中间加上百分号<code class="language-plaintext highlighter-rouge">%</code>，那就会得到并列的树：</p>
 
@@ -326,7 +354,7 @@
 \end{tikzpicture}
 </code></pre></div></div>
 
-<p><img src="/assets/images/e52b33474f864fa8b3910cfa7bc74854.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="并列的树" src="/assets/images/e52b33474f864fa8b3910cfa7bc74854.png" width="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="绘制基础的二叉树-1">绘制基础的二叉树</h3>
 <p>上文已经看到了，绘制二叉树只用很简单的结构即可。<code class="language-plaintext highlighter-rouge">.</code>开头的表示跟节点，下面每个叶节点用方括号<code class="language-plaintext highlighter-rouge">[]</code>包裹起来：</p>
@@ -346,6 +374,7 @@
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\tikzset{edge from parent/.append style={very thick}}
 </code></pre></div></div>
+
 <p>例如：</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>\begin{tikzpicture}
@@ -358,7 +387,7 @@
 \end{tikzpicture}
 </code></pre></div></div>
 
-<p><img src="/assets/images/8cd24c59977f4d20b8dfd41fba5fdc5a.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="加粗树" src="/assets/images/8cd24c59977f4d20b8dfd41fba5fdc5a.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>虚线的话将<code class="language-plaintext highlighter-rouge">[dashed]</code>加在<code class="language-plaintext highlighter-rouge">\begin{tikzpicture}</code>后面，如下：</p>
 
@@ -370,7 +399,7 @@
 \end{tikzpicture}
 </code></pre></div></div>
 
-<p><img src="/assets/images/40e32c67975b41b8953aa0c34bb184de.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="虚线树" src="/assets/images/40e32c67975b41b8953aa0c34bb184de.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>如果想带箭头，那么将<code class="language-plaintext highlighter-rouge">[semithick,-&gt;]</code>加在<code class="language-plaintext highlighter-rouge">\begin{tikzpicture}</code>后面，如下：</p>
 
@@ -382,7 +411,7 @@
 \end{tikzpicture}
 </code></pre></div></div>
 
-<p><img src="/assets/images/795bd82b473c45468efbd9653bc872ed.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="带箭头的树" src="/assets/images/795bd82b473c45468efbd9653bc872ed.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="节点样式-1">节点样式</h3>
 <p>如何加粗节点上一节提到了，使用<code class="language-plaintext highlighter-rouge">\tikzset{edge from parent/.append style={very thick}}</code>，那么如何给节点加圆圈呢？</p>
@@ -397,7 +426,7 @@
 \end{tikzpicture}
 </code></pre></div></div>
 
-<p><img src="/assets/images/ad7ddf74db8f4b3abb28e79515a80ea7.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="给节点加圆圈" src="/assets/images/ad7ddf74db8f4b3abb28e79515a80ea7.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="绘制复杂二叉树嵌套使用-1">绘制复杂二叉树（嵌套使用）</h3>
 <p><code class="language-plaintext highlighter-rouge">tikz-qtree</code>来绘制复杂的二叉树就很容易了，就是需要注意大括号闭合。
@@ -412,7 +441,7 @@
 \end{tikzpicture}
 </code></pre></div></div>
 
-<p><img src="/assets/images/512903ec25af4330be59a99c74a62173.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="复杂二叉树" src="/assets/images/512903ec25af4330be59a99c74a62173.png" height="200" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>希望能帮到有需要的人～</p>
 

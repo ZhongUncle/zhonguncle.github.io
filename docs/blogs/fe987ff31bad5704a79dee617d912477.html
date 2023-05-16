@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。" />
+<meta property="og:description" content="在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。" />
+<link rel="canonical" href="http://localhost:4000/blogs/fe987ff31bad5704a79dee617d912477.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/fe987ff31bad5704a79dee617d912477.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-04T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-04T00:00:00+08:00","datePublished":"2022-10-04T00:00:00+08:00","description":"在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。","headline":"快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/fe987ff31bad5704a79dee617d912477.html"},"url":"http://localhost:4000/blogs/fe987ff31bad5704a79dee617d912477.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</h1>
             <div class="bloginfo">
-                <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 4408 字</p>
+                <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 4427 字</p>
             </div>
             <!-- excerpt-start -->
 <p>在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。</p>
@@ -65,11 +78,11 @@
 <h2 id="快速排序的发展史">快速排序的发展史</h2>
 <p>如果你看《算法导论》上关于快速排序这一章，那么书上会告诉你快速排序最早是由 C.A.R Hoare（1980 年图灵奖得主）于 1962 年发表在《The Computer Journal》第五卷上发表的论文《Quicksort》中首先提出的（<a href="https://doi.org/10.1093/comjnl/5.1.10">https://doi.org/10.1093/comjnl/5.1.10</a>）。但是在1961年底《Communications of the ACM》中，C.A.R Hoare 就已经在《Algorithm 64: Quicksort》中使用 Algol 60 算法编程语言给出了一个简单的解释，如下：</p>
 
-<p><img src="https://img-blog.csdnimg.cn/b4a5822db4664a479c7749a1130accfd.png" alt="请添加图片描述" /></p>
+<p><img src="https://img-blog.csdnimg.cn/b4a5822db4664a479c7749a1130accfd.png" alt="C.A.R Hoare 就已经在《Algorithm 64: Quicksort》中使用 Algol 60 算法编程语言给出的简单解释" /></p>
 
 <p>并且如果你查看了刚才列出的论文《Quicksort》，那么就会发现，论文唯一的引用文献就是1961年底的《Algorithm 64: Quicksort》，如下：</p>
 
-<p><img src="https://img-blog.csdnimg.cn/2fee12b62fc24b90b6db68b47ea9e1a9.png" alt="请添加图片描述" /></p>
+<p><img src="https://img-blog.csdnimg.cn/2fee12b62fc24b90b6db68b47ea9e1a9.png" alt="《Quicksort》的论文引用" /></p>
 
 <p>而《Quicksort》只是描述了这个方法，以及很多特性和性能，并且使用数学方法证明了快速排序的时间复杂度。</p>
 
@@ -114,6 +127,7 @@ C.A.R Hoare 全名 Charles Antony Richard Hoare。
 	<span class="n">quicksort</span><span class="p">(...)</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>不同的快速排序算法区别在于<code class="language-plaintext highlighter-rouge">partition</code>部分的算法，这也是算法的关键部分。所以下面先详细说说每个方法具体的实现，再进行对比。</p>
 
 <p>首先来准备一个数组用于测试，为了方便理解，数组短一点，如下：</p>
@@ -199,39 +213,90 @@ C.A.R Hoare 全名 Charles Antony Richard Hoare。
     <span class="p">}</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
 <span class="p">}</span>
-
 </code></pre></div></div>
+
 <h4 id="运行时间测试">运行时间测试</h4>
 <p>测试平台为 Mac mini 2018 i5-8500B 4.1GHz 32g+512g，风扇使用 Mac Fan Control 调至 4400 满转速，硬盘温度 40 度左右，CPU 温度 50～75 （Intel Power Gadget 显示为 60～80 徘徊），总之没有硬盘过热降速拖后腿。
 测试数据为 100 个在<code class="language-plaintext highlighter-rouge">0～1000000000(10^9)</code>范围内的整数，不过由于只用前 60 个的数据就不短了，所以就只测了 10~50 个数据的情况。60 个的情况根据数据和计算公式来说，大概需要四个多小时（实际还是测试了一下，<code class="language-plaintext highlighter-rouge">CPU Time: 18241.949540s</code>，五个小时出头）。</p>
 
 <p><strong>下面数据有点离谱，等我研究一下哪里出现了问题再进行修改文章</strong>
-本机 NVMe 上运行结果如下：
-| 数组元素个数 | CPU 时间 |
-|–|–|
-| 10 | 0.000005s |
-| 20 | 0.000150s |
-| 30 | 0.012972s |
-| 40 | 2.463117s |
-| 50 | 180.790424s |
-| 60 | 18241.949540s |</p>
+本机 NVMe 上运行结果如下：</p>
 
-<p>在 U 盘上运行结果如下：
-| 数组元素个数 | CPU 时间 |
-|–|–|
-| 10 | 0.000004s |
-| 20 | 0.000188s |
-| 30 | 0.012851s |
-| 40 | 2.536276s |
-| 50 | 183.398252s |</p>
+<table>
+  <thead>
+    <tr>
+      <th>数组元素个数</th>
+      <th>CPU 时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>0.000005s</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.000150s</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.012972s</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>2.463117s</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>180.790424s</td>
+    </tr>
+    <tr>
+      <td>60</td>
+      <td>18241.949540s</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在 U 盘上运行结果如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数组元素个数</th>
+      <th>CPU 时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>0.000004s</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.000188s</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.012851s</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>2.536276s</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>183.398252s</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>二者都大致符合平均时间复杂度曲线：nlog_2n</p>
 
-<p><img src="https://img-blog.csdnimg.cn/13fae5ac3c1445e3835c5aec605d37cc.jpeg" alt="请添加图片描述" /></p>
+<p><img src="https://img-blog.csdnimg.cn/13fae5ac3c1445e3835c5aec605d37cc.jpeg" alt="运行时间曲线" /></p>
 
 <p>NVMe 和 U 盘性能差别如下：</p>
 
-<p><img src="https://img-blog.csdnimg.cn/843944e0cfc149d7924b5bd0b7f5d721.png" alt="请添加图片描述" /></p>
+<p><img src="https://img-blog.csdnimg.cn/843944e0cfc149d7924b5bd0b7f5d721.png" alt="NVMe 和 U 盘性能差别" /></p>
 
 <h3 id="lomuto-partition">Lomuto-Partition</h3>
 <h4 id="如何使用-c-实现-1">如何使用 C 实现</h4>
@@ -304,6 +369,7 @@ C.A.R Hoare 全名 Charles Antony Richard Hoare。
 仔细阅读即可发现，这正是“Hoare-Partition”的一种变形，从两头往中间排序，但是又和“Lomuto-Partition”一样最后需要将主元<code class="language-plaintext highlighter-rouge">x</code>的位置是最后再变的，但是先比一头，比完交换完，再比另一头。以及由于没有使用<code class="language-plaintext highlighter-rouge">do-while</code>，而是使用<code class="language-plaintext highlighter-rouge">while</code>语法，为了防止溢出，不得不在<code class="language-plaintext highlighter-rouge">while (lo&lt;hi)</code>中还要加上<code class="language-plaintext highlighter-rouge">lo&lt;hi</code>的限制条件。</p>
 
 <p>除了要注意声明的时候要改一下函数名之外，其余部分和之前一模一样：</p>
+
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
 <span class="p">{</span>
     <span class="kt">int</span> <span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">];</span>
@@ -328,6 +394,7 @@ C.A.R Hoare 全名 Charles Antony Richard Hoare。
     <span class="k">return</span> <span class="n">lo</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>测试下来时间也在二者之间，比较接近“Hoare-Partition”：</p>
 
 <table>
@@ -366,6 +433,7 @@ C.A.R Hoare 全名 Charles Antony Richard Hoare。
 这种快速排序算法是<strong>最简单的快速排序算法之一</strong>，同时速度也很快。由于逻辑和前面说的相似点不多，看上去也不太一样，所以原理在代码之后再说。</p>
 
 <p>除了要注意声明的时候要改一下函数名之外，其余部分和之前一模一样：</p>
+
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">K_R_partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
 <span class="p">{</span>
 	<span class="c1">//i用于循环对比</span>
@@ -396,6 +464,7 @@ C.A.R Hoare 全名 Charles Antony Richard Hoare。
     <span class="k">return</span> <span class="n">last</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>这个算法每次只会排列后半部分的数组，将数组中比主元小的元素放到后半部分的左半部分，这样比主元大的元素就在后半部分的右半部分。这样多次迭代就可以实现数组的排序。</p>
 
 <h3 id="其他没有列出的快速排序算法">其他没有列出的快速排序算法</h3>

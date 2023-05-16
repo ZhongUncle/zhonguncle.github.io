@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>SQLite 命令行使用方法</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="SQLite 命令行使用方法" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="最近为了省钱，就打算使用开源免费的 SQLite 来做数据库。并且由于个人习惯，所以偏爱命令行。这里就来记录一下如何使用命令行来使用 SQLite。" />
+<meta property="og:description" content="最近为了省钱，就打算使用开源免费的 SQLite 来做数据库。并且由于个人习惯，所以偏爱命令行。这里就来记录一下如何使用命令行来使用 SQLite。" />
+<link rel="canonical" href="http://localhost:4000/blogs/6eb4c41b59e87716e53917b7b323e1b8.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/6eb4c41b59e87716e53917b7b323e1b8.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-02-13T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="SQLite 命令行使用方法" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-02-13T00:00:00+08:00","datePublished":"2022-02-13T00:00:00+08:00","description":"最近为了省钱，就打算使用开源免费的 SQLite 来做数据库。并且由于个人习惯，所以偏爱命令行。这里就来记录一下如何使用命令行来使用 SQLite。","headline":"SQLite 命令行使用方法","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/6eb4c41b59e87716e53917b7b323e1b8.html"},"url":"http://localhost:4000/blogs/6eb4c41b59e87716e53917b7b323e1b8.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,10 +63,6 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>SQLite 命令行使用方法</h1>
             <div class="bloginfo">
@@ -67,6 +80,7 @@
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite3 名称.db
 </code></pre></div></div>
+
 <p>这时候就会进入sqlite操作界面，如下：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>sqlite3 test.sql
@@ -74,6 +88,7 @@ SQLite version 3.36.0 2021-06-18 18:58:49
 Enter <span class="s2">".help"</span> <span class="k">for </span>usage hints.
 sqlite&gt; 
 </code></pre></div></div>
+
 <p>使用<code class="language-plaintext highlighter-rouge">.help</code>来查看<strong>点操作</strong>，例如保存成新文件，修改显示模式等，如下（有空了我会翻译一下这部分内容的）：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; .help
@@ -145,11 +160,13 @@ sqlite&gt;
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; .exit
 </code></pre></div></div>
+
 <p><strong>需要注意的是：除了点操作之外，其他命令都要以分号结尾（;），不然sqlite会认为命令没有结束，而出现以下情况：</strong></p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; CREATE TABLE tbl2 <span class="o">(</span>
    ...&gt; 
 </code></pre></div></div>
+
 <p>这种情况我们可以输入分号来表示命令的结束，也可以利用这一点来输入长命令，例如下面这样：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; CREATE TABLE tbl2 <span class="o">(</span>
@@ -159,6 +176,7 @@ sqlite&gt;
    ...&gt; <span class="o">)</span><span class="p">;</span>
 sqlite&gt;
 </code></pre></div></div>
+
 <h2 id="新建数据库中的表格">新建数据库中的表格</h2>
 <p>在学会一些基础操作之后，马上就要开始了解数据库四大技能：增删改查。
 不过我们得新建一个表格。这里我们新建一个 2 列的表格，第一列名为“<code class="language-plaintext highlighter-rouge">one</code>”，数据类型是<code class="language-plaintext highlighter-rouge">varchar</code>（一种字符类型），最大字符数量为 20；第二列名为“<code class="language-plaintext highlighter-rouge">two</code>”，是<code class="language-plaintext highlighter-rouge">smallint</code>（一种整数类型），输入命令如下：</p>
@@ -168,9 +186,11 @@ sqlite&gt;
 
 <h2 id="增删改查">增删改查</h2>
 <p>“<strong>增</strong>”在这里就是插入（insert）一条数据，方式如下：</p>
+
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; insert into tbl1 values<span class="o">(</span><span class="s1">'hello!'</span>,10<span class="o">)</span><span class="p">;</span>
 sqlite&gt; insert into tbl1 values<span class="o">(</span><span class="s1">'goodbye'</span>, 20<span class="o">)</span><span class="p">;</span>
 </code></pre></div></div>
+
 <p>这里我们插入了两行数据。然后我们来查看一下（这里展示了默认情况和修改模式之后的样式）：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; <span class="k">select</span> <span class="k">*</span> from tbl1<span class="p">;</span>
@@ -194,6 +214,7 @@ one      two
 <span class="nt">-------</span>  <span class="nt">---</span>
 goodbye  20 
 </code></pre></div></div>
+
 <p>然后我们插入几条数据变成下面这样来演示删除多条数据：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>one      two
@@ -204,6 +225,7 @@ b        20
 c        10 
 c        20 
 </code></pre></div></div>
+
 <p>然后我们输入以下命令来试试看：</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; delete from tbl1
@@ -213,10 +235,12 @@ one  two
 <span class="nt">---</span>  <span class="nt">---</span>
 c    10 
 </code></pre></div></div>
+
 <p>我们会发现<code class="language-plaintext highlighter-rouge">two</code>列的值等于 20 的行全删掉了。
 <strong>当然你可能也发现了，字符串格式的值需要加单引号，整数啥的直接等于就好了。</strong></p>
 
 <p><strong>改</strong>就是更新（update）数据呀，不过这也提醒我们要加一条数据独一无二的列，例如 id 之类的。不过这里只是展示就不加了。我们将第一列的<strong>c</strong>修改成<strong>abc</strong>，命令如下：</p>
+
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sqlite&gt; update tbl1
    ...&gt; <span class="nb">set </span><span class="nv">one</span><span class="o">=</span><span class="s1">'abc'</span>	<span class="c">#这里是需要改成的值</span>
    ...&gt; where <span class="nv">two</span><span class="o">=</span>10<span class="p">;</span>	<span class="c">#这里是选择需要被修改的值的筛选条件</span>

@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何使用 R 语言来绘制图表和图（曲线等）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何使用 R 语言来绘制图表和图（曲线等）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="前言 如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。" />
+<meta property="og:description" content="前言 如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。" />
+<link rel="canonical" href="http://localhost:4000/blogs/465be11fc481f0675c049496cd3aa9ff.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/465be11fc481f0675c049496cd3aa9ff.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何使用 R 语言来绘制图表和图（曲线等）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-10T00:00:00+08:00","datePublished":"2022-10-10T00:00:00+08:00","description":"前言 如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。","headline":"如何使用 R 语言来绘制图表和图（曲线等）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/465be11fc481f0675c049496cd3aa9ff.html"},"url":"http://localhost:4000/blogs/465be11fc481f0675c049496cd3aa9ff.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>如何使用 R 语言来绘制图表和图（曲线等）</h1>
             <div class="bloginfo">
-                <p class="info">2022-10-10 ｜ <a href="/research.html"> Research</a> ｜ 2717 字</p>
+                <p class="info">2022-10-10 ｜ <a href="/research.html"> Research</a> ｜ 2734 字</p>
             </div>
             <h2 id="前言">前言</h2>
 <!-- excerpt-start -->
@@ -75,7 +88,7 @@
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pie</span><span class="p">(</span><span class="n">Department</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/a2363db2fdb049a7a4e3072258530ff6.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/a2363db2fdb049a7a4e3072258530ff6.png" alt="扇形示意图" /></p>
 
 <h3 id="绘制条形图">绘制条形图</h3>
 <h4 id="简单的条形图">简单的条形图</h4>
@@ -84,7 +97,7 @@
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">barplot</span><span class="p">(</span><span class="n">Department</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s2">"Department"</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="o">=</span><span class="s2">"Number"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/fd1fd8f2f0f740f7b4e8e48d859ee488.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/fd1fd8f2f0f740f7b4e8e48d859ee488.png" alt="简单条形示意图" /></p>
 
 <h4 id="堆叠条形图">堆叠条形图</h4>
 <p>生成复合条形图的话，上面那种数据格式就不够用了，所以重新生成一个表：</p>
@@ -96,7 +109,7 @@
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">barplot</span><span class="p">(</span><span class="n">Admit.by.Dept</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/7691660fd87c478dbf83d1ecc84bb9a0.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/7691660fd87c478dbf83d1ecc84bb9a0.png" alt="堆叠条形示意图" /></p>
 
 <h4 id="并排条形图">并排条形图</h4>
 <p>如果想生成两个并排靠在一起的条形图，使用以下语句：</p>
@@ -105,7 +118,7 @@
 </span></code></pre></div></div>
 <p><code class="language-plaintext highlighter-rouge">beside=T</code>表示<code class="language-plaintext highlighter-rouge">beside</code>为真（<code class="language-plaintext highlighter-rouge">T</code>表示<code class="language-plaintext highlighter-rouge">True</code>），如果为真的话，绘制成并列条形图，如果为假的话，那么就生成上面的堆叠条形图；<code class="language-plaintext highlighter-rouge">ylim=</code>表示纵轴的范围；<code class="language-plaintext highlighter-rouge">legend</code>表示图例，也就是下图右上角那个，这里既可以使用 T/F 来表示是否显示图例，也可以直接输入值来自定义图例；<code class="language-plaintext highlighter-rouge">main</code>表示主标题。</p>
 
-<p><img src="/assets/images/61129a370fde4519a7bb8d79ea926db7.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/61129a370fde4519a7bb8d79ea926db7.png" alt="并排条形示意图" /></p>
 
 <h3 id="绘制曲线图">绘制曲线图</h3>
 <p>绘制曲线图不能使用上面这种按类分列的表，所以来使用<code class="language-plaintext highlighter-rouge">faithful</code>数据集进行演示。
@@ -119,7 +132,7 @@
 </span></code></pre></div></div>
 <p><code class="language-plaintext highlighter-rouge">waiting</code>为横轴标签。</p>
 
-<p><img src="/assets/images/994e6c04e6504baa8890f22af967e99a.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/994e6c04e6504baa8890f22af967e99a.png" alt="曲线示意图" /></p>
 
 <h3 id="绘制点图">绘制点图</h3>
 
@@ -144,13 +157,13 @@
 </span></code></pre></div></div>
 <p>二者效果一样。</p>
 
-<p><img src="/assets/images/fde0f44445e7424a922c7bd681b99ba9.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/fde0f44445e7424a922c7bd681b99ba9.png" alt="点示意图" /></p>
 
 <p>这时候可以发现点好像聚集在一条线附近，R 支持绘制出这条线：</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">scatter.smooth</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">body</span><span class="p">),</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">brain</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
-<p><img src="/assets/images/b1705e87d591417a96c2370dcae7f355.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/b1705e87d591417a96c2370dcae7f355.png" alt="点的曲线示意图" /></p>
 
 <h2 id="绘制图坐标轴曲线等">绘制图（坐标轴、曲线等）</h2>
 <h3 id="添加坐标轴">添加坐标轴</h3>
@@ -160,7 +173,7 @@
 </span></code></pre></div></div>
 <p>这时候效果如下：</p>
 
-<p><img src="/assets/images/93be2880786c4f67b1cc3e2628ef0341.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/93be2880786c4f67b1cc3e2628ef0341.png" alt="绘制坐标轴" /></p>
 
 <p><code class="language-plaintext highlighter-rouge">plot()</code>函数是一个“high-level”函数。括号中的<code class="language-plaintext highlighter-rouge">0:100</code>表示坐标从<code class="language-plaintext highlighter-rouge">0</code>开始到<code class="language-plaintext highlighter-rouge">100</code>；<code class="language-plaintext highlighter-rouge">type="n"</code>表示只绘制坐标轴，不绘制任何其他的图像（感兴趣可以去掉这个参数看看默认情况下的点图是什么样的）；<code class="language-plaintext highlighter-rouge">xlab="a"</code>表示横坐标轴的标签，<code class="language-plaintext highlighter-rouge">ylab="b"</code>同理。</p>
 
@@ -169,7 +182,7 @@
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curve</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="m">2</span><span class="o">/</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">add</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">  
 </span></code></pre></div></div>
-<p><img src="/assets/images/c86042b7fc524e20a69952d89064b7fa.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/c86042b7fc524e20a69952d89064b7fa.png" alt="绘制曲线" /></p>
 
 <p>这里应该只用解释一下<code class="language-plaintext highlighter-rouge">add=TRUE</code>是干嘛的。<code class="language-plaintext highlighter-rouge">add=TRUE</code>会强制<code class="language-plaintext highlighter-rouge">curve()</code>函数作为一个“low-level”图像来绘制曲线，从而将其绘制在当前已经存在的图像上面（如果有的话）。</p>
 
@@ -180,7 +193,7 @@
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">points</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="m">50</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p><img src="/assets/images/36020b15c84a4c4c93cbb53010c447af.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/36020b15c84a4c4c93cbb53010c447af.png" alt="绘制点" /></p>
 
 <p>可以看到在曲线的右侧绘制了一个空心的圆点。</p>
 
@@ -194,7 +207,7 @@
 </span></code></pre></div></div>
 <p>二者效果一样的：</p>
 
-<p><img src="/assets/images/f514f31c5c6d4fd9ba472a1681405d9f.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/f514f31c5c6d4fd9ba472a1681405d9f.png" alt="另一种绘制点的方法" /></p>
 
 <h4 id="更改点的样式">更改点的样式</h4>
 <p>那么可不可以更改点的样式呢？加上<code class="language-plaintext highlighter-rouge">pch</code>参数即可，如下：</p>
@@ -208,7 +221,7 @@
 
 <p>也可以跟数字，不同数字表示的内容如下：</p>
 
-<p><img src="/assets/images/7496c5c733ee42f8abc2714def9c9510.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/7496c5c733ee42f8abc2714def9c9510.png" alt="数字对应点的样式" /></p>
 
 <p>此外：</p>
 <ol>
@@ -223,8 +236,9 @@
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">abline</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="m">-18</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="o">=</span><span class="m">1.1</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
+
 <p>其中<code class="language-plaintext highlighter-rouge">a=</code>后面跟的是纵坐标；<code class="language-plaintext highlighter-rouge">b=</code>后面跟的是斜率；<code class="language-plaintext highlighter-rouge">col=</code>后面跟的是颜色。
-<img src="/assets/images/541c0e141fef49358c4c903b26ad3bdd.png" alt="请添加图片描述" /></p>
+<img src="/assets/images/541c0e141fef49358c4c903b26ad3bdd.png" alt="参数表示直线的属性，`a=`后面跟的是纵坐标；`b=`后面跟的是斜率；`col=`后面跟的是颜色" /></p>
 
 <h3 id="设置主标题">设置主标题</h3>
 <p>设置主标题需要使用<code class="language-plaintext highlighter-rouge">title(main="...")</code>函数，如下：</p>
@@ -232,16 +246,17 @@
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">title</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="s2">"This is the first chart of R"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/1fa21011d7104264afcbfa11faf01354.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/1fa21011d7104264afcbfa11faf01354.png" alt="设置主标题" /></p>
 
 <h3 id="在图中的任意位置绘制文本">在图中的任意位置绘制文本</h3>
 <p>假设我们想在曲线 $b=0.01a^2$ 旁边写上函数式，那么可以使用<code class="language-plaintext highlighter-rouge">text()</code>函数，如下：</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="m">80</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="m">37</span><span class="p">,</span><span class="w"> </span><span class="nf">expression</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">frac</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="o">^</span><span class="m">2</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
+
 <p>其中，<code class="language-plaintext highlighter-rouge">a</code>和<code class="language-plaintext highlighter-rouge">b</code>是将显示在图上的，<strong>而前面的<code class="language-plaintext highlighter-rouge">x</code>和<code class="language-plaintext highlighter-rouge">y</code>是不能修改的。</strong></p>
 
-<p><img src="/assets/images/d00e5caada58438e9a0473fbb4a4b74b.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/d00e5caada58438e9a0473fbb4a4b74b.png" alt="在图中的任意位置绘制文本" /></p>
 
 <p>希望可以帮到有需要的人~</p>
 

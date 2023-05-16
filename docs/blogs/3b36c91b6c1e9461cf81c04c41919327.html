@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference" />
+<meta property="og:description" content="苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference" />
+<link rel="canonical" href="http://localhost:4000/blogs/3b36c91b6c1e9461cf81c04c41919327.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/3b36c91b6c1e9461cf81c04c41919327.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-02-22T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-02-22T00:00:00+08:00","datePublished":"2022-02-22T00:00:00+08:00","description":"苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference","headline":"「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/3b36c91b6c1e9461cf81c04c41919327.html"},"url":"http://localhost:4000/blogs/3b36c91b6c1e9461cf81c04c41919327.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,10 +63,6 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片</h1>
             <div class="bloginfo">
@@ -60,7 +73,7 @@
 
 <p>首先是如何看这个网页，也就是说这个网页提供了哪些信息，这对我们使用时非常有帮助的。以下面这个截图为例，来讲一下如何看。</p>
 
-<p><img src="https://img-blog.csdnimg.cn/b760cad550984160a1702ba628f4d912.jpg?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="请添加图片描述" /></p>
+<p><img src="https://img-blog.csdnimg.cn/b760cad550984160a1702ba628f4d912.jpg?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_20,color_FFFFFF,t_70,g_se,x_16" alt="官网介绍对应序号" /></p>
 
 <p>按照各部分来介绍：</p>
 
@@ -97,6 +110,7 @@
 
 <p>接下来我们具体说说，在SwiftUI中如何使用这些官方提供的filter（滤镜或者处理方式）。
 首先我们需要创建一个函数，来调用filter API，就调用刚才举例子的<code class="language-plaintext highlighter-rouge">CIBoxBlur</code>吧。头文件是<code class="language-plaintext highlighter-rouge">import SwiftUI</code>即可。我对几乎每一行代码都进行了注释，以确保各位都能很好的理解：</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">blurFilter</span><span class="p">(</span><span class="nv">inputImage</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UIImage</span> <span class="p">{</span>
     <span class="c1">//创建一个CIContext()，用来放置处理后的内容</span>
     <span class="k">let</span> <span class="nv">context</span> <span class="o">=</span> <span class="kt">CIContext</span><span class="p">()</span>
@@ -119,6 +133,7 @@
     <span class="k">return</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">cgImage</span><span class="p">:</span> <span class="n">cgImage</span><span class="o">!</span><span class="p">)</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>这时候我们就可以很简单的使用这个滤镜了，如下：</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//设置输入的图片</span>
@@ -134,9 +149,10 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>我们就能看到处理之后的图片显示在屏幕上啦！我们来处理一下之前的截图。</p>
 
-<p><img src="https://img-blog.csdnimg.cn/12a8a4dd2e3c445abaf86ffd2375d5de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_19,color_FFFFFF,t_70,g_se,x_16" alt="请添加图片描述" /></p>
+<p><img src="https://img-blog.csdnimg.cn/12a8a4dd2e3c445abaf86ffd2375d5de.png?x-oss-process=image/watermark,type_d3F5LXplbmhlaQ,shadow_50,text_Q1NETiBAemhvbmd1bmNsZQ==,size_19,color_FFFFFF,t_70,g_se,x_16" alt="处理后的图片" /></p>
 
 <p>效果还不错！</p>
 

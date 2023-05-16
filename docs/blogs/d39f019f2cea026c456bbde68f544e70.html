@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何在Mac VM Fusion上安装和使用Plan 9</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何在Mac VM Fusion上安装和使用Plan 9" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="我在 Mac 上使用 VM Fusion 安装 Plan 9 的时候遇到了很多问题，官方文档和有些前两年的国外的一些博客并没有写清楚，甚至出现了“误导”的情况（有些情况变了）。所以来写本文帮助其他也遇到的问题的人。" />
+<meta property="og:description" content="我在 Mac 上使用 VM Fusion 安装 Plan 9 的时候遇到了很多问题，官方文档和有些前两年的国外的一些博客并没有写清楚，甚至出现了“误导”的情况（有些情况变了）。所以来写本文帮助其他也遇到的问题的人。" />
+<link rel="canonical" href="http://localhost:4000/blogs/d39f019f2cea026c456bbde68f544e70.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/d39f019f2cea026c456bbde68f544e70.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-21T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何在Mac VM Fusion上安装和使用Plan 9" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-21T00:00:00+08:00","datePublished":"2023-04-21T00:00:00+08:00","description":"我在 Mac 上使用 VM Fusion 安装 Plan 9 的时候遇到了很多问题，官方文档和有些前两年的国外的一些博客并没有写清楚，甚至出现了“误导”的情况（有些情况变了）。所以来写本文帮助其他也遇到的问题的人。","headline":"如何在Mac VM Fusion上安装和使用Plan 9","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/d39f019f2cea026c456bbde68f544e70.html"},"url":"http://localhost:4000/blogs/d39f019f2cea026c456bbde68f544e70.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>如何在Mac VM Fusion上安装和使用Plan 9</h1>
             <div class="bloginfo">
-                <p class="info">2023-04-21 ｜ <a href="/plan 9.html"> Plan 9</a> ｜ 3501 字</p>
+                <p class="info">2023-04-21 ｜ <a href="/plan 9.html"> Plan 9</a> ｜ 3901 字</p>
             </div>
             <!-- excerpt-start -->
 <p>我在 Mac 上使用 VM Fusion 安装 Plan 9 的时候遇到了很多问题，官方文档和有些前两年的国外的一些博客并没有写清楚，甚至出现了“误导”的情况（有些情况变了）。所以来写本文帮助其他也遇到的问题的人。</p>
@@ -67,7 +80,7 @@
 
 <p>不过为了防止链接失效，还是列出 Plan 9 的官网：<a href="https://plan9.io/plan9/">https://plan9.io/plan9/</a>，页面如下：</p>
 
-<p><img src="/assets/images/130f3dda791d4e2f9ad77af60d1f37d5.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="Plan 9官网" src="/assets/images/130f3dda791d4e2f9ad77af60d1f37d5.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>在这里你能找到很多关于 Plan 9 的信息，虽然有些信息已经过时了，但是也能告诉你最开始 Plan 9 的开发者是怎么想的。</p>
 
@@ -83,34 +96,34 @@
 
 <p>首先点击新建虚拟机，然后拖入解压得到的<code class="language-plaintext highlighter-rouge">plan9.iso</code>文件，这时候页面如下：</p>
 
-<p><img src="/assets/images/cb9e3e58e8ff419cb7345dd19dde44d9.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="从“plan9.iso”创建新的虚拟机" src="/assets/images/cb9e3e58e8ff419cb7345dd19dde44d9.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后在选择操作系统的时候，选择“其他-其他”，点击“继续”：</p>
 
-<p><img src="/assets/images/1a532eebc606499eaaa8637d394e829d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="选择操作系统的时候，选择“其他-其他”，点击“继续”" src="/assets/images/1a532eebc606499eaaa8637d394e829d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>选择“传统 BIOS”，点击“继续”：</p>
 
-<p><img src="/assets/images/79043377c1f540a3bdc99981eba6d6fc.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="选择“传统 BIOS”" src="/assets/images/79043377c1f540a3bdc99981eba6d6fc.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h3 id="注意事项">注意事项</h3>
 <p>接下来的内容请一定照做，是关键点。<strong>在下面这个界面的时候，请点击“自定设置”。</strong> 如果点击“继续”的话虚拟机会自动启动，还要关机再调整：</p>
 
-<p><img src="/assets/images/b8376cc0a44347669e430de4c34aef0d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="选择“传统 BIOS”，点击“继续”" src="/assets/images/b8376cc0a44347669e430de4c34aef0d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>我给这个虚拟机起名为“Plan 9”：</p>
 
-<p><img src="/assets/images/a8c427488b004c3e9ae0a5702640f2b6.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="给这个虚拟机起名为“Plan 9”" src="/assets/images/a8c427488b004c3e9ae0a5702640f2b6.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后再分别将硬盘和 CD/DVD（下图中框出） 从 IDE 改成 SCSI，如下：</p>
 
-<p><img src="/assets/images/7a090b60f8fc44bdb0b28b52b5e86793.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="选择“分别将硬盘和 CD/DVD 从 IDE 改成 SCSI" src="/assets/images/7a090b60f8fc44bdb0b28b52b5e86793.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>修改完，请记得点击“应用”。</p>
 
-<p><img src="/assets/images/180d837a8b9243f1b7304990fc4fea5e.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="修改完硬盘，请记得点击“应用”" src="/assets/images/180d837a8b9243f1b7304990fc4fea5e.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
-<p><img src="/assets/images/385f7b9a33d8409cb3f5fdd07db13166.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="修改完CD/DVD，请记得点击“应用”" src="/assets/images/385f7b9a33d8409cb3f5fdd07db13166.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后再根据个人需要调整配置，就可以启动了。</p>
 
@@ -121,7 +134,7 @@
 
 <p>启动虚拟机之后，界面如下，这时候我们输入<code class="language-plaintext highlighter-rouge">1</code>：</p>
 
-<p><img src="/assets/images/b3fc664bba374dd988b7329a9f225c22.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="启动虚拟机之后，在以下界面输入‘1’" src="/assets/images/b3fc664bba374dd988b7329a9f225c22.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后接下来的内容请依次输入：</p>
 <ol>
@@ -131,17 +144,17 @@
   <li><code class="language-plaintext highlighter-rouge">xga</code>表示显示器是 XGA 接口的（和 IDE 一样是因为历史原因）</li>
 </ol>
 
-<p><img src="/assets/images/8a40e508218e405f8be700c3a662bf2c.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="依次输入上面的内容" src="/assets/images/8a40e508218e405f8be700c3a662bf2c.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>输入完会出现下面这样的界面：</p>
 
-<p><img src="/assets/images/8f29bc2e876a459e861974bfa95da22f.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="输入完显示‘%’" src="/assets/images/8f29bc2e876a459e861974bfa95da22f.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>就是说遇到错误了，只能用文本交互界面。这时候我们需要手动输入<code class="language-plaintext highlighter-rouge">inst/textonly</code>（不能复制），然后按下回车键。</p>
 
 <p>接下来解释一下这个情况，重点是图中下方的四五行：</p>
 
-<p><img src="/assets/images/8359c29fae06415089854c4c1d1e9dc5.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/8359c29fae06415089854c4c1d1e9dc5.png" alt="输入完‘inst/textonly’之后显示的内容" /></p>
 
 <ol>
   <li><code class="language-plaintext highlighter-rouge">Preparing menu</code>表示再生成下面的内容；</li>
@@ -158,21 +171,21 @@
 
 <p>这里有个很重要的东西需要我们记忆一下，最好拍个照片或者用笔记一下，就是下图中红框里的内容，因为每个人的值可能会不一样：<code class="language-plaintext highlighter-rouge">sd00</code>表示 VM 生成的虚拟硬盘，而<code class="language-plaintext highlighter-rouge">sd01</code>则表示<code class="language-plaintext highlighter-rouge">plan9.iso</code>这个虚拟光驱。</p>
 
-<p><img src="/assets/images/070cb4037adb4521904d958dbd6f6aaf.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="`sd00`表示 VM 生成的虚拟硬盘，而`sd01`则表示`plan9.iso`这个虚拟光驱" src="/assets/images/070cb4037adb4521904d958dbd6f6aaf.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>这里问我们要把 Plan 9 放入哪个设备里，当然是虚拟硬盘里了。所以我们输入<code class="language-plaintext highlighter-rouge">sd00</code>。</p>
 
 <p>由于硬盘是空的，所以找不到 master boot record（mbr，是用来启动系统的），会询问我们是否在这安装 mbr，输入<code class="language-plaintext highlighter-rouge">y</code>，如下：</p>
 
-<p><img src="/assets/images/9a4deac312544e0a87cabae253444fdc.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="输入`y`" src="/assets/images/9a4deac312544e0a87cabae253444fdc.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后再次确认，这里的方法和前面不一样，需要先输入<code class="language-plaintext highlighter-rouge">w</code>，再输入<code class="language-plaintext highlighter-rouge">q</code>来进入下一步。类似 Vi 里的<code class="language-plaintext highlighter-rouge">:wq</code>来保存退出，只不过分开写了。如下：</p>
 
-<p><img src="/assets/images/7d2e14f52fce42aebd43c8a82bb574e0.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="需要先输入`w`，再输入`q`来进入下一步" src="/assets/images/7d2e14f52fce42aebd43c8a82bb574e0.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>可以看到进入了下一步，这里还是直接按回车键，遇到了上面的情况就先<code class="language-plaintext highlighter-rouge">w</code>后<code class="language-plaintext highlighter-rouge">q</code>，直到下一个没有默认值的情况，如下：</p>
 
-<p><img src="/assets/images/45ab47ac6d0541a7815446f1a815196a.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="直接按回车键，遇到了上面的情况就先`w`后`q`" src="/assets/images/45ab47ac6d0541a7815446f1a815196a.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>这里是让我们指出发行版放在哪里了，好在后面拷贝到硬盘。这里就需要搬出之前记得内容：硬盘是<code class="language-plaintext highlighter-rouge">sd00</code>，CD/DVD 是<code class="language-plaintext highlighter-rouge">sd01</code>。</p>
 
@@ -180,27 +193,27 @@
 
 <p>然后会出现以下内容，是让我们进到包含了发行版的具体目录。虽然这里有默认值，但是<strong>不要</strong>直接按回车，直接输入<code class="language-plaintext highlighter-rouge">/</code>即可（也就是当前目录下是）。虽然按回车也可以，进去直接输入<code class="language-plaintext highlighter-rouge">exit</code>退出即可。</p>
 
-<p><img src="/assets/images/797592df68ae4a0eaa56d9ff89c80b0b.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="虽然按回车也可以，进去直接输入`exit`退出即可" src="/assets/images/797592df68ae4a0eaa56d9ff89c80b0b.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>接下来<code class="language-plaintext highlighter-rouge">copydist</code>部分按回车即可，等待几分钟让系统安装完毕：</p>
 
-<p><img src="/assets/images/e2dc53872c0d477087509970b57f31f9.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="`copydist`部分按回车即可，等待几分钟让系统安装完毕" src="/assets/images/e2dc53872c0d477087509970b57f31f9.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后继续按回车，直到下面这个没有默认值的情况：</p>
 
-<p><img src="/assets/images/5f56049f701d4efb96e8b968d4a7a0a6.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="然后继续按回车，直到下面这个没有默认值的情况" src="/assets/images/5f56049f701d4efb96e8b968d4a7a0a6.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>这里是让选择启动方式，我们输入<code class="language-plaintext highlighter-rouge">plan9</code>，然后再输入<code class="language-plaintext highlighter-rouge">y</code>确定即可。</p>
 
-<p><img src="/assets/images/603f6ebf7de44131a05af80953805b39.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="选择启动方式，我们输入`plan9`，然后再输入`y`确定即可" src="/assets/images/603f6ebf7de44131a05af80953805b39.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后就按回车结束即可。出现下面的内容就可以关闭虚拟机啦：</p>
 
-<p><img src="/assets/images/df1e42c2abd44144a49f988185553723.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="显示“Feel free to turn off your computer”" src="/assets/images/df1e42c2abd44144a49f988185553723.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
-<p>在这里关机哦（注意不要选重启，）：</p>
+<p>在这里关机哦（注意不要选重启）：</p>
 
-<p><img src="/assets/images/8c228fa7b1bb49b59beb0325a9658843.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="在菜单栏-虚拟机中选择“关机”" src="/assets/images/8c228fa7b1bb49b59beb0325a9658843.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h2 id="进入系统前的准备">进入系统前的准备</h2>
 <p>接下来<strong>不要</strong>按照官方文档或者一些教程中所说的，把 ISO 弹出或者 DVD/CD 断开。直接启动开机，这样就可以开始使用 Plan 9 了。如果你把 ISO 弹出或者 DVD/CD 断开，会显示找不到从哪启动，页面如下：</p>
@@ -209,14 +222,14 @@
 
 <p>遇到这种情况，点开“虚拟机-设置-启动磁盘”，选择“CD/DVD”，然后点击重新启动即可。</p>
 
-<p><img src="/assets/images/80d5ea2b1c1e465fbf0150e8a7ae2f82.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="点开“虚拟机-设置-启动磁盘”，选择“CD/DVD”，然后点击重新启动即可" src="/assets/images/80d5ea2b1c1e465fbf0150e8a7ae2f82.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <h2 id="设置系统">设置系统</h2>
 <p>每次进入系统都需要设置系统。</p>
 
 <p>当页面如下的时候，按下回车。</p>
 
-<p><img src="/assets/images/ab4a8f8c135e4e608a272ed9b11947b5.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="is from (tcp,local)llocal!#S/sd00/fossill:" src="/assets/images/ab4a8f8c135e4e608a272ed9b11947b5.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>然后会提示输入用户名（如下），这里需要输入<code class="language-plaintext highlighter-rouge">glenda</code>。千万别自定义用户名，因为 Glenda 是 Plan 9 的根用户，而 Glenda 的含义就是 Plan 9 的标志小兔子的名字：</p>
 
@@ -224,7 +237,7 @@
 
 <p>按下回车等一会就可以看到这样的一个界面：</p>
 
-<p><img src="/assets/images/3550859dfc0d48f98b4515181b7f193e.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="进入Plan 9之后看到的界面" src="/assets/images/3550859dfc0d48f98b4515181b7f193e.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>最上面从左到右是系统信息、时间。第二行从左到右是终端和文本编辑器 acme。</p>
 <h2 id="简单使用">简单使用</h2>
@@ -247,7 +260,7 @@
 
 <p>新建和关闭窗口等流程如下（录的操作有点慢，体谅一下哈）：</p>
 
-<p><img src="/assets/images/092d005760cf4a3b83b5d310dc376a6c.gif" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/092d005760cf4a3b83b5d310dc376a6c.gif" alt="新建和关闭窗口等流程" /></p>
 
 <p>你可能会奇怪为什么要长按移动选择，再松开确认啊，这种操作前所未闻啊。</p>
 
@@ -263,7 +276,7 @@
 <h2 id="打开一个应用程序">打开一个应用程序</h2>
 <p>打开一个应用程序和 Unix 中一样，使用路径，或者直接使用在<code class="language-plaintext highlighter-rouge">PATH</code> 环境变量中存放的程序名，如下可以打开一个俄罗斯方块的小游戏：</p>
 
-<p><img src="/assets/images/5abdb7f6fcf74a5c943ac399c40e45df.gif" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/5abdb7f6fcf74a5c943ac399c40e45df.gif" alt="通过命令行打开一个应用程序" /></p>
 
 <p>好啦，这样就足够简单的探索 Plan 9 了，深入部分，比如用户系统、acme 的使用、各种编译器的使用我会陆续更新成新的博客的。</p>
 

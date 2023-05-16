@@ -6,6 +6,12 @@ collections:
 
 url: "https://zhonguncle.github.io"
 
-# plugins:
-#   - jekyll-seo-tag
-#   - jekyll-sitemap
+plugins:
+  - jekyll-sitemap
+  - jekyll-seo-tag
+
+social:
+  name: ZhongUncle
+  links:
+    - https://blog.csdn.net/qq_33919450
+    - https://github.com/zhonguncle

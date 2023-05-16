@@ -8,6 +8,23 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>「SwiftUI」如何使用自带的原生图表（Charts）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="「SwiftUI」如何使用自带的原生图表（Charts）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="简介 在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包Charts，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。" />
+<meta property="og:description" content="简介 在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包Charts，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。" />
+<link rel="canonical" href="http://localhost:4000/blogs/cf4a629bfc06bc0f41bdb321801599c3.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/cf4a629bfc06bc0f41bdb321801599c3.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-23T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="「SwiftUI」如何使用自带的原生图表（Charts）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-23T00:00:00+08:00","datePublished":"2022-09-23T00:00:00+08:00","description":"简介 在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包Charts，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。","headline":"「SwiftUI」如何使用自带的原生图表（Charts）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/cf4a629bfc06bc0f41bdb321801599c3.html"},"url":"http://localhost:4000/blogs/cf4a629bfc06bc0f41bdb321801599c3.html"}</script>
+<!-- End Jekyll SEO tag -->
+
     </head>
     <body>
         <div class="stackedit__html">
@@ -46,14 +63,10 @@
             Non-Tech
         </a>
     
-        <a href="/log.html" class="headerItem">
-            Log
-        </a>
-    
 </div>
             <h1>「SwiftUI」如何使用自带的原生图表（Charts）</h1>
             <div class="bloginfo">
-                <p class="info">2022-09-23 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 4243 字</p>
+                <p class="info">2022-09-23 ｜ <a href="/swiftui.html"> SwiftUI</a> ｜ 4245 字</p>
             </div>
             <!-- excerpt-start -->
 <h2 id="简介">简介</h2>
@@ -63,23 +76,41 @@
 
 <p>包<code class="language-plaintext highlighter-rouge">Charts</code>支持六种样式的图表，但是通过组合可以实现多种图表，下面是发布会演示的图集：</p>
 
-<p><img src="/assets/images/ef9a47a53ed944458bb07c671b916a1b.png" alt="请添加图片描述" /></p>
+<p><img alt="WWDC演示的图集" src="/assets/images/ef9a47a53ed944458bb07c671b916a1b.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
 <p>除了这些，还有更多的样式可以实现，所以<code class="language-plaintext highlighter-rouge">Charts</code>真的需要好好研究一下。</p>
 
 <p>但是本文主要介绍三种：条状图（BarMark）、点图（PointMark）和线图（LineMark）。下面会先介绍图表的基础使用方法，然后依次并详细介绍每种样式的使用方式（每种样式的使用方法大致相同，但是各有各的特色，比如线图可以一次显示多条线，条状图可以在一个图表中自定义显示多种颜色）。</p>
 
-<p><img src="/assets/images/4e8a855bc7144809aabdebab02568e1f.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/4e8a855bc7144809aabdebab02568e1f.png" alt="三种图表样式" /></p>
 
 <h2 id="基础使用方法">基础使用方法</h2>
 <p>在开始制作图表之前，首先要准备好数据。假设我们要统计物体的形状。</p>
 
-<p>数据如下：
-| 样式 | 数量 |
-|–|–|
-| 立方体 | 5 |
-| 球体 | 4 |
-|锥体 | 4 |</p>
+<p>数据如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>样式</th>
+      <th>数量</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>立方体</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>球体</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>锥体</td>
+      <td>4</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>这里的数据结构是一对一的，一个类型对应一个数量，可以说是“一维”的。</p>
 
@@ -87,12 +118,14 @@
 <p>以下数据结构和数据适用于三种样式的图表，属于基础款。</p>
 
 <p>为数据结构定义的结构体如下：</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ToyShape</span><span class="p">:</span> <span class="kt">Identifiable</span> <span class="p">{</span>
     <span class="k">var</span> <span class="nv">type</span><span class="p">:</span> <span class="kt">String</span>
     <span class="k">var</span> <span class="nv">count</span><span class="p">:</span> <span class="kt">Double</span>
     <span class="k">var</span> <span class="nv">id</span> <span class="o">=</span> <span class="kt">UUID</span><span class="p">()</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>初始化的存放数据的数组如下：</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">data</span><span class="p">:</span> <span class="p">[</span><span class="kt">ToyShape</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
@@ -101,6 +134,7 @@
     <span class="o">.</span><span class="nf">init</span><span class="p">(</span><span class="nv">type</span><span class="p">:</span> <span class="s">"锥体"</span><span class="p">,</span> <span class="nv">count</span><span class="p">:</span> <span class="mi">4</span><span class="p">)</span>
 <span class="p">]</span>
 </code></pre></div></div>
+
 <h3 id="如何创建一个简单的图表">如何创建一个简单的图表</h3>
 <p><strong>三种样式的基础图表使用方法几乎一样，所以这里只用讲一种即可。</strong></p>
 
@@ -108,12 +142,14 @@
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">Charts</span>
 </code></pre></div></div>
+
 <p>然后使用方法很简单，首先创建一个<code class="language-plaintext highlighter-rouge">Chart</code>界面，作为展示数据的容器：</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Chart</span> <span class="p">{</span>
 	<span class="c1">//添加数据</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>接下来就是将数据变成点/线/条，对应的是<code class="language-plaintext highlighter-rouge">PointMark()</code>/<code class="language-plaintext highlighter-rouge">LineMark()</code>/<code class="language-plaintext highlighter-rouge">BarMark()</code>。
 下面使用条状图进行演示，如果想换样式，只需要改成对应的名称，并且为了少写代码，或者方便更改，这里建议使用<code class="language-plaintext highlighter-rouge">ForEach</code>（后面会介绍如果不用<code class="language-plaintext highlighter-rouge">ForEach</code>，直接使用<code class="language-plaintext highlighter-rouge">Chart</code>也可以实现同样的效果），除了使代码简洁之外，还可以通过一些手段来进行排序（利用<code class="language-plaintext highlighter-rouge">ForEach</code>的<code class="language-plaintext highlighter-rouge">id</code>属性）：</p>
 
@@ -128,9 +164,10 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>这时候显示效果如下：</p>
 
-<p><img src="/assets/images/27fabe7ae5834eed92fcf72e3bdcea7f.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/27fabe7ae5834eed92fcf72e3bdcea7f.png" alt="条状图" /></p>
 
 <p>可以看到效果不错。而且这样的话，如果想换成其他样式只要把代码中的<code class="language-plaintext highlighter-rouge">BarMark</code>更改即可，不用依次去改。</p>
 
@@ -146,6 +183,7 @@
 </code></pre></div></div>
 
 <p>如下改成线图：</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Chart</span> <span class="p">{</span>
     <span class="kt">ForEach</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span> <span class="n">shape</span> <span class="k">in</span>
         <span class="kt">LineMark</span><span class="p">(</span>
@@ -155,8 +193,11 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
-<p><img src="/assets/images/7af1b1312eca4133be967dc90da10472.png" alt="请添加图片描述" />
-点图：</p>
+
+<p><img src="/assets/images/7af1b1312eca4133be967dc90da10472.png" alt="线图" /></p>
+
+<p>点图：</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Chart</span> <span class="p">{</span>
     <span class="kt">ForEach</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span> <span class="n">shape</span> <span class="k">in</span>
         <span class="kt">PointMark</span><span class="p">(</span>
@@ -166,18 +207,60 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
-<p><img src="/assets/images/fac2e68ce1a14ad79a70734cb16c7c87.png" alt="请添加图片描述" /></p>
+
+<p><img src="/assets/images/fac2e68ce1a14ad79a70734cb16c7c87.png" alt="点图" /></p>
 
 <h3 id="定义二维数据结构和初始化存放数据的数组">定义“二维”数据结构和初始化存放数据的数组</h3>
 <p>上一节只根据物体的形状进行了统计，那如果在加上颜色呢？</p>
 
-<p>假设数据如下：
-| 数量 | 粉色 | 黄色 | 紫色 | 绿色 | 总数 |
-|–|–|–|–|–|–|
-| 立方体 | 1 | 1 | 1 | 2 |5|
-| 球体 | 2 | 1 | 1 | 0 | 4 |
-| 锥体 | 0 | 2 | 1 | 1 | 4 |
-| 总数 | 3 | 4 | 3 | 3 | 13 |</p>
+<p>假设数据如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数量</th>
+      <th>粉色</th>
+      <th>黄色</th>
+      <th>紫色</th>
+      <th>绿色</th>
+      <th>总数</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>立方体</td>
+      <td>1</td>
+      <td>1</td>
+      <td>1</td>
+      <td>2</td>
+      <td>5</td>
+    </tr>
+    <tr>
+      <td>球体</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>0</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>锥体</td>
+      <td>0</td>
+      <td>2</td>
+      <td>1</td>
+      <td>1</td>
+      <td>4</td>
+    </tr>
+    <tr>
+      <td>总数</td>
+      <td>3</td>
+      <td>4</td>
+      <td>3</td>
+      <td>3</td>
+      <td>13</td>
+    </tr>
+  </tbody>
+</table>
 
 <p>这样多数据结构可以说是一对二了，颜色和形状对应一个数量，可以称之为“二维”数据，比之前的“一维”难了一些。</p>
 
@@ -214,6 +297,7 @@
 <p>对于这种“二维”数据，需要在<code class="language-plaintext highlighter-rouge">BarMark()</code>后面加上一个<code class="language-plaintext highlighter-rouge">foregroundStyle(by:)</code>方法才可以显示，并且在图表左下方，还会显示一个图例。</p>
 
 <p>那么来写一个图表，用于显示不同形状中，不同颜色的占比。代码如下：</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Chart</span> <span class="p">{</span>
 	<span class="kt">ForEach</span><span class="p">(</span><span class="n">stackedBarData</span><span class="p">)</span> <span class="p">{</span> <span class="n">shape</span> <span class="k">in</span>
 		<span class="kt">BarMark</span><span class="p">(</span>
@@ -226,9 +310,10 @@
 	<span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>显示效果如下：</p>
 
-<p><img src="/assets/images/58c77b53ab6d48fd8571fc3e8a29c524.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/58c77b53ab6d48fd8571fc3e8a29c524.png" alt="二维条状图" /></p>
 
 <p>这里就可以很直观的看到不同形状中，不同颜色的占比了。<strong>但是如果你仔细看会发现这里颜色对应的不对</strong></p>
 
@@ -236,17 +321,18 @@
 
 <p>线图看起来会很复杂，如下：</p>
 
-<p><img src="/assets/images/8e12a8530e314a5bbabf5727083b8d76.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/8e12a8530e314a5bbabf5727083b8d76.png" alt="二维线图" /></p>
 
 <p>每一根线表示一种颜色，每个 X 轴区域对应一个形状。</p>
 
 <p>点图和线图阅读方式一样，不同颜色点表示不同的颜色，每个 X 轴区域对应一个形状，但是看起来就简单不少，如下：</p>
 
-<p><img src="/assets/images/9a3d723c968344c3bdb87db7945bfe93.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/9a3d723c968344c3bdb87db7945bfe93.png" alt="二维点图" /></p>
 
 <h3 id="自定义图表的颜色">自定义图表的颜色</h3>
 <p>上一节的图表中，由于颜色都可以和系统自带的对应不上，就需要开发者手动自定义一下来显示正确的颜色。
 开发者需要在<code class="language-plaintext highlighter-rouge">Chart</code>后面使用<code class="language-plaintext highlighter-rouge">chartForegroundStyleScale()</code>关键字让<code class="language-plaintext highlighter-rouge">绿色</code>、<code class="language-plaintext highlighter-rouge">紫色</code>、<code class="language-plaintext highlighter-rouge">粉色</code>和<code class="language-plaintext highlighter-rouge">黄色</code>字符串和颜色（系统自带的或者自定义的颜色）进行关联，如下：</p>
+
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">Chart</span> <span class="p">{</span>
 	<span class="kt">ForEach</span><span class="p">(</span><span class="n">stackedBarData</span><span class="p">)</span> <span class="p">{</span> <span class="n">shape</span> <span class="k">in</span>
 		<span class="kt">BarMark</span><span class="p">(</span>
@@ -259,9 +345,10 @@
 <span class="c1">//这里将字符串和系统自带的颜色进行对应，以便显示正确的颜色</span>
 <span class="o">.</span><span class="nf">chartForegroundStyleScale</span><span class="p">([</span><span class="s">"绿色"</span><span class="p">:</span> <span class="o">.</span><span class="n">green</span><span class="p">,</span> <span class="s">"紫色"</span><span class="p">:</span> <span class="o">.</span><span class="n">purple</span><span class="p">,</span> <span class="s">"粉色"</span><span class="p">:</span> <span class="o">.</span><span class="n">pink</span><span class="p">,</span> <span class="s">"黄色"</span><span class="p">:</span> <span class="o">.</span><span class="n">yellow</span><span class="p">])</span>
 </code></pre></div></div>
+
 <p>现在显示效果如下：</p>
 
-<p><img src="/assets/images/7b6a65e5e0374678bc2f29b39a36f0b9.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/7b6a65e5e0374678bc2f29b39a36f0b9.png" alt="自定义图表的颜色" /></p>
 
 <p>可以看到颜色显示正确了。</p>
 
@@ -271,13 +358,16 @@
 <h3 id="添加对比线rule-mark">添加对比线（Rule Mark）</h3>
 <p>我不太清楚这个东西的中文名，但是一般用于对比，有时候也会用于做图，所以将其称为对比线。</p>
 
-<p>有时候能看到在图表中有一根水平线，来表示超过某一数据，比如下图中的蓝色水平线，可以用来对比数据：
-<img src="/assets/images/0da80f5940c847a8a8eb1767ff645999.png =x480" alt="请添加图片描述" />
-方法很简单，就是在<code class="language-plaintext highlighter-rouge">Chart</code>的域中（就是大括号里）加上一个<code class="language-plaintext highlighter-rouge">RuleMark</code>，如下：</p>
+<p>有时候能看到在图表中有一根水平线，来表示超过某一数据，比如下图中的蓝色水平线，可以用来对比数据：</p>
+
+<p><img src="/assets/images/0da80f5940c847a8a8eb1767ff645999.png" alt="图表中的蓝色水平线" /></p>
+
+<p>方法很简单，就是在<code class="language-plaintext highlighter-rouge">Chart</code>的域中（就是大括号里）加上一个<code class="language-plaintext highlighter-rouge">RuleMark</code>，如下：</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">RuleMark</span><span class="p">(</span><span class="nv">y</span><span class="p">:</span> <span class="o">.</span><span class="nf">value</span><span class="p">(</span><span class="s">"对比线"</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 	<span class="o">.</span><span class="nf">foregroundStyle</span><span class="p">(</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
 </code></pre></div></div>
+
 <p>这里使用的是纵坐标<code class="language-plaintext highlighter-rouge">y</code>，那么可不可以使用横坐标<code class="language-plaintext highlighter-rouge">x</code>呢？答案是可以的，但是一般不使用于柱状图，而是用于线图和点图较多。因为柱状图没有使用的必要，而点图和线图中，可以用于定位点或者划分区域。</p>
 
 <p>当然这个<code class="language-plaintext highlighter-rouge">RuleMark</code>也可以控制其起点和终点，这里继续以上图为例：</p>
@@ -285,13 +375,14 @@
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">RuleMark</span><span class="p">(</span><span class="nv">xStart</span><span class="p">:</span> <span class="o">.</span><span class="nf">value</span><span class="p">(</span><span class="s">"起点"</span><span class="p">,</span> <span class="s">"立方体"</span><span class="p">),</span> <span class="nv">xEnd</span><span class="p">:</span> <span class="o">.</span><span class="nf">value</span><span class="p">(</span><span class="s">"终点"</span><span class="p">,</span> <span class="s">"球体"</span><span class="p">),</span> <span class="nv">y</span><span class="p">:</span> <span class="o">.</span><span class="nf">value</span><span class="p">(</span><span class="s">"值"</span><span class="p">,</span> <span class="mi">3</span><span class="p">))</span>
 	<span class="o">.</span><span class="nf">foregroundStyle</span><span class="p">(</span><span class="o">.</span><span class="n">blue</span><span class="p">)</span>
 </code></pre></div></div>
+
 <p>增加起点和终点之后，效果如下：</p>
 
-<p><img src="/assets/images/d4efaf2d3d3644ba82450eec6f6a11c1.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/d4efaf2d3d3644ba82450eec6f6a11c1.png" alt="给水平线设置起点和终点" /></p>
 
 <p>当然<code class="language-plaintext highlighter-rouge">RuleMark</code>也可以直接用于作图，如下为一个统计每个月种什么的图表：</p>
 
-<p><img src="/assets/images/568b4d7d39584f2b912707f3ef20d009.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/568b4d7d39584f2b912707f3ef20d009.png" alt="直接用`RuleMark`作图" /></p>
 
 <h3 id="给线图带上点">给线图带上点</h3>
 <p>刚才演示的线图都是一条条折线，但是如果我们想加上点来让数据更容易理解呢？
@@ -333,7 +424,7 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p><img src="/assets/images/4b81d3e1eeed453f836f905e477caaa6.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/4b81d3e1eeed453f836f905e477caaa6.png" alt="给线图带上点" /></p>
 
 <h3 id="自定义图表颜色">自定义图表颜色</h3>
 <p>这个和其他组件一样，直接使用<code class="language-plaintext highlighter-rouge">Chart</code>的<code class="language-plaintext highlighter-rouge">foregroundStyle</code>属性即可，如下：</p>
@@ -374,9 +465,10 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </code></pre></div></div>
+
 <p>如果想修改其中的点图或者线图的颜色，在对应的<code class="language-plaintext highlighter-rouge">LineMark</code>或<code class="language-plaintext highlighter-rouge">PointMark</code>后面使用<code class="language-plaintext highlighter-rouge">foregroundStyle</code>属性即可。</p>
 
-<p><img src="/assets/images/27400270d3734cc48577a731f4afd4a2.png" alt="请添加图片描述" /></p>
+<p><img src="/assets/images/27400270d3734cc48577a731f4afd4a2.png" alt="自定义图表颜色为红色" /></p>
 
 <h2 id="提醒">提醒</h2>
 <p>由于图表有很多东西可以挖，所以一篇博客肯定写不完，后续还会继续写相关的博客，如果写了会在这里贴出链接。</p>
