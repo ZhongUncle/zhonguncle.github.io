@@ -4,13 +4,15 @@
   link: /swiftui.html
 - name: UNIX
   link: /unix.html
+- name: C
+  link: /c.html
+- name: Assembly
+  link: /assembly.html
 - name: Plan 9
   link: /plan9.html
 - name: Web
   link: /web.html
 - name: Research
   link: /research.html
-- name: Book
-  link: /book.html
 - name: Non-Tech
   link: /non-tech.html

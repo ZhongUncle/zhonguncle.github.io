@@ -1,6 +1,6 @@
 ---
 layout: article
-category: UNIX
+category: Assembly
 date: 2022-08-13
 title: macOS 汇编指南
 ---
