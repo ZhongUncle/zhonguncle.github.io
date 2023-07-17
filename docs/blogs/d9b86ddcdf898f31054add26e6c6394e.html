@@ -1,0 +1,186 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='zh-CN'>
+        <title>Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="在 C 语言中，有一种叫做union的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体struct很相似：结构体是一个或多个变量的集合。" />
+<meta property="og:description" content="在 C 语言中，有一种叫做union的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体struct很相似：结构体是一个或多个变量的集合。" />
+<link rel="canonical" href="http://localhost:4000/blogs/d9b86ddcdf898f31054add26e6c6394e.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/d9b86ddcdf898f31054add26e6c6394e.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-12T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-05-12T00:00:00+08:00","datePublished":"2023-05-12T00:00:00+08:00","description":"在 C 语言中，有一种叫做union的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体struct很相似：结构体是一个或多个变量的集合。","headline":"Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/d9b86ddcdf898f31054add26e6c6394e.html"},"url":"http://localhost:4000/blogs/d9b86ddcdf898f31054add26e6c6394e.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swiftui.html" class="headerItem">
+            SwiftUI
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？</h1>
+            <div class="bloginfo">
+                <p class="info">2023-05-12 ｜ <a href="/c.html"> C</a> ｜ 1383 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>在 C 语言中，有一种叫做<code class="language-plaintext highlighter-rouge">union</code>的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体<code class="language-plaintext highlighter-rouge">struct</code>很相似：结构体是一个或多个变量的集合。</p>
+
+<p>union 的声明方式非常简单，也与<code class="language-plaintext highlighter-rouge">struct</code>一模一样，如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">union</span> <span class="n">u_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ival</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">sval</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>可以看到，唯一的不同就是结构体中的<code class="language-plaintext highlighter-rouge">struct</code>变成了<code class="language-plaintext highlighter-rouge">union</code>。</p>
+
+<p>使用方法也一模一样：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//一般变量</span>
+<span class="n">union_name</span><span class="p">.</span><span class="n">val</span>
+<span class="c1">//指针</span>
+<span class="n">union_pointer</span><span class="o">-&gt;</span><span class="n">val</span>
+</code></pre></div></div>
+
+<p>二者这么像，那么二者的区别在哪里呢？或者说，为什么要弄两个这么像的东西呢？C 又不是 C++，一些功能是由不同的小组开发的，一些功能上会重叠。</p>
+
+<p>首先是表面的不同，<code class="language-plaintext highlighter-rouge">struct</code>和<code class="language-plaintext highlighter-rouge">union</code>在使用目的上完全不一样，<code class="language-plaintext highlighter-rouge">union</code>并不像<code class="language-plaintext highlighter-rouge">struct</code>会同时存放大括号中列出的每个变量，如果你尝试下面的代码</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">union</span> <span class="n">u_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">b</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">u</span><span class="p">.</span><span class="n">a</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span>
+    <span class="n">u</span><span class="p">.</span><span class="n">b</span><span class="o">=</span><span class="mi">2</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"u_tag: %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">u</span><span class="p">.</span><span class="n">a</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>那么输出的结果为：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>u_tag: 2
+</code></pre></div></div>
+
+<p>这里的结果不是出错了，是因为<code class="language-plaintext highlighter-rouge">union</code>并不会像结构体一样，去根据前面的<code class="language-plaintext highlighter-rouge">u.a=1</code>输出<code class="language-plaintext highlighter-rouge">1</code>，由于只能存放一种数据，所以后面的<code class="language-plaintext highlighter-rouge">u.b=2</code>覆盖了原本<code class="language-plaintext highlighter-rouge">u</code>存放的值。</p>
+
+<p><strong>所以说，<code class="language-plaintext highlighter-rouge">union</code>内部声明的变量可以理解成是一种可能，而不是实际的对象或成员变量</strong>。</p>
+
+<p><strong>并且由于<code class="language-plaintext highlighter-rouge">union</code>内部只有一个值，所以一般不会使用相同的数据类型。至于目前包含什么数据类型，这是编程的时候需要程序员注意的</strong>。一般是用一个变量<code class="language-plaintext highlighter-rouge">u_type</code>，然后再用判断语句来判断当前包含的类型。</p>
+
+<p><strong>但是<code class="language-plaintext highlighter-rouge">struct</code>和<code class="language-plaintext highlighter-rouge">union</code>最核心的不同，也是<code class="language-plaintext highlighter-rouge">union</code>诞生的理由是：分配空间的机制。</strong></p>
+
+<p>如果你用<code class="language-plaintext highlighter-rouge">sizeof()</code>测量下面两个数据的尺寸</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">union</span> <span class="n">u_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ival</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">fval</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">sval</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+
+<span class="k">struct</span> <span class="n">s_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ival</span><span class="p">;</span>
+    <span class="kt">float</span> <span class="n">fval</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">sval</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">s</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>会发现，<code class="language-plaintext highlighter-rouge">u_tag</code>的尺寸是 8 个字节，但是<code class="language-plaintext highlighter-rouge">s_tag</code>的尺寸是 16 个字节 。这是因为<code class="language-plaintext highlighter-rouge">union</code>相当于给内部声明的数据类型留了一个最大空间，而<code class="language-plaintext highlighter-rouge">struct</code>是给每个数据类型都留了各自的空间。</p>
+
+<p>在现在的绝大部分机器上，<code class="language-plaintext highlighter-rouge">int</code>类型为 4 字节，<code class="language-plaintext highlighter-rouge">float</code>类型为 4 字节，<code class="language-plaintext highlighter-rouge">cahr *</code>类型为 8 个字节。所以<code class="language-plaintext highlighter-rouge">u</code>就占据了最大空间，也就是 8 个字节，而<code class="language-plaintext highlighter-rouge">s</code>则每个都留了各自的空间，也就是 4+4+8=16 字节。</p>
+
+<p>那么需要在什么时候使用<code class="language-plaintext highlighter-rouge">union</code>呢？
+首先根据其存放一种数据的特点，可以用来做一些通用计算，比如说浮点数和整数的切换等。
+其次上面的使用目的下，节省空间了。虽然这种情况下也可以使用结构体，但是上面三种数据类型就差一倍大小的情况算好的。因为内存地址分配机制，一些类型的数据的地址是由特殊要求的，比如说在一些机器上，<code class="language-plaintext highlighter-rouge">int</code>需要在偶数位的地址。</p>
+
+<p>下面就是一个例子，但是整数的地址限制并不是在偶数，而是 4 的倍数。</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">s_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">ival</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">a</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">s</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>这个结构体的大小为 8 个字节，你可以自己试试看是不是这个大小。</p>
+
+<p>并且由于编译器是顺序读取的，所以如果你写成下面这样</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">s_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">b</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">d</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">s</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>那么这个结构体的大小为 16 字节。这种情况下可以将同一类的数据写在一起，可以节约一些空间，如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">s_tag</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">b</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">d</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">s</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>这样这个结构体所占用的空间大小就为 12 字节了。而如果使用<code class="language-plaintext highlighter-rouge">union</code>，那么无论什么顺序，大小一直为 4 字节。随着数据类型的可能性越来越多，节约空间的必要性就凸显出来了。</p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
