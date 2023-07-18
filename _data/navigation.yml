@@ -8,6 +8,8 @@
   link: /c.html
 - name: Assembly
   link: /assembly.html
+- name: Go
+  link: /go.html
 - name: Plan 9
   link: /plan9.html
 - name: Web
