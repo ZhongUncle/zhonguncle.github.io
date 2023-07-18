@@ -1,7 +1,7 @@
 - name: 主页
   link: /index.html
-- name: SwiftUI
-  link: /swiftui.html
+- name: Swift
+  link: /swift.html
 - name: UNIX
   link: /unix.html
 - name: C

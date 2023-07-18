@@ -1,6 +1,6 @@
 ---
 layout: article
-category: SwiftUI
+category: Swift
 date: 2023-04-22
 title: 「Swift」如何将数组转换成字典（关键字为数组元素，值为下标序号）
 ---

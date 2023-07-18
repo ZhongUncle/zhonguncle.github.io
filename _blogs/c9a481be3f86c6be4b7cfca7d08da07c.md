@@ -1,6 +1,6 @@
 ---
 layout: article
-category: SwiftUI
+category: Swift
 date: 2022-09-23
 title: 「SwiftUI」如何使用自带的原生图表（Charts）
 ---
