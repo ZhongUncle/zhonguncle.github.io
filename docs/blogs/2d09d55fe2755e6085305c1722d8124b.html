@@ -1,0 +1,382 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='zh-CN'>
+        <title>Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="最近收到了一个 Tang nano 9K FPGA开发板，就想借此机会研究一下。" />
+<meta property="og:description" content="最近收到了一个 Tang nano 9K FPGA开发板，就想借此机会研究一下。" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/2d09d55fe2755e6085305c1722d8124b.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/2d09d55fe2755e6085305c1722d8124b.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-19T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-19T00:00:00+08:00","datePublished":"2023-08-19T00:00:00+08:00","description":"最近收到了一个 Tang nano 9K FPGA开发板，就想借此机会研究一下。","headline":"Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/2d09d55fe2755e6085305c1722d8124b.html"},"url":"https://zhonguncle.github.io/blogs/2d09d55fe2755e6085305c1722d8124b.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ 3454 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>最近收到了一个 Tang nano 9K FPGA开发板，就想借此机会研究一下。</p>
+
+<p>官方文档里介绍如果想使用高云的 FPGA，就需要使用 GOWIN IDE，但是需要申请  license 提交一堆资料，我是别人送的就不太方便让别人弄。加上 IDE 其实并不是很适合学习和投入生产，因为 IDE 忽略了很多细节，以及对一些工作做了处理。所以就想找到其他的工作流程，就像可以使用任何文本编辑器加上 Clang/LLVM 就可以编译 C/C++ 程序一样。</p>
+
+<p><img src="/assets/images/7e5c789997f74c809ecbb4ae4de00aa5.jpeg" alt="Tang nano 9K FPGA" /></p>
+
+<h2 id="fpga开发是在开发什么">FPGA开发是在开发什么？</h2>
+<p>首先是需要知道，FPGA 开发到底是在开发什么，这样才能找到需要的工具和软件。</p>
+
+<p>计算机械执行各种指令的本质是给一系列逻辑单元的引脚通电，然后经过逻辑电路之后输出新的电路信号。从软件的层面来说，每个引脚的输入就是一个常见到的一串二进制数字（比如<code class="language-plaintext highlighter-rouge">01011101010</code>）中的一位（一般使用的正逻辑中，<code class="language-plaintext highlighter-rouge">1</code>表示高电平，<code class="language-plaintext highlighter-rouge">0</code>表示低电平），早期的打孔板就是实体版的这种二进制数字。<strong>也就是说，最终我们需要的是一个存放二进制指令的文件，然后由 FPGA 执行。</strong></p>
+
+<p>这时候还有一个问题：指令怎么知道接口和针脚谁是谁呢？不知道的话，是没有办法弄到正确的二进制指令的，因为一些指令的操作对象就可能是错误的。
+接口和针脚本质是一些数字表示的，需要通过这些数字来标识，所以我们还需要标识对应接口和针脚的文件。</p>
+
+<p>简而言之，开发 FPGA 就是编写两个文件：<code class="language-plaintext highlighter-rouge">xxxx.v</code>和<code class="language-plaintext highlighter-rouge">xxxx.cst</code>。</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">.v</code>文件里存放的是 Verilog 语言的代码，用来连接电路中的各种门、寄存器，以及一些硬 IP（hard intellectual property）。</li>
+  <li><code class="language-plaintext highlighter-rouge">.cst</code>文件里存放的是引脚约束文件，用来表示 FPGA 开发板上每个引脚的作用和电压。</li>
+</ul>
+
+<p>然后再通过一些工具，最后将其转换成存放了一堆位（bit）的文件，称之为比特流文件，来控制各部分的连接、工作等。不同 FPGA 厂商使用的文件格式不一样。这里 Tang nano 9K 使用的文件后缀为<code class="language-plaintext highlighter-rouge">.fs</code>，内容如下：</p>
+
+<p><img alt="" src="/assets/images/9bdbb9d18ccd4e469ec060eefaaacc5a.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h2 id="安装和配置需要的工具">安装和配置需要的工具</h2>
+<h3 id="前提">前提</h3>
+<p>你需要有Python 3.8 或更新的版本，因为生成比特流需要使用一个 Python 脚本。Mac 一般回预装 Python，你只需要检查和更新版本即可。</p>
+<h3 id="工具链-oss-cad-suite">工具链 OSS CAD Suite</h3>
+<p>接下来使用需要 OSS CAD Suite，这是一个工具链，可以将<code class="language-plaintext highlighter-rouge">xxxx.v</code>和<code class="language-plaintext highlighter-rouge">xxxx.cst</code>转换成最终的比特流文件（有点像编译器或者说交叉编译里的工具链），最后将其写入 FPGA。</p>
+
+<blockquote>
+  <p>这个套件包含了很多 FPGA 的工具，一般目录名或程序名带<code class="language-plaintext highlighter-rouge">gowin</code>的便是这里 Tang Nano 系列所需的。但其实可以只安装 Gowin FPGA 芯片所需的工具的，不过 OSS CAD Suite 不光终端可以使用，VS Code 也可以使用，所以使用 OSS CAD Suite 比较方便两头使用，如果你使用其他 FPGA 的话，也可以减少安装新的工具链。</p>
+</blockquote>
+
+<p>OSS CAD Suite 下载地址为：<a href="https://github.com/YosysHQ/oss-cad-suite-build/releases/latest">https://github.com/YosysHQ/oss-cad-suite-build/releases/latest</a></p>
+
+<p>如果你使用最新的 OSS CAD Suite 构建时出现下列这种错误，那么建议下载 2023 年 2 月或 3 月的版本（版本更新特别快，基本上几天就一版，随便哪天的都行）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gowin_pack -d GW1N-9C -o rio.fs rio_pnr.json
+Traceback (most recent call last):
+File "/opt/oss-cad-suite/libexec/gowin_pack", line 33, in 
+sys.exit(load_entry_point('Apycula==0.8.2a1', 'console_scripts', 'gowin_pack')())
+File "/opt/oss-cad-suite/lib/python3.8/site-packages/Apycula-0.8.2a1-py3.8.egg/apycula/gowin_pack.py", line 984, in main
+AttributeError: module 'importlib.resources' has no attribute 'files'
+make: *** [Makefile:16: rio.fs] Error 1
+</code></pre></div></div>
+
+<p>然后将 OSS-CAD-Suite 中<code class="language-plaintext highlighter-rouge">bin</code>的路径放到环境变量<code class="language-plaintext highlighter-rouge">PATH</code>中，你可以放到你的 Shell 配置文件中。语句如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH="存放位置/oss-cad-suite/bin:$PATH"
+</code></pre></div></div>
+
+<p>然后使用<code class="language-plaintext highlighter-rouge">source</code>激活更新或者新开一个终端窗口即可。</p>
+
+<h3 id="只安装-gowin-fpga-需要的工具链">只安装 Gowin FPGA 需要的工具链</h3>
+<p>Tang Nano 使用的 Gowin FPGA 芯片，它的比特流和格式的工具在 Apicula 项目中，这是地址：<a href="https://github.com/YosysHQ/apicula">https://github.com/YosysHQ/apicula</a>。如果你需要阅读文档，那么也在这个项目中。</p>
+
+<p>安装方法如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pip3 install apycula
+</code></pre></div></div>
+
+<p>如果你想简洁安装，那么可以使用这种方法。这样下载安装的包体积会小特别多（4.1 MB 对 1.35 GB），但是万一开发过程中需要使用其他的工具，那么就得自己再去单独下载这些工具了。</p>
+
+<h3 id="文本编辑器-vs-code">文本编辑器 VS Code</h3>
+<p>编写代码这里使用 Visual Studio Code，当然你使用任何文本编辑器来编写代码，比如 Vim、Emacs 等。但是不能使用 Word、Pages 这种应用程序，因为这种应用程序实际上并不是文本编辑器，而是文本处理器，在底层并不是简单的文本。</p>
+
+<p>这里使用 Visual Studio Code 的原因主要是扩展会高亮代码和方便设置针脚，以及构建最终的比特流文件必须要使用一个插件来自动构建。所以需要安装两个扩展：<code class="language-plaintext highlighter-rouge">Lushay Code</code>和<code class="language-plaintext highlighter-rouge">Verilog-HDL/SystemVerilog/Bluespec SystemVerilo</code>。<code class="language-plaintext highlighter-rouge">Lushay Code</code>是为了使用 OSS-CAD-Suite，这是一个自动构建工具，而后者是为了高亮代码和方便设置针脚。如果<code class="language-plaintext highlighter-rouge">Lushay Code</code>不支持你的 FPGA，那么还请找一下支持自己 FPGA 的扩展插件。</p>
+
+<p>此外要配置一下扩展，在“设置-扩展”中，将你的 OSS-CAD-Suite 位置输入到下图位置，这样 VS Code 才可以使用 OSS-CAD-Suite：</p>
+
+<p><img src="/assets/images/de4c7afad1d9417d9c5d71e2d91ef5df.png" alt="请添加图片描述" /></p>
+
+<h2 id="示例代码让板载-led-逐个亮起">示例代码：让板载 LED 逐个亮起</h2>
+
+<p>这里有两个文件：<code class="language-plaintext highlighter-rouge">top.v</code>和<code class="language-plaintext highlighter-rouge">tangnano9k.cst</code>，内容分别如下（需要注意<code class="language-plaintext highlighter-rouge">top.v</code>最后需要有一个空行）</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// top.v
+module top
+(
+    input clk,
+    output [5:0] led
+);
+
+localparam WAIT_TIME = 13500000;
+reg [23:0] clockCounter = 0;
+reg [5:0] cur_state = 6'b111111;	// 这个六位二进制数的每一位都表示一个 LED
+
+
+always @(posedge clk) begin
+    clockCounter &lt;= clockCounter + 1;
+    if (clockCounter == WAIT_TIME) begin
+        clockCounter &lt;= 0;
+            cur_state &lt;= cur_state &lt;&lt; 1;
+        if (cur_state == 6'b000000) begin
+            cur_state &lt;= 6'b111111;
+        end
+    end
+end
+
+assign led[5:0] = cur_state[5:0];
+
+endmodule
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// tangnano9k.cst
+IO_LOC  "clk" 52;
+IO_PORT "clk" PULL_MODE=UP;
+
+IO_LOC  "led[0]" 10;
+
+IO_LOC  "led[1]" 11;
+
+IO_LOC  "led[2]" 13;
+
+IO_LOC  "led[3]" 14;
+
+IO_LOC  "led[4]" 15;
+
+IO_LOC  "led[5]" 16;
+
+</code></pre></div></div>
+
+<p>如果你的<code class="language-plaintext highlighter-rouge">tangnano9k.cst</code>是用 VS Code 设置的，那么应该如下：</p>
+
+<p><img src="/assets/images/cf486bd5061f44afb188a6b0f0a4f38e.png" alt="请添加图片描述" /></p>
+
+<h2 id="构建项目">构建项目</h2>
+<h3 id="使用-vs-code-构建">使用 VS Code 构建</h3>
+<p>这种方法很简单，如果你之前配置好了 VS Code，并且也已经将你的 FPGA 连接到 Mac 上，直接按照下图的顺序点击，等一会儿，<code class="language-plaintext highlighter-rouge">fs</code>文件就已经构建好并且将其烧录到 FPGA 上了：</p>
+
+<p><img alt="" src="/assets/images/b28daf4d6b5b48b2bd23314df7ac7a7d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h3 id="使用终端构建">使用终端构建</h3>
+<p>这部分划成两节，第一节详细介绍了每一步的使用和原由，第二节则将其整理成一个脚本，这样就方便许多了。</p>
+<h4 id="逐步来说">逐步来说</h4>
+<p>首先进入<code class="language-plaintext highlighter-rouge">yosys</code>（输入按回车），页面如下：</p>
+
+<p><img alt="" src="/assets/images/83b2f979e46b4425991ccf059d269367.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>然后输入以下命令：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 读取分析top.v的内容</span>
+<span class="o">&gt;</span> <span class="nb">read</span> <span class="nt">-sv</span> top.v
+<span class="c"># 将top.v的内容合成转换为json格式（由于yosys已经分析了文件，所以不用文件名top.v，而是模块名top）</span>
+<span class="o">&gt;</span> synth_gowin <span class="nt">-top</span> top <span class="nt">-json</span> test.json
+<span class="c"># 退出yosys</span>
+<span class="o">&gt;</span> <span class="nb">exit</span>
+</code></pre></div></div>
+
+<p>当然上面这部分可以化简成一句话：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ yosys -p "read_verilog top.v; synth_gowin -json test.json"
+</code></pre></div></div>
+
+<p>然后使用下面的命令来进行进一步的工作：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 通过设置设备名、CST文件和刚才生成的 JSON 文件来生成 FPGA 布局和布线信息，并且放入 test_pnr.json 中。</span>
+<span class="nv">$ </span>nextpnr-gowin <span class="nt">--family</span> GW1N-9C <span class="nt">--device</span> GW1NR-LV9QN88PC6/I5 <span class="nt">--cst</span> tangnano9k.cst <span class="nt">--json</span> test.json <span class="nt">--write</span> test_pnr.json
+</code></pre></div></div>
+
+<p>上面的家族名和设备名需要根据你自己的 FPGA 型号进行修改（如果不是 Tang nano 9K 的话可以不写<code class="language-plaintext highlighter-rouge">--family</code>这个选项），这个型号不是官网上短的那种。你可以在自己 FPGA 芯片封装上看到，比如下图就是 Tang nano 9K 的设备名<code class="language-plaintext highlighter-rouge">GW1NR-LV9QN88PC6/I5</code>：
+<img src="/assets/images/34cb3dd7414640319cb05f3d34d24b60.jpeg" alt="请添加图片描述" /></p>
+
+<p>也可以根据下面的表格进行查找：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>设备名(device)</th>
+      <th>板子的名称(board)</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trenz TEC0117</td>
+      <td>GW1NR-UV9QN881C6/I5</td>
+      <td>tec0117</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano:</td>
+      <td>GW1N-LV1QN48C6/I5</td>
+      <td>tangnano</td>
+      <td>tangnano</td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano 1K</td>
+      <td>GW1NZ-LV1QN48C6/I5</td>
+      <td>tangnano1k</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano 4K</td>
+      <td>GW1NSR-LV4CQN48PC7/I6</td>
+      <td>tangnano4k</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano 9K</td>
+      <td>GW1NR-LV9QN88PC6/I5</td>
+      <td>tangnano9k</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Seeed RUNBER</td>
+      <td>GW1N-UV4LQ144C6/I5</td>
+      <td>runber</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>@Disasm honeycomb</td>
+      <td>GW1NS-UX2CQN48C5/I4</td>
+      <td>honeycomb</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>接下来需要注意</strong>，如果你和我一样是 Tang nano 9K，那么使用下面的语句（设备不能写上面那个长的）：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gowin_pack -d GW1N-9C -o top.fs test_pnr.json
+</code></pre></div></div>
+
+<p>如果你是其他型号的 Gowin FPGA，那么使用：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gowin_pack -d 你的设备型号 -o top.fs test_pnr.json
+</code></pre></div></div>
+
+<p>然后就是将比特流文件烧录到 FPGA 上：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openFPGALoader -b 板子的名字 pack.fs
+</code></pre></div></div>
+
+<p>这个<code class="language-plaintext highlighter-rouge">板子的名称</code>在上面的表格里可以看到对应的。如果你看到类似下面的内容，那么就是烧录成功了：</p>
+
+<p><img src="/assets/images/0dc9b4566e974b2398b14306c947de14.png" alt="请添加图片描述" /></p>
+
+<p>然后就可以看到这样的现象：</p>
+
+<p><img src="/assets/images/14efe557dd3f46118210cdc2ad75ba16.gif" alt="请添加图片描述" /></p>
+
+<h4 id="写个脚本">写个脚本</h4>
+<p>这里搞点生产力，我们将其写成脚本来实现“一步生成和烧录”，你可以根据自己的型号进行修改.</p>
+
+<p>新建一个空白文本文件<code class="language-plaintext highlighter-rouge">build.sh</code>，然后输入：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#!/bin/bash
+
+DEVICE='GW1NR-LV9QN88PC6/I5|tangnano9k'
+BOARD='tangnano9k'
+
+yosys -p "read_verilog top.v; synth_gowin -json temp.json"
+nextpnr-gowin --family GW1N-9C --device GW1NR-LV9QN88PC6/I5 --cst tangnano9k.cst --json temp.json --write test_pnr.json
+gowin_pack -d GW1N-9C -o top.fs test_pnr.json
+openFPGALoader -b $BOARD top.fs
+</code></pre></div></div>
+
+<p>然后使用下面的语句赋予运行权限：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>chmod +x build.sh
+</code></pre></div></div>
+
+<p>这样只用<code class="language-plaintext highlighter-rouge">./build.sh</code>就可以在当前目录下进行构建和烧录了。</p>
+<h2 id="扩展阅读">扩展阅读</h2>
+<p>FPGA 是数电的一个分支，FPGA 学习过程中需要了解很多数电的术语和概念，所以可以使用数电专业的专业书来做一些入门，这对后续学习也有帮助。这里推荐剑桥大学的这些资料：</p>
+
+<p><img src="/assets/images/27fec049f13b41d293443286594d3462.png" alt="ELECTRICAL, ELECTRONIC AND INSTRUMENTATION" /></p>
+
+<p>这些资料对于非数电专业的人士来说是一些不错的资料。其中很多知识点并不是问题，初高中都学过，主要是国内中学时期使用的是苏联式的符号，而绝大部分资料使用的都是美式符号或者现在的国标符号，所以如果你直接看电路图可能会看不懂。</p>
+
+<p>如果你和我一样是 FPGA 新手，那么关于 FPGA 的一些术语会让人头大。比如说 Verilog 是什么？硬 IP 又是什么？针对这些 FPGA 的术语和概念，我推荐看看 Intel 联合出版的一本书《FPGAs for Dummies》，你可以很轻松的在搜索引擎中通过“FPGAs for Dummies PDF”找到，《FPGAs for Dummies》的封面如下图：</p>
+
+<p><img src="/assets/images/19ede2a6d6754379a756dca80ef3bd81.jpeg" alt="FPGAs for Dummies 的封面" /></p>
+
+<p>这本书用非常轻松的语言介绍了你准备踏入 FPGA 领域所需的术语、语言、设计思路、发展历程、应用等各方面的知识，以及最基础的那个问题：为什么你要使用 FPGA。</p>
+
+<blockquote>
+  <p>《XXX FOR DUMMIES》是一个系列书籍，致力于用诙谐、简单的语言介绍技术，类似《十分钟学会xxx》，但是作者有一些事业内蛮厉害的人。这个系列并不是 Intel 的，只是 FPGA 这本是 Intel 合作的。</p>
+</blockquote>
+
+<p>关于 tang nano 9k 还有国外写的很不错的专栏，介绍了很多案例和用法，上文中提到的 Lushay Code 插件就是这个团队做的：<a href="https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/">https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/</a></p>
+
+<p>然后就是 YosysHQ 一些项目的代码和文档了，比如说上文提到的：</p>
+<ul>
+  <li>OSS CAD Suite：<a href="https://github.com/YosysHQ/oss-cad-suite-build">https://github.com/YosysHQ/oss-cad-suite-build</a></li>
+  <li>Project Apicula：<a href="https://github.com/YosysHQ/apicula">https://github.com/YosysHQ/apicula</a></li>
+  <li>nextpnr：<a href="https://github.com/YosysHQ/nextpnr">https://github.com/YosysHQ/nextpnr</a></li>
+</ul>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

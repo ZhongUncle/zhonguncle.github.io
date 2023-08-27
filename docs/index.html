@@ -88,12 +88,92 @@
 <ul>
     
     <li>
+        <h2><a class="blog" href="/blogs/44ab75aacedbd835e3affb2fefe390a9.html">使用树莓派Pico、DHT11和SSD1306搭建一个温度湿度计（只使用官方库，以及官方案例代码的错误之处和解决方案）</a></h2>
+        <p class="info">2023-08-28 ｜ <a href="/mcu.html"> MCU</a> ｜ 10552 字</p>
+        
+        
+        <p>
+最近想树莓派 Pico、DHT11 温湿度传感器和 SSD1306 OLED 屏幕做一个温度湿度计，树莓派官方案例也分别有这两个设备的案例，我就想做个简单的温度湿度计作为学习微控制器的开始，结果遇到了一个大坑，所以写本文记录一下整个过程。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/5f1a7fd5d52116befdae2e8e54b10888.html">Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</a></h2>
+        <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ 2008 字</p>
+        
+        
+        <p>
+本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。
+前提知识
+首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/911891686f4a77e37082c2b4210451c9.html">用C/C++修改I2C默认的SDA和SCL针脚</a></h2>
+        <p class="info">2023-08-26 ｜ <a href="/mcu.html"> MCU</a> ｜ 432 字</p>
+        
+        
+        <p>
+首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/2d09d55fe2755e6085305c1722d8124b.html">Mac 开发 Tang Nano FPGA 指南（使用终端和使用 VS Code 和插件，适用所有 Gowin FPGA）</a></h2>
+        <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ 3454 字</p>
+        
+        
+        <p>
+最近收到了一个 Tang nano 9K FPGA开发板，就想借此机会研究一下。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
         <h2><a class="blog" href="/blogs/d01620c9d7201b52dcea05de04d13c14.html">如何重置树莓派 Pico（重置外围设备失败的解决方案）</a></h2>
         <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 620 字</p>
         
         
         <p>
 有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/ed2b91193eab92ce65c73ced7ac607d5.html">APFS 文件系统探究</a></h2>
+        <p class="info">2023-08-14 ｜ <a href="/research.html"> Research</a> ｜ 3225 字</p>
+        
+        
+        <p>
+本文的创作初衷是因为我发现从底层详解 APFS 的资料很少，所以自己来进行了一些探究和整理。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/ab1c75fe3b903e1d9be0171a966a8176.html">如何使用 Go 获取 URL 的参数，以及使用时的问题</a></h2>
+        <p class="info">2023-08-13 ｜ <a href="/go.html"> Go</a> ｜ 937 字</p>
+        
+        
+        <p>
+Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。
 </p>
 
         
