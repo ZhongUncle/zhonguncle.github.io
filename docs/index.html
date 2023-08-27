@@ -63,6 +63,10 @@
             Web
         </a>
     
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
         <a href="/research.html" class="headerItem">
             Research
         </a>
@@ -82,6 +86,51 @@
 <h1>最新</h1>
 
 <ul>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/d01620c9d7201b52dcea05de04d13c14.html">如何重置树莓派 Pico（重置外围设备失败的解决方案）</a></h2>
+        <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 620 字</p>
+        
+        
+        <p>
+有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/d879e4278e187d628848d9485115567b.html">搭建树莓派Pico交叉编译环境和工具链（arm-none-eabi-gcc）时可能会遇到的错误以及解决方案</a></h2>
+        <p class="info">2023-08-10 ｜ <a href="/mcu.html"> MCU</a> ｜ 1056 字</p>
+        
+        
+        <p>
+本文是一个类似手册的文章，用来记录可能遇到的错误。你可以通过侧栏选择遇到的错误来查看详细信息。
+No install step for ‘ELF2UF2Build’
+遇到这种错误有两种原因：
+
+  安装了版本不对或者不完整的arm-none-eabi-gcc；
+  没有使用正确的 C/C++ 的编译器，导致编译出来的elf2uf2不对；
+
+</p>
+
+        
+        
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/5e449fdb610b2a4d7ee8ee742fbfe736.html">如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</a></h2>
+        <p class="info">2023-08-09 ｜ <a href="/mcu.html"> MCU</a> ｜ 4419 字</p>
+        
+        
+        <p>
+写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。
+</p>
+
+        
+        
+    </li>
     
     <li>
         <h2><a class="blog" href="/blogs/cb8b4100532d7ecb35170372fdbb74eb.html">硬盘为什么在 USB 外接时会造成大量性能损失</a></h2>
@@ -253,7 +302,7 @@ as汇编器是苹果的汇编器，Xcode 生成的汇编代码也是as风格的�
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/7251ef4f4e099a1ba8ff657a4578e39a.html">使用 C++ 验证非均匀概率的离散事件在样本数量足够大时，符合正态分布曲线（通过生成一个PPM格式的图像）</a></h2>
+        <h2><a class="blog" href="/blogs/0f0b411859c51518ef3baa6ca03c1e87.html">使用 C++ 验证中心极限定理（通过生成一个PPM格式的图像验证非均匀概率的离散事件在样本数量足够大时，符合正态分布曲线）</a></h2>
         <p class="info">2023-05-16 ｜ <a href="/c.html"> C</a> ｜ 4689 字</p>
         
         

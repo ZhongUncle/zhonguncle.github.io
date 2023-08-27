@@ -1,0 +1,160 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='zh-CN'>
+        <title>如何重置树莓派 Pico（重置外围设备失败的解决方案）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何重置树莓派 Pico（重置外围设备失败的解决方案）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何重置树莓派 Pico（重置外围设备失败的解决方案）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。" />
+<meta property="og:description" content="有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/d01620c9d7201b52dcea05de04d13c14.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/d01620c9d7201b52dcea05de04d13c14.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-15T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何重置树莓派 Pico（重置外围设备失败的解决方案）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-15T00:00:00+08:00","datePublished":"2023-08-15T00:00:00+08:00","description":"有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。","headline":"如何重置树莓派 Pico（重置外围设备失败的解决方案）","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/d01620c9d7201b52dcea05de04d13c14.html"},"url":"https://zhonguncle.github.io/blogs/d01620c9d7201b52dcea05de04d13c14.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>如何重置树莓派 Pico（重置外围设备失败的解决方案）</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 620 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。</p>
+
+<p>但是这种方法不一定适用所有情况，一些外围设备可能用这种办法不能重置成功。比如说有时候放入让 LED 闪烁的<code class="language-plaintext highlighter-rouge">blink.uf2</code>之后，上面的办法可能有时没有让 LED 不闪了。</p>
+
+<p>如果出现了这种外围设备无法重置的情况，那么就编译一个重置程序放入 Pico 来进行重置。这个重置程序在官方的<a href="https://github.com/raspberrypi/pico-examples"> pico-examples </a>中也有这个例子，叫做<code class="language-plaintext highlighter-rouge">hello_reset</code>。下面是我将其提炼出来，因为原本是没有单独构建这个二进制执行文件的<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>文件。</p>
+
+<p>首先是<code class="language-plaintext highlighter-rouge">hello_reset.c</code>的代码：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"pico/stdlib.h"</span><span class="cp">
+#include</span> <span class="cpf">"hardware/resets.h"</span><span class="cp">
+</span>
+<span class="c1">/// \tag::hello_reset[]</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">stdio_init_all</span><span class="p">();</span>
+
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Hello, reset!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+
+    <span class="c1">// Put the PWM block into reset</span>
+    <span class="n">reset_block</span><span class="p">(</span><span class="n">RESETS_RESET_PWM_BITS</span><span class="p">);</span>
+
+    <span class="c1">// And bring it out</span>
+    <span class="n">unreset_block_wait</span><span class="p">(</span><span class="n">RESETS_RESET_PWM_BITS</span><span class="p">);</span>
+
+    <span class="c1">// Put the PWM and RTC block into reset</span>
+    <span class="n">reset_block</span><span class="p">(</span><span class="n">RESETS_RESET_PWM_BITS</span> <span class="o">|</span> <span class="n">RESETS_RESET_RTC_BITS</span><span class="p">);</span>
+
+    <span class="c1">// Wait for both to come out of reset</span>
+    <span class="n">unreset_block_wait</span><span class="p">(</span><span class="n">RESETS_RESET_PWM_BITS</span> <span class="o">|</span> <span class="n">RESETS_RESET_RTC_BITS</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+<span class="c1">/// \end::hello_reset[]</span>
+</code></pre></div></div>
+
+<p>然后是最重要的<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>，如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake_minimum_required(VERSION 3.12)
+
+include(pico_sdk_import.cmake)
+
+project(hello_reset)
+
+pico_sdk_init()
+
+
+add_executable(hello_reset 
+hello_reset.c
+)
+
+target_link_libraries(hello_reset pico_stdlib)
+
+pico_add_extra_outputs(hello_reset)
+</code></pre></div></div>
+
+<p>此外记得导入<code class="language-plaintext highlighter-rouge">pico-sdk</code>中的<code class="language-plaintext highlighter-rouge">pico_sdk_import.cmake</code>文件到这个目录下，然后创建空目录<code class="language-plaintext highlighter-rouge">build</code>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cp $PICO_SDK_PATH/external/pico_sdk_import.cmake .
+$ mkdir build
+$ cd build
+</code></pre></div></div>
+
+<p>这时就可以进行构建了：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="err">$</span> <span class="n">cmake</span> <span class="p">..</span>
+<span class="err">$</span> <span class="n">make</span> <span class="o">-</span><span class="n">j4</span>
+</code></pre></div></div>
+
+<p>构建完成之后将<code class="language-plaintext highlighter-rouge">hello_reset.uf2</code>拖到 USB 模式下的 Pico 就行了。这时候你试一试就会发现 LED 不闪了。</p>
+
+<p>如果你对构建有疑问还请移步我的另外一篇博客：<a href="https://zhonguncle.github.io/blogs/5e449fdb610b2a4d7ee8ee742fbfe736.html">《如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）》</a></p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

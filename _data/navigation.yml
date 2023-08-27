@@ -14,6 +14,8 @@
   link: /plan9.html
 - name: Web
   link: /web.html
+- name: MCU
+  link: /mcu.html
 - name: Research
   link: /research.html
 - name: Non-Tech
