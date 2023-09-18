@@ -78,7 +78,7 @@
 </div>
             <h1>不同编程语言性能对比</h1>
             <div class="bloginfo">
-                <p class="info">2023-03-31 ｜ <a href="/research.html"> Research</a> ｜ 2306 字</p>
+                <p class="info">2023-03-31 ｜ <a href="/research.html"> Research</a> ｜ 2257 字</p>
             </div>
             <!-- excerpt-start -->
 <p>一直很好奇不同语言之间的性能对比到底是什么样的，因为很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来了解一下情况。</p>
@@ -178,8 +178,8 @@ sys	0m0.011s
 <h2 id="循环测试">循环测试</h2>
 <p>一般来说，循环语句是由跳转指令（一般是带判断的跳转指令）和一些其他指令构成的。而且像<code class="language-plaintext highlighter-rouge">while</code>、<code class="language-plaintext highlighter-rouge">for</code>这样的循环语句的使用率也很高，也是很多代码运行长时间运行的原因之一。</p>
 
-<h3 id="轻度循环测试单纯测一下循环速度">轻度循环测试（单纯测一下循环速度）</h3>
-<p>第一个项目是对不同编程语言进行1000000（一千万）次<code class="language-plaintext highlighter-rouge">while</code>循环和自增，并且打印出最后的和。由于每次循环的操作简单，就算是循环了一千万次，但还只是一种轻度测试，代表性不强，只是为了测试对比一下各语言的循环快慢。</p>
+<h3 id="轻度循环测试矩阵乘法">轻度循环测试（矩阵乘法）</h3>
+<p>第一个项目是生成两个 4096x4096 浮点类型矩阵，然后将其相乘，结果放入第三个矩阵中。这个项目可以测试语言在处理一些计算和缓冲的性能。</p>
 
 <p>这里之所以 Swift 使用<code class="language-plaintext highlighter-rouge">while</code>循环,是因为 Swift 使用的 For-In 在简单的循环上要比 While 慢得多，因为设计目的是为了遍历数组之类的数据结构。</p>
 
@@ -195,9 +195,9 @@ sys	0m0.011s
   <tbody>
     <tr>
       <td>C/C++</td>
-      <td>0.020</td>
-      <td>0.018</td>
-      <td>0.001</td>
+      <td>16.847</td>
+      <td>16.220</td>
+      <td>0.058</td>
     </tr>
     <tr>
       <td>Java</td>
