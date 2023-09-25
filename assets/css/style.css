@@ -141,6 +141,15 @@ p>code
     padding: 2px 4px
 }
 
+/* 列表部分的代码样式 */
+li>code
+{
+    font-size: 0.9em;
+    color: #ba4746;
+    background-color: rgba(0, 0, 0, .05);
+    padding: 2px 4px
+}
+
 /* 表格 */
 table {
     background-color: transparent;

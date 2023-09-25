@@ -15,14 +15,14 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。" />
 <meta property="og:description" content="今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。" />
-<link rel="canonical" href="https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
-<meta property="og:url" content="https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
+<link rel="canonical" href="http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-02-03T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-03T00:00:00+08:00","datePublished":"2023-02-03T00:00:00+08:00","description":"今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。","headline":"为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html"},"url":"https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-03T00:00:00+08:00","datePublished":"2023-02-03T00:00:00+08:00","description":"今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。","headline":"为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html"},"url":"http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html"}</script>
 <!-- End Jekyll SEO tag -->
 
     </head>
@@ -78,7 +78,7 @@
 </div>
             <h1>为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）</h1>
             <div class="bloginfo">
-                <p class="info">2023-02-03 ｜ <a href="/research.html"> Research</a> ｜ 6507 字</p>
+                <p class="info">2023-02-03 ｜ <a href="/research.html"> Research</a> ｜ 6498 字</p>
             </div>
             <!-- excerpt-start -->
 <p>今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？
@@ -91,7 +91,7 @@
 <p>本文按照“GIF 文件格式（技术原理）”-&gt;“GIF 的历史”-&gt;“结论”的顺序。一些关于技术的历史介绍也会放在“GIF 的历史”中。</p>
 
 <h2 id="gif-文件格式技术原理">GIF 文件格式（技术原理）</h2>
-<p>如果想深入解释这一点，需要先简单介绍一下 GIF 的文件格式，这样才能了解为什么历史上会出现 GIF 格式。如果你想深入了解 GIF 文件格式，这里有篇文章写的挺细致，也是本文的参考资料之一，如果你能阅读英文的话非常建议看看：<a href="https://www.cs.cmu.edu/~cil/lzw.and.gif.txt">《LZW and GIF explained—-Steve Blackstock》</a>，或者我备份了一个。</p>
+<p>如果想深入解释这一点，需要先简单介绍一下 GIF 的文件格式，这样才能了解为什么历史上会出现 GIF 格式。如果你想深入了解 GIF 文件格式，这里有篇文章写的挺细致，也是本文的参考资料之一，如果你能阅读英文的话非常建议看看：<a href="https://www.cs.cmu.edu/~cil/lzw.and.gif.txt">《LZW and GIF explained—-Steve Blackstock》</a>。</p>
 
 <p>GIF 文件由 5 大部分组成：GIF 签名，屏幕描述符，全局颜色映射，图像描述符，本地颜色映射，光栅数据和 GIF 终止符。</p>
 

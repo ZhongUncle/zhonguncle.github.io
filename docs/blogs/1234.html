@@ -1,0 +1,120 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='zh-CN'>
+        <title>《自学考试数据库课程实践作业》 A802-钟宜江</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>《自学考试数据库课程实践作业》 A802-钟宜江</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="《自学考试数据库课程实践作业》 A802-钟宜江" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="总体设计 根据题目要求，使用 C 语言制作了一个 CLI 程序来对单向链表进行如下操作，并且分析了每个操作的工作原理： 创建一条含正整数结点的无序链表：根据用户输入从零创建一个新的链表，包括头节点head。用户每次输入完都会显示当前链表的内容。 链表结点的输出：使用printf()格式化输出head后所有节点的值到标准输出（stdout）中，默认情况下会打印到终端上； 链表结点的升序排序：通过交换排序进行排序，选出所有节点中最小的，然后与head后到第一个节点交换，以此类推，直到没有节点再需要交换。 链表结点插入：插入节点需要考虑到插入位置，开头、中间、结尾的方法是不一样的。 链表结点删除：删除节点只需要匹配相等的值即可，需要注意不能匹配到一个合适的值就结束，因为如果链表是有序的，那么可能会有几个连续的值；如果是无序的，那么可能会在后面有相同的值。 链表逆序（升序变降序）：就是将后续的值不断插入到head和head-&gt;next这两个节点之间即可。 链表拆分，将链表拆分成由奇数和偶数结点组成的两条链表：是通过值来判断是奇数节点还是偶数节点。拆分之后分别输出到标准输出，默认情况下会打印到终端上。 释放链表：使用free()来释放分配给节点的空间。" />
+<meta property="og:description" content="总体设计 根据题目要求，使用 C 语言制作了一个 CLI 程序来对单向链表进行如下操作，并且分析了每个操作的工作原理： 创建一条含正整数结点的无序链表：根据用户输入从零创建一个新的链表，包括头节点head。用户每次输入完都会显示当前链表的内容。 链表结点的输出：使用printf()格式化输出head后所有节点的值到标准输出（stdout）中，默认情况下会打印到终端上； 链表结点的升序排序：通过交换排序进行排序，选出所有节点中最小的，然后与head后到第一个节点交换，以此类推，直到没有节点再需要交换。 链表结点插入：插入节点需要考虑到插入位置，开头、中间、结尾的方法是不一样的。 链表结点删除：删除节点只需要匹配相等的值即可，需要注意不能匹配到一个合适的值就结束，因为如果链表是有序的，那么可能会有几个连续的值；如果是无序的，那么可能会在后面有相同的值。 链表逆序（升序变降序）：就是将后续的值不断插入到head和head-&gt;next这两个节点之间即可。 链表拆分，将链表拆分成由奇数和偶数结点组成的两条链表：是通过值来判断是奇数节点还是偶数节点。拆分之后分别输出到标准输出，默认情况下会打印到终端上。 释放链表：使用free()来释放分配给节点的空间。" />
+<link rel="canonical" href="http://localhost:4000/blogs/1234.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/1234.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-25T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="《自学考试数据库课程实践作业》 A802-钟宜江" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-25T00:00:00+08:00","datePublished":"2022-09-25T00:00:00+08:00","description":"总体设计 根据题目要求，使用 C 语言制作了一个 CLI 程序来对单向链表进行如下操作，并且分析了每个操作的工作原理： 创建一条含正整数结点的无序链表：根据用户输入从零创建一个新的链表，包括头节点head。用户每次输入完都会显示当前链表的内容。 链表结点的输出：使用printf()格式化输出head后所有节点的值到标准输出（stdout）中，默认情况下会打印到终端上； 链表结点的升序排序：通过交换排序进行排序，选出所有节点中最小的，然后与head后到第一个节点交换，以此类推，直到没有节点再需要交换。 链表结点插入：插入节点需要考虑到插入位置，开头、中间、结尾的方法是不一样的。 链表结点删除：删除节点只需要匹配相等的值即可，需要注意不能匹配到一个合适的值就结束，因为如果链表是有序的，那么可能会有几个连续的值；如果是无序的，那么可能会在后面有相同的值。 链表逆序（升序变降序）：就是将后续的值不断插入到head和head-&gt;next这两个节点之间即可。 链表拆分，将链表拆分成由奇数和偶数结点组成的两条链表：是通过值来判断是奇数节点还是偶数节点。拆分之后分别输出到标准输出，默认情况下会打印到终端上。 释放链表：使用free()来释放分配给节点的空间。","headline":"《自学考试数据库课程实践作业》 A802-钟宜江","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/1234.html"},"url":"http://localhost:4000/blogs/1234.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>《自学考试数据库课程实践作业》 A802-钟宜江</h1>
+            <div class="bloginfo">
+                <p class="info">2022-09-25 ｜ <a href="/assembly.html"> Assembly</a> ｜ 747 字</p>
+            </div>
+            <h2 id="总体设计">总体设计</h2>
+<p>根据题目要求，使用 C 语言制作了一个 CLI 程序来对单向链表进行如下操作，并且分析了每个操作的工作原理：</p>
+<ol>
+  <li><strong>创建一条含正整数结点的无序链表</strong>：根据用户输入从零创建一个新的链表，包括头节点<code class="language-plaintext highlighter-rouge">head</code>。用户每次输入完都会显示当前链表的内容。</li>
+  <li><strong>链表结点的输出</strong>：使用<code class="language-plaintext highlighter-rouge">printf()</code>格式化输出<code class="language-plaintext highlighter-rouge">head</code>后所有节点的值到标准输出（stdout）中，默认情况下会打印到终端上；</li>
+  <li><strong>链表结点的升序排序</strong>：通过交换排序进行排序，选出所有节点中最小的，然后与<code class="language-plaintext highlighter-rouge">head</code>后到第一个节点交换，以此类推，直到没有节点再需要交换。</li>
+  <li><strong>链表结点插入</strong>：插入节点需要考虑到插入位置，开头、中间、结尾的方法是不一样的。</li>
+  <li><strong>链表结点删除</strong>：删除节点只需要匹配相等的值即可，需要注意不能匹配到一个合适的值就结束，因为如果链表是有序的，那么可能会有几个连续的值；如果是无序的，那么可能会在后面有相同的值。</li>
+  <li><strong>链表逆序（升序变降序）</strong>：就是将后续的值不断插入到<code class="language-plaintext highlighter-rouge">head</code>和<code class="language-plaintext highlighter-rouge">head-&gt;next</code>这两个节点之间即可。</li>
+  <li><strong>链表拆分，将链表拆分成由奇数和偶数结点组成的两条链表</strong>：是通过值来判断是奇数节点还是偶数节点。拆分之后分别输出到标准输出，默认情况下会打印到终端上。</li>
+  <li><strong>释放链表</strong>：使用<code class="language-plaintext highlighter-rouge">free()</code>来释放分配给节点的空间。</li>
+</ol>
+
+<p>将每一个操作写成一个函数，这样可以很方便地通过<code class="language-plaintext highlighter-rouge">switch</code>来选择使用哪个操作，某些函数还需要互相调用，比如“链表结点的输出”这个操作的使用率就很高。</p>
+
+<h2 id="开发环境">开发环境</h2>
+<ul>
+  <li>系统：macOS 12.6.6</li>
+  <li>编译器：Apple clang version 14.0.0 (clang-1400.0.29.202)</li>
+</ul>
+
+<h2 id="编译流程">编译流程</h2>
+<p>虽然使用 macOS 作为开发平台，但是由于只使用了 C 标准库，也并没有涉及特定的系统调用、库，所以可以在任意 Unix-Like 系统（如 Ubuntu、FreeBSD、WSL）上使用<code class="language-plaintext highlighter-rouge">clang</code>或<code class="language-plaintext highlighter-rouge">gcc</code>进行编译。</p>
+
+<p>编译命令如下：</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 使用gcc
+$ gcc linkedList.c
+# 使用clang
+$ cc linkedList.c
+</code></pre></div></div>
+
+<p>实测在 Ubuntu、FreeBSD 上都可以进行正常编译和运行（不过 FreeBSD 可能会中文显示乱码）。</p>
+
+<p>##</p>
+
+        </div>
+    </body>
+</html>
