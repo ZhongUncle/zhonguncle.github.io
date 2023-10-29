@@ -1,0 +1,250 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。" />
+<meta property="og:description" content="最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/5485ea7ed82502b2890d737b6db02b56.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/5485ea7ed82502b2890d737b6db02b56.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-08-14T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-14T00:00:00+08:00","datePublished":"2022-08-14T00:00:00+08:00","description":"最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。","headline":"在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/5485ea7ed82502b2890d737b6db02b56.html"},"url":"http://localhost:4000/blogs/zh/5485ea7ed82502b2890d737b6db02b56.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</h1>
+            <div class="bloginfo">
+                <p class="info">2022-08-14 ｜ <a href="/web.html"> Web</a> ｜ 1787 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。</p>
+
+<p>这里使用的是 Ubuntu 20.04.4 LTS，腾讯轻量云服务器。计划安装 PHP7 和使用 Nginx。</p>
+
+<h2 id="安装和启动-nginx">安装和启动 Nginx</h2>
+<p>第一步当然是实现服务器框架，这里使用 Nginx。</p>
+
+<p>首先是安装 Nginx：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>nginx
+</code></pre></div></div>
+
+<p>安装完成之后，使用以下命令启动 nginx 服务：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 二者都可</span>
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl start nginx
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl start nginx.service
+</code></pre></div></div>
+
+<p>关闭 nginx 服务：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 二者都可</span>
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl stop nginx
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl stop nginx.service
+</code></pre></div></div>
+
+<p>重启 nginx 服务：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 二者都可</span>
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl restart nginx
+<span class="nv">$ </span><span class="nb">sudo </span>systemctl restart nginx.service
+</code></pre></div></div>
+
+<h2 id="安装-php">安装 PHP</h2>
+<p>然后就是安装 PHP。如果你阅读过其他文章，会发现很多人会提到需要安装 PHP-FPM（FastCGI 进程管理器，用来处理一些用户请求，一般就是处理 PHP 脚本的沟通协议）。但是从 PHP 5.3.3 开始，PHP-FPM 就包含在PHP core中，按理来说不用自己安装了（问题本节后面说，一定要看一下），下面图是官网机翻：</p>
+
+<p><img src="/assets/images/d75e5fbe075e424b86b524a3220bbfe9.png" alt="官网PHP版本介绍的机翻" /></p>
+
+<p>PHP 可以直接使用<code class="language-plaintext highlighter-rouge">apt</code>来安装，依次执行以下命令：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt update
+<span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>php
+</code></pre></div></div>
+
+<p>安装完的话，使用<code class="language-plaintext highlighter-rouge">php -v</code>来查看版本号，以此来确定是否安装好，如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>php <span class="nt">-v</span>
+PHP 7.4.3 <span class="o">(</span>cli<span class="o">)</span> <span class="o">(</span>built: Jun 13 2022 13:43:30<span class="o">)</span> <span class="o">(</span> NTS <span class="o">)</span>
+Copyright <span class="o">(</span>c<span class="o">)</span> The PHP Group
+Zend Engine v3.4.0, Copyright <span class="o">(</span>c<span class="o">)</span> Zend Technologies
+    with Zend OPcache v7.4.3, Copyright <span class="o">(</span>c<span class="o">)</span>, by Zend Technologies
+</code></pre></div></div>
+
+<p>这时候 PHP 就安装好了。</p>
+
+<p>但是！如果你直接部署，之后查看会显示“502 Bad Gateway”。
+这是因为 Ubuntu 的软件包库里的<code class="language-plaintext highlighter-rouge">PHP7.4</code>并不包含 PHP-FPM。所以需要自己再安装一下。好在提供了一个包，不然就得从头编译 PHP 了，方法如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>apt <span class="nb">install </span>php7.4-fpm
+</code></pre></div></div>
+
+<h2 id="部署环境">部署环境</h2>
+
+<h3 id="nginx">Nginx</h3>
+<p>首先打开 Nginx 的部署文件，这样来更改一些设置（这里需要使用<code class="language-plaintext highlighter-rouge">sudo</code>来调用 root 权限）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>vi /etc/nginx/nginx.conf
+</code></pre></div></div>
+
+<p>在里面找一个位置，写入以下代码：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>		server <span class="o">{</span>
+                listen  80<span class="p">;</span>
+                server_name     xxx.x.x.x<span class="p">;</span>
+                root    /home/lighthouse/<span class="p">;</span>
+                index   index.html index.htm index.php<span class="p">;</span>
+		
+                location <span class="se">\ </span><span class="o">{</span>
+                        index index.html<span class="p">;</span>
+                <span class="o">}</span>
+
+				<span class="c"># 这里表示以“.php”结尾的文件会按照以下内容执行</span>
+                location ~ <span class="se">\.</span>php<span class="nv">$ </span><span class="o">{</span>
+                        fastcgi_pass      127.0.0.1:9000<span class="p">;</span>
+                        fastcgi_index     index.php<span class="p">;</span>
+                        include           fastcgi.conf<span class="p">;</span>
+                <span class="o">}</span>
+        <span class="o">}</span>
+</code></pre></div></div>
+
+<p>Nginx 就算简单部署完成了。</p>
+
+<h3 id="php-fpm">PHP-FPM</h3>
+<p>如果按照前文安装了 PHP-FPM，那么在目录<code class="language-plaintext highlighter-rouge">/etc/php/7.4</code>下，会多一个目录<code class="language-plaintext highlighter-rouge">fpm</code>，进入这个目录里的<code class="language-plaintext highlighter-rouge">pool.d</code>目录，如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">cd</span> /etc/php/7.4/fpm/pool.d
+<span class="nv">$ </span><span class="nb">ls
+</span>www.conf
+</code></pre></div></div>
+
+<p>会看到有一个名为<code class="language-plaintext highlighter-rouge">www.conf</code>的文件，这个文件控制着 PHP-FPM 的一些行为。</p>
+
+<p>因为前面配置 Nginx 的时候，让 fastcgi（也就是 PHP-FPM 监听本机的端口 9000）。但是在<code class="language-plaintext highlighter-rouge">www.conf</code>中只让其监听<code class="language-plaintext highlighter-rouge">/run/php/php7.4-fpm.sock</code>，这是一个 socket，但是一般是空的。</p>
+
+<p>所以在<code class="language-plaintext highlighter-rouge">www.conf</code>添加下面这行，来监听端口 9000:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>listen <span class="o">=</span> 9000
+</code></pre></div></div>
+
+<p>如下：</p>
+
+<p><img src="/assets/images/b53f908df689444a89d9f8e1200ef445.png" alt="添加在图中位置来监听端口 9000" /></p>
+
+<h2 id="使用">使用</h2>
+<p>然后就是简单的使用了。
+前面由于设置<code class="language-plaintext highlighter-rouge">/home/lighthouse/</code>为根目录，所以在下面新建一个<code class="language-plaintext highlighter-rouge">index.php</code>文件，在里面输入以下内容来查看一些服务器 PHP 的信息：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>&lt;?php
+        phpinfo<span class="o">()</span><span class="p">;</span>
+?&gt;
+</code></pre></div></div>
+
+<p>然后在浏览器中输入以下地址（xxx.x.x.x 是服务器的 ip）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>xxx.x.x.x/index.php
+</code></pre></div></div>
+
+<p>然后就可以看到以下画面：</p>
+
+<p><img src="/assets/images/14476407844c45f4b26c9af74d0b0eb5.png" alt="新建之后的页面效果" /></p>
+
+<h2 id="一些排错方法">一些排错方法</h2>
+<p>在配置和使用的时候可能会出现一些奇怪的问题，这里来介绍一些可能会使用到的方法。</p>
+
+<h3 id="查找nginx的错误日志">查找nginx的错误日志</h3>
+<p>在<code class="language-plaintext highlighter-rouge">/etc/nginx/nginx.conf</code>文件中可以找到错误日志，日志中记录了错误发生的时间、状态和原因等信息，这样方便我们排错。
+例如在<code class="language-plaintext highlighter-rouge">/etc/nginx/nginx.conf</code>中有“日志设置”部分，这部分说明了错误日志的位置：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Logging Settings</span>
+
+access_log /var/log/nginx/access.log<span class="p">;</span>
+<span class="c"># 这个就是错误日志</span>
+error_log /var/log/nginx/error.log<span class="p">;</span>
+</code></pre></div></div>
+
+<p>然后使用以下命令即可查看：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>less /var/log/nginx/error.log
+</code></pre></div></div>
+
+<p>可能会出现的问题如下（连接不到推送流）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2022/06/23 19:33:39 <span class="o">[</span>error] 6972#6972: <span class="k">*</span>1 connect<span class="o">()</span> failed <span class="o">(</span>111: Connection refused<span class="o">)</span> <span class="k">while </span>connecting to upstream, client: xxx.xxx.xxx.xx, server: xxx.x.x.x, request: <span class="s2">"GET /index.php HTTP/1.1"</span>, upstream: <span class="s2">"fastcgi://127.0.0.1:9000"</span>, host: <span class="s2">"xxx.x.x.x"</span>
+</code></pre></div></div>
+
+<p>这个问题就是因为没有安装 PHP-FPM 导致的，并且有时还有可能导致以下这种问题（协议不对）：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2022/06/23 19:33:39 <span class="o">[</span>error] 6972#6972: <span class="k">*</span>1 upstream sent unsupported FastCGI protocol version: 72 <span class="k">while </span>reading response header from upstream, client: xxx.xxx.xxx.xx, server: xxx.x.x.x, request: <span class="s2">"GET /index.php HTTP/1.1"</span>, upstream: <span class="s2">"fastcgi://127.0.0.1:9000"</span>, host: <span class="s2">"xxx.x.x.x"</span>
+</code></pre></div></div>
+<p>手动安装一下 PHP-FPM 即可解决这个问题。</p>
+
+<h3 id="查找-php-配置文件phpini">查找 PHP 配置文件<code class="language-plaintext highlighter-rouge">php.ini</code></h3>
+<p>有些时候需要调整 PHP 的配置文件，使用以下命令可以直接查看<code class="language-plaintext highlighter-rouge">php.ini</code>，如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>php <span class="nt">-ini</span>
+phpinfo<span class="o">()</span>
+PHP Version <span class="o">=&gt;</span> 7.4.3
+
+System <span class="o">=&gt;</span> Linux VM-12-10-ubuntu 5.4.0-121-generic <span class="c">#137-Ubuntu SMP Wed Jun 15 13:33:07 UTC 2022 x86_64</span>
+Build Date <span class="o">=&gt;</span> Jun 13 2022 13:43:30
+Server API <span class="o">=&gt;</span> Command Line Interface
+Virtual Directory Support <span class="o">=&gt;</span> disabled
+Configuration File <span class="o">(</span>php.ini<span class="o">)</span> Path <span class="o">=&gt;</span> /etc/php/7.4/cli
+Loaded Configuration File <span class="o">=&gt;</span> /etc/php/7.4/cli/php.ini
+......
+</code></pre></div></div>
+
+<p>特别长，但是在开头能看到上文这一部分。</p>
+
+<p>其中：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Configuration File <span class="o">(</span>php.ini<span class="o">)</span> Path <span class="o">=&gt;</span> /etc/php/7.4/cli
+</code></pre></div></div>
+
+<p>说明了配置文件<code class="language-plaintext highlighter-rouge">php.ini</code>的路径<code class="language-plaintext highlighter-rouge">/etc/php/7.4/cli</code>。</p>
+
+<p>希望可以帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

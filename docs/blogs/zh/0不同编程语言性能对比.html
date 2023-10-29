@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>不同编程语言性能对比</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>不同编程语言性能对比</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="不同编程语言性能对比" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="一直很好奇不同语言之间的性能对比到底是什么样的，因为很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来了解一下情况。" />
+<meta property="og:description" content="一直很好奇不同语言之间的性能对比到底是什么样的，因为很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来了解一下情况。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-03-31T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="不同编程语言性能对比" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-03-31T00:00:00+08:00","datePublished":"2023-03-31T00:00:00+08:00","description":"一直很好奇不同语言之间的性能对比到底是什么样的，因为很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来了解一下情况。","headline":"不同编程语言性能对比","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html"},"url":"http://localhost:4000/blogs/zh/0%E4%B8%8D%E5%90%8C%E7%BC%96%E7%A8%8B%E8%AF%AD%E8%A8%80%E6%80%A7%E8%83%BD%E5%AF%B9%E6%AF%94.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>不同编程语言性能对比</h1>
+            <div class="bloginfo">
+                <p class="info">2023-03-31 ｜ <a href="/research.html"> Research</a> ｜ 2257 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>一直很好奇不同语言之间的性能对比到底是什么样的，因为很多地方都在强调不同语言之间的性能区别，但是自己又没有实际感受，所以就想做一些实验来了解一下情况。</p>
+
+<p>当然这个实验是没法一次做完的，毕竟我并不能一次性列出自己想做的所有测试项目，而且可能还会有新的语言加入，甚至是加入汇编语言作为基准，以及脚本语言作为对比。所以这可能是一个时间跨度很长的项目。</p>
+
+<h2 id="关于数据和测试的一些情况">关于数据和测试的一些情况</h2>
+<h3 id="各语言编译器或框架版本">各语言编译器或框架版本</h3>
+
+<table>
+  <thead>
+    <tr>
+      <th>语言</th>
+      <th>编译器版本</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>C/C++</td>
+      <td>Apple clang version 14.0.0 (clang-1400.0.29.102)</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>javac 19.0.1</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>go version go1.20.2 darwin/amd64</td>
+    </tr>
+    <tr>
+      <td>Swift</td>
+      <td>Apple Swift version 5.7 (swiftlang-5.7.0.127.4 clang-1400.0.29.50)</td>
+    </tr>
+    <tr>
+      <td>Python3</td>
+      <td>Python 3.9.10</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="测试设备信息">测试设备信息</h3>
+
+<p><img alt="测试设备为 Mac mini 2018 i5 32GB 512GB" src="/assets/images/6f2d7d1340f9bf31c514e309bbcadf45.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h3 id="主要看哪个时间呢">主要看哪个时间呢</h3>
+<p>记录时间是使用<code class="language-plaintext highlighter-rouge">time</code>命令统计其运行时间。由于一些程序运行时间太短，可以跑三次及以上，取中间值或者最常出现的值。</p>
+
+<p><code class="language-plaintext highlighter-rouge">time</code>返回内容如下：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>real	0m22.944s
+user	0m22.922s
+sys	0m0.011s
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">real</code>指的是 CPU 的时钟时间（clock time），又被称为墙时钟时间（wall clock time），也就是 CPU 实际运行了多久。这个值的高低取决于系统中正在运行的进程的数量。</p>
+
+<p><code class="language-plaintext highlighter-rouge">user</code>指的是用户指令使用 CPU 的时间，也就是程序指令花的时间。</p>
+
+<p><code class="language-plaintext highlighter-rouge">sys</code>指的是系统内核花在操作进程的 CPU 时间，比如进程使用了<code class="language-plaintext highlighter-rouge">read</code>这个系统服务，那么时间会算在这里。</p>
+
+<p>由于是为了测试编程语言，除非使用了一些系统调用，或者是一些脚本语言，主要看<code class="language-plaintext highlighter-rouge">user</code>部分即可。</p>
+
+<h3 id="时间之和不对">时间之和不对</h3>
+<p>但是由于存在四舍五入以及调度问题（主要是调度问题），会存在将用户时长和系统时长加起来不等于实际时长（real time）的情况。</p>
+
+<h3 id="第一次运行时间显示不稳定">第一次运行时间显示不稳定</h3>
+<p>有些语言的测试结果有一个很有意思的地方，第一次记录的总时长会很大（不是误差的程度），但是用户时长和系统时长都是正常的，所以忽略第一次运行的结果。这是进程调度和优先级导致的。</p>
+
+<h3 id="swift使用调用函数的方式">Swift使用调用函数的方式</h3>
+<p>Swift 使用调用函数的方式，因为是否使用函数来处理会导致性能有可能十倍的差距，如下是轻度循环测试的两种情况下的结果（运行了十几次，确保不是误差导致的）：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Swift是否使用函数</th>
+      <th>CPU时长（秒）</th>
+      <th>用户时长（秒）</th>
+      <th>系统时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>不使用函数</td>
+      <td>0.286</td>
+      <td>0.283</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <td>使用函数</td>
+      <td>0.029</td>
+      <td>0.026</td>
+      <td>0.001</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="循环测试">循环测试</h2>
+<p>一般来说，循环语句是由跳转指令（一般是带判断的跳转指令）和一些其他指令构成的。而且像<code class="language-plaintext highlighter-rouge">while</code>、<code class="language-plaintext highlighter-rouge">for</code>这样的循环语句的使用率也很高，也是很多代码运行长时间运行的原因之一。</p>
+
+<h3 id="轻度循环测试矩阵乘法">轻度循环测试（矩阵乘法）</h3>
+<p>第一个项目是生成两个 4096x4096 浮点类型矩阵，然后将其相乘，结果放入第三个矩阵中。这个项目可以测试语言在处理一些计算和缓冲的性能。</p>
+
+<p>这里之所以 Swift 使用<code class="language-plaintext highlighter-rouge">while</code>循环,是因为 Swift 使用的 For-In 在简单的循环上要比 While 慢得多，因为设计目的是为了遍历数组之类的数据结构。</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>语言</th>
+      <th>实际时长（秒）</th>
+      <th>用户时长（秒）</th>
+      <th>系统时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>C/C++</td>
+      <td>16.847</td>
+      <td>16.220</td>
+      <td>0.058</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>0.053</td>
+      <td>0.031</td>
+      <td>0.021</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>0.007</td>
+      <td>0.004</td>
+      <td>0.002</td>
+    </tr>
+    <tr>
+      <td>Swift</td>
+      <td>0.029</td>
+      <td>0.026</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <td>Python3</td>
+      <td>0.837</td>
+      <td>0.827</td>
+      <td>0.009</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>可以看到所有编程语言都大幅领先脚本语言。在这次测试中，Go 语言甚至比 C/C++ 还快（加大循环次数，快的比例还是一样）。这个速度真的是有点惊喜，查阅了一些资料发现，Go 在轻度任务里确实非常快。</p>
+
+<p>下面是各语言的代码参见仓库 Language_Benchmark（还未公开）。</p>
+
+<h3 id="中度循环测试lomuto-partition-快速排序">中度循环测试（Lomuto-Partition 快速排序）</h3>
+<p>中度的测试就得加强每次循环中的操作了，也比较贴近现实中的情况。那么可以来写一个快速排序进行测试，使用 Lomuto-Partition 方法，然后输出排序结果。</p>
+
+<p>测试数据如下，35 个整数：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1272, 1697, 3180, 1653, 2652, 521, 3278, 2589, 904, 702, 3582, 2447, 2435, 777, 440, 1565, 389, 907, 2357, 252, 3643, 1055, 1390, 1110, 609, 3768, 315, 2286, 2687, 818, 2731, 496, 2946, 1133, 84
+</code></pre></div></div>
+
+<p>根据 Swift Playground 显示，迭代了 202 次，所有划分数组函数中的 while 语句累计执行了 2313 次：</p>
+
+<p><img alt="根据 Swift Playground 显示，循环了 202 次" src="/assets/images/6acb96738d55b4fffa93e4e5da0cc41f.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>结果如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>语言</th>
+      <th>实际时长（秒）</th>
+      <th>用户时长（秒）</th>
+      <th>系统时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>C/C++</td>
+      <td>0.003</td>
+      <td>0.001</td>
+      <td>0.001</td>
+    </tr>
+    <tr>
+      <td>Java</td>
+      <td>0.061</td>
+      <td>0.043</td>
+      <td>0.022</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>0.004</td>
+      <td>0.002</td>
+      <td>0.002</td>
+    </tr>
+    <tr>
+      <td>Swift</td>
+      <td>0.007</td>
+      <td>0.002</td>
+      <td>0.002</td>
+    </tr>
+    <tr>
+      <td>Python3</td>
+      <td>0.031</td>
+      <td>0.020</td>
+      <td>0.009</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>这里由于 C/C++ 运行时间太短了，几乎还没跑起来就完了。所以加大数量，使用 2000 个整数排序，由于 Python 有迭代次数限制，以及 Java 时间较长，就不测试 Python 和 Java 了，只测试 C/C++、Go 和 Swift。</p>
+
+<p>结果如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>语言</th>
+      <th>实际时长（秒）</th>
+      <th>用户时长（秒）</th>
+      <th>系统时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>C/C++</td>
+      <td>2.153</td>
+      <td>2.149</td>
+      <td>0.003</td>
+    </tr>
+    <tr>
+      <td>Go</td>
+      <td>31.263</td>
+      <td>32.427</td>
+      <td>0.724</td>
+    </tr>
+    <tr>
+      <td>Swift</td>
+      <td>22.944</td>
+      <td>22.922</td>
+      <td>0.011</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>结果 C/C++ 还是没用多久就跑完了。可以看到，在上了一些强度之后，C/C++ 展现出了高性能的一面，能比其他语言快 10～15 倍。</p>
+
+<p>本来想看看能有多少次循环，结果 Swift Playground 用了很长时间和很多内存还没跑完：</p>
+
+<p><img src="/assets/images/ac61c9a01dcf8f45f86c34ab35a0d2fb.png" alt="Swift Playground 用了很长时间和很多内存还没跑完" /></p>
+
+<p>所以就换一种方法，我给上面三处地方加了计数（就是三处数不一样的地方），这样就可以加快速度。</p>
+
+<p>最后得到的数据是：迭代 663040 次，所有划分数组函数中的 while 语句累计执行了 442360097 次（快 4.5 亿次，万幸没继续用 Swift Playground 跑）。如果统计所有的加法（不含减法），比如自增、相加的情况，那么总计有 886695669 次（约 8.87 亿次）加法计算。</p>
+
+<p>目前看下来，Swift 作为 C 语言的继承者真的挺不错的，性能和语法都比较均衡，不像 Go 有时突出，有时难用性能又差。下次好好测试一下 Go 的并发能力，Go 只用来写并发程序即可。</p>
+
+<h4 id="swift-在-a13iphone-11-pro上的测试结果">Swift 在 A13（iPhone 11 Pro）上的测试结果</h4>
+
+<p>突然想起可以在 iPhone/iPad 上测试 Swift 编写的程序，但是由于 iPad 和 Xcode 版本不匹配，所以只用 iPhone 进行测试。</p>
+
+<p>iPhone 的测试结果很有意思，如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>情况</th>
+      <th>时长（秒）</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>第一次</td>
+      <td>29.050</td>
+    </tr>
+    <tr>
+      <td>第一次之后</td>
+      <td>0.170</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>可以看到，iPhone，或者说 iOS 是有一些机制防止重复计算来浪费性能。</p>
+
+<h3 id="重度循环测试">重度循环测试</h3>
+<p>还没想好测什么，等汇编部分出来再测吧</p>
+
+        </div>
+    </body>
+</html>

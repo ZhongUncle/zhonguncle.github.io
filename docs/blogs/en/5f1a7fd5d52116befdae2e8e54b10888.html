@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。" />
+<meta property="og:description" content="本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。" />
+<link rel="canonical" href="http://localhost:4000/blogs/en/5f1a7fd5d52116befdae2e8e54b10888.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/en/5f1a7fd5d52116befdae2e8e54b10888.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-27T00:00:00+08:00","datePublished":"2023-08-27T00:00:00+08:00","description":"本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。","headline":"Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/en/5f1a7fd5d52116befdae2e8e54b10888.html"},"url":"http://localhost:4000/blogs/en/5f1a7fd5d52116befdae2e8e54b10888.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ 2008 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。</p>
+<h2 id="前提知识">前提知识</h2>
+<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
+
+<p><img src="/assets/images/f030ec6f15e74342a19b19899c3880cb.png" alt="" /></p>
+
+<p>默认情况下是只开启了第一个 I2C，也就是只有 I2C0 的针脚是可以使用的。如果这种情况下，你哪怕修改了针脚，但不是 I2C0 的，也是不会正常运行的。</p>
+
+<h2 id="如何选择哪个i2c控制器以及sda和scl针脚">如何选择哪个I2C控制器，以及SDA和SCL针脚</h2>
+<p>在设置之前声明三个变量或宏来方便开发。建议使用宏，这比较符合树莓派的开发风格：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define I2C				i2c0
+#define I2C_SDA_PIN 	4
+#define I2C_SCL_PIN 	5
+</span></code></pre></div></div>
+
+<p>如果宏扩展出错，那么就使用变量。</p>
+
+<p>然后初始化 I2C 的时候来设置使用哪个 I2C 控制器，以及哪个SDA和SCL针脚。下面是设置根据上面的设置，这里使用的是第一个 I2C 控制器，SDA 使用的是 GP4，SCL 使用的是 GP5，频率为<code class="language-plaintext highlighter-rouge">1000000</code>：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i2c_init</span><span class="p">(</span><span class="n">I2C</span><span class="p">,</span> <span class="mi">1000000</span><span class="p">);</span>
+<span class="n">gpio_set_function</span><span class="p">(</span><span class="n">I2C_SDA_PIN</span><span class="p">,</span> <span class="n">GPIO_FUNC_I2C</span><span class="p">);</span>
+<span class="n">gpio_set_function</span><span class="p">(</span><span class="n">I2C_SCL_PIN</span><span class="p">,</span> <span class="n">GPIO_FUNC_I2C</span><span class="p">);</span>
+<span class="n">gpio_pull_up</span><span class="p">(</span><span class="n">I2C_SDA_PIN</span><span class="p">);</span>
+<span class="n">gpio_pull_up</span><span class="p">(</span><span class="n">I2C_SCL_PIN</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>由于有两个 I2C 控制器，那么可以同时使用两套<code class="language-plaintext highlighter-rouge">SDA</code>和<code class="language-plaintext highlighter-rouge">SCL</code>针脚，但是要注意必须是<code class="language-plaintext highlighter-rouge">I2C0</code>和<code class="language-plaintext highlighter-rouge">I2C1</code>的针脚，不能是同一个控制器的。</p>
+
+<h2 id="发现历程选读">发现历程（选读）</h2>
+<p>这部分不一定要看。这里记录一下我是怎么知道是这样处理的，顺道了解了一下代码结构和信息传递的流程，万一以后需要就不用花时间翻来翻去了。</p>
+
+<h3 id="第一次尝试">第一次尝试</h3>
+<p>首先分析一下：要定义针脚就要知道针脚这个值是如何被利用的，这样就可以知道如何传递处理这个值了。</p>
+
+<p>一般是在初始化的时候设置使用哪个I2C控制器以及SDA和SCL针脚，代码一般如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i2c_init</span><span class="p">(</span><span class="n">i2c_default</span><span class="p">,</span> <span class="n">CLK</span><span class="p">);</span>
+<span class="n">gpio_set_function</span><span class="p">(</span><span class="n">PICO_DEFAULT_I2C_SDA_PIN</span><span class="p">,</span> <span class="n">GPIO_FUNC_I2C</span><span class="p">);</span>
+<span class="n">gpio_set_function</span><span class="p">(</span><span class="n">PICO_DEFAULT_I2C_SCL_PIN</span><span class="p">,</span> <span class="n">GPIO_FUNC_I2C</span><span class="p">);</span>
+<span class="n">gpio_pull_up</span><span class="p">(</span><span class="n">PICO_DEFAULT_I2C_SDA_PIN</span><span class="p">);</span>
+<span class="n">gpio_pull_up</span><span class="p">(</span><span class="n">PICO_DEFAULT_I2C_SCL_PIN</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>研究<a href="/blogs/911891686f4a77e37082c2b4210451c9.html">《用C/C++修改I2C默认的SDA和SCL针脚》</a>的时候，我知道了默认针脚是在<code class="language-plaintext highlighter-rouge">pico.h</code>中配置的的，相关值有三个：<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C</code>、<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C_SDA_PIN</code>和<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C_SCL_PIN</code>，那么只要追溯这三个值就行。</p>
+
+<p>但是这样不好找，引用太多了。所以我就尝试了从另一方面先入手：I2C 是通过<code class="language-plaintext highlighter-rouge">i2c_init()</code>函数初始化的，如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i2c_init</span><span class="p">(</span><span class="n">i2c_default</span><span class="p">,</span> <span class="n">SSD1306_I2C_CLK</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>我需要的只有第一个参数<code class="language-plaintext highlighter-rouge">i2c_default</code>，因为这个参数传递了一些信息，第二个参数<code class="language-plaintext highlighter-rouge">uint baudrate</code>是传递速率的，和针脚无关。</p>
+
+<p>那么<code class="language-plaintext highlighter-rouge">i2c_init()</code>函数的内容是什么呢？知道这个才能知道<code class="language-plaintext highlighter-rouge">i2c_default</code>的类型是什么结构，以及内部进行了什么处理。</p>
+
+<p><code class="language-plaintext highlighter-rouge">i2c_init()</code>函数声明在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2_common/hardware_i2c/i2c.c</code>中，函数参数列表如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">uint</span> <span class="nf">i2c_init</span><span class="p">(</span><span class="n">i2c_inst_t</span> <span class="o">*</span><span class="n">i2c</span><span class="p">,</span> <span class="n">uint</span> <span class="n">baudrate</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">i2c_reset</span><span class="p">(</span><span class="n">i2c</span><span class="p">);</span>
+    <span class="n">i2c_unreset</span><span class="p">(</span><span class="n">i2c</span><span class="p">);</span>
+    <span class="n">i2c</span><span class="o">-&gt;</span><span class="n">restart_on_next</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+
+    <span class="n">i2c</span><span class="o">-&gt;</span><span class="n">hw</span><span class="o">-&gt;</span><span class="n">enable</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="p">...</span>
+    
+    <span class="c1">// Re-sets i2c-&gt;hw-&gt;enable upon returning:</span>
+    <span class="k">return</span> <span class="n">i2c_set_baudrate</span><span class="p">(</span><span class="n">i2c</span><span class="p">,</span> <span class="n">baudrate</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>那这个<code class="language-plaintext highlighter-rouge">i2c_inst_t</code>是个什么数据类型呢？我就继续找它。</p>
+
+<p>在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2_common/hardware_i2c/include/hardware/i2c.h</code>的第 52 行可以看到它是<code class="language-plaintext highlighter-rouge">i2c_inst</code>结构体的重命名：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">i2c_inst</span> <span class="n">i2c_inst_t</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>那继续找结构体<code class="language-plaintext highlighter-rouge">i2c_inst</code>，这个结构体就在同一个文件里的第 135 行：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">i2c_inst</span> <span class="p">{</span>
+    <span class="n">i2c_hw_t</span> <span class="o">*</span><span class="n">hw</span><span class="p">;</span>
+    <span class="n">bool</span> <span class="n">restart_on_next</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>终点还是第一个变量<code class="language-plaintext highlighter-rouge">i2c_hw_t *hw</code>，因为只有它可能会传递针脚的值，那就继续找<code class="language-plaintext highlighter-rouge">i2c_hw_t</code>是什么数据类型。</p>
+
+<p>这个数据类型的声明在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2040/hardware_structs/include/hardware/structs/i2c.h</code>中。换句话说，这个文件就是为<code class="language-plaintext highlighter-rouge">i2c_hw_t</code>结构体所准备的：</p>
+
+<p><img alt="" src="/assets/images/6d2df1885bf24e2e9a24435866ea1db9.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>这个结构体存储了很多 I2C 的信息，但还是没找到针脚的信息，那么我就回到一开始在进行寻找。</p>
+
+<h3 id="第二次尝试">第二次尝试</h3>
+<p>最开始我是寻找了<code class="language-plaintext highlighter-rouge">i2c_init()</code>的第一个参数的类型<code class="language-plaintext highlighter-rouge">i2c_inst_t</code>，收获不大。但是它的值我还没寻找，所以这次从参数值出发<code class="language-plaintext highlighter-rouge">i2c_default</code>，这个值是哪定义的呢？</p>
+
+<p>在刚才发现<code class="language-plaintext highlighter-rouge">i2c_inst_t</code>声明和定义的<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2_common/hardware_i2c/include/hardware/i2c.h</code>头文件中发现了需要的东西（第 76 行）：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifdef PICO_DEFAULT_I2C_INSTANCE
+#define i2c_default PICO_DEFAULT_I2C_INSTANCE
+#endif
+</span></code></pre></div></div>
+
+<p>这个<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C_INSTANCE</code>是什么呢？往上一瞅就能看到：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#if !defined(PICO_DEFAULT_I2C_INSTANCE) &amp;&amp; defined(PICO_DEFAULT_I2C)
+#define PICO_DEFAULT_I2C_INSTANCE (__CONCAT(i2c,PICO_DEFAULT_I2C))
+#endif
+</span></code></pre></div></div>
+
+<p><strong>在这里终于看到一个需要的值：<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C</code>，前文可知这个默认为<code class="language-plaintext highlighter-rouge">0</code></strong>。</p>
+
+<p>这里的<code class="language-plaintext highlighter-rouge">(__CONCAT(i2c,PICO_DEFAULT_I2C))</code>是将<code class="language-plaintext highlighter-rouge">i2c</code>和<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C</code>的值连接起来了，默认情况下也就是<code class="language-plaintext highlighter-rouge">i2c0</code>。<strong>也就是说，参数<code class="language-plaintext highlighter-rouge">i2c_default</code>就是<code class="language-plaintext highlighter-rouge">i2c0</code>。</strong></p>
+
+<blockquote>
+  <p>这个技巧很不错，但是有些编译器用不了，比如我用 Clang x86_64-apple-darwin21.6.0 就无法扩展<code class="language-plaintext highlighter-rouge">PICO_DEFAULT_I2C</code>。</p>
+</blockquote>
+
+<h3 id="再深入一些">再深入一些</h3>
+<p>但是这里的<code class="language-plaintext highlighter-rouge">i2c0</code>是什么呢？这是个什么类型的数据呢？</p>
+
+<p><img src="/assets/images/fbeafbb40618450db9d44f5568af61b9.png" alt="请添加图片描述" /></p>
+
+<p>还是在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2_common/hardware_i2c/include/hardware/i2c.h</code>头文件中（如上图）有这样一段：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define i2c0 (&amp;i2c0_inst) ///&lt; Identifier for I2C HW Block 0
+#define i2c1 (&amp;i2c1_inst) ///&lt; Identifier for I2C HW Block 1
+</span></code></pre></div></div>
+
+<p>可以看到<code class="language-plaintext highlighter-rouge">i2c0</code>是<code class="language-plaintext highlighter-rouge">i2c0_inst</code>的地址，注释说这是<code class="language-plaintext highlighter-rouge">I2C HW Block 0</code>的标识符。从上面的</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">extern</span> <span class="n">i2c_inst_t</span> <span class="n">i2c0_inst</span><span class="p">;</span>
+<span class="k">extern</span> <span class="n">i2c_inst_t</span> <span class="n">i2c1_inst</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>可以看到<code class="language-plaintext highlighter-rouge">i2c0_inst</code>和<code class="language-plaintext highlighter-rouge">i2c1_inst</code>是外部变量，类型是<code class="language-plaintext highlighter-rouge">i2c_inst_t</code>，这个类型之前我看到了定义的结构体：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">i2c_inst</span> <span class="p">{</span>
+    <span class="n">i2c_hw_t</span> <span class="o">*</span><span class="n">hw</span><span class="p">;</span>
+    <span class="n">bool</span> <span class="n">restart_on_next</span><span class="p">;</span>
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>那这个<code class="language-plaintext highlighter-rouge">i2c0_inst</code>是在哪声明的？</p>
+
+<p>这部分在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2_common/hardware_i2c/i2c.c</code>中声明的：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">i2c_inst_t</span> <span class="n">i2c0_inst</span> <span class="o">=</span> <span class="p">{</span><span class="n">i2c0_hw</span><span class="p">,</span> <span class="nb">false</span><span class="p">};</span>
+<span class="n">i2c_inst_t</span> <span class="n">i2c1_inst</span> <span class="o">=</span> <span class="p">{</span><span class="n">i2c1_hw</span><span class="p">,</span> <span class="nb">false</span><span class="p">};</span>
+</code></pre></div></div>
+
+<p>这个<code class="language-plaintext highlighter-rouge">i2c0_hw</code>又是啥呢？在哪定义的呢？</p>
+
+<p>这是在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2040/hardware_structs/include/hardware/structs/i2c.h</code>中：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define i2c0_hw ((i2c_hw_t *)I2C0_BASE)
+#define i2c1_hw ((i2c_hw_t *)I2C1_BASE)
+</span></code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">i2c0_hw</code>表示<code class="language-plaintext highlighter-rouge">((i2c_hw_t *)I2C0_BASE)</code>，意思是<code class="language-plaintext highlighter-rouge">I2C0_BASE</code>是个指向<code class="language-plaintext highlighter-rouge">i2c_hw_t</code>的指针，它的内容在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2040/hardware_regs/include/hardware/regs/addressmap.h</code>中：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define I2C0_BASE _u(0x40044000)
+#define I2C1_BASE _u(0x40048000)
+</span></code></pre></div></div>
+
+<p>也就是说<code class="language-plaintext highlighter-rouge">I2C0_BASE</code>就是<code class="language-plaintext highlighter-rouge">0x40044000</code>，而<code class="language-plaintext highlighter-rouge">i2c0_hw</code>的地址就是<code class="language-plaintext highlighter-rouge">0x40044000</code>。</p>
+
+<p>补充一点，这里<code class="language-plaintext highlighter-rouge">_()</code>是无符号整数的意思，定义在<code class="language-plaintext highlighter-rouge">pico-sdk/src/rp2040/hardware_regs/include/hardware/platform_defs</code>：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#ifndef _u
+#ifdef __ASSEMBLER__
+#define _u(x) x
+#else
+#define _u(x) x ## u
+#endif
+#endif
+</span></code></pre></div></div>
+
+<p>了解了蛮多知识，也希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

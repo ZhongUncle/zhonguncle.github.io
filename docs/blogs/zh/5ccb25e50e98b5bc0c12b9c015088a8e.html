@@ -1,0 +1,464 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。" />
+<meta property="og:description" content="在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/5ccb25e50e98b5bc0c12b9c015088a8e.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/5ccb25e50e98b5bc0c12b9c015088a8e.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-04T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-04T00:00:00+08:00","datePublished":"2022-10-04T00:00:00+08:00","description":"在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。","headline":"快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/5ccb25e50e98b5bc0c12b9c015088a8e.html"},"url":"http://localhost:4000/blogs/zh/5ccb25e50e98b5bc0c12b9c015088a8e.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</h1>
+            <div class="bloginfo">
+                <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 4427 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。</p>
+
+<p>于是就查阅了很多资料，来写下本文作为记录。</p>
+
+<p><strong>由于篇幅有点长，建议通过左边的目录阅读，方便跳转。</strong></p>
+
+<h2 id="快速排序的发展史">快速排序的发展史</h2>
+<p>如果你看《算法导论》上关于快速排序这一章，那么书上会告诉你快速排序最早是由 C.A.R Hoare（1980 年图灵奖得主）于 1962 年发表在《The Computer Journal》第五卷上发表的论文《Quicksort》中首先提出的（<a href="https://doi.org/10.1093/comjnl/5.1.10">https://doi.org/10.1093/comjnl/5.1.10</a>）。但是在1961年底《Communications of the ACM》中，C.A.R Hoare 就已经在《Algorithm 64: Quicksort》中使用 Algol 60 算法编程语言给出了一个简单的解释，如下：</p>
+
+<p><img src="/assets/images/b4a5822db4664a479c7749a1130accfd.png" alt="C.A.R Hoare 就已经在《Algorithm 64: Quicksort》中使用 Algol 60 算法编程语言给出的简单解释" /></p>
+
+<p>并且如果你查看了刚才列出的论文《Quicksort》，那么就会发现，论文唯一的引用文献就是1961年底的《Algorithm 64: Quicksort》，如下：</p>
+
+<p><img src="/assets/images/2fee12b62fc24b90b6db68b47ea9e1a9.png" alt="《Quicksort》的论文引用" /></p>
+
+<p>而《Quicksort》只是描述了这个方法，以及很多特性和性能，并且使用数学方法证明了快速排序的时间复杂度。</p>
+
+<p>那么快速排序算法到底是什么时候被发明的呢？</p>
+
+<p>这就需要了解一下 Hoare 先生的经历了。
+C.A.R Hoare 全名 Charles Antony Richard Hoare。
+1952 年至 1956 年期间，Hoare 先生就读于牛津莫顿学院的人文科学专业（Literae Humaniores）。
+毕业之后，由于当时英国的要求，就去英国皇家海军进行两年的国家服务（National Service）了。由于大学时的文学背景，Hoare 参加了一个俄语课程来学习现代军用俄语。
+1958年，Hoare 回到牛津开始学习统计学（Statistics），并且在这年，Hoare 第一次接触到了编程（Mercury Autocode）。
+1959 年，Hoare 以访问学生进入莫斯科国立大学学习了一年。在此期间，Hoare 开始使用计算机科学技术来将俄国文学翻译成英文由于需要处理字典的内容，但是 Hoare 当时不了解排序算法，就自己重新发现冒泡排序算法（Bubblesort），但是觉得太慢了。又自己发明了第二种算法，于是发明了快速排序算法（Quicksort）。
+1960 年，Hoare 回到英国，开始工作。</p>
+
+<p><strong>所以说 Hoare 为了将俄语翻译成英语，于 1959-1960 年发明了快速排序算法，并且于 1962 年正式通过论文《Quicksort》提出快速排序算法。</strong></p>
+
+<p>然后在 1986 年首次出版的《Programming Pearls》（编程珠玑）中，作者提到了 Nico Lomuto 有一种更简洁的方法，这便是《算法导论（第三版）》中出现的快速排序算法，一般将其称为“<strong>Lomuto-Partition</strong>”；而国内一些教材上出现的快速排序算法是 Hoare 版本的变形，被称为“<strong>Hoare-Partition</strong>”。<strong>下一节将详细讲述二者的区别，如果想看更多其他快速排序算法之间的区别，可以去看《编程珠玑》第 12 章。</strong></p>
+
+<h2 id="参考文献">参考文献</h2>
+<p>Hoare 先生经历参考文献：
+<a href="https://www.britannica.com/biography/Tony-Hoare#:~:text=In%201956%20Hoare%20earned%20a%20bachelor’s%20degree%20in,courses%20in%20statistics%20and%20computer%20programming%20at%20Oxford.">大英百科全书-Tony Hoare</a>
+<a href="https://dl.acm.org/doi/pdf/10.1145/1467247.1467261">Interview: An Interview with C.A.R. Hoare</a></p>
+
+<h2 id="hoare-partition和lomuto-partition的区别">Hoare-Partition和Lomuto-Partition的区别</h2>
+<h3 id="快速排序算法原理">快速排序算法原理</h3>
+<p>在介绍Hoare-Partition和Lomuto-Partition的区别之前，当然需要先了解快速排序算法的原理。</p>
+
+<p>快速排序算法的原理是：</p>
+<ol>
+  <li>从需要排序的数组中选择一个值作为“<strong>Pivot Element</strong>”（算法导论中将其译作“<strong>主元</strong>”，下文中为了简洁就使用“主元”一词），该值一般为左边第一个元素。</li>
+  <li>然后使用主元将数组划分为两个子数组，这个过程被称为“<strong>Partition</strong>”。一般情况下，左边的子数组中的任何值<strong>小于</strong>主元，右边的子数组中的任何值<strong>大于</strong>主元。</li>
+  <li>对于左、右的两个子数组进行迭代排序。</li>
+  <li>经过迭代，最后可以得到排序好了的数组。</li>
+</ol>
+
+<p>因此，快速排序算法是有一个模板的，符合该模板的便被称为“快速排序”。这个模板就是之前出现的《ALGORITHM 64》中的模板，简单来说大致如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//quicksort(A, m, n)。 A是数组，m、n是整数，m表示需要排序的数组开头，m表示结尾</span>
+<span class="c1">//这里比较m和n是为了防止排序的数组是一个少于2个元素的数组，这就没有排序的意义了</span>
+<span class="k">if</span> <span class="n">m</span><span class="o">&lt;</span><span class="n">n</span> <span class="p">{</span>
+	<span class="n">partition</span><span class="p">(...)</span>
+	<span class="n">quicksort</span><span class="p">(...)</span>
+	<span class="n">quicksort</span><span class="p">(...)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>不同的快速排序算法区别在于<code class="language-plaintext highlighter-rouge">partition</code>部分的算法，这也是算法的关键部分。所以下面先详细说说每个方法具体的实现，再进行对比。</p>
+
+<p>首先来准备一个数组用于测试，为了方便理解，数组短一点，如下：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">testArr</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">=</span><span class="p">{</span><span class="mi">6</span><span class="p">,</span><span class="mi">10</span><span class="p">,</span><span class="mi">8</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">2</span><span class="p">,</span><span class="mi">5</span><span class="p">};</span>
+</code></pre></div></div>
+
+<h3 id="hoare-partition">Hoare-Partition</h3>
+
+<h4 id="如何使用-c-实现">如何使用 C 实现</h4>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">myqsort</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">swap</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">);</span>
+<span class="kt">void</span> <span class="nf">displayArr</span><span class="p">();</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+	<span class="c1">//可以通过总尺寸除以单个尺寸方式来获取数组元素的个数</span>
+    <span class="kt">int</span> <span class="n">num</span> <span class="o">=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">testArr</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">int</span><span class="p">);</span>
+	
+	<span class="c1">//开始快速排序</span>
+    <span class="n">myqsort</span><span class="p">(</span><span class="n">testArr</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">50</span><span class="p">);</span>
+    <span class="n">displayArr</span><span class="p">();</span>
+
+	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="n">hoare_partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">];</span>
+    
+    <span class="c1">//这里+1/-1是因为下面使用do-while结构</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">lo</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">hi</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    
+    <span class="k">while</span> <span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">){</span>
+    	<span class="c1">//从左边开始和主元x比，如果不小于主元x，就跳出循环</span>
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">&lt;</span><span class="n">x</span><span class="p">);</span>
+        
+        <span class="c1">//从右边开始和主元x比，如果不大于主元x，就跳出循环</span>
+        <span class="k">do</span> <span class="p">{</span>
+            <span class="n">j</span><span class="o">--</span><span class="p">;</span>
+        <span class="p">}</span> <span class="k">while</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">&gt;</span><span class="n">x</span><span class="p">);</span>
+        
+        <span class="c1">//在上面两次筛选大过程中，i和j在双向“奔赴”（准确说是i先j后）。</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">i</span><span class="o">&lt;</span><span class="n">j</span><span class="p">){</span> 
+        <span class="c1">//如果此时二者还没“”相遇，那么目前a[i]应该在主元x的右边，a[j]应该在主元x大左边，所以交换第i个和第j个元素。</span>
+            <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+        <span class="p">}</span><span class="k">else</span><span class="p">{</span>
+			<span class="c1">//如果此时i==j了，那么就返回j，作为下一次迭代排序中的主元（这里用i也可以，但是j是当初Hoare使用的，形成惯例了）</span>
+            <span class="k">return</span> <span class="n">j</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">myqsort</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">hi</span><span class="p">){</span>
+    	<span class="c1">//开始划分数组</span>
+        <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="n">hoare_partition</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">hi</span><span class="p">);</span>
+        <span class="c1">//进行迭代排序</span>
+        <span class="n">myqsort</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">m</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+        <span class="n">myqsort</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">m</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">hi</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">swap</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="kt">int</span> <span class="n">j</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">temp</span><span class="p">;</span>
+    <span class="n">temp</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">temp</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">displayArr</span><span class="p">(){</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">testArr</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">!=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"%d "</span><span class="p">,</span><span class="n">testArr</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+    <span class="p">}</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="运行时间测试">运行时间测试</h4>
+<p>测试平台为 Mac mini 2018 i5-8500B 4.1GHz 32g+512g，风扇使用 Mac Fan Control 调至 4400 满转速，硬盘温度 40 度左右，CPU 温度 50～75 （Intel Power Gadget 显示为 60～80 徘徊），总之没有硬盘过热降速拖后腿。
+测试数据为 100 个在<code class="language-plaintext highlighter-rouge">0～1000000000(10^9)</code>范围内的整数，不过由于只用前 60 个的数据就不短了，所以就只测了 10~50 个数据的情况。60 个的情况根据数据和计算公式来说，大概需要四个多小时（实际还是测试了一下，<code class="language-plaintext highlighter-rouge">CPU Time: 18241.949540s</code>，五个小时出头）。</p>
+
+<p><strong>下面数据有点离谱，等我研究一下哪里出现了问题再进行修改文章</strong>
+本机 NVMe 上运行结果如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数组元素个数</th>
+      <th>CPU 时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>0.000005s</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.000150s</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.012972s</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>2.463117s</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>180.790424s</td>
+    </tr>
+    <tr>
+      <td>60</td>
+      <td>18241.949540s</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>在 U 盘上运行结果如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数组元素个数</th>
+      <th>CPU 时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>0.000004s</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.000188s</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.012851s</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>2.536276s</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>183.398252s</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>二者都大致符合平均时间复杂度曲线：nlog_2n</p>
+
+<p><img src="/assets/images/13fae5ac3c1445e3835c5aec605d37cc.jpeg" alt="运行时间曲线" /></p>
+
+<p>NVMe 和 U 盘性能差别如下：</p>
+
+<p><img src="/assets/images/843944e0cfc149d7924b5bd0b7f5d721.png" alt="NVMe 和 U 盘性能差别" /></p>
+
+<h3 id="lomuto-partition">Lomuto-Partition</h3>
+<h4 id="如何使用-c-实现-1">如何使用 C 实现</h4>
+<p>这里为了简化代码，所以只列出<code class="language-plaintext highlighter-rouge">lomuto_partition</code>，除了要注意声明的时候要改一下函数名之外，其余部分和上一节一模一样：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">lomuto_partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="c1">//将最右边的最高位设置为主元</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">hi</span><span class="p">];</span>
+    <span class="c1">//设置i用于划分数组，左边小于主元，右边大于主元</span>
+    <span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="n">lo</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    
+    <span class="c1">//这里设置j为最左边的最低位，j用于控制右边子数组的边界，不能等于主元的下标hi</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="n">lo</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">//如果a[j]小于等于主元x，那么i加1，并且交换a[i]和a[j]的元素值</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">x</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">i</span><span class="o">++</span><span class="p">;</span>
+            <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="p">,</span> <span class="n">j</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="c1">//整个需要排序的数组比较完了，那么就需要将最高位一直用于比较的主元的元素与i位置的元素交</span>
+    <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="n">hi</span><span class="p">);</span>
+    <span class="k">return</span> <span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<h4 id="运行时间测试-1">运行时间测试</h4>
+<p>同样级别的测试 Lomuto-Partition 要快很多，如下：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数组元素个数</th>
+      <th>CPU 时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>0.000002s</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.000006s</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.000014s</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>0.000032s</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>0.000058s</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="二者区别">二者区别</h3>
+<p>逻辑上，“Hoare-Partition”是“双向奔赴，判断交换”；而“Lomuto-Partition”则是“开始-追击”。
+在速度上，“Lomuto-Partition”更快一些。
+在理解难易程度上，“Lomuto-Partition”也更简单。虽然很多人可能看下来会觉得“Hoare-Partition”更简单，但是可以自己尝试写一下，会发现很容易出错。</p>
+
+<h2 id="其他的快速排序算法">其他的快速排序算法</h2>
+
+<h3 id="某些教材上的快速排序算法">某些教材上的快速排序算法</h3>
+<p>在某些数据结构的教材上，可以看到以下形式的“partition”。
+仔细阅读即可发现，这正是“Hoare-Partition”的一种变形，从两头往中间排序，但是又和“Lomuto-Partition”一样最后需要将主元<code class="language-plaintext highlighter-rouge">x</code>的位置是最后再变的，但是先比一头，比完交换完，再比另一头。以及由于没有使用<code class="language-plaintext highlighter-rouge">do-while</code>，而是使用<code class="language-plaintext highlighter-rouge">while</code>语法，为了防止溢出，不得不在<code class="language-plaintext highlighter-rouge">while (lo&lt;hi)</code>中还要加上<code class="language-plaintext highlighter-rouge">lo&lt;hi</code>的限制条件。</p>
+
+<p>除了要注意声明的时候要改一下函数名之外，其余部分和之前一模一样：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">x</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">];</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">hi</span><span class="p">){</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">hi</span> <span class="o">&amp;&amp;</span> <span class="n">a</span><span class="p">[</span><span class="n">hi</span><span class="p">]</span><span class="o">&gt;=</span><span class="n">x</span><span class="p">){</span>
+            <span class="n">hi</span><span class="o">--</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">hi</span><span class="p">){</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">]</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">hi</span><span class="p">];</span>
+            <span class="n">lo</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">hi</span> <span class="o">&amp;&amp;</span> <span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">]</span><span class="o">&lt;=</span><span class="n">x</span><span class="p">){</span>
+            <span class="n">lo</span><span class="o">++</span><span class="p">;</span>
+        <span class="p">}</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">lo</span><span class="o">&lt;</span><span class="n">hi</span><span class="p">){</span>
+            <span class="n">a</span><span class="p">[</span><span class="n">hi</span><span class="p">]</span><span class="o">=</span><span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">];</span>
+            <span class="n">hi</span><span class="o">--</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">]</span><span class="o">=</span><span class="n">x</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">lo</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>测试下来时间也在二者之间，比较接近“Hoare-Partition”：</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>数组元素个数</th>
+      <th>CPU 时间</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>10</td>
+      <td>0.000006s</td>
+    </tr>
+    <tr>
+      <td>20</td>
+      <td>0.000181s</td>
+    </tr>
+    <tr>
+      <td>30</td>
+      <td>0.028264s</td>
+    </tr>
+    <tr>
+      <td>40</td>
+      <td>2.305088s</td>
+    </tr>
+    <tr>
+      <td>50</td>
+      <td>98.516586s</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="kr-上的qsort">K&amp;R 上的<code class="language-plaintext highlighter-rouge">qsort</code></h3>
+<p>在 UNIX 使用说明书（以前买电脑都要附带一本手册，就是教怎么在某台计算机上编程）、第一本 C 语言手册、被誉为“K&amp;R C 语言圣经”的《The C Programming Language》（中文名：《C程序设计语言》） 上，Brian 写了一个快速排序算法。不过原文中是用于比较输入字符的，而且有一些新手可能看不懂不带大括号的简洁写法，所以这里的代码修改了一下。
+这种快速排序算法是<strong>最简单的快速排序算法之一</strong>，同时速度也很快。由于逻辑和前面说的相似点不多，看上去也不太一样，所以原理在代码之后再说。</p>
+
+<p>除了要注意声明的时候要改一下函数名之外，其余部分和之前一模一样：</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">K_R_partition</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lo</span><span class="p">,</span> <span class="kt">int</span> <span class="n">hi</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="c1">//i用于循环对比</span>
+	<span class="c1">//</span>
+    <span class="kt">int</span> <span class="n">i</span><span class="p">,</span> <span class="n">last</span><span class="p">;</span>
+
+	<span class="c1">//这里也就是将lo位置的元素与中间的元素交换了</span>
+    <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="p">(</span><span class="n">lo</span><span class="o">+</span><span class="n">hi</span><span class="p">)</span><span class="o">/</span><span class="mi">2</span><span class="p">);</span>
+
+	<span class="c1">//这种算法中的主元其实是初始数组中间元素的a[(lo+hi)/2]，因为上文已经更改了“lo”的含义</span>
+	<span class="c1">//这里将lo的初始值赋值给last，是为了让last代替lo去往右“走”，lo就可以保持住主元的值，而不用移动</span>
+    <span class="n">last</span> <span class="o">=</span> <span class="n">lo</span><span class="p">;</span>
+
+	<span class="c1">//初始状态下，i是要比last大1大，也就是last左边开始移动</span>
+	<span class="c1">//这也说明了一点，该算法每次只处理一半的数组，直到递归到最小，即可处理完毕</span>
+    <span class="k">for</span><span class="p">(</span><span class="n">i</span> <span class="o">=</span> <span class="n">lo</span><span class="o">+</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">hi</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    	<span class="c1">//在循环的过程中，如果a[i]小于主元a[lo]，那么last加1之后，将last位置的元素和i位置的元素互换</span>
+    	<span class="c1">//也就是把比a[lo]小的值放到a[lo]的右边，这样最后只要将lo与last的值互换，就可以保证所有比主元小的值都在主元左边了</span>
+    	<span class="k">if</span> <span class="p">(</span><span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">lo</span><span class="p">])</span> <span class="p">{</span>
+    		<span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="o">++</span><span class="n">last</span><span class="p">,</span> <span class="n">i</span><span class="p">);</span>
+    	<span class="p">}</span>
+	<span class="p">}</span>	
+        
+    <span class="c1">//将last的值换回到lo上，这样所有比主元a[lo]小的值都在主元a[lo]左边了</span>
+    <span class="n">swap</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">lo</span><span class="p">,</span> <span class="n">last</span><span class="p">);</span>
+    
+    <span class="c1">//返回last，也就是本轮划分中一直作为主元的last的值</span>
+    <span class="k">return</span> <span class="n">last</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>这个算法每次只会排列后半部分的数组，将数组中比主元小的元素放到后半部分的左半部分，这样比主元大的元素就在后半部分的右半部分。这样多次迭代就可以实现数组的排序。</p>
+
+<h3 id="其他没有列出的快速排序算法">其他没有列出的快速排序算法</h3>
+<p>还有其他的快速排序算法，例如三数取中、模糊排序等等等的，由于在下还不是很了解，等以后了解了补上吧。</p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

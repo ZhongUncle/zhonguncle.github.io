@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="从 iOS 16 开始，苹果开始弃用原先的NavigationView，以后会逐渐完全淘汰掉。现在开始使用NavigationStack和NavigationSplitView。NavigationStack的效果和原本的NavigationView一样，而NavigationSplitView则和现在 iPadOS 上的NavigationView效果一样。 最近在 iPadOS 上面使用NavigationView，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：" />
+<meta property="og:description" content="从 iOS 16 开始，苹果开始弃用原先的NavigationView，以后会逐渐完全淘汰掉。现在开始使用NavigationStack和NavigationSplitView。NavigationStack的效果和原本的NavigationView一样，而NavigationSplitView则和现在 iPadOS 上的NavigationView效果一样。 最近在 iPadOS 上面使用NavigationView，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：" />
+<link rel="canonical" href="http://localhost:4000/blogs/en/a8e23c0a7de36783c5f658a0e9d6f693.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/en/a8e23c0a7de36783c5f658a0e9d6f693.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-24T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-24T00:00:00+08:00","datePublished":"2022-11-24T00:00:00+08:00","description":"从 iOS 16 开始，苹果开始弃用原先的NavigationView，以后会逐渐完全淘汰掉。现在开始使用NavigationStack和NavigationSplitView。NavigationStack的效果和原本的NavigationView一样，而NavigationSplitView则和现在 iPadOS 上的NavigationView效果一样。 最近在 iPadOS 上面使用NavigationView，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：","headline":"「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/en/a8e23c0a7de36783c5f658a0e9d6f693.html"},"url":"http://localhost:4000/blogs/en/a8e23c0a7de36783c5f658a0e9d6f693.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</h1>
+            <div class="bloginfo">
+                <p class="info">2022-11-24 ｜ <a href="/swift.html"> Swift</a> ｜ 814 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>从 iOS 16 开始，苹果开始弃用原先的<code class="language-plaintext highlighter-rouge">NavigationView</code>，以后会逐渐完全淘汰掉。现在开始使用<code class="language-plaintext highlighter-rouge">NavigationStack</code>和<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>。<code class="language-plaintext highlighter-rouge">NavigationStack</code>的效果和原本的<code class="language-plaintext highlighter-rouge">NavigationView</code>一样，而<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>则和现在 iPadOS 上的<code class="language-plaintext highlighter-rouge">NavigationView</code>效果一样。
+最近在 iPadOS 上面使用<code class="language-plaintext highlighter-rouge">NavigationView</code>，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：</p>
+
+<p><img src="/assets/images/51fe87bf9e0e4fee8de78e86c760855d.png" alt="最近在 iPadOS 上面使用`NavigationView`，内容会放在侧栏，而不是像 iOS 或者以前一样" /></p>
+
+<p>苹果这次改名的目的应该是为了区别两种导航模式，怕开发者不好理解区分。
+那么下面来介绍一下二者。</p>
+
+<h2 id="navigationstack">NavigationStack</h2>
+<p><code class="language-plaintext highlighter-rouge">NavigationStack</code>的使用方法和<code class="language-plaintext highlighter-rouge">NavigationView</code>一模一样，只要改一下名字即可，更新代码很方便：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">NavigationStack</span> <span class="p">{</span>
+	<span class="kt">NavigationLink</span><span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><strong>唯一需要注意的是：只支持 iOS 16 及更新的系统</strong>。所以代码修改的时候应该改成以下格式，不然程序只能支持 iOS 16 及更新的代码了：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">if</span> <span class="kd">#available(iOS 16.0, *)</span> <span class="p">{</span>
+	<span class="c1">//新版代码</span>
+	
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+	<span class="c1">//兼容早期系统</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>顺道一提，<code class="language-plaintext highlighter-rouge">NavigationStack</code>等价于被遗弃的<code class="language-plaintext highlighter-rouge">NavigationView</code>的下面这种设置：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">NavigationView</span> <span class="p">{</span>
+    <span class="kt">NavigationLink</span><span class="o">...</span>
+<span class="p">}</span>
+<span class="o">.</span><span class="nf">navigationViewStyle</span><span class="p">(</span><span class="o">.</span><span class="n">stack</span><span class="p">)</span>
+</code></pre></div></div>
+
+<h2 id="navigationsplitview">NavigationSplitView</h2>
+<p><code class="language-plaintext highlighter-rouge">NavigationSplitView</code>是新出来的，目的是方便开发者实现侧栏。事实上也真的很方便。</p>
+
+<p>代码格式如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">NavigationSplitView</span> <span class="p">{</span>
+    <span class="c1">//侧栏第一列</span>
+<span class="p">}</span> <span class="nv">content</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">//侧栏第二列</span>
+<span class="p">}</span> <span class="nv">detail</span><span class="p">:</span> <span class="p">{</span>
+    <span class="c1">//页面</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>例如下面这段代码的样式如下：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">NavigationSplitView</span> <span class="p">{</span>
+	<span class="kt">Text</span><span class="p">(</span><span class="s">"1"</span><span class="p">)</span>
+<span class="p">}</span> <span class="nv">content</span><span class="p">:</span> <span class="p">{</span>
+	<span class="kt">Text</span><span class="p">(</span><span class="s">"2"</span><span class="p">)</span>
+<span class="p">}</span> <span class="nv">detail</span><span class="p">:</span> <span class="p">{</span>
+	<span class="kt">Text</span><span class="p">(</span><span class="s">"3"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>横屏样式如下：</p>
+
+<p><img src="/assets/images/c232351fce7c4d21b9c07962e90745e1.gif" alt="横屏样式" /></p>
+
+<p>竖屏样式如下：</p>
+
+<p><img src="/assets/images/d15f58113e5d48b6875b6d8d7917daab.gif" alt="竖屏样式" /></p>
+
+<p>接下来通过下面的代码来讲一下新<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>的数据流：</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">MainView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+    <span class="k">let</span> <span class="nv">colors</span><span class="p">:</span> <span class="p">[</span><span class="kt">Color</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="o">.</span><span class="n">purple</span><span class="p">,</span> <span class="o">.</span><span class="n">pink</span><span class="p">,</span> <span class="o">.</span><span class="n">orange</span><span class="p">]</span>
+    <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">selection</span><span class="p">:</span> <span class="kt">Color</span><span class="p">?</span> <span class="o">=</span> <span class="kc">nil</span> <span class="c1">// 默认没有选中的颜色</span>
+    <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+        <span class="kt">NavigationSplitView</span> <span class="p">{</span>
+                <span class="kt">List</span><span class="p">(</span><span class="n">colors</span><span class="p">,</span> <span class="nv">id</span><span class="p">:</span> <span class="p">\</span><span class="o">.</span><span class="k">self</span><span class="p">,</span> <span class="nv">selection</span><span class="p">:</span> <span class="err">$</span><span class="n">selection</span><span class="p">)</span> <span class="p">{</span> <span class="n">color</span> <span class="k">in</span>
+                    <span class="kt">NavigationLink</span><span class="p">(</span><span class="n">color</span><span class="o">.</span><span class="n">description</span><span class="p">,</span> <span class="nv">value</span><span class="p">:</span> <span class="n">color</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span> <span class="nv">detail</span><span class="p">:</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="k">let</span> <span class="nv">color</span> <span class="o">=</span> <span class="n">selection</span> <span class="p">{</span>
+                    <span class="kt">Rectangle</span><span class="p">()</span>
+                        <span class="o">.</span><span class="nf">foregroundColor</span><span class="p">(</span><span class="n">color</span><span class="p">)</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                    <span class="kt">Text</span><span class="p">(</span><span class="s">"Pick a color"</span><span class="p">)</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+<p>此时显示效果如下：</p>
+
+<p><img src="/assets/images/4fd62f5d747a4b4e8cd0c5eae9eebfc5.png" alt="侧栏有按钮" /></p>
+
+<p>下面点击“pink”看看：</p>
+
+<p><img src="/assets/images/0829be5f676f49b5bc8b41ca52bac223.png" alt="点击“pink”，页面会变粉色" /></p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

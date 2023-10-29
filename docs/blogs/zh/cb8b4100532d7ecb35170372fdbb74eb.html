@@ -1,0 +1,136 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>硬盘为什么在 USB 外接时会造成大量性能损失</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>硬盘为什么在 USB 外接时会造成大量性能损失</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="硬盘为什么在 USB 外接时会造成大量性能损失" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="在硬盘性能里，IOPS 是很重要的一个参数，在速度方面这是最需要关注的，而不是很多人所测量的顺序读写性能或者随机读写性能。" />
+<meta property="og:description" content="在硬盘性能里，IOPS 是很重要的一个参数，在速度方面这是最需要关注的，而不是很多人所测量的顺序读写性能或者随机读写性能。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/cb8b4100532d7ecb35170372fdbb74eb.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/cb8b4100532d7ecb35170372fdbb74eb.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-19T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="硬盘为什么在 USB 外接时会造成大量性能损失" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-07-19T00:00:00+08:00","datePublished":"2023-07-19T00:00:00+08:00","description":"在硬盘性能里，IOPS 是很重要的一个参数，在速度方面这是最需要关注的，而不是很多人所测量的顺序读写性能或者随机读写性能。","headline":"硬盘为什么在 USB 外接时会造成大量性能损失","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/cb8b4100532d7ecb35170372fdbb74eb.html"},"url":"http://localhost:4000/blogs/zh/cb8b4100532d7ecb35170372fdbb74eb.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>硬盘为什么在 USB 外接时会造成大量性能损失</h1>
+            <div class="bloginfo">
+                <p class="info">2023-07-19 ｜ <a href="/research.html"> Research</a> ｜ 3316 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>在硬盘性能里，IOPS 是很重要的一个参数，在速度方面这是最需要关注的，而不是很多人所测量的顺序读写性能或者随机读写性能。</p>
+
+<p>这是因为不论是顺序读写，还是随机读写，其实都是磁盘单位大小乘以读写速率，而这个读写速率的单位一般是 IOPS（每秒 I/O 操作次数）。 <strong>也就是说，不论是随机读写性能还是顺序读写能力，都是 IOPS 的体现，而随机读写的 IOPS 则是 IOPS 的“上限”。</strong></p>
+
+<p>磁盘单位大小现在通常最小为是 4 KiB，也就是 4096 字节，而早期计算机上为 1024 字节，<strong>这部分也被称为一个块（block）</strong>。详细来说当文件传输的时候，哪怕是完整的整个文件，比如说一部 MP4 格式的电影，传输的时候是将文件的按照磁盘单位内容一块块地进行传输。</p>
+
+<p>这里需要说明一下，一般所说的“随机性能”并不是俗话说的小文件读写性能，而是 4096 字节大小文件的读写性能。所以一般在高性能硬盘参数里都会列出自己的随机读写 IOPS 数据是“4K 随机性能”，甚至包括测试方法、范围。但是消费级的硬盘参数一般将其简单写作“随机性能”，比如说下图为比较典型的 WD Blue SN550 NVMe PCIe M.2 1TB 的性能参数：</p>
+
+<p><img src="/assets/images/d6e32203ce1b04bf84f3d413d4ca8576.png" alt="" /></p>
+
+<p>可以看到随机写入为<code class="language-plaintext highlighter-rouge">405,000 IOPS</code>，那么通过<code class="language-plaintext highlighter-rouge">405000</code>乘以<code class="language-plaintext highlighter-rouge">4 KiB</code>得出理论随机写入性能，大约是 1620000 KiB/s，也就是 1582 MiB/s。如果你搜搜看 SN 550 1TB 的随机写入速度，那么会发现这个随机写入峰值速度就在这个值附近。</p>
+
+<p>这时候你可能会好奇说：</p>
+<ul>
+  <li>那我为什么经常看有些测试里说随机读写只有几百甚至几十 MiB/s 呢？</li>
+  <li>为什么一些测试软件里“4K 性能”队列数高的是几百上千，但是队列数为 1 的时候就几十呢？</li>
+</ul>
+
+<p>在回答这两个问题之前，你需要了解一下系统是如何读取或写入硬盘的，以及系统中线程的概念（你可能会惊讶线程不是 CPU 上的概念吗，但这是一种错误的、片面的观念，需要纠正，后面会仔细说）。</p>
+
+<h2 id="系统如何读取和写入的">系统如何读取和写入的</h2>
+<p>程序读取和写入硬盘都是通过系统层面来进行的，在类 UNIX 系统中，这部分便是经典的<code class="language-plaintext highlighter-rouge">write</code>和<code class="language-plaintext highlighter-rouge">read</code>两个系统调用进行的。系统会按照信息所在块的地址再加上偏移量找到或者写入信息内容，而这个块的大小一般为 4096 字节。</p>
+
+<p>举个例子，如果你需要找到刚好大小为 4096 字节的文件，那么你只要找到这个块或者定位这个块即可（这也是为什么现在的系统都有“4K对齐”，如果没有对齐，速度就会像下一段介绍的变慢很多，加之现在硬盘容量由很大，扩大了性能降低的效果）。</p>
+
+<p>顺序读取当你读取完当前块需要下一个块的时候，地址刚好是下一个块，这就省去了时间，所以在经过一个大小“拐点”之后，不论是读取还是写入速度都没有提升了，这就是撞到 IOPS 的“顶”了。但是如果你要找到或者写入一个小于 4096 字节的文件，那么你就得加上偏移量。所以你会发现一旦小于 4096 字节的文件很多，哪怕是顺序读写都会异常的慢，远比大文件和 4 KiB 的差距要大得多。以写入速度为例，后者可以降速 80%，但是前者甚至可以降速 97.3%。</p>
+
+<p>随机读写速度一般指的是每秒可以随机读取或写入硬盘里的某个块的速率。这其实模拟了日常使用，因为日常使用当中，很多文件和程序的位置并不是连续的。但是很多硬盘标注的随机读写性能并不是百分百硬盘跨度的，也就是硬盘内部还对每个块进行了划分（比如说按照闪存芯片），相当于在块地址、偏移量之外还多了一个。比如说一个固态硬盘有 4 个闪存颗粒，文件 A 在 颗粒 1 上，文件 B 在颗粒 4 上，那么读取完文件 A 再去读取 B 就可能需要一些时间，那么 IOPS 就不是参数表里的了。</p>
+
+<p>这里以目前随机读写第二强的 P4800X 为例（P5800X 找不到测试数据），下图是它的参数表，随机读写性能使用的是 100% 硬盘跨度：</p>
+
+<p><img src="/assets/images/5f8a45c51ca18a498379d40496535225.png" alt="P4800X参数表" /></p>
+
+<h2 id="为什么队列数会影响随机读取或随机写入速度">为什么队列数会影响随机读取或随机写入速度</h2>
+<p>这里需要知道什么是一个线程：线程是系统对资源分配的单位，包括 CPU 使用时间、内存、地址、网络等一系列资源（注意不是等分的），而进程则是程序的状态。</p>
+
+<p><strong>这里需要强调一点：多线程编程模型早在多核处理器出现之前就广泛使用了（我知道最早的例子是上世纪八十年代），并不是 CPU 有了多线程技术，才开始多线程编程，而是有了多线程编程技术，才有的多线程处理器。</strong></p>
+
+<p>为什么会有多线程编程模型呢？早期一个进程就用一个线程，但是这个时候会出现一个问题：假设这个程序需要对两个文本文件进行内容比较，那么这个程序就需要先读取 A 的一个字符，再读取 B 的一个字符，然后对这两个字符进行比较，然后再次进行这个步骤。在取字符的时候，计算单元是空闲的。所以如果给这个进程加上一个线程，那么这个进程就可以在计算或者读取的时候进行另一项任务。这样就可以在一个处理核心的情况下节省一些运行时间，提高性能。</p>
+
+<p>这里需要说明一下：上面这段你看下来可能会觉得这是在等计算单元或者其他单元，其实不是这样的，是在等执行空间（execution context）有空，执行空间一般是 Cache 或者寄存器。</p>
+
+<p>CPU 的多线程技术并不是像科普视频所说的“在 A 等待的时候 B 运行”这种“一套计算单元，两套空间”的结构，而是在 CPU 核心内部有两套计算单元但是只有一块供计算单元操作的 Cache 和寄存器的执行空间（execution context）的结构。多线程 CPU 单个核心内部如下：</p>
+
+<p><img src="/assets/images/68bed30cc527b18b2073641b2627827e.png" alt="" /></p>
+
+<p>此外，“在 A 等待的时候 B 运行”这种描述显得 CPU 只是为了多种程序“并行”的，但这种设计在计算机领域主要是主要是为了单个进程内部“并行”的。你可以看看活动监视器（Mac）或者资源管理器（Win）某一进程的信息，现在一般一个进程都有几个甚至十几个线程，比如下面是比较常用的 QQ 的截图，可以看到有 60 个线程：</p>
+
+<p><img src="/assets/images/a8d8a734ea2a0eb5b676628c4b2e1572.png" alt="" /></p>
+
+<p>所以 CPU 的多线程技术并不是软件实现的，而是用硬件实现的，这个机制是为了迎合原先有的“多线程编程模型”。</p>
+
+<p>之前也说到了：程序读取和写入文件是通过系统层来实现的，哪怕是单核处理器上，多线程编程也会带来性能提升。计算机资源不光包括 CPU 时间和内存空间，还包括存储设备，当然这部分是系统的，程序是没有办法直接访问的。但是原理是相通的：多个队列就相当于多个线程，可以提高存储设备的利用率，尽力去进行读取操作，这样才能接近理论读写性能。当只有一个队列的时候，可能 CPU 在忙，或者传输通道“堵”了，这些都可能导致存储设备进入限制，导致传输速率下降。这时候可以增加队列来降低硬盘等空闲时间，提高利用率。</p>
+
+<h2 id="硬盘为什么在-usb-外接时会造成大量性能损失">硬盘为什么在 USB 外接时会造成大量性能损失</h2>
+<p>一般来说，CPU 自身是不支持 USB 控制器的，所以是通过连接一个 USB 控制器，然后再扩展出 USB 接口，而 PCIe 接口是 CPU 自身就支持的，可以直接与 CPU 通信，加上一般的 USB 控制器并不是通过 CPU 直接扩展，而是通过 PCH 进行扩展，还要多一层传输和转换。</p>
+
+<p>此外，一般使用的 SATA 这种接口，哪怕是内置的，也需要 SATA 控制器进行通信，而 NVMe 则可以直接利用 PCIe 进行通信。</p>
+
+<p>这就导致使用 USB 外接硬盘时，一方面是因为多了一个控制器导致延迟高，另一方面这个 USB 控制器导致 NVMe 没法直连 CPU，最后硬盘的 IOPS 会降低很多，也就会出现卡顿和降速。某些笔记本或者设备的 USB 甚至是通过扩展板或者其他线路扩展的，这就导致下降更多。<strong>需要注意这些行为由于影响到 IOPS，看数据对顺序读写的速度影响不大，但是对随机读写速度以及日常使用影响很大，软件卡顿等问题很可能就是因为这个。</strong></p>
+
+<p>比如下面是内置东芝 BG4 512GB 和 10 Gbps USB 外接西数 SN550 1TB（拓展板上的 10 Gbps 和主板上的 5 Gbps）的对比，按照参数来说 SN550 会强于 BG4，10 Gbps的也会强于 5 Gbps的，所以这里会展示到计算机内部线路设计会对性能造成多大的影响：</p>
+
+<p><img src="/assets/images/f509149bd27581fbf8010f284e4ce8ee.png" alt="内置BG4" /></p>
+
+<p><img src="/assets/images/897a80e0fb2a4d51acab8bdcea20c833.png" alt="10Gbps外接" /></p>
+
+<p><img src="/assets/images/2bee013b88ccc17ef143f0529e1cbb4b.png" alt="5Gbps外接" /></p>
+
+<p>可以看到，虽然 BG4 各方面理论性能要弱得多，但是由于 SN550 连接 USB 需要多层转换才能实现，会发现 4K 随机读写速度要远低于内置（计算一下会发现 4K 随机读写的速度没有撞到接口峰值速率或者硬盘顺序读写速率），这种情况下外接硬盘会出现迅雷这种硬盘密集型软件会出现卡顿和严重的性能问题。顺序读写方面也因为一些线路问题，导致跑不满 10Gbps 或者 5 Gbps。</p>
+
+<p>此外，可以发现虽然同样使用 USB 外接，但是主板上的 USB 峰值速率要慢得多，无论是使用情况还是随机读写能力都要比扩展板上 10 Gbps USB 要好得多。尽管这样相比内置走 PCIe 的硬盘还是慢多了，在一些硬盘密集型软件上还是会出现卡顿，但比外接板上的好多了。但是由于顺序读取速度较快，所以大批量拷贝大文件还是比较快的，但是如果这个时候进行其他操作就会卡顿，这是因为硬盘延迟会很高，你可以看一下资源管理器里硬盘的响应时间，经常高达几百毫秒甚至上千，也就是一个操作要等一秒左右，而内置则不太会出现在这种情况下有这种响应时间。</p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

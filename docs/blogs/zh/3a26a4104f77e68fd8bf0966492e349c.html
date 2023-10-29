@@ -1,0 +1,117 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="as汇编器是苹果的汇编器，Xcode 生成的汇编代码也是as风格的，而as风格与大部分人在大学里所学的微软的masm风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。" />
+<meta property="og:description" content="as汇编器是苹果的汇编器，Xcode 生成的汇编代码也是as风格的，而as风格与大部分人在大学里所学的微软的masm风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/3a26a4104f77e68fd8bf0966492e349c.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/3a26a4104f77e68fd8bf0966492e349c.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-19T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-05-19T00:00:00+08:00","datePublished":"2023-05-19T00:00:00+08:00","description":"as汇编器是苹果的汇编器，Xcode 生成的汇编代码也是as风格的，而as风格与大部分人在大学里所学的微软的masm风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。","headline":"【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/3a26a4104f77e68fd8bf0966492e349c.html"},"url":"http://localhost:4000/blogs/zh/3a26a4104f77e68fd8bf0966492e349c.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）</h1>
+            <div class="bloginfo">
+                <p class="info">2023-05-19 ｜ <a href="/assembly.html"> Assembly</a> ｜ 765 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p><code class="language-plaintext highlighter-rouge">as</code>汇编器是苹果的汇编器，Xcode 生成的汇编代码也是<code class="language-plaintext highlighter-rouge">as</code>风格的，而<code class="language-plaintext highlighter-rouge">as</code>风格与大部分人在大学里所学的微软的<code class="language-plaintext highlighter-rouge">masm</code>风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。</p>
+
+<p>你可能会找到一本手册名为《Mac OS X Assembler Guide》，但是这本手册出自 2005 年，是为了过度到 Intel 所写的。但是现在很多事情已经变了，现在的<code class="language-plaintext highlighter-rouge">as</code>手册最近更新日期为 2020 年 4 月 23 日，也就是 M1 登场的日子。</p>
+
+<p><img src="/assets/images/50d74259a38846deb9b71de37ffbfa19.png" alt="现在的as手册最近更新日期为2020年4月23日" /></p>
+
+<h2 id="寄存器表达方式">寄存器表达方式</h2>
+<p>在<code class="language-plaintext highlighter-rouge">masm</code>中，寄存器直接写，比如：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mov eax, ebx
+</code></pre></div></div>
+
+<p>但是在<code class="language-plaintext highlighter-rouge">as</code>中，为了不与标识符（identifier，其实就是常说的变量）搞混，需要在寄存器前面加上百分号<code class="language-plaintext highlighter-rouge">%</code>，并且必须小写。如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>movq    %rsp, %rbp
+</code></pre></div></div>
+<h2 id="指令参数最重要的区别">指令参数（最重要的区别）</h2>
+<p><strong>这是最重要的一个区别</strong>！在<code class="language-plaintext highlighter-rouge">masm</code>中，表示<code class="language-plaintext highlighter-rouge">a=a+b</code>汇编指令如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add a, b
+</code></pre></div></div>
+<p>会将后者加到前者上。</p>
+
+<p>但是在<code class="language-plaintext highlighter-rouge">as</code>中，表示<code class="language-plaintext highlighter-rouge">a=a+b</code>汇编指令是下面的结构：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>add b, a
+</code></pre></div></div>
+<p>是直接按照顺序执行下去的。</p>
+<h2 id="指令中的数值">指令中的数值</h2>
+<p>在<code class="language-plaintext highlighter-rouge">masm</code>中，如果想将一个指令参数设置为数值，比如说<code class="language-plaintext highlighter-rouge">10</code>，那么可以写成以下样式</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mov a, 10
+</code></pre></div></div>
+<p>但是在<code class="language-plaintext highlighter-rouge">as</code>中，要加上<code class="language-plaintext highlighter-rouge">$</code>，如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mov $10, a
+</code></pre></div></div>
+<p>不过虽然麻烦，但是可以在后面加上括号来进行一些简单的计算，如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mov $(2*5), a
+</code></pre></div></div>
+
+<h2 id="地址偏移量">地址偏移量</h2>
+<p>在<code class="language-plaintext highlighter-rouge">masm</code>中，如果想表示一个地址偏移量（很多情况下就是表示一个变量的地址），那么写法如下</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mov eax, [ebp+8]
+</code></pre></div></div>
+
+<p>但是在<code class="language-plaintext highlighter-rouge">as</code>中，写法为<code class="language-plaintext highlighter-rouge">偏移量(基础寄存器, 下标寄存器, 缩放)</code>，看着很复杂，但是实际情况大多如下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>movl    %edi, -4(%rbp)
+</code></pre></div></div>
+
+<h2 id="十六进制写法">十六进制写法</h2>
+<p>在<code class="language-plaintext highlighter-rouge">masm</code>中，十六进制被写成以H或h结尾的，例如<code class="language-plaintext highlighter-rouge">5c0dH</code>。但是在 <code class="language-plaintext highlighter-rouge">as</code>中，需要写成0x开头的，例如<code class="language-plaintext highlighter-rouge">0x1234</code>。</p>
+
+        </div>
+    </body>
+</html>

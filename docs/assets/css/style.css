@@ -166,11 +166,11 @@ th {
     padding: 8px 12px
 }
 
-/* 表格、列表样式 */
+/* 表格样式 */
 ul {
     margin: 1.2em 0;
-    list-style-type: disc;
-    padding-left: 30px;
+    list-style-type: none;
+    padding-left: 0px;
 }
 
 /* 头行颜色 */

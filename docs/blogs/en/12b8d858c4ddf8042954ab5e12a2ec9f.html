@@ -1,0 +1,225 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>clang到底是什么？gcc和clang到底有什么区别？</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>clang到底是什么？gcc和clang到底有什么区别？</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="clang到底是什么？gcc和clang到底有什么区别？" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="最近发现自己对 GNU GCC 和 Clang 的区别不太清楚，影响到一些实现和学习，所以趁这两天有空好好研究了一下。" />
+<meta property="og:description" content="最近发现自己对 GNU GCC 和 Clang 的区别不太清楚，影响到一些实现和学习，所以趁这两天有空好好研究了一下。" />
+<link rel="canonical" href="http://localhost:4000/blogs/en/12b8d858c4ddf8042954ab5e12a2ec9f.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/en/12b8d858c4ddf8042954ab5e12a2ec9f.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-06-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="clang到底是什么？gcc和clang到底有什么区别？" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-06-10T00:00:00+08:00","datePublished":"2023-06-10T00:00:00+08:00","description":"最近发现自己对 GNU GCC 和 Clang 的区别不太清楚，影响到一些实现和学习，所以趁这两天有空好好研究了一下。","headline":"clang到底是什么？gcc和clang到底有什么区别？","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/en/12b8d858c4ddf8042954ab5e12a2ec9f.html"},"url":"http://localhost:4000/blogs/en/12b8d858c4ddf8042954ab5e12a2ec9f.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>clang到底是什么？gcc和clang到底有什么区别？</h1>
+            <div class="bloginfo">
+                <p class="info">2023-06-10 ｜ <a href="/research.html"> Research</a> ｜ 4487 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>最近发现自己对 GNU GCC 和 Clang 的区别不太清楚，影响到一些实现和学习，所以趁这两天有空好好研究了一下。</p>
+
+<p>在这个研究过程中，我发现很多问题其实源自于语言（不是指编程语言，而是中文和英文翻译的失真）和概念理解不严谨。</p>
+
+<p>如果你上网去查<code class="language-plaintext highlighter-rouge">clang</code>，有些人会告诉你这是一个前端（frontend），然后从书上摘抄一些编译器的介绍，然后列出了一堆表格进行对比，并没有对原理和机制进行详尽的解释和介绍。所以这时候会有更多的问题冒出来：</p>
+<ul>
+  <li>为什么<code class="language-plaintext highlighter-rouge">clang</code>是一个前端？难道它不是完整的编译器吗？如果<code class="language-plaintext highlighter-rouge">clang</code>是完整的编译器的话，那么为什么叫前端呢？如果它不是完整的，那么后端是什么呢？</li>
+  <li>编译器的定义到底是什么？感觉书上编译器的定义和实际的<code class="language-plaintext highlighter-rouge">gcc</code>有所不同。</li>
+</ul>
+
+<p><strong>这里说明一下：这里的<code class="language-plaintext highlighter-rouge">gcc</code>指的是你在 Ubuntu 等 Linux 发行版里可以直接使用的命令（来自于 GNU 软件组），如果是指项目则会写作“GNU GCC”。如果是指<code class="language-plaintext highlighter-rouge">llvm-gcc</code>，则不会简写成<code class="language-plaintext highlighter-rouge">gcc</code>。</strong></p>
+
+<p>本文将会逐步解答这一系列的问题，在这个过程中，不光会让你搞明白<code class="language-plaintext highlighter-rouge">clang</code>到底是什么，也会让你对编译过程、编译器和<code class="language-plaintext highlighter-rouge">gcc</code>，以及 LLVM 更加了解。</p>
+<h2 id="像gcc这种现代叫做编译器的程序是一个工具集合">像<code class="language-plaintext highlighter-rouge">gcc</code>这种现代叫做“编译器”的程序是一个工具集合</h2>
+<p>需要先理解一件事，也算是上面绝大部分问题的答案或者误解源头：<strong>像<code class="language-plaintext highlighter-rouge">gcc</code>这种现代“编译器”是一个工具集合，包含了预处理器、编译器，而且会自己调用汇编器、连接器或加载器等多种工具，而不是单单的一个编译器</strong>（话说这种术语和名词的冲突也是误导的重要原因之一）。</p>
+
+<p>先说出答案是为了让读者带着答案去看解释，这样能理解的更好。</p>
+<h2 id="编译器到底是什么或者说编译流程是什么">编译器到底是什么（或者说编译流程是什么）</h2>
+<p>上文提到，“编译器”是一个时常表达有冲突的术语：<strong>在很多言论、博客、教科书和专业书中，编译器被描述成“将源代码转换成可执行程序的程序”（比如<code class="language-plaintext highlighter-rouge">gcc</code>这个“编译器”就可以直接将源代码编程可执行程序）</strong>。这句话简洁、准确地描述了使用<code class="language-plaintext highlighter-rouge">gcc</code>命令会发生什么，但是这并不是编译器的定义。</p>
+
+<p>我们来看看最经典的编译相关的著作《编译原理》（也就是龙书）里对于编译器的介绍，这也算是编译器最经典的含义：</p>
+
+<blockquote>
+  <p>简单来说，编译器就是一个程序能读取某种语言的一个程序（这个语言是<em>源</em>语言），然后将其翻译转换成另一种语言的等价程序（这个语言被称为<em>目标</em>语言）。编译器最重要的一个规定就是报告在翻译过程中发现“源”程序的错误。
+如果这个目标程序是机器语言，那么这个目标程序就是可执行程序。</p>
+</blockquote>
+
+<p>那么回到《编译原理》中的定义，其实就是：我们写的源代码经过编译器转换之后得到了另一种语言的代码，而转换之后的代码如果是机器语言，那么这个目标代码就是可执行程序。但是如果多源代码文件或者有外连接的库，那么可能是共享对象（shared object）。</p>
+
+<blockquote>
+  <p>“code”在英语中是指一堆数字、字母、符号，中文翻译成“代码”或“码”
+应用程序本质就是一堆机器语言拼成的二进制文件。</p>
+</blockquote>
+
+<p><strong>也就是说，编译器实际上是将一种语言转换成另一种语言的程序</strong>。</p>
+
+<p><strong>不过按照近几十年的标准编译流程来说，编译器指的是从将<code class="language-plaintext highlighter-rouge">.c</code>等文件转换成<code class="language-plaintext highlighter-rouge">.s</code>文件的程序。为了方便解释，除非特地说明，下文中的“编译器”都是按这个定义。</strong></p>
+
+<p>在这个定义下，编译器内部的工作流程大致如下：</p>
+
+<p><img alt="编译器内部工作流程" src="/assets/images/581a423c6fbd93e87b2b8502483333df.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>编译器可以生成指定平台的汇编代码。然后再由汇编器来将汇编代码转成机器语言，最后由连接器连接成可执行程序。</p>
+
+<p>此外有几点需要补充一下：</p>
+<ol>
+  <li>这里的各种语言代码是经过预处理过的；</li>
+  <li>某语言的前端一般指词汇解析器（Lexer）和语法分析程序（Parser），前端会将源代码一步一步（从高级到低级）转换成优化器需要的中间表达（IR），这是多个分析器实现的的。</li>
+  <li>一般在优化器前面会单独列出一个“AST（Abstract Syntax Trees）”，这是一个层级很高的中间表达，基本上就是源代码的重组。</li>
+  <li>优化器（Optimizer）有时也被称为中端（Middle end），优化器不仅提升性能，而且作为中端可以让前后端分离的更好，增加了交叉编译的可能性。</li>
+</ol>
+
+<p>从源代码到高级中间表达，再从中级到低级的流程大致如下：</p>
+
+<p><img src="/assets/images/6ae2d5504e8b4885925083b70b88c391.png" alt="从源代码到高级中间表达，再从中级到低级的流程" /></p>
+
+<p>这里有篇文章做了更详细的介绍：<a href="https://web.stanford.edu/class/archive/cs/cs143/cs143.1128/handouts/230%20Intermediate%20Rep.pdf#:~:text=gcc%27s%20Intermediate%20Representation%20The%20gcc/g++%20compiler%20uses%20an,pointer%20to%20a%20structure%20with%20a%20tag%20field">《Intermediate Representation》</a></p>
+<h2 id="从源代码转换成可执行程序的过程">从源代码转换成可执行程序的过程</h2>
+<p>从源代码转换成可执行程序的完整过程，也就是我们平时所说的“编译过程”。在过去的几十年里，这个标准流程大致如下（圆角矩形表示代码，矩形表示各种处理器）：</p>
+
+<p><img alt="标准编译流程" src="/assets/images/3ece4e97ca2b711666de57b448acc4a8.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>可以看到从源代码到可执行程序要经过预处理器（preprocessor）、编译器（compiler）、汇编器（assembler）和连接器（linker）或加载器（loader），而编译器只是负责将源代码转换成对应的汇编代码的功能。</p>
+<h3 id="过程展示gcc和配套的cppasld处理转换程序">过程展示：gcc和配套的cpp、as、ld处理转换程序</h3>
+<p>上文提到的的几种处理转换程序除了编译器和汇编器，其他三个估计都很很少听到。下面就用最经典的 C 语言和<code class="language-plaintext highlighter-rouge">gcc</code>来介绍这个过程，<code class="language-plaintext highlighter-rouge">gcc</code>包含的预处理器为<code class="language-plaintext highlighter-rouge">cpp</code>，还会调用汇编器<code class="language-plaintext highlighter-rouge">as</code>、连接器<code class="language-plaintext highlighter-rouge">ld</code>。</p>
+
+<p>关于三者的介绍，以及编译过程中，每一步时如何进行的详细过程，可以看看我的另一篇文章<a href="https://blog.csdn.net/qq_33919450/article/details/131099518">《使用gcc展示完整的编译过程》</a>，这篇文章也通过实际操作，介绍了一些<code class="language-plaintext highlighter-rouge">gcc</code>操作方法。<strong>这篇文章非常建议读到这里就看一看，不然可能只理解字面的内容，文章内容原本是打算放在这里的，但是会让字数到 2 万字，这样阅读时间太长了</strong>。</p>
+
+<h2 id="gcc内部工作流程">gcc内部工作流程</h2>
+<p>gcc内部工作流程如下，这里忽略了预处理过程：</p>
+
+<p><img alt="gcc内部工作流程" src="/assets/images/87ad1f3e1c22597c5bf1004053aa03ad.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h2 id="clang内部的工作流程">Clang内部的工作流程</h2>
+
+<p>随着时代的发展和进步，老式的编译流程以及不够用了：</p>
+<ol>
+  <li>性能优化需要的人力、物力过大（现在的汇编语言要比以前的复杂太多了，经典的 PDP-11 手册里关于指令的只有 30 页不到，但是现在 Intel X86 指令手册就 2500 页）；</li>
+  <li>针对每种机器的开发消耗多（比如说在 ARM 和 X86 编译同一个程序）；</li>
+  <li>编译器的“插件”不够（有时候需要新的优化或者处理）。</li>
+</ol>
+
+<p>看到这里你便明白，这里的前端是指整个 C 语言家族的编译流程的前端，而不是一个编译器的前端。所以 clang 是一个完整的编译器，可以将<code class="language-plaintext highlighter-rouge">.c</code>转换成<code class="language-plaintext highlighter-rouge">.s</code>文件，但是可以调用汇编器和编译器生成最终的可执行文件。</p>
+
+<p>clang 作为编译器可以将你写的 C 家族的语言转换成 LLVM IR（一种低级语言），然后转换输出一个<code class="language-plaintext highlighter-rouge">.s</code>文件，然后调用 LLVM 项目中的汇编器（或者其他汇编器）将其汇编成一个<code class="language-plaintext highlighter-rouge">.o</code>对象文件（也就是前文中提到的“汇编阶段”），最后调用连接器进行连接，输出一个可执行程序。</p>
+
+<p>也就是之前描述的编译器内部流程变成如下流程，同样这里的省略了预处理过程：</p>
+
+<p><img alt="clang编译器内部流程" src="/assets/images/bd0e242e989764863e45b56411dc7abc.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>而<code class="language-plaintext highlighter-rouge">clang</code>后面使用的的汇编器和连接器，既可以使用 LLVM 集成，也可以使用 GNU 的，比如连接器可以使用 LLVM 集成的的<code class="language-plaintext highlighter-rouge">lld</code>，也可以使用 GNU 的<code class="language-plaintext highlighter-rouge">ld</code>或<code class="language-plaintext highlighter-rouge">gold</code>，以及 MSVC的<code class="language-plaintext highlighter-rouge">link.exe</code>。不过默认情况下是使用 LLVM 集成的。</p>
+
+<p>如果你好奇更详细 Clang 工作流程，和每一步的操作，比如说什么选项对应的是编译过程的某一步，可以看看这篇文档<a href="https://llvm.org/devmtg/2019-10/slides/ClangTutorial-Stulova-vanHaastregt.pdf">《An Overview of Clang》</a>，我就不单独写博客了。</p>
+
+<p>这种编译方式对于适配不同平台来说非常方便。当出现一个新的平台，只要将指令与 LLVM IR 对应即可，完全不用开发者去写一个全新的优化器和代码生成器去将源代码转换成汇编代码，省时省力。</p>
+
+<h2 id="为什么clang是一个前端难道它不是完整的编译器吗如果clang是完整的编译器的话那么为什么叫前端呢如果它不是完整的那么后端是什么呢">为什么<code class="language-plaintext highlighter-rouge">clang</code>是一个前端？难道它不是完整的编译器吗？如果<code class="language-plaintext highlighter-rouge">clang</code>是完整的编译器的话，那么为什么叫前端呢？如果它不是完整的，那么后端是什么呢？</h2>
+<p>Clang 是一个完整的编译器，也是一个前端。不过是将源代码转换成可执行程序流程的前端，而不是编译器的前端。如果说是编译器的前端，那是预处理器、词义分析器（Lexer）和语法分析器（Parser）等部分构成的。</p>
+
+<p>和<code class="language-plaintext highlighter-rouge">clang</code>对应的后端指的是 LLVM 内含的，或者 GNU 等软件组的连接器、编译器等工具，这些工具负责将汇编代码汇编、连接成最后的可执行文件。</p>
+
+<h2 id="编译器的定义到底是什么感觉书上编译器的定义和实际的gcc有所不同">编译器的定义到底是什么？感觉书上编译器的定义和实际的<code class="language-plaintext highlighter-rouge">gcc</code>有所不同</h2>
+<p>关于编译器的定义前文有详细的解释，现在一般情况下“编译器”指的是从将<code class="language-plaintext highlighter-rouge">.c</code>等文件转换成<code class="language-plaintext highlighter-rouge">.s</code>文件的程序。</p>
+
+<p>实际上编译器，比如<code class="language-plaintext highlighter-rouge">gcc</code>包含了一些工具（比如预处理器），也会去调用其他的工具（汇编器和连接器），所以与定义有所不同。</p>
+
+<h2 id="llvm-项目是干什么项目">LLVM 项目是干什么项目？</h2>
+<p>前文提到，很多编译器是需要多个中间表达（IR）的，这些中间表达可能是词汇分析器生成的，也可能是语义分析器生成的，就很不统一，这就导致更新指令和优化性能随着数量的大幅提升成为了一件很困难的事情。</p>
+
+<p>LLVM 全名“Low-Level Virtual Machine”，是一架构和中间表达的实现。而 LLVM 项目最初是一套围绕着 LLVM 代码的工具，C 语言和对应的 LLVM 代码如下（源自<a href="https://llvm.org/pubs/2003-05-01-GCCSummit2003.pdf">Chris Lattner 的《Architecture for a Next-Generation GCC》</a>）：
+<img src="/assets/images/cdca8ade12474255a14fabc600e2766f.png" alt="请添加图片描述" /></p>
+
+<p>LLVM 代码有三种用途：</p>
+<ol>
+  <li>编译器的中间表达；</li>
+  <li>存放在硬盘里的位码（bitcode）；</li>
+  <li>人类可读的汇编语言表达</li>
+</ol>
+
+<p>这三种用途实际上都是等价的，要么能共用，要么有工具可以很轻松的转换，这点就让 LLVM   兼容新的机器、优化性能、开发新的语言，甚至是反汇编都是很容易的。</p>
+
+<p>整个项目最核心内容其实就是 LLVM IR。LLVM IR 旨在成为某种“通用IR”，希望足够低级，可以将高级代码干净地映射到 LLVM IR（类似于处理器使用的指令是“通用IR”，允许将许多种不同的语言映射到这些汇编语言）。这给使用 LLVM IR 的编译器带来了性能很不错提升。</p>
+
+<p>关于 LLVM 设计更详细的介绍还是请看文档：<a href="https://llvm.org/docs/LangRef.html">《LLVM Language Reference Manual》</a>。</p>
+
+<p>关于 LLVM 带来的性能提升可以看 Intel 的这篇文章：<a href="https://www.intel.com/content/www/us/en/developer/articles/technical/adoption-of-llvm-complete-icx.html">《Intel® C/C++ Compilers Complete Adoption of LLVM》</a></p>
+
+<p><img src="/assets/images/b60ef9acaf4d47e884d5fd8dadae4506.png" alt="reinders-2021-LLVM-benchmarks-01" /></p>
+
+<h2 id="gcc和clang有什么区别">gcc和clang有什么区别？</h2>
+<p>LLVM 早期有一个名为<code class="language-plaintext highlighter-rouge">llvm-gcc</code>的项目，它和 GNU GCC 的最大区别就在于：<strong><code class="language-plaintext highlighter-rouge">llvm-gcc</code>在编译器最后使用的是 LLVM 作为最低一级的中间表达，而不是 GNU GCC 使用的的 RTL 作为最低一级的中间表达，所以<code class="language-plaintext highlighter-rouge">llvm-gcc</code>编译器的最后一部分是处理 LLVM IR，而不是处理 RTL（Register Transfer Language）。</strong></p>
+
+<p>其他方面，<code class="language-plaintext highlighter-rouge">llvm-gcc</code>和<code class="language-plaintext highlighter-rouge">gcc</code>一样将会输出一个汇编文件，工作原理也一样。不过可以通过使用<code class="language-plaintext highlighter-rouge">-emit-llvm</code>选项来让<code class="language-plaintext highlighter-rouge">llvm-gcc</code>输出 LLVM 字节码。</p>
+
+<p>后来 LLVM 创始人 Chris Lattner 在苹果的时候就开创了一个中间表达全部使用 LLVM 作为中间表达的 C 语言家族的编译器，也就是 Clang。</p>
+
+<p>虽然<code class="language-plaintext highlighter-rouge">clang</code>淘汰了<code class="language-plaintext highlighter-rouge">llvm-gcc</code>，虽然现在还是有<code class="language-plaintext highlighter-rouge">llvm-gcc</code>，但是使用率和性能都不如<code class="language-plaintext highlighter-rouge">clang</code>。也正是因为 LLVM IR，<code class="language-plaintext highlighter-rouge">Clang</code>进行反汇编也很方便。</p>
+
+<p>下面是 Chris Lattner 简历中提到 Clang 诞生的部分（<a href="https://www.nondot.org/sabre/Resume.html#Apple">https://www.nondot.org/sabre/Resume.html#Apple</a>）：</p>
+
+<p><img src="/assets/images/aa60901cbe7a4147af95b689b2c376ac.png" alt="Chris Lattner简历截图" /></p>
+
+<p>这里字太小了，机翻一下：</p>
+
+<p><img src="/assets/images/d9273b5ce786427494c5f692cbc332a0.png" alt="机翻" /></p>
+
+<p>总结一下，<code class="language-plaintext highlighter-rouge">gcc</code>和<code class="language-plaintext highlighter-rouge">clang</code>的区别在于：<code class="language-plaintext highlighter-rouge">clang</code>的各个中间层均为 LLVM IR，而<code class="language-plaintext highlighter-rouge">gcc</code>的各个中间层为 TRL 或其他一些事物。</p>
+
+<p><strong>这里需要注意一点，<code class="language-plaintext highlighter-rouge">llvm-gcc</code>和 LLVM 创始人 Chris Lattner 在<a href="https://llvm.org/pubs/2003-05-01-GCCSummit2003.pdf">《Architecture for a Next-Generation GCC》</a>中描述的 LLVM 编译器不是一个东西。这个 LLVM 编译器与后来的 Clang 也不是一个东西</strong>。论文中对 LLVM 编译器的示意图如下：</p>
+
+<p><img src="/assets/images/2d992e0b5ea94d7c8d4f075b15ef390c.png" alt="请添加图片描述" /></p>
+
+<p>区别在于中间加了一个连接层，整个编译器中进行了两次连接。不过很明显，根据 Intel 的数据来看， LLVM 编译器的性能和效果相比 GNU GCC 差不多。不过现在你还是可以在 GitHub 上下到它，目前最新版本为 16：<a href="https://github.com/llvm/llvm-project/releases/tag/llvmorg-16.0.0">https://github.com/llvm/llvm-project/releases/tag/llvmorg-16.0.0</a></p>
+
+<p>你可以选择和<code class="language-plaintext highlighter-rouge">clang</code>一起下载：
+<img src="/assets/images/4ddac201f9124181b8222c353dc6dfb5.png" alt="请添加图片描述" /></p>
+
+<p>也可以单独下载：
+<img src="/assets/images/7750f58c93ca45e78da49b1e2f153dbb.png" alt="请添加图片描述" /></p>
+
+<p>写本博客的过程中，我自己对于<code class="language-plaintext highlighter-rouge">gcc</code>和<code class="language-plaintext highlighter-rouge">clang</code>编译器的使用和理解也有了更深刻的理解。不过由于本文太长了，所以难免出现披露，如果你在阅读过程中发现错误（错误、笔误、忘删掉的一些东西等等），还请评论告知我一下～</p>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>

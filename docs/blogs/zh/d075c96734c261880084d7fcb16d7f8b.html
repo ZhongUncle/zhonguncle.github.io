@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>如何在 WSL 访问 Windows 中的文件</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何在 WSL 访问 Windows 中的文件</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何在 WSL 访问 Windows 中的文件" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="首先进入 WSL，然后进根目录/，使用ls可以看到一个名为mnt的目录（mnt 是 mount 加载的缩写）。" />
+<meta property="og:description" content="首先进入 WSL，然后进根目录/，使用ls可以看到一个名为mnt的目录（mnt 是 mount 加载的缩写）。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/d075c96734c261880084d7fcb16d7f8b.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/d075c96734c261880084d7fcb16d7f8b.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-05-12T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何在 WSL 访问 Windows 中的文件" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-05-12T00:00:00+08:00","datePublished":"2022-05-12T00:00:00+08:00","description":"首先进入 WSL，然后进根目录/，使用ls可以看到一个名为mnt的目录（mnt 是 mount 加载的缩写）。","headline":"如何在 WSL 访问 Windows 中的文件","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/d075c96734c261880084d7fcb16d7f8b.html"},"url":"http://localhost:4000/blogs/zh/d075c96734c261880084d7fcb16d7f8b.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>如何在 WSL 访问 Windows 中的文件</h1>
+            <div class="bloginfo">
+                <p class="info">2022-05-12 ｜ <a href="/unix.html"> UNIX</a> ｜ 99 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>首先进入 WSL，然后进根目录<code class="language-plaintext highlighter-rouge">/</code>，使用<code class="language-plaintext highlighter-rouge">ls</code>可以看到一个名为<code class="language-plaintext highlighter-rouge">mnt</code>的目录（mnt 是 mount 加载的缩写）。</p>
+
+<p>在这里可以看到各种盘，例如<code class="language-plaintext highlighter-rouge">c</code>表示 C 盘，<code class="language-plaintext highlighter-rouge">d</code>表示 D 盘。</p>
+
+<p>然后我们就可以进入不同的盘来对文件进行操作了。</p>
+
+        </div>
+    </body>
+</html>

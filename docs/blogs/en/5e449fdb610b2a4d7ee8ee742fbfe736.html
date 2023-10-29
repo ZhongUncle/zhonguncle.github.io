@@ -1,0 +1,383 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。" />
+<meta property="og:description" content="写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。" />
+<link rel="canonical" href="http://localhost:4000/blogs/en/5e449fdb610b2a4d7ee8ee742fbfe736.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/en/5e449fdb610b2a4d7ee8ee742fbfe736.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-09T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-09T00:00:00+08:00","datePublished":"2023-08-09T00:00:00+08:00","description":"写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。","headline":"如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/en/5e449fdb610b2a4d7ee8ee742fbfe736.html"},"url":"http://localhost:4000/blogs/en/5e449fdb610b2a4d7ee8ee742fbfe736.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-09 ｜ <a href="/mcu.html"> MCU</a> ｜ 4419 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。</p>
+
+<p>接下来先记录一下整体的安装流程，会介绍一些背景知识，对于一些会错误的地方会进行说明和解释。虽然文中对一些可能出现的错误进行了介绍，但是还是单独写了一篇博客进行整理，方便以后查阅：<a href="https://zhonguncle.github.io/blogs/d879e4278e187d628848d9485115567b.html">《为树莓派Pico配置交叉编译环境和工具链arm-none-eabi-gcc时可能会遇到的错误以及解决方案》</a></p>
+
+<h1 id="安装流程">安装流程</h1>
+<h2 id="下载-raspberry-pi-pico-sdk">下载 Raspberry Pi Pico SDK</h2>
+<p>Raspberry Pi Pico SDK 提供为基于 RP2040 的设备（如 Raspberry Pi Pico）编写 C/C++ 或汇编语言程序需要使用的使用的头文件、库和构建系统，这大大提升了开发效率。</p>
+
+<p>这部分的方法可以和官方介绍的方法一样，但是如果你使用 HTTPS 克隆失败了很多次，那么建议使用 SSH 或者更新 Git 试试看，GitHub 在 <a href="https://docs.github.com/en/repositories/creating-and-managing-repositories/troubleshooting-cloning-errors#https-cloning-errors">HTTPS cloning errors</a> 对这个问题有简单的介绍。所以这里两种地址都列出来：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 使用https
+git clone https://github.com/raspberrypi/pico-sdk.git --branch master
+# 使用 SSH
+git clone git@github.com:raspberrypi/pico-sdk.git --branch master
+</code></pre></div></div>
+
+<p>然后进入<code class="language-plaintext highlighter-rouge">pico-sdk</code>目录，初始化引用的子模块：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd pico-sdk
+$ git submodule update --init
+</code></pre></div></div>
+
+<p>这里可能需要等待很长时间，而且经常会出现错误，比如加载失败、连接超时等，需要多试试看，因为都是 HTTPS 下载的，建议根据上文连接中的介绍进行诊断。<strong>这部分真的需要耐心！</strong></p>
+
+<h2 id="配置-raspberry-pi-pico-sdk">配置 Raspberry Pi Pico SDK</h2>
+<p>接下来需要在环境变量<code class="language-plaintext highlighter-rouge">PICO_SDK_PATH</code>中记录<code class="language-plaintext highlighter-rouge">pico-sdk</code>的根地址，这样后面 CMake 就可以找到需要的一些库、头文件等一些工具。这需要在你的 Shell 配置文件里加上这么一句：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PICO_SDK_PATH=~/Desktop/pico/pico-sdk
+</code></pre></div></div>
+
+<p>接下来你可以关闭终端再次打开，或者使用<code class="language-plaintext highlighter-rouge">source</code>来激活这个更改，比如：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ source .bash_profile
+</code></pre></div></div>
+
+<p>后面配置其他工具时也需要类似的操作，如果你想进一步了解这步的知识，可以看我的另一篇博客：<a href="https://editor.csdn.net/md/?articleId=122076994">《macOS在终端上如何直接使用脚本或者下载的程序》</a>。</p>
+
+<p>此外，虽然这里还没提及 CMake，但是还有另一种方法，你还可以在<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>中的<code class="language-plaintext highlighter-rouge">project(...)</code>部分之前加上这句话也可以设置环境变量<code class="language-plaintext highlighter-rouge">PICO_SDK_PATH</code>：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set(PICO_SDK_PATH ~/Desktop/pico/pico-sdk)
+</code></pre></div></div>
+
+<p>后面的路径用不用双引号包裹都行，一般不会出现解析错误，保险起见可以加。</p>
+
+<p>这种方法的好处在于对不同项目可以设置不同的环境变量，你可以根据自己的需求进行选择。</p>
+
+<h2 id="安装-cmake">安装 CMake</h2>
+<p>CMake 是一个构建、测试、打包的工具，可以生成<code class="language-plaintext highlighter-rouge">make</code>可以构建的<code class="language-plaintext highlighter-rouge">makefile</code>文件。这是因为<code class="language-plaintext highlighter-rouge">make</code>在所有类 Unix 都是自带的，但是<code class="language-plaintext highlighter-rouge">makefile</code>文件编写不是很容易。</p>
+
+<p>这里我们直接使用<code class="language-plaintext highlighter-rouge">brew</code>进行安装即可：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>brew install cmake
+</code></pre></div></div>
+
+<p>使用下面的命令查看版本来确认已经安装：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cmake --version
+cmake version 3.27.1
+
+CMake suite maintained and supported by Kitware (kitware.com/cmake).
+</code></pre></div></div>
+
+<p>（介绍CMake的博客还没写完，写完会贴个链接在这）</p>
+<h2 id="工具链">工具链</h2>
+<h3 id="为什么需要工具链">为什么需要工具链</h3>
+<p>在 Mac 上给树莓派 Pico 进行开发是需要交叉编译的。交叉编译就是在系统上编译另一种系统甚至另一个平台的程序，比如我是在 X86 架构的 macOS 上编译 Arm 架构 Linux 的可执行程序。为了实现这个目的需要一套工具来编译，比如目标系统、目标平台的编译器、库，这套工具就是常说的工具链（Toolchain）。因为本机上的编译器<code class="language-plaintext highlighter-rouge">clang</code>和库是给 macOS 编译程序的，编译出来的可执行程序是<code class="language-plaintext highlighter-rouge">Mach-O executable</code>格式，而不是 Linux 需要的格式。顺道一提，这里树莓派 Pico 需要导入的可执行程序格式为<code class="language-plaintext highlighter-rouge">UF2 firmware image, family Raspberry Pi RP2040</code>。</p>
+
+<h3 id="下载工具链">下载工具链</h3>
+<p>给树莓派 Pico 进行交叉编译的工具链名为：arm-none-eabi-gcc，使用方法和<code class="language-plaintext highlighter-rouge">gcc</code>一样，但是一般很少直接使用 arm-none-eabi-gcc 进行编译，都是使用 CMake 进行安装。</p>
+
+<p><strong>需要注意的是，下载工具链不要直接使用<code class="language-plaintext highlighter-rouge">brew</code>下载</strong>。因为<code class="language-plaintext highlighter-rouge">brew</code>安装的版本可能是不是树莓派 Pico 对应的版本或者配置错误，这样会导致一些错误。比如当前<code class="language-plaintext highlighter-rouge">brew</code>下载的版本只有 200MB，而官网的版本有 845MB，如果使用<code class="language-plaintext highlighter-rouge">brew</code>下载的版本，那么虽然也是 12.3 版本，<code class="language-plaintext highlighter-rouge">cmake</code>构建也没有问题，但是到<code class="language-plaintext highlighter-rouge">make</code>这步的时候就会显示以下错误：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>-- Build files have been written to: /shared/pico-setup/pico/pico-examples/build/elf2uf2
+[  0%] Performing build step for 'ELF2UF2Build'
+Scanning dependencies of target elf2uf2
+[ 50%] Building CXX object CMakeFiles/elf2uf2.dir/main.cpp.o
+[100%] Linking CXX executable elf2uf2
+[100%] Built target elf2uf2
+[  0%] No install step for 'ELF2UF2Build'
+[  0%] Completed 'ELF2UF2Build'
+[  0%] Built target ELF2UF2Build
+</code></pre></div></div>
+
+<p>这时候用下面的命令卸载、清理掉<code class="language-plaintext highlighter-rouge">brew</code>安装的内容：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># 卸载arm-none-eabi-gcc
+$ brew uninstall arm-none-eabi-gcc
+# 清理掉一些下载文件
+$ brew cleanup arm-none-eabi-gcc
+# brew默认将二进制文件安装到/usr/local/bin/目录下，虽然前面卸载了，但是可能会有一些残留，手动删一下
+$ sudo rm /usr/local/bin/arm-none-eabi-*
+</code></pre></div></div>
+
+<p>这时候再从官网下载即可。</p>
+
+<p>进入 <a href="https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads">Arm GNU Toolchain Downloads</a>，用页面搜索功能搜一下“macOS”，因为链接太多了。你会看到光是在 macOS 下面就有这么多链接：</p>
+
+<p><img src="/assets/images/e77c7d2e994a425cabc292a72e2e57e8.png" alt="请添加图片描述" /></p>
+
+<p>选择你对应平台（就是处理器架构）的<code class="language-plaintext highlighter-rouge">AArch32 bare-metal target (arm-none-eabi)</code>中的链接点击下载。选择<code class="language-plaintext highlighter-rouge">AArch32</code>因为树莓派 Pico 的微控制器 RP2040 包含的 Arm Cortex M0 是 32 位的，也就是<code class="language-plaintext highlighter-rouge">AArch32</code>，如果你下成<code class="language-plaintext highlighter-rouge">AArch64 bare-metal target (aarch64-none-elf)</code>是没法编译的。</p>
+
+<h3 id="安装工具链">安装工具链</h3>
+<p>如果你下载的是 tar.xz 格式的，那么使用下面的指令将其解压：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ tar xvf arm-gnu-toolchain-版本号-darwin-arm64-arm-none-eabi.tar.xz
+</code></pre></div></div>
+
+<p>然后将其放在一个你喜欢但是不经常动的位置。</p>
+
+<p>如果你下载的是 PKG 格式的，那么安装之后会放在“应用程序”目录<code class="language-plaintext highlighter-rouge">/Applications/</code>下，如下：</p>
+
+<p><img alt="" src="/assets/images/0d57c6f079cc4d18a7b14c589b8e3dba.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>这时候这个目录的绝对地址就是<code class="language-plaintext highlighter-rouge">/Applications/ArmGNUToolchain/</code>。</p>
+<h2 id="配置工具链">配置工具链</h2>
+<p>接下来要像之前一样配置一下工具链，好让<code class="language-plaintext highlighter-rouge">cmake</code>构建的时候找到需要的编译器、汇编器等工具以及库。</p>
+
+<p>配置方法是在环境变量<code class="language-plaintext highlighter-rouge">PATH</code>中添加上<code class="language-plaintext highlighter-rouge">arm-none-eabi</code>的二进制目录，这样就可以使用里面的工具了。</p>
+
+<p>如果是使用 PKG 安装的，那么在 Shell 配置文件中添加如下语句（版本不同可以略有变化）：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH="$PATH:/Applications/ArmGNUToolchain/版本号/arm-none-eabi/bin"
+</code></pre></div></div>
+
+<p>如果你是下载的 <code class="language-plaintext highlighter-rouge">tar.xz</code>，那么在 Shell 配置文件中添加如下语句（版本不同可以略有变化）：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH="$PATH:~/arm-gnu-toolchain-12.3.rel1-darwin-arm64-arm-none-eabi/bin"
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">~/arm-gnu-toolchain-12.3.rel1-darwin-arm64-arm-none-eabi</code>是你之前下载解压好之后放的位置，选择里面第一层的<code class="language-plaintext highlighter-rouge">bin</code>目录，该目录应该包含 C/C++ 的编译器<code class="language-plaintext highlighter-rouge">arm-none-eabi-gcc</code>和<code class="language-plaintext highlighter-rouge">arm-none-eabi-g++</code>，内容大致如下：</p>
+
+<p><img alt="" src="/assets/images/ee1e718b19f24f4abf26ddd04e25cb9e.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p><strong>不要选择<code class="language-plaintext highlighter-rouge">arm-none-eabi</code>里的<code class="language-plaintext highlighter-rouge">bin</code>。</strong></p>
+
+<p>如果你完成了以上步骤，那么就可以为树莓派 Pico 进行交叉编译了。</p>
+<h1 id="构建项目">构建项目</h1>
+<p>这里我们使用一个自制的例子和官方例子<a href="https://github.com/raspberrypi/pico-examples"> pico-examples </a>来介绍一下构建项目中的一些命令。</p>
+
+<p>首先新建一个<code class="language-plaintext highlighter-rouge">pico</code>目录来存放这些例子，并且进入该命令：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir pico
+$ cd pico
+</code></pre></div></div>
+
+<h2 id="简单的例子">简单的例子</h2>
+<p>接下来介绍简单的自制例子。按照以下命令新建一个目录<code class="language-plaintext highlighter-rouge">blink</code>，然后在里面新建一些文件和目录：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 新建一个`blink`目录并进入</span>
+<span class="nv">$ </span><span class="nb">mkdir </span>blink
+<span class="nv">$ </span><span class="nb">cd </span>blink
+<span class="c"># 创建两个空白文件 blink.c 和 CMakeLists.txt</span>
+<span class="nv">$ </span><span class="nb">touch </span>blink.c CMakeLists.txt
+<span class="c"># 将 pico-sdk 项目中的 pico_sdk_import.cmake 文件复制到当前目录下</span>
+<span class="c"># 如果你之前没有设置PICO_SDK_PATH，那么就使用你的pico-sdk路径</span>
+<span class="nv">$ </span><span class="nb">cp</span> <span class="nv">$PICO_SDK_PATH</span>/external/pico_sdk_import.cmake <span class="nb">.</span>
+</code></pre></div></div>
+
+<p>然后在<code class="language-plaintext highlighter-rouge">blink.c</code>文件中输入以下内容，这些编译后会让树莓派 Pico 上的 LED 灯开始闪烁（<strong>如果你的是 Pico W，那么不要使用下面的代码</strong>）：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"pico/stdlib.h"</span><span class="cp">
+</span>
+<span class="k">const</span> <span class="n">uint</span> <span class="n">LED_PIN</span> <span class="o">=</span> <span class="mi">25</span><span class="p">;</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+
+	<span class="n">gpio_init</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">);</span>
+	<span class="n">gpio_set_dir</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span> <span class="n">GPIO_OUT</span><span class="p">);</span>
+	<span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+	
+	<span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+		<span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+		<span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+		<span class="n">gpio_put</span><span class="p">(</span><span class="n">LED_PIN</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+		<span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>如果你的是 Pico W，那么使用下面的代码，而不是上面的，这是因为 Pico W 的板载 LED 没有连接到 RP2040 上，而是连接到无线芯片的 GPIO 上了，这就导致上面使用的<code class="language-plaintext highlighter-rouge">25</code>引脚是 Wi-Fi 而不是 LED，这种情况下使用的代码如下：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">"pico/stdlib.h"</span><span class="cp">
+#include</span> <span class="cpf">"pico/cyw43_arch.h"</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">stdio_init_all</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cyw43_arch_init</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Wi-Fi init failed"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cyw43_arch_gpio_put</span><span class="p">(</span><span class="n">CYW43_WL_GPIO_LED_PIN</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+        <span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+        <span class="n">cyw43_arch_gpio_put</span><span class="p">(</span><span class="n">CYW43_WL_GPIO_LED_PIN</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+        <span class="n">sleep_ms</span><span class="p">(</span><span class="mi">250</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>在<code class="language-plaintext highlighter-rouge">CMakeLists.txt</code>文件中输入以下内容：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake_minimum_required<span class="o">(</span>VERSION 3.17<span class="o">)</span>
+
+include<span class="o">(</span>pico_sdk_import.cmake<span class="o">)</span>
+
+<span class="c"># 这两个是设置目标系统和目标平台的，如果不加这两句也行，但是第一次运行 cmake 构建时会需要较长时间寻找合适的编译器，后面再构建就没区别了</span>
+<span class="nb">set</span><span class="o">(</span>CMAKE_SYSTEM_NAME Linux<span class="o">)</span>
+<span class="nb">set</span><span class="o">(</span>CMAKE_SYSTEM_PROCESSOR arm<span class="o">)</span>
+
+project<span class="o">(</span>blink<span class="o">)</span>
+
+pico_sdk_init<span class="o">()</span>
+
+
+add_executable<span class="o">(</span>blink 
+blink.c
+<span class="o">)</span>
+
+target_link_libraries<span class="o">(</span>blink pico_stdlib<span class="o">)</span>
+
+pico_add_extra_outputs<span class="o">(</span>blink<span class="o">)</span>
+</code></pre></div></div>
+
+<p>这时候新建一个名为<code class="language-plaintext highlighter-rouge">build</code>的目录来存放构建后的内容，然后进入。</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir build
+$ cd build
+</code></pre></div></div>
+
+<p>这是一个良好的构建项目的习惯，因为会很方便清理一些构建后的文件，也是<code class="language-plaintext highlighter-rouge">cmake</code>的惯例。</p>
+
+<p>然后使用以下命令进行构建：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cmake ..
+$ make -j4
+</code></pre></div></div>
+
+<p><strong>如果在构建过程中出现任何错误，都建议完全清空<code class="language-plaintext highlighter-rouge">build</code>目录，再进行下次构建！</strong></p>
+
+<p>这里你可能会好奇为什么使用<code class="language-plaintext highlighter-rouge">make -j4</code>这个命令，而不是直接使用<code class="language-plaintext highlighter-rouge">make</code>。其实两个都可以，但是推荐使用选项<code class="language-plaintext highlighter-rouge">-j4</code>，原因在“pico-examples”部分会有说明。</p>
+
+<p>构建成功会显示以下内容：</p>
+
+<p><img alt="" src="/assets/images/b22072df914c4ce4959e29d1c9b0d745.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>而此时的<code class="language-plaintext highlighter-rouge">build</code>目录下内容如下：</p>
+
+<p><img alt="" src="/assets/images/e38d1adb8a584c26ba367b3fec75506e.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>这时候先继续讲如何构建 pico-examples，如果你想马上知道如何导入可以跳到后面。</p>
+
+<h2 id="pico-examples">pico-examples</h2>
+
+<p>回到<code class="language-plaintext highlighter-rouge">pico</code>目录下：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd ../..
+</code></pre></div></div>
+
+<p>首先下载 pico-examples：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># 用 https</span>
+<span class="nv">$ </span>git clone https://github.com/raspberrypi/pico-examples.git
+<span class="c"># 用 SSH</span>
+<span class="nv">$ </span>git clone git@github.com:raspberrypi/pico-examples.git
+</code></pre></div></div>
+
+<p>同样进入<code class="language-plaintext highlighter-rouge">pico-examples</code>目录，然后新建<code class="language-plaintext highlighter-rouge">build</code>目录，在进入其中：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd pico-examples
+$ mkdir build
+$ cd build
+</code></pre></div></div>
+
+<p>然后就像简单的例子一样使用下面的命令来构建所有的项目：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cmake ..
+$ make -j4
+</code></pre></div></div>
+
+<h3 id="为什么make要使用选项-j">为什么<code class="language-plaintext highlighter-rouge">make</code>要使用选项<code class="language-plaintext highlighter-rouge">-j</code></h3>
+<p>这里解释一下为什么使用<code class="language-plaintext highlighter-rouge">make -j4</code>而不是<code class="language-plaintext highlighter-rouge">make</code>：</p>
+<ul>
+  <li>选项<code class="language-plaintext highlighter-rouge">-j4</code>意思是“同时运行 4 个任务或者命令”，如果直接使用<code class="language-plaintext highlighter-rouge">make</code>可能会出现<code class="language-plaintext highlighter-rouge">fatal error: cannot read spec file ‘nosys.specs’: No such file or directory</code>的错误，也就是一个好了得等另外一个。</li>
+  <li><strong>不过使用<code class="language-plaintext highlighter-rouge">-j4</code>的主要目的是为了加快构建速度。</strong></li>
+</ul>
+
+<p>二者的速度差距有多少呢？我进行了测试，可以看到实际花费的时间（<code class="language-plaintext highlighter-rouge">real</code>）减少到三分之一左右，你可以自己尝试看看。</p>
+
+<p><img src="/assets/images/77ce32c0169b40d3851bd72b1e334a3b.png" alt="请添加图片描述" /></p>
+
+<p>这是因为<code class="language-plaintext highlighter-rouge">-j4</code>利用了更多的进程，而更多的进程意味着更多的线程。这样可以提升 CPU 的利用率和降低程序运行时间，所以你可以看到使用使用<code class="language-plaintext highlighter-rouge">-j4</code>的用户使用 CPU 时间（<code class="language-plaintext highlighter-rouge">user</code>）和系统使用 CPU 时间（<code class="language-plaintext highlighter-rouge">sys</code>）都要高于不使用<code class="language-plaintext highlighter-rouge">-j4</code>的情况。</p>
+
+<p>这里的<code class="language-plaintext highlighter-rouge">4</code>可以根据你的处理器线程数进行调整，由于这个任务的 CPU 利用率很高，阻塞、睡眠的情况少，所以上限大概就是你的线程数，更高的值带来的提升比较少。但是<code class="language-plaintext highlighter-rouge">4</code>的个很不错的选择，因为：</p>
+<ol>
+  <li>如果尝试过多线程编程就知道，<code class="language-plaintext highlighter-rouge">4</code>线程是一个拐点，很多任务超过<code class="language-plaintext highlighter-rouge">4</code>之后线程数带来的性能提升曲线会放缓，之前增加一个线程带来的提升可能需要增加两到三个线程才能达到。</li>
+  <li>很多处理器可以同时运行的线程数还是不太够，而<code class="language-plaintext highlighter-rouge">4</code>是很多机器能接受的。</li>
+</ol>
+
+<p>如果你拥有一个核心很多的处理器，可以试试看设置为最高的速度，用<code class="language-plaintext highlighter-rouge">time make -jxx</code>测试一下时间，如果可以的话评论留言让我记录一下哦。</p>
+
+<h1 id="导入编译好后的二进制文件">导入编译好后的二进制文件</h1>
+<p>导入的方法很简单，首先拔下来你的树莓派 Pico，然后<strong>按住</strong>树莓派上的白色按钮“BOOTSEl”，如下：</p>
+
+<p><img src="/assets/images/d3acf3056f1a4f60b9bf2a440dc65d2d.jpeg" alt="请添加图片描述" /></p>
+
+<p>然后插上线连接到 Mac 上。这样树莓派 Pico 会进入 USB 大容量存储模式。</p>
+
+<p>这时就会发现出现了这样的一个 USB 存储装置：</p>
+
+<p><img alt="" src="/assets/images/b7f3b54c9a8c4418afd843c781a91c0b.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>然后将我们之前构建好的项目中的<code class="language-plaintext highlighter-rouge">.uf2</code>文件拖入这里即可。拖入后会显示“磁盘没有正常推出”，对此不要紧张，是正常的。</p>
+
+<p>如果将一开始<code class="language-plaintext highlighter-rouge">blink</code>项目中的<code class="language-plaintext highlighter-rouge">blink.uf2</code>拖入，那么就可以看到树莓派 Pico 上的 LED 开始闪烁了。<strong>强调一点，如果你之前使用 MicroPython 进行编程，后面还要的话那么需要重新安装MicroPython，因为导入的文件会替换之前有的 MicroPython。</strong></p>
+
+<p>断开再次插上也会继续闪烁，如果你想重置树莓派 Pico 来让他別闪了，那么再次断开按住按钮进入 USB 存储模式就会重置清空之前的二进制文件。但是也可能会出现外围设备重置失败的情况，那么就用我另外一篇博客的办法写个程序进行重置：<a href="https://zhonguncle.github.io/blogs/d01620c9d7201b52dcea05de04d13c14.html">《如何重置树莓派 Pico（重置外围设备失败）》</a></p>
+
+<p>最后，关于构建中还可能会出现一些问题，这些问题我会单独开一篇来进行整理（已将链接贴到开头了）。</p>
+
+<p>希望能帮到有需要的人～</p>
+
+
+        </div>
+    </body>
+</html>

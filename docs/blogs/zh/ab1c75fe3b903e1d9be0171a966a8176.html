@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content=zh-CN>
+        <title>如何使用 Go 获取 URL 的参数，以及使用时的问题</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>如何使用 Go 获取 URL 的参数，以及使用时的问题</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="如何使用 Go 获取 URL 的参数，以及使用时的问题" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。" />
+<meta property="og:description" content="Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。" />
+<link rel="canonical" href="http://localhost:4000/blogs/zh/ab1c75fe3b903e1d9be0171a966a8176.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/zh/ab1c75fe3b903e1d9be0171a966a8176.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-13T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="如何使用 Go 获取 URL 的参数，以及使用时的问题" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-13T00:00:00+08:00","datePublished":"2023-08-13T00:00:00+08:00","description":"Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。","headline":"如何使用 Go 获取 URL 的参数，以及使用时的问题","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/zh/ab1c75fe3b903e1d9be0171a966a8176.html"},"url":"http://localhost:4000/blogs/zh/ab1c75fe3b903e1d9be0171a966a8176.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+</div>
+            <h1>如何使用 Go 获取 URL 的参数，以及使用时的问题</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-13 ｜ <a href="/go.html"> Go</a> ｜ 937 字</p>
+            </div>
+            <!-- excerpt-start -->
+<p>Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。</p>
+
+<p>首先假设 URL 是<code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc&amp;id=12</code>。</p>
+
+<p>其他语言一般这个时候就是导入包了，但是 Go 的包管理很严格，所以建议你在输入完下列代码后，在安装 VSCode 中使用保存快捷键（如 Command + S 键）或者在终端中<code class="language-plaintext highlighter-rouge">goimports</code>工具来自动补全包，这样就可以保证一定没有错误。因为虽然现在一般使用<code class="language-plaintext highlighter-rouge">"net/url"</code>或者<code class="language-plaintext highlighter-rouge">"net/http"</code>，但某些情况可能不一样，或者未来 Go 会对一些包进行改名，这都会导致包的名称不一定，所以“授人以鱼不如授人以渔”。</p>
+
+<p>接下来需要使用<code class="language-plaintext highlighter-rouge">url.Parse()</code>来解析上面的 URL，以及设置错误信息来方便 URL 解析出错的时候进行处理，最后声明变量<code class="language-plaintext highlighter-rouge">q</code>来方便后续获取和操作参数：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">u</span><span class="p">,</span> <span class="n">err</span> <span class="o">:=</span> <span class="n">url</span><span class="o">.</span><span class="n">Parse</span><span class="p">(</span><span class="s">"https://www.example.com/?keyword=abc&amp;id=12"</span><span class="p">)</span>
+<span class="k">if</span> <span class="n">err</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+	<span class="n">log</span><span class="o">.</span><span class="n">Fatal</span><span class="p">(</span><span class="n">err</span><span class="p">)</span>
+<span class="p">}</span>
+<span class="n">q</span> <span class="o">:=</span> <span class="n">u</span><span class="o">.</span><span class="n">Query</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>这里<code class="language-plaintext highlighter-rouge">u.Query()</code>会进行一个映射，将参数名和值对应上，由于可能会有多个相同的参数名，所以这里的“键值对”的“值”是一个字符串数组。此时就可以通过<code class="language-plaintext highlighter-rouge">q</code>来获取参数了，如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="s">"keyword"</span><span class="p">])</span>
+<span class="n">fmt</span><span class="o">.</span><span class="n">Println</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="s">"id"</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>输出结果为：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[abc]
+[12]
+</code></pre></div></div>
+
+<p>下面说说需要注意的几个问题：</p>
+
+<h3 id="如何将参数字符串转换成整数">如何将参数字符串转换成整数</h3>
+<p>上文提到这里的<code class="language-plaintext highlighter-rouge">q["keyword"]</code>或<code class="language-plaintext highlighter-rouge">q["id"]</code>实际上是个字符串数组，所以如果你想将上面<code class="language-plaintext highlighter-rouge">id</code>的值<code class="language-plaintext highlighter-rouge">12</code>当成整数进行操作，那么就得使用下面的方式（如果你有多个<code class="language-plaintext highlighter-rouge">id</code>参数的话，那么就根据自己情况选择）：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">id</span> <span class="o">:=</span> <span class="n">strconv</span><span class="o">.</span><span class="n">Atoi</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="s">"id"</span><span class="p">][</span><span class="m">0</span><span class="p">])</span>
+</code></pre></div></div>
+
+<p>这时候变量<code class="language-plaintext highlighter-rouge">id</code>的值就是整数<code class="language-plaintext highlighter-rouge">12</code>。</p>
+
+<h3 id="判断是否有参数或有某个参数">判断是否有参数或有某个参数</h3>
+<p>一般参数的使用方法就是用来计算或判断，但是如果我们要判断有没有参数部分或者有没有某个参数该怎么办呢？</p>
+
+<p>有两种方案：
+第一种是通过判断<code class="language-plaintext highlighter-rouge">q</code>或某个参数对应的值是否为空，如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">//判断是否有参数</span>
+<span class="k">if</span> <span class="n">q</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+	<span class="o">...</span>
+<span class="p">}</span>
+<span class="c">//判断是否有id这个参数</span>
+<span class="k">if</span> <span class="n">q</span><span class="p">[</span><span class="s">"id"</span><span class="p">]</span> <span class="o">!=</span> <span class="no">nil</span> <span class="p">{</span>
+	<span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>第二种是通过<code class="language-plaintext highlighter-rouge">len()</code>测量<code class="language-plaintext highlighter-rouge">q</code>或某个参数对应值的长度，如下：</p>
+
+<div class="language-go highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">//判断是否有参数</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">)</span> <span class="o">!=</span> <span class="m">0</span> <span class="p">{</span>
+	<span class="o">...</span>
+<span class="p">}</span>
+<span class="c">//判断是否有id这个参数</span>
+<span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">q</span><span class="p">[</span><span class="s">"id"</span><span class="p">])</span> <span class="o">!=</span> <span class="m">0</span> <span class="p">{</span>
+	<span class="o">...</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>希望能帮到有需要的人～</p>
+
+        </div>
+    </body>
+</html>
