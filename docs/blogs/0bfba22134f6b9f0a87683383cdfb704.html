@@ -3,26 +3,26 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='zh-CN'>
-        <title>为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）</title>
+        <title>Why GIF is static image rather than video?</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）</title>
+<title>Why GIF is static image rather than video?</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）" />
+<meta property="og:title" content="Why GIF is static image rather than video?" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。" />
-<meta property="og:description" content="今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。" />
-<link rel="canonical" href="https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
-<meta property="og:url" content="https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
+<meta name="description" content="When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?" />
+<meta property="og:description" content="When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?" />
+<link rel="canonical" href="http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2023-02-03T00:00:00+08:00" />
+<meta property="article:published_time" content="2023-09-20T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）" />
+<meta property="twitter:title" content="Why GIF is static image rather than video?" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-03T00:00:00+08:00","datePublished":"2023-02-03T00:00:00+08:00","description":"今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？ 因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。","headline":"为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html"},"url":"https://zhonguncle.github.io/blogs/0bfba22134f6b9f0a87683383cdfb704.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-09-20T00:00:00+08:00","datePublished":"2023-09-20T00:00:00+08:00","description":"When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?","headline":"Why GIF is static image rather than video?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html"},"url":"http://localhost:4000/blogs/0bfba22134f6b9f0a87683383cdfb704.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -95,66 +95,136 @@
         </a>
     
 </div>
-            <h1>为什么GIF文件是图像文件而不是视频文件？（GIF文件格式详解）</h1>
+            <h1>Why GIF is static image rather than video?</h1>
             <div class="bloginfo">
-                <p class="info">2023-02-03 ｜ <a href="/research.html"> Research</a> ｜ 6498 字</p>
+                <p class="info">2023-09-20 ｜ <a href="/research.html"> Research</a> ｜ 5924 字</p>
             </div>
             <!-- excerpt-start -->
-<p>今天整理硬盘的时候想到一个问题：GIF 是放在静态图像文件里还是视频文件里？
-因为放视频里吧，GIF 的分类是静态图像，而且由图像组成；放图像里吧，它又会动。</p>
+<p>When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?</p>
 
-<p>然后我就开始想：GIF 会动但为什么被归类在静态图像？</p>
+<p>Because if you put it in a video, GIF is classified as a static image usually and is composed of images; if you put it in an image, it shows animations.</p>
 
-<p>看了一下国内外的一些博客，得到的答案不能让我满足，就是感觉还差一点的感觉🤏；或者有些说到了一些点上，但是没有继续深入了。所以就自己做了点研究，写下本博客，希望能帮到和我一样有这个疑问的人。</p>
+<p>Then I have new problem: Why GIFs shows animations, but be classified as static images?</p>
 
-<p>本文按照“GIF 文件格式（技术原理）”-&gt;“GIF 的历史”-&gt;“结论”的顺序。一些关于技术的历史介绍也会放在“GIF 的历史”中。</p>
+<p>I read many blogs, but the answers did not deep enough for me. They like “beacuse GIF is static images, so it is static images”. So I did some research by myself and wrote this blog, hoping to help people who have the same questions as me.</p>
 
-<h2 id="gif-文件格式技术原理">GIF 文件格式（技术原理）</h2>
-<p>如果想深入解释这一点，需要先简单介绍一下 GIF 的文件格式，这样才能了解为什么历史上会出现 GIF 格式。如果你想深入了解 GIF 文件格式，这里有篇文章写的挺细致，也是本文的参考资料之一，如果你能阅读英文的话非常建议看看：<a href="https://www.cs.cmu.edu/~cil/lzw.and.gif.txt">《LZW and GIF explained—-Steve Blackstock》</a>。</p>
+<p>The structure of article is “GIF file format” -&gt; “History of GIF” -&gt; “Conclusion”. Some history about technology is also placed in “The History of GIFs”.</p>
 
-<p>GIF 文件由 5 大部分组成：GIF 签名，屏幕描述符，全局颜色映射，图像描述符，本地颜色映射，光栅数据和 GIF 终止符。</p>
+<h2 id="gif-file-format">GIF file format</h2>
+<p>If want to explain the question in depth, we need to introduce the format of GIF file briefly first. And you will make sense why GIF appear in history.</p>
 
-<p><img src="/assets/images/c376e98d6c7f4826a94825417d8a9916.png" alt="GIF分区示意图" /></p>
+<p>If you want to learn more details of the GIF file format, here is a good article, which is also one of the reference materials for this article: <a href="https://www.cs.cmu.edu/~cil/lzw.and.gif.txt">“LZW and GIF explained—- Steve Blackstock” </a>.</p>
 
-<p>为了方便理解，这里直接举个例子来详细说明。</p>
-
-<p><img src="/assets/images/IMG_7268.GIF" alt="GIF示例图" /></p>
-
-<p>以上面这个 GIF 为例，使用任何十六进制查看器查看可以得到如下内容：</p>
-
-<p><img alt="查看示例的十六进制源码" src="/assets/images/28d7410e60cf402ab006905299857476.png" style="box-shadow: 0px 0px 0px 0px" /></p>
-
-<h3 id="gif-签名标头">GIF 签名（标头）</h3>
-<p>在 UNIX 系统中，文件类型是由标头表明的，与后缀无关。GIF 文件的标头则是 GIF 签名，有 6 个字节，有两个版本：“GIF87a（47h 49h 46h 38h 37h 48h）”和“GIF89a（47h 49h 46h 38h 39h 48h）”。
-屏幕描述符中说明了图像的尺寸和一些图像相关的信息，是上图中图像“尺寸”、“信息”、“背景颜色”、“表示结束”四个框框的 7 个字节：</p>
+<p>A GIF file has 5 major parts:</p>
 <ul>
-  <li>尺寸信息占 4 个字节，长宽各一半，也就是长和宽的最大值为65536（2^16）。这个 GIF 尺寸为 72x72，72 的十六进制为 48h，可以看到上图中正是“48”。<strong>这个需要注意两点：GIF 使用的是大端，也就是说，这里的长应该是<code class="language-plaintext highlighter-rouge">0048h</code>，后面的<code class="language-plaintext highlighter-rouge">00</code>要放到前面去；第二，文档写的是屏幕尺寸，这是图形系统和计算机历史的问题，所以这里不过多解释。如果感兴趣可以看看The 8-Bit Guy 的一系列关于早期计算机图形系统的介绍，相对来说没有那么枯燥。</strong></li>
-  <li>图像信息占 1 个字节，但是包含了很多信息，所以我们要将其写成二进制讲解。上图中<code class="language-plaintext highlighter-rouge">f6</code>写成二进制为“<code class="language-plaintext highlighter-rouge">1111 0110</code>”。
-    <ul>
-      <li>第 1 位为全局颜色映射符号，表示后面是否有全局颜色映射，这里<code class="language-plaintext highlighter-rouge">1</code>表示有；</li>
-      <li>第 2～4 位的值加一表示色深，这里是<code class="language-plaintext highlighter-rouge">111</code>，也就是 7，加一就是 8，也就是说色深为 8 位，最多 256 个颜色（也是最大值了），该值是给颜色映射使用的；</li>
-      <li>第 5 位是为未来保留的位，必须为<code class="language-plaintext highlighter-rouge">0</code>；</li>
-      <li>第 6～8 位加一表示图像中每个像素的位数，这里为<code class="language-plaintext highlighter-rouge">110</code>，也就是 6，加一为 7，也就是说这张图单个像素大小为 7 位，最多 128 个颜色，该值与图像有关。</li>
-    </ul>
-  </li>
-  <li>背景颜色为<code class="language-plaintext highlighter-rouge">00</code>，也就是白色。</li>
-  <li>最后的<code class="language-plaintext highlighter-rouge">00</code>表示结束。</li>
+  <li>GIF signature</li>
+  <li>screen descriptor</li>
+  <li>global color map</li>
+  <li>image descriptor</li>
+  <li>local color map</li>
+  <li>raster data</li>
+  <li>GIF terminator</li>
 </ul>
 
-<h3 id="全局颜色映射">全局颜色映射</h3>
-<p>上图中第一行最后到<code class="language-plaintext highlighter-rouge">00000180</code>行之前的区域就是全局颜色映射的部分了。全局颜色映射虽然可选，但是现代的 GIF 基本上都有，是用来表示每个像素的颜色的。</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	+-----------------------+
 
-<h4 id="何为颜色映射">何为颜色映射</h4>
-<p>这里本来想省略对与颜色映射的解释，但是由于这个技术有点太古早了，很多人可能不了解就详细说说。
-现在很多人都知道，屏幕上的颜色大多是以红绿蓝三个颜色组合而成的（印刷行业不同）在表达的时候是用红绿蓝三个颜色的值这种格式。但是为什么我们确定一个“RGB”值就可以确定一个颜色呢？你可能会说：是去色域中按照这个值提取的颜色，然后显示出来。
-这样说很接近了。现在麻烦您将自己想象成一个上世纪八十年代的游戏开发者，你需要只用用 8 bits 就显示出比较细腻的颜色。你心里会想 8 bits 也就 256 个值，还要三个颜色一起用，不可能显示出比较细腻的颜色的。（现在最常见的 8 bit 屏幕单个像素为 24 bits，也就是 16777216 个颜色）
-但是你注意到没有，我一直说的是<strong>多少个颜色</strong>，这个颜色不一定是均匀分布的哦。比如说上面那个 GIF 的画面中，主要颜色为黑、深蓝、红、白，组成非常简单，并不是由很复杂的颜色组成的。那么我们就可以将 8 bit 转换成 256 个值，每个值对应映射一个图中会用到的颜色，这样就可以显示出来比较细腻的画面了。红白机这些早期游戏机上的游戏很多都是通过这种技术，从而达到了超出规格的画面效果。
-<strong>可以把这个颜色映射理解成调色板，系统或显示器支持的颜色空间理解成颜料盒，颜料可能有几十万个颜色，但是调色板只能放几十个颜色。</strong> 比如说在24 位的 RGB 颜色空间中创建单像素大小为 8 位的 GIF 时，就是从 16777216 个颜料中取出 256 个颜色（局部颜色映射就是给每个图像一个调色板）。</p>
+	| +-------------------+ |
+
+	| |   GIF Signature   | |
+
+	| +-------------------+ |
+
+	| +-------------------+ |
+
+	| | Screen Descriptor | |
+
+	| +-------------------+ |
+
+	| +-------------------+ |
+
+	| | Global Color Map  | |
+
+	| +-------------------+ |
+
+	. . .		    . . .
+
+	| +-------------------+ |    ---+
+
+	| |  Image Descriptor | |	|
+
+	| +-------------------+ |	|
+
+	| +-------------------+ |	|
+
+	| |  Local Color Map  | |	|-   Repeated 1 to n times
+
+	| +-------------------+ |	|
+
+	| +-------------------+ |	|
+
+	| |    Raster Data    | |	|
+
+	| +-------------------+ |    ---+
+
+	. . .		    . . .
+
+	|-    GIF Terminator   -|
+
+	+-----------------------+
+</code></pre></div></div>
+
+<p>For understanding, here is a GIF for explaining:</p>
+
+<p><img src="/assets/images/IMG_7268.GIF" alt="GIF example" /></p>
+
+<p>You use hex viewer(like <code class="language-plaintext highlighter-rouge">hexdump</code>) to check GIF above and can get the following content:</p>
+
+<p><img alt="GIF十六进制" src="/assets/images/28d7410e60cf402ab006905299857476.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h3 id="gif-signatureheader">GIF signature（header）</h3>
+<blockquote>
+  <p>On UNIX, file format is decided by header, rather than file suffix.</p>
+</blockquote>
+
+<p>The header of GIF file is GIF signature, which is 6 bytes and has two versions: “GIF87a (47h 49h 46h 38h 37h 48h)” and “GIF89a (47h 49h 46h 38h 39h 48h)”.</p>
+<ol>
+  <li>Screen descriptor describes the size of the image and provides some image informations, which is the 7 bytes in screenshot, I mark them as “size”, “information”, “background color”, and “indicates the end”:</li>
+  <li>Image size occupies 4 bytes, which 2 bytes are length and 2 bytes are width. So the maximum length and width are 65536 (2^16). The size of example GIF is 72x72(48x48 in hex), and you can see “48” in screenshot above. <strong>Two points need to be noted in this: GIF uses big endian, <code class="language-plaintext highlighter-rouge">48 00</code> means <code class="language-plaintext highlighter-rouge">0048h</code>; secondly, offical name is “screen size”, which comes from history of graphics systems and computer. I won’t explain it, if you are interested in, you can watch “The 8-Bit Guy” videos about early computer graphics systems in Youtube.</strong></li>
+  <li>Image information occupies 1 byte, but contains a lot of information, so I will use binary format to explain. In above screenshot, <code class="language-plaintext highlighter-rouge">f6</code> is written as “<code class="language-plaintext highlighter-rouge">1111 0110</code>” in binary.
+    <ol>
+      <li>Bit 1 is the global color mapping symbol, indicating whether use global color mapping later, here <code class="language-plaintext highlighter-rouge">1</code> means “use”;</li>
+      <li>Bit 2~4 add 1 indicate the color depth. Here is <code class="language-plaintext highlighter-rouge">111</code>(mean “7” in decimal) and add 1 equal to 8, which means the color depth is 8 bits(up to 256 colors). This value will be used by color mapping;</li>
+      <li>Bit 5 is reserved for the future, must be <code class="language-plaintext highlighter-rouge">0</code>;</li>
+      <li>Bit 6~8 add 1 indicates the bits of each pixel in the image. Here is <code class="language-plaintext highlighter-rouge">110</code>(mean “6” in decimal). Adding 1 equals 7, it means “color size” of a single pixel in this image is 7 bits(up to 128 colors). This value is related to the image.</li>
+    </ol>
+  </li>
+  <li>Background color is <code class="language-plaintext highlighter-rouge">00</code>, which means white.</li>
+  <li><code class="language-plaintext highlighter-rouge">00</code> indicates the end.</li>
+</ol>
+
+<h3 id="全局颜色映射">全局颜色映射</h3>
+<p>In screenshot above, the area from tail of the first line to the <code class="language-plaintext highlighter-rouge">00000180</code> line is the global color mapping part. Although global color mapping is optional, modern GIFs basically enable it and are used to represent the color of each pixel.</p>
+
+<h4 id="何为颜色映">何为颜色映</h4>
+<p>Originally I wanted to omit the explanation of color mapping, but this technology outdated, many people may not understand it. So I will explain it in detail.</p>
+
+<p>Nowadays, many people know that the colors on the screen are mostly composed of three colors: red, green and blue (printer is CMYK). We can describe a color by values of the three colors. But why a “RGB” value can determine a color?</p>
+
+<p>You may answer me: We extract a color from gamut by this value. That’s very close the truth.</p>
+
+<p>Now, please imagine you are a game developer from the 1980s, you only have 8 bits to display delicate colors. 8 bits is only can represent 256 values, and you need to use three colors together, rather than black and white. This sounds impossible! Because today most custom screen have 24 bits for a pixel(each color occupies 8 bit), which is 16777216 color. This gap is too big. How 1980s game developer implement it?</p>
+
+<p>Did you notice that I just say <strong>how many colors</strong>, and this color may not be evenly distributed. In the GIF above, the main colors are black, deep blue, red, and white, which are very simple in composition and not composed of very complex colors. So we map colors needed to values, not map any color we won’t use. Now a detailed image can be displayed. Many of the games on early game consoles such as Famicom consoles used this technology to achieve screen effects beyond specifications.</p>
+
+<p><strong>This color map can be understood as a palette, and the color space supported by the system or monitor can be understood as a paint box. The paint may have hundreds of thousands of colors, but the palette can only hold dozens of colors.</strong> For example, when creating a GIF with a single pixel size of 8 bits in the 24-bit RGB color space, 256 colors are taken out of 16777216 paints (local color mapping is to give each image a palette).</p>
 
 <p>那么继续介绍全局颜色映射。颜色映射一般情况下是按照“纯黑到纯白”的顺序排列的。也可以按照出现频率排列或者其他因素排列（详情请跳转到“图像描述符”部分）。
-比如说上图中的<code class="language-plaintext highlighter-rouge">03h 03h 03h</code>，这个颜色是小人的发绳颜色最深处的颜色：</p>
+Let’s move back to global color mapping. Color mapping is generally arranged in the order of “black to white”. You can also sort by frequency or other (“Image Descriptors” section for details).</p>
 
-<p><img alt="上图中的‘03h 03h 03h’，这个颜色是示例图中小人的发绳颜色最深处的颜色" src="/assets/images/6106c13888b549cd9ae4ccc0b052b818.png" width="250" /></p>
+<p>比如说上图中的<code class="language-plaintext highlighter-rouge">03h 03h 03h</code>，这个颜色是小人的发绳颜色最深处的颜色：
+For example, in GIF above, <code class="language-plaintext highlighter-rouge">03h 03h 03h</code> is the deepest color that is the main color of hair rope:</p>
+
+<p><img alt="For example, in GIF above, 03h 03h 03h is the deepest color that is the main color of hair rope" src="/assets/images/6106c13888b549cd9ae4ccc0b052b818.png" width="250" /></p>
 
 <p><code class="language-plaintext highlighter-rouge">17h 17h 17h</code>是第二深的颜色：</p>
 
