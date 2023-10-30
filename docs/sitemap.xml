@@ -117,10 +117,6 @@
 <lastmod>2022-07-27T00:00:00+08:00</lastmod>
 </url>
 <url>
-<loc>http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html</loc>
-<lastmod>2022-08-13T00:00:00+08:00</lastmod>
-</url>
-<url>
 <loc>http://localhost:4000/blogs/7e752d5a8bf37d6ef8d206c263e72469.html</loc>
 <lastmod>2022-08-13T00:00:00+08:00</lastmod>
 </url>
@@ -323,6 +319,10 @@
 <url>
 <loc>http://localhost:4000/blogs/1067904058e8c8e9d2e2fadf88655e72.html</loc>
 <lastmod>2023-09-20T00:00:00+08:00</lastmod>
+</url>
+<url>
+<loc>http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html</loc>
+<lastmod>2023-10-30T00:00:00+08:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/assembly.html</loc>

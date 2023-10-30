@@ -1,21 +1,21 @@
 ---
 layout: article
 category: Assembly
-date: 2022-08-13
-title: macOS 汇编指南
+date: 2023-10-30
+title: macOS Assembly Guide
 ---
 <!-- excerpt-start -->
-现在很多汇编的学习资料、途径和工具都是关于 Windows 下的，所以这里来介绍一下 macOS 上学习使用汇编需要的资料和工具。
+Nowadays, many materials for learning assembly, methods and tools are on Windows, so here is an introduction to the materials and tools on macOS.
 
-本文持续更新中，也是作为个人笔记来使用的。
+This article is being continuously updated and is also used as a personal note.
 
 ## 为什么需要学习汇编（使用途径）
-汇编是计算机的“魔法”，虽然做个只会高级语言的“战士”也可以，但是当给“武器”附魔之后，战斗力也会大大增加（当然也有“玩火自焚”的）。
+Assembly is the "magic" of computers. It is fine to be a "warrior" who only can use high-level languages, but when the "weapon" is enchanted, the combat effectiveness will be greatly increased (of course, there are also people who "play with fire and burn themselves").
 
-在现代，学习汇编之后的**使用途径**有几种：
+Today, there are several ways to use assembly:
 
- - 直接用汇编指令写程序的代码，然后使用汇编器（Assembler）汇编成程序（这种学习的过程中可能使用比较多，在实际情况下很少用，因为太复杂了）。
- - 用在 C 语言代码中，提高性能和速度，或者实现一些特别的功能。例如 UNIX 和 Linux 中的汇编代码就是为了提高运行速度，不然完全可以用纯 C 语言写出来；还有苹果不让开发者 iOS 平台获取 CPU 频率之后，一些开发者通过在 Objective-C 代码中使用汇编指令来推测频率。
+ - Directly use instructions of computer to write the program and use the assembler to assemble the program (this may be just for education, rarely used in actual situations, it's too complicated).
+ - Used in C code to improve performance and speed, or to implement some special functions. For example, the assembly code in UNIX and Linux source codes is to improve the running speed, otherwise it can be written in pure C language; and Apple did not allow developers to obtain the CPU frequency on iOS platform, some developers used assembly code in Objective-C code instructions to infer CPU frequency.
 
 > 注1：不过苹果后来加了转换，让推测的结果很不准，让这种 app 彻底完犊子了。
 > 注2：Objective-C 是 C 语言的一个超集，就像 C++ 也是 C 语言的一个超集，它们都属于 C 语言家族。在苹果推出 Swift 之前，苹果平台的开发全靠 Objective-C。
