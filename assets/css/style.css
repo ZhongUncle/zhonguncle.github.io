@@ -79,6 +79,14 @@ h2:after
     border-bottom: 1px solid hsla(0, 0%, 50%, .33)
 }
 
+h3
+{
+    font-size: 1.1em;
+    margin: 1.7em 0;
+    margin-bottom: 0;
+    line-height: 1
+}
+
 /* 调整连接的颜色和样式，这样好看一点 */
 a {
     text-decoration: none;
@@ -169,8 +177,8 @@ th {
 /* 列表样式 */
 ul {
     margin: 1.2em 0;
-    list-style-type: none;
-    padding-left: 0px;
+    list-style-type: disc;
+    padding-left: 30px;
 }
 
 /* 头行颜色 */
@@ -185,4 +193,17 @@ tbody>tr:nth-child(even) {
 
 tbody>tr:nth-child(odd) {
     background-color: #FFFFFF
+}
+
+footer {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 100px;
+    width: 100%;
+    color:#FFFFFF; 
+    background: #06303A;
+    font-size:1.5em;
+    text-align: center;
+    line-height:100px;
 }

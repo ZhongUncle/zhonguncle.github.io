@@ -5,77 +5,82 @@ date: 2023-10-30
 title: macOS Assembly Guide
 ---
 <!-- excerpt-start -->
-Nowadays, many materials for learning assembly, methods and tools are on Windows, so here is an introduction to the materials and tools on macOS.
+Since most of the resources, methods and tools for learning assembly are based for Windows. So here I will introduce some materials and tools for macOS
 
-This article is being continuously updated and is also used as a personal note.
+I will continuously update this article and also using it as a personal note.
 
-## 为什么需要学习汇编（使用途径）
-Assembly is the "magic" of computers. It is fine to be a "warrior" who only can use high-level languages, but when the "weapon" is enchanted, the combat effectiveness will be greatly increased (of course, there are also people who "play with fire and burn themselves").
+## Why you need to learn assembly (How to use it)
+Assembly is the "magic" of computers. You can be a fine “warrior” who only uses high-level languages, but if you “enchant” your “weapon” with assembly, your combat effectiveness will increase greatly (of course, there are also risks of “playing with fire and burning yourself”).
 
 Today, there are several ways to use assembly:
 
  - Directly use instructions of computer to write the program and use the assembler to assemble the program (this may be just for education, rarely used in actual situations, it's too complicated).
  - Used in C code to improve performance and speed, or to implement some special functions. For example, the assembly code in UNIX and Linux source codes is to improve the running speed, otherwise it can be written in pure C language; and Apple did not allow developers to obtain the CPU frequency on iOS platform, some developers used assembly code in Objective-C code instructions to infer CPU frequency.
+ - can understand the decompiled content (this is generally not used by regular programmers).
 
-> 注1：不过苹果后来加了转换，让推测的结果很不准，让这种 app 彻底完犊子了。
-> 注2：Objective-C 是 C 语言的一个超集，就像 C++ 也是 C 语言的一个超集，它们都属于 C 语言家族。在苹果推出 Swift 之前，苹果平台的开发全靠 Objective-C。
+> Note 1: However, Apple later added a conversion that made the estimation very inaccurate, rendering this kind of app useless.
 
- - 能看懂反编译出来的内容（这种一般常规程序员用不到）。
+> Note 2: Objective-C is a superset of the C language, just like C++ is also a superset of the C language. They all belong to the C language family. Before Apple use Swift, the development of Apple platforms relied entirely on Objective-C.
 
-不过在现在，汇编并不是编程的门槛，而是通往高手的必修课。但是新手还是建议先学会 C 语言再接触汇编（这里的学会是指能看明白各种结构即可）。
+Now, assembly is not the threshold of programming, it's a required course to become a master. However, novices are still advised to learn C language first before contacting assembly ("learned" means being able to understand various structures and concepts).
 
-## 相关资料推荐
-在现在各种高级语言、脚本语言遍地开花的今天，汇编语言越来越不受欢迎，因为繁琐、复杂，学习成本极高。例如， Intel CPU 开发手册就有 5000 页（每次发新的 CPU 之后都会更新，或增或减）。
+## References and Resources
+Today, there are many high-level and script languages, assembly language is becoming more and more unpopular because it is cumbersome, complex and has extremely high learning costs. For example, the Intel CPU development manual has 5,000 pages (and it will be updated every time a new gengeration is released).
 
-第一个推荐的是苹果官方的汇编指南：《Mac OS X Assembler Guide》，下载地址在[这里](http://personal.denison.edu/~bressoud/cs281-s07/Assembler.pdf)。
-这本指南包含了 Mac OS X 汇编器`as`的使用，汇编指令和地址模式的介绍等内容。
-需要注意的是，它不光包括了 Intel CPU 的汇编内容，还包括更早期的 Power PC 的汇编内容。
-但是由于该指南最新版本是 2005 年的，Intel 的指令有了巨大的更新，例如 AVX 等。并且苹果也已经在转向自己的 M1 芯片了（有意思的是，OS X 的汇编器手册最新更新时间是 2020 年6月23日，而这就是 M1 更新的日子，不知道苹果会不会在稳定之后再次更新）。
+### Mac OS X Assembler Guide
+The first recommendation is Apple’s official assembly guide: "Mac OS X Assembler Guide", the download address is at [http://personal.denison.edu/~bressoud/cs281-s07/Assembler.pdf](http://personal.denison.edu/~bressoud/cs281-s07/Assembler.pdf). 
 
-第二个推荐的是 Intel 的 [《Introduction to x64 Assembly》](https://www.intel.com/content/dam/develop/external/us/en/documents/introduction-to-x64-assembly-181178.pdf)，这是一篇汇编快速入门。新手可以看看，干货浓度极高。
+This guide covers the use of Mac OS X assembler `as`, assembly instructions, address modes and more. But it's not only about Intel CPU, but also about earlier Power PC. Since the latest version of this guide is from 2005, Intel's instructions have a huge update, such as AVX. And now Apple is already switching to Apple silicon(interestingly, the latest update time of manual of `as` is 2020-6-23, which is the day of the M1 released).
 
-第三个是：Intel 的开发手册。
-这个手册虽然很长，但是一个很不错的资料，而且更新频率很高，如果需要了解新的 Intel 指令，那么这就是必须要看的了。所以这篇属于经常需要翻阅的。当然如果想见识见识也可以看看。链接是：[Intel 64 和 IA-32 处理器相关的文档](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)
-可以直接[下载合订本](https://cdrdv2.intel.com/v1/dl/getContent/671200)当作存档，不过这样不方便阅读。（关于这个，曾经 Intel 可以免费提供纸质版，只要你发邮件提供地址即可，有不少人定，不过大多都垫了显示器或者吃灰了。现在 Intel 不提供这个福利了，挺可惜的）
-第一卷是一些大致的介绍，以及 Intel CPU 发展历程和区别，如果是初学者可以瞅瞅；第二卷开始就是指令的介绍了。第2卷的日常使用率比较高，需要经常查阅。**具体区别在之前的[链接](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)中的界面可以看到。**
+### Introduction to x64 Assembly
+The second recommendation is Intel's ["Introduction to x64 Assembly"](https://www.intel.com/content/dam/develop/external/us/en/documents/introduction-to-x64-assembly-181178 .pdf), this is a short introduction to assembly. It's friendly for newbies or beginner.
 
-这里需要注意的是，虽然常说 Intel 挤牙膏，但是 Intel 几乎每一代都会有指令、寄存器的更新和更改。所以文档的更新频率比较高，如果你需要使用最新的指令，那么请及时更新自己存储的文档。
+### Intel® 64 and IA-32 Architectures Software Developer Manuals
+The third one is Intel's development manual: Intel® 64 and IA-32 Architectures Software Developer Manuals.
 
-第四个是一组关于 ARM 汇编的文档。
-首先因为 Mac 现在以及转向自研的 M1 芯片了，M1 芯片是 ARM 架构的。
-其次因为 ARM 现在并不像 Intel 一样提供了汇编指南[《ARM ® DeveloperSuite Assembler Guide
-Version 1.2》](https://developer.arm.com/documentation/dui0068/b)（这篇指南最新的b版本是2001年的），而是分散开了。如果想入门，阅读这本2001年的指南即可。
-如果想深入了解最新的指令，那么查看这里[https://developer.arm.com/architectures/instruction-sets](https://developer.arm.com/architectures/instruction-sets)。
+Although this manual is very long, it is a very good information and is updated frequently. If you need to understand the new Intel instructions, it must be read. 
 
-## 汇编器以及实用工具介绍
+You can directly [Download the bound volume](https://cdrdv2.intel.com/v1/dl/getContent/671200) as an archive, but this is inconvenient to read. (Intel used to provide paper copies for free, as long as you sent an email and provided your address. Many people ordered, but most of them used to up monitor or left them in the dust. Now Intel no longer provides this benefit, which is a pity)
 
-> 汇编器（Assembler）和编译器（Complier）是不同的。如果搞不明白的话，可以简单理解成汇编器是将汇编指令转换成程序的；编译器是将高级语言的代码（例如 C/C++、Java 等的代码）转换成程序的。
+The Volume 1 is a general introduction, about the development history and differences of Intel CPU. If you are a beginner, you can take a look. You may be read Volume 2 frequently, it's about instructions. **The specific differences can be seen in the interface in the [Intel® 64 and IA-32 Architectures Software Developer Manuals](https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html)。**
 
-这里介绍一下汇编器以及可能用得到的实用工具们（包括编辑器）。
+Note that although Intel is often said to updating slowly and liitle, Intel almost every generation will have instructions or registers updates and changes. So the document update frequency is relatively high, if you need to use the latest instructions, then please update your stored documents in time.
 
-### as：
-Mac OS X 的汇编器，需要在“终端”中使用，类似于 Windows 的 masm。支持 Intel 处理器的汇编以及 Power PC 处理器的汇编。放在`/usr/bin/as`目录下。在《Mac OS X Assembler Guide》中有使用方法的介绍。
+### ARM Assembly Documents
+The fourth recommendation is a set of documents about ARM assembly.
+Because Mac is now switching to the self-developed M1 chip, which is based on ARM architecture and ARM does not currently provide entire assembly guidelines like Intel. The latest entire guidelines is [《ARM ® DeveloperSuite Assembler Guide Version 1.2》](https://developer.arm.com/documentation/dui0068/b) in 2001, if you are a beginner, please read this first.
 
-### ld：
-连接器。
+If you want to learn newest instruction, it's here: [https://developer.arm.com/architectures/instruction-sets](https://developer.arm.com/architectures/instruction-sets)
 
-### clang:
-clang 有个状态就是汇编器，而且可以 C 语言等代码预处理成汇编语言代码，详细操作请看这里[《clang 如何产生汇编代码文件》](https://blog.csdn.net/qq_33919450/article/details/124358476)。使用 clang 可能对你更方便，不过需要自己判断了。
+## Introduction to assembler and Utilities
 
-### gcc:
-gcc 和 clang具体区别这里不赘述，gcc 有个选项：`-nostartfiles`，使用这个命令可以直接忽略被链接的标准库文件和初始化行为。这是因为有时候会出现不需要连接 C 标准库，直接汇编即可，那么就需要这样。最后会有相关演示。
+> Assembler and compiler are different. If you don't understand, simply think that the assembler converts assembly instructions into programs; the compiler converts high-level language codes (such as C/C++, Java) into programs.
 
-### size:
-输出对象文件的各部分大小，如下：
+Here is an introduction to the assembler and the utilities (including editors) that may be used.
 
-![size命令运行效果](/assets/images/e3de2338d8054a01b7be017cc5fe5880.png)
+### as
+The assembler `as` for Mac OS X needs to be used in "Terminal", similar to `masm` in Windows. Supports assembly for Intel and Power PC processors. It's in the `/usr/bin/as` directory. There is an introduction to how to use it in the "Mac OS X Assembler Guide".
 
-### otool：
-查看某部分大小和内容，类似 Windows 中的 debug.exe。例如查看`__TEXT,__text`部分的内容：
+### ld
+`ld` is a linker.
 
-![otool查看`__TEXT,__text`部分的内容](/assets/images/03f673d8ac154d5fa4f67be59e28b960.png)
+### clang
+clang can be a assemble and preprocess C or other languages code to assembly code, you can see details in here: [《clang 如何产生汇编代码文件》](https://blog.csdn.net/qq_33919450/article/details/124358476)。Clang maybe make you use assembly easilier.
 
-我们也可以使用`otool`来查看其他部分的内容，用以下命令格式：
+### gcc
+We don't talk about the specific differences between `gcc` and `clang`. `gcc` has flag `-nostartfiles` ignore the linked standard library files and initialization behavior. Because sometimes you don't need to connect the C standard library and just assemble it directly. I will make a demonstration at the end.
+
+### size
+`size` will output the size of sections, like:
+
+![`size` output](/assets/images/e3de2338d8054a01b7be017cc5fe5880.png)
+
+### otool
+`otool` can check size and content of some section, like `debug.exe` on Windows. For example, let's check content of `__TEXT,__text`:
+
+![otool check size and content`__TEXT,__text`](/assets/images/03f673d8ac154d5fa4f67be59e28b960.png)
+
+You also can use `otool` to check other sections, format is:
 
 ```
 $ otool -v -s __TEXT __cstring a.out
@@ -84,59 +89,61 @@ Contents of (__TEXT,__cstring) section
 0000000000000025  hello world!\n
 ```
 
-### clang 或 gcc：
-Mac OS X 上，默认的 C、C++、Objective-C 编译器。如果在“终端”里使用命令`cc`，那么会调用 clang，而不是 gcc。
+### Xcode
+Xcode is Apple development IDE, it not only have GUI application, but also have some CLI utilities. It can write C/C++, Objective-C and Swift code, you also can develop app or programs with some assembly codes.
 
-### Xcode：
-苹果自己的 IDE，有图形界面，也有一些终端命令行工具，可以编写 C、C++、Objective-C 和 Swift 语言的程序。可以利用 Xcode 来编写含有汇编代码的程序和 App。
+![write assembly code in Xcode](/assets/images/ecd23a611ef7430eb8c667d0e9676718.png)
 
-![Xcode编写汇编代码](/assets/images/ecd23a611ef7430eb8c667d0e9676718.png)
+## Syntax differences
+Many people may know some assembly, but probably Windows based. But the style and syntax in Mac OS X or C language is different. 
 
-## 语法区别
-很多人可能对汇编有所了解，但可能都是基于 Windows 的。但是在 Mac OS X 或者 C 语言（这里 C 语言编译器是 clang）内嵌汇编语言的语法中是不一样的，这里来说一下：
-### 1. 寄存器写法
-事先声明一下，如果不是用`as`汇编，而是在 C 语言中或者其他情况下使用 clang 或者 gcc 来处理，那么不用管这条内容。
-在 Windows 和 C 的汇编语法中，寄存器的名称是直接写的，例如`mov ax,2`。但是在`as`中，为了不与标识符（identifier，其实就是常说的变量）搞混，需要在寄存器前加上百分号`%`，例如`mov %ax,2`。并且所有的寄存器都得写成**小写字母**，不能像 Windows 或 C 里一样不分大小写。
+Apple `as` or GCC, clang use AT&T assembly style. Windows MASM or NASM use Intel assembly style. Let’s talk about differences.
 
-### 十六进制写法
-在 Windows 中，十六进制被写成以`H`或`h`结尾的，例如`5c0dH`。但是在 Mac OS X 中，需要写成`0x`开头的，例如`0x1234`。而在 C 语言中，二者皆可。
+### Register
+If you use clang or gcc to assemble it in C language or other situations, rather than in `as`, then you don't need to this section.
+
+In Windows and C assembly syntax, register names are written directly, such as `mov ax,2`. But in `as` AT&T style, avoiding to be confused with the identifier (actually, it often be called as variable), you need to add the percent sign `%` before the register, such as `mov %ax,2`. And all registers must be written in **lowercase letters**, not case-insensitive like in Windows or C.
+
+### Hex format
+In Windows, hexadecimal numbers are written ending in `H` or `h`, for example `5c0dH`. But in Mac OS X, it needs to be written starting with `0x`, such as `0x1234`. In C language, both are fine.
 
 
-## 来用汇编写一个 Hello World 吧！
+## Let’s write a Hello World in assembly!
 
-### 写代码
-最后会给出完整代码，现在先分步讲解。
+### Write code
+I will give the complete code at the end, but now I explain it step by step.
 
-首先新建一个名为`helloworld.s`的文件，汇编代码文件的后缀一般是`.asm`或者`.s`。这时候就可以来写第一部分的内容啦。
-先是需要指明第一部分是——**可执行命令**：
+At the beginning, create a file `helloworld.s`. The suffix of the assembly code file is usually `.asm` or `.s`. Now you can write the first part.
+
+First, you need to specify **executable command**:
 
 ```
 .section	__TEXT,__text,regular,pure_instructions
 ```
 
-然后指明创建的目标平台：
+Then specify the target platform and version:
 
 ```
 .build_version macos, 12, 0	sdk_version 12, 1
 ```
 
-然后新建一个外部符号名称`_main`用作程序的入口，就像 C 语言程序必须要有`main()`函数一样。注意这里的下划线不可以省略。
+Create a new external symbol name `_main` to be the entry of the program, just like a C language program must have a `main()` function. Note that the underscore cannot be omitted.
 
 ```
 .globl	_main                           ## -- Begin function main
 ```
 
-然后使用对齐（align）命令将位置计数器移到下一个边界`4, 0x90`（一般来说都是地址）。
+Use the align command to move the position counter to the next boundary `4, 0x90` (usually an address).
 
 ```
 .p2align	4, 0x90
 ```
 
-然后我们就可以开始写`_main`部分包含的内容啦，也就是开始写`main()`函数了：
+Finally, we can start writing the code in `_main` part. It also means writing `main()` function:
 
 ```
 _main:                                  ## @main
-	.cfi_startproc					 ##表示函数的开头。会初始化一些内部的数据结构，发出架构依赖的初始CFI 指令
+	.cfi_startproc					 ##Indicates the beginning of the function. Will initialize some internal data structures and issue architecture-dependent initial CFI instructions
 ## %bb.0:
 	pushq	%rbp
 	.cfi_def_cfa_offset 16
@@ -152,14 +159,15 @@ _main:                                  ## @main
 	addq	$16, %rsp
 	popq	%rbp
 	retq
-	.cfi_endproc				##结束函数
+	.cfi_endproc				##end function
 ```
 
-这部分包含一些 cfi 相关的指令，可以在这里看到：[https://web.mit.edu/rhel-doc/3/rhel-as-en-3/cfi-directives.html](https://web.mit.edu/rhel-doc/3/rhel-as-en-3/cfi-directives.html)
-此外，CFA是规范框架地址（Canonical Frame Address），相关资料可以看这里：[
+There are some cfi instructions. You can find more informations in: [https://web.mit.edu/rhel-doc/3/rhel-as-en-3/cfi-directives.html](https://web.mit.edu/rhel-doc/3/rhel-as-en-3/cfi-directives.html)
+
+In addition, CFA is the Canonical Frame Address. Related information can be found here: [
 https://www.keil.com/support/man/docs/armasm/armasm_dom1361290010153.htm](https://www.keil.com/support/man/docs/armasm/armasm_dom1361290010153.htm)
 
-接下来开始第二部分——**可执行命令包含的字符串**：
+Let’s start the second part **The string contained in the executable command**:
 
 ```
 .section	__TEXT,__cstring,cstring_literals
@@ -167,19 +175,17 @@ L_.str:                                 ## @.str
 	.asciz	"hello world!\n"
 ```
 
-这里就是准备输出的字符串：`hello world!\n`了。
-如果这里使用的是`.ascii`命令，那么这行应该改成`.asciz	"hello world!\n\0"`。
-因为`.asciz`自动补上了字符串末尾的`\0`，如果被用于 C 程序的话，就使用这个。
+Here is the string to be output: `hello world!\n`. If you use the `.ascii` command, rather than `.asciz`, then this line should be changed to `.ascii "hello world!\n\0"`, because `.asciz` automatically adds `\0` at the end of the string. If write in a C program, use `.asciz`.
 
-最后我们可以加上这么一行：
+At the end, you can add this line:
 
 ```
 .subsections_via_symbols
 ```
 
-这行命令会告诉静态连接编辑器，这部分对象文件（object file）能被分割成几块。不过这里用不用无所谓，不影响结果。但是出于严谨可以加上。
+This will tell the static link editor how many pieces this part of object file can be divided into. However, it doesn’t matter whether it is used here or not, it does not affect the results. You can add it for rigor.
 
-完整代码如下：
+The full source code is:
 
 ```
 	.section	__TEXT,__text,regular,pure_instructions
@@ -187,7 +193,7 @@ L_.str:                                 ## @.str
 	.globl	_main                           ## -- Begin function main
 	.p2align	4, 0x90
 _main:                                  ## @main
-    .cfi_startproc                     ## 表示函数的开头。会初始化一些内部的数据结构，发出架构依赖的初始CFI 指令
+    .cfi_startproc                     ## Indicates the beginning of the function. Will initialize some internal data structures and issue architecture-dependent initial CFI instructions
 ## %bb.0:
     pushq    %rbp
     .cfi_def_cfa_offset 16
@@ -203,7 +209,7 @@ _main:                                  ## @main
     addq    $16, %rsp
     popq    %rbp
     retq
-    .cfi_endproc                ## 结束函数
+    .cfi_endproc                ## end function
 	.section	__TEXT,__cstring,cstring_literals
 L_.str:                                 ## @.str
 	.asciz	"hello world!\n"
@@ -211,23 +217,23 @@ L_.str:                                 ## @.str
 .subsections_via_symbols
 ```
 
-### 汇编成可执行文件
-在 Windows 中，现在主流的可执行文件的格式是 PE（Portable Executable File Format），而其中的“Executable”缩写就是很多人熟知的 EXE。在 macOS 中，可执行文件被称为`Mach-O executable file`。
-如果使用`file`命令来查看一个可执行文件的话就可以看到，这里我们查看 Xcode：
+### Assemble to a executable file
+In Windows, the mainstream executable file format is PE (Portable Executable File Format), and the abbreviation of "Executable" is the EXE that many people are familiar with. In macOS, executable files are called "Mach-O executable files".
+
+If you use `file` to check a Mach-O executable file, you can see someting like below. Here let's check Xcode:
 
 ```
-# 可执行文件
 $ file /Applications/Xcode.app/Contents/MacOS/Xcode 
 Xcode: Mach-O universal binary with 2 architectures: [x86_64:Mach-O 64-bit executable x86_64] [arm64:Mach-O 64-bit executable arm64]
 Xcode (for architecture x86_64):	Mach-O 64-bit executable x86_64
 Xcode (for architecture arm64):	Mach-O 64-bit executable arm64
 ```
 
-所以最终目标是要把`hello.s`这个汇编文件，“变”成一个`Mach-O executable file`。
+So the finally you need to convert `hello.s` to a Mach-O executable file.
 
-这里有两种方法：
-#### 方法 1
-由于这个程序十分简单，也没有链接特殊的库，可以直接使用以下命令来：
+There are two methods:
+#### Method 1
+Since this program is very simple and does not link to any special libraries, you can directly use the following command:
 
 ```
 $ gcc -nostartfiles helloworld.s
@@ -236,27 +242,28 @@ $ file a.out
 a.out: Mach-O 64-bit executable x86_64
 ```
 
-这时候可以看到，`a.out`便是需要的`Mach-O executable file`。
-运行一下看看：
+Now you can see `a.out` is our `Mach-O executable file` needed。
+
+Run it: 
 
 ```
 $ ./a.out 
 hello world!
 ```
 
-非常不错。
+Very nice.
 
-#### 方法 2
-这种方法是常规做法，首先使用`as`来汇编代码，并且修改权限：
+#### Method 2
+This is common method. First use `as` to assemble the code and modify the permissions:
 
 ```
 $ as hello.s
 $ chmod 755 a.out 
 ```
 
-**这里需要注意一点，`as`生成的是 Mach-O 对象文件（Mach-O object file），而不是`Mach-O executable file`，是不能直接运行的，如果直接运行会提示`cannot execute binary file`。在 Windows 中，对象文件被称为 COFF（Common Object File Format）。**
+**You need to notice `as` will generate Mach-O object file, rather than `Mach-O executable file`. `Mach-O executable file` can not run, it will warning `cannot execute binary file`. On Windows, object file is named as COFF (Common Object File Format).**
 
-这时候需要使用连接器`ld`来处理对象文件。但是，如果简单的使用`ld `会出现以下情况：
+Then use the linker `ld` to deal with object files. But if directly and simply use the `ld`, you will see:
 
 ```
 $ ld a.out
@@ -266,31 +273,26 @@ Undefined symbols for architecture x86_64:
 ld: symbol(s) not found for architecture x86_64
 ```
 
-这是因为使用了 C 标准库的`_printf`，但是`ld`默认搜不到。所以加上库地址就可以，如下：
+Because it uses `_printf` in C standard library, but `ld` can't find it directly. So, add library path is fine:
 
 ```
 $ ld a.out -o hello -lSystem -L/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk/usr/lib
 ```
 
-**特别注意！一般`Mach-O executable file`是不加任何后缀的。**
-这时候得到的`hello`便是需要的`Mach-O executable file`。使用`file`命令来检查一下：
+**Common `Mach-O executable file` doesn't have any suffiex**. The `hello` is `Mach-O executable file` we need. You can use `file` to check it: 
 
 ```
 $ file hello
 hello: Mach-O 64-bit executable x86_64
 ```
 
-然后运行一下看看：
+Run it:
 
 ```
 $ ./hello
 hello world!
 ```
 
-运行完美～
+Very Nice~
 
-
-## 结尾
-本文还会时不时更新一下，修改一些问题，添加一些内容。
-
-总之，希望能帮到有需要的人～
+I hope these will help someone in need~
