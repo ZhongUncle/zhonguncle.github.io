@@ -1,7 +1,7 @@
 ---
 layout: article
 category: Assembly
-date: 2023-10-30
+date: 2022-08-13
 title: macOS Assembly Guide
 ---
 <!-- excerpt-start -->
