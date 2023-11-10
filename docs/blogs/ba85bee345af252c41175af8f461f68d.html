@@ -1,0 +1,409 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA." />
+<meta property="og:description" content="Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA." />
+<link rel="canonical" href="http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-19T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-19T00:00:00+08:00","datePublished":"2023-08-19T00:00:00+08:00","description":"Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA.","headline":"Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html"},"url":"http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ #Words: 2225 </p>
+            </div>
+            <!-- excerpt-start -->
+<p>Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA.</p>
+
+<p>The official document recommand to use GOWIN IDE to develop GOWIN FPGA, but you need to apply for a license and submit a lot of information. Since it was a gift, So it is not convenient. In addition, IDE is actually not very suitable for learning and putting into production, because IDE hides many details. So I want to find other workflows, just like using any text editor and Clang/LLVM to compile C/C++ programs.</p>
+
+<p><img src="/assets/images/7e5c789997f74c809ecbb4ae4de00aa5.jpeg" alt="Tang nano 9K FPGA" /></p>
+
+<h2 id="what-is-being-developed-in-fpga-development">What is being developed in FPGA development?</h2>
+<p>First of all, you need to know what is being developed in FPGA development, and you can find the tools and software needed.</p>
+
+<p>The essence of the computing machine executing various instructions is to energize the pins of series of logic units, and then output new circuit signals after passing through the logic circuit. From software perspective, the input of each pin is one bit of binary numbers (such as <code class="language-plaintext highlighter-rouge">01011101010</code>) (in positive logic used generally, <code class="language-plaintext highlighter-rouge">1</code> represents high level, <code class="language-plaintext highlighter-rouge">0 </code> means low level), the early perforated boards were the physical version of this binary number. **At all, finally you need a file that stores binary instructions, which will be executed by the FPGA. **</p>
+
+<p>There is another question: The instructions how to know which the interfaces and pins are? If they don’t know, there is no way to get the correct binary instructions, because the operation objects of instructions will be wrong.</p>
+
+<p>Interfaces and pins in instructions are essentially represented by these numbers, so you also need to a files to identify corresponding to the interfaces and pins.</p>
+
+<p>In short, developing an FPGA is about writing two files: <code class="language-plaintext highlighter-rouge">xxxx.v</code> and <code class="language-plaintext highlighter-rouge">xxxx.cst</code>.</p>
+
+<ul>
+  <li>The <code class="language-plaintext highlighter-rouge">.v</code> file stores Verilog language codes, which are used to connect various gates, registers, and some hard IP (hard intellectual property) in the circuit.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">.cst</code> file stores the pin constraint, which is used to represent role and voltage of each pin on the FPGA development board.</li>
+</ul>
+
+<p>Then through some tools, it is finally converted into a bunch of bits stored in a file, called a bit stream file, to control the connection and work of each part. Different FPGA manufacturers use different file formats. The file suffix used by Tang nano 9K here is <code class="language-plaintext highlighter-rouge">.fs</code>, and the content is as follows:</p>
+
+<p><img alt="the content of fs file" src="/assets/images/9bdbb9d18ccd4e469ec060eefaaacc5a.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h2 id="install-and-configure-tools-required">Install and configure tools required</h2>
+<h3 id="prerequisite">Prerequisite</h3>
+<p>You need Python 3.8 or newer. Because generating the bitstream requires the use of a Python script. Macs usually pre-install Python, you just need to check and update the version.</p>
+
+<h3 id="tool-chain-oss-cad-suite">Tool chain OSS CAD Suite</h3>
+<p>Next, you need OSS CAD Suite, which is a tool chain that can convert <code class="language-plaintext highlighter-rouge">xxxx.v</code> and <code class="language-plaintext highlighter-rouge">xxxx.cst</code> into the final bitstream file (like a compiler or a tool chain in cross-compilation). Finally write this file to the FPGA.</p>
+
+<blockquote>
+  <p>This kit contains many FPGA tools, those directory name or program name with <code class="language-plaintext highlighter-rouge">gowin</code> are what the Tang Nano series needs generally. So in fact, you can just install the tools for the Gowin FPGA chip. However, OSS CAD Suite can be used not only on the terminal, but also on VS Code. Therefore, using OSS CAD Suite is more convenient. If you use other FPGAs, you can reduce the installation effort.</p>
+</blockquote>
+
+<p>The download link of OSS CAD Suite is:<a href="https://github.com/YosysHQ/oss-cad-suite-build/releases/latest">https://github.com/YosysHQ/oss-cad-suite-build/releases/latest</a></p>
+
+<p>If you encounter the following error when building with the latest OSS CAD Suite, it is recommended to download any version in February or March 2023.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>gowin_pack -d GW1N-9C -o rio.fs rio_pnr.json
+Traceback (most recent call last):
+File "/opt/oss-cad-suite/libexec/gowin_pack", line 33, in 
+sys.exit(load_entry_point('Apycula==0.8.2a1', 'console_scripts', 'gowin_pack')())
+File "/opt/oss-cad-suite/lib/python3.8/site-packages/Apycula-0.8.2a1-py3.8.egg/apycula/gowin_pack.py", line 984, in main
+AttributeError: module 'importlib.resources' has no attribute 'files'
+make: *** [Makefile:16: rio.fs] Error 1
+</code></pre></div></div>
+
+<p>Then put the path to <code class="language-plaintext highlighter-rouge">bin</code> of OSS-CAD-Suite into the environment variable <code class="language-plaintext highlighter-rouge">PATH</code>. You can directly put it into your Shell configuration file (such as <code class="language-plaintext highlighter-rouge">.bashrc</code>). The statement is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export PATH="...../oss-cad-suite/bin:$PATH"
+</code></pre></div></div>
+
+<p>Then use <code class="language-plaintext highlighter-rouge">source</code> to activate the update or open a new terminal window.</p>
+
+<h3 id="only-install-the-tool-chains-required-by-gowin-fpga">Only install the tool chains required by Gowin FPGA</h3>
+<p>The Gowin FPGA chip used by Tang Nano, its bitstream and format tools are in the Apicula project, this is the address: <a href="https://github.com/YosysHQ/apicula">https://github.com/YosysHQ/apicula</a>. If you need to read the documentation, it’s also in this project too.</p>
+
+<p>The installation method is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ pip3 install apycula
+</code></pre></div></div>
+
+<p>If you want a simple installation, you can use this method. The size of the package downloaded and installed in this way will be much smaller (4.1 MB vs. 1.35 GB), but if you need to use other tools during the development process, you will have to download these tools separately.</p>
+
+<h3 id="text-editor-vs-code">Text Editor: VS Code</h3>
+<p>We will use Visual Studio Code to write code. Of course you can use any text editor to write code, such as Vim, Emacs, etc. However, applications such as Word and Pages cannot be used, because such applications are text processors, rather than editors and don’t use simple text at the bottom.</p>
+
+<p>The main reason for using Visual Studio Code here is the extension will highlight the code, set pins easily and build automatically. The two extensions are <code class="language-plaintext highlighter-rouge">Lushay Code</code> and <code class="language-plaintext highlighter-rouge">Verilog-HDL/SystemVerilog/Bluespec SystemVerilo</code>.</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Lushay Code</code> is for using OSS-CAD-Suite. If <code class="language-plaintext highlighter-rouge">Lushay Code</code> does not support your FPGA, please also find extension that supports your FPGA.</li>
+  <li><code class="language-plaintext highlighter-rouge">Verilog-HDL/SystemVerilog/Bluespec SystemVerilo</code> is for code highlighting and easy pin setting.</li>
+</ul>
+
+<p>In addition, you need to configure the extension. In “Settings - Extensions”, enter your OSS-CAD-Suite location into highlight area shown below, then VS Code can use OSS-CAD-Suite:</p>
+
+<p><img src="/assets/images/de4c7afad1d9417d9c5d71e2d91ef5df.png" alt="enter your OSS-CAD-Suite location into PATH" /></p>
+
+<h2 id="sample-make-the-onboard-leds-light-up-one-by-one">Sample: Make the onboard LEDs light up one by one</h2>
+<p>There are two files <code class="language-plaintext highlighter-rouge">top.v</code> and <code class="language-plaintext highlighter-rouge">tangnano9k.cst</code>, the contents as follows (Notice <code class="language-plaintext highlighter-rouge">top.v</code> must have a blank line at the end)</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// top.v
+module top
+(
+    input clk,
+    output [5:0] led
+);
+
+localparam WAIT_TIME = 13500000;
+reg [23:0] clockCounter = 0;
+reg [5:0] cur_state = 6'b111111;	// Each bit represent an onboard LED
+
+
+always @(posedge clk) begin
+    clockCounter &lt;= clockCounter + 1;
+    if (clockCounter == WAIT_TIME) begin
+        clockCounter &lt;= 0;
+            cur_state &lt;= cur_state &lt;&lt; 1;
+        if (cur_state == 6'b000000) begin
+            cur_state &lt;= 6'b111111;
+        end
+    end
+end
+
+assign led[5:0] = cur_state[5:0];
+
+endmodule
+
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>// tangnano9k.cst
+IO_LOC  "clk" 52;
+IO_PORT "clk" PULL_MODE=UP;
+
+IO_LOC  "led[0]" 10;
+
+IO_LOC  "led[1]" 11;
+
+IO_LOC  "led[2]" 13;
+
+IO_LOC  "led[3]" 14;
+
+IO_LOC  "led[4]" 15;
+
+IO_LOC  "led[5]" 16;
+
+</code></pre></div></div>
+
+<p>If use VS Code extension to set up <code class="language-plaintext highlighter-rouge">tangnano9k.cst</code>, it should be as follows:</p>
+
+<p><img src="/assets/images/cf486bd5061f44afb188a6b0f0a4f38e.png" alt="set up 6 LEDs" /></p>
+
+<h2 id="build">Build</h2>
+<h3 id="use-vs-code">Use VS Code</h3>
+<p>This method is very simple. If you have configured VS Code and connected your FPGA to your Mac, just click in the order shown below (First bottom, Second top). Wait a while, the <code class="language-plaintext highlighter-rouge">fs</code> file will have been built and burned to FPGA:</p>
+
+<p><img alt="" src="/assets/images/b28daf4d6b5b48b2bd23314df7ac7a7d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h3 id="build-using-terminal">Build using terminal</h3>
+<p>This part is divided into two sections. The first section introduces the use and description of each step in detail. The second section organizes it into a script, which is much more convenient.</p>
+<h4 id="step-by-step">Step by step</h4>
+<p>First enter <code class="language-plaintext highlighter-rouge">yosys</code> (press and press Enter), the page is as follows:</p>
+
+<p><img alt="" src="/assets/images/83b2f979e46b4425991ccf059d269367.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>Then enter the following command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Read and analyze the contents of 'top.v'</span>
+<span class="o">&gt;</span> <span class="nb">read</span> <span class="nt">-sv</span> top.v
+<span class="c"># Synthesize and convert the contents of 'top.v' into json format (since yosys has already analyzed the file, so the file name 'top.v' will not be used. We will use the module name 'top')</span>
+<span class="o">&gt;</span> synth_gowin <span class="nt">-top</span> top <span class="nt">-json</span> test.json
+<span class="c"># exit yosys</span>
+<span class="o">&gt;</span> <span class="nb">exit</span>
+</code></pre></div></div>
+
+<p>Of course, the above part can be simplified into one command in Shell:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ yosys -p "read_verilog top.v; synth_gowin -json test.json"
+</code></pre></div></div>
+
+<p>Now use the following commands for further work:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Generate FPGA layout and routing information by setting the device name, CST file and JSON file just generated, and put these into test_pnr.json.</span>
+<span class="nv">$ </span>nextpnr-gowin <span class="nt">--family</span> GW1N-9C <span class="nt">--device</span> GW1NR-LV9QN88PC6/I5 <span class="nt">--cst</span> tangnano9k.cst <span class="nt">--json</span> test.json <span class="nt">--write</span> test_pnr.json
+</code></pre></div></div>
+
+<p>The family name and device name need to be modified according to your FPGA (if it is not Tang nano 9K, you do not need to use the <code class="language-plaintext highlighter-rouge">--family</code> option). These names are not the short one on the official website. You can see it on your FPGA chip package. For example, the image below is the device name of Tang nano 9K <code class="language-plaintext highlighter-rouge">GW1NR-LV9QN88PC6/I5</code>:</p>
+
+<p><img src="/assets/images/34cb3dd7414640319cb05f3d34d24b60.jpeg" alt="GW1NR-LV9QN88PC6/I5 in FPGA chip" /></p>
+
+<p>You also can search it from the table below:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>name</th>
+      <th>device</th>
+      <th>board</th>
+      <th> </th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Trenz TEC0117</td>
+      <td>GW1NR-UV9QN881C6/I5</td>
+      <td>tec0117</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano:</td>
+      <td>GW1N-LV1QN48C6/I5</td>
+      <td>tangnano</td>
+      <td>tangnano</td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano 1K</td>
+      <td>GW1NZ-LV1QN48C6/I5</td>
+      <td>tangnano1k</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano 4K</td>
+      <td>GW1NSR-LV4CQN48PC7/I6</td>
+      <td>tangnano4k</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Sipeed Tang Nano 9K</td>
+      <td>GW1NR-LV9QN88PC6/I5</td>
+      <td>tangnano9k</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>Seeed RUNBER</td>
+      <td>GW1N-UV4LQ144C6/I5</td>
+      <td>runber</td>
+      <td> </td>
+    </tr>
+    <tr>
+      <td>@Disasm honeycomb</td>
+      <td>GW1NS-UX2CQN48C5/I4</td>
+      <td>honeycomb</td>
+      <td> </td>
+    </tr>
+  </tbody>
+</table>
+
+<p><strong>接下来需要注意</strong>，如果你和我一样是 Tang nano 9K，那么使用下面的语句（设备不能写上面那个长的）：
+<strong>Next</strong>, if you have a Tang nano 9K like me, then use the following command (the device cannot write the long one in table):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gowin_pack -d GW1N-9C -o top.fs test_pnr.json
+</code></pre></div></div>
+
+<p>If other Gowin FPGA：</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gowin_pack -d [device from above table] -o top.fs test_pnr.json
+</code></pre></div></div>
+
+<p>Then burn the bitstream file to FPGA:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>openFPGALoader -b [board from above table] pack.fs
+</code></pre></div></div>
+
+<p>The corresponding <code class="language-plaintext highlighter-rouge">board</code> can be seen in the table above. If you see something similar to the following, then the burning is successful:</p>
+
+<p><img src="/assets/images/0dc9b4566e974b2398b14306c947de14.png" alt="burning is successful" /></p>
+
+<p>Then you can see FPGA board look like:</p>
+
+<p><img src="/assets/images/14efe557dd3f46118210cdc2ad75ba16.gif" alt="FPGA LEDs light up one by one" /></p>
+
+<h4 id="write-a-script">Write a script</h4>
+<p>To get some productivity, we will write it into a script to achieve “one-step generation and burning”. You can modify it according to your own model.</p>
+
+<p>Create a new blank text file <code class="language-plaintext highlighter-rouge">build.sh</code> and type:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>#!/bin/bash
+
+DEVICE='GW1NR-LV9QN88PC6/I5|tangnano9k'
+BOARD='tangnano9k'
+
+yosys -p "read_verilog top.v; synth_gowin -json temp.json"
+nextpnr-gowin --family GW1N-9C --device GW1NR-LV9QN88PC6/I5 --cst tangnano9k.cst --json temp.json --write test_pnr.json
+gowin_pack -d GW1N-9C -o top.fs test_pnr.json
+openFPGALoader -b $BOARD top.fs
+</code></pre></div></div>
+
+<p>Then use the following command to grant execute permission:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ chmod +x build.sh
+</code></pre></div></div>
+
+<p>Now you can just use <code class="language-plaintext highlighter-rouge">./build.sh</code> to build and burn.</p>
+
+<h2 id="further-reading">Further reading</h2>
+<p>FPGA is a branch of digital electronics. During the learning process of FPGA, you need to understand many digital electronics terms and concepts, so you can use professional books on digital electronics as start and will also be helpful for subsequent learning. I recommand materials from the University of Cambridge:</p>
+
+<p><img src="/assets/images/27fec049f13b41d293443286594d3462.png" alt="ELECTRICAL, ELECTRONIC AND INSTRUMENTATION" /></p>
+
+<p>This information is good for people who are not majoring in digital electronics. Many knowledge are not difficult. You maybe have learned them in middle and high schools. For me, the main reason is that the Soviet-style symbols were used in middle schools, but most of the materials use American symbols or current national standard symbols.</p>
+
+<p>If you’re new to FPGAs like me, some FPGA terms may be confusing. For example, what is Verilog, what is a hard IP. For these FPGA terms and concepts, I recommend reading a book “FPGAs for Dummies” jointly published by Intel. The cover of “FPGAs for Dummies” As shown below:</p>
+
+<p><img src="/assets/images/19ede2a6d6754379a756dca80ef3bd81.jpeg" alt="cover of FPGAs for Dummies" /></p>
+
+<p>This book uses a very relaxed language to introduce the terminology, language, design ideas, development history, applications and other aspects of knowledge you need to prepare to enter the FPGA field. It also talks about the most basic question: why you should use FPGA.</p>
+
+<blockquote>
+  <p>“XXX FOR DUMMIES” is a series of books dedicated to introducing technology in humorous and simple language, similar to “Learning XXX in Ten Minutes”, but some authors are very powerful in the industry. This series is not from Intel, but the FPGA is a collaboration with Intel.</p>
+</blockquote>
+
+<p>About Tang Nano 9K, there are also very good blogs, which introduce many cases and usages. The Lushay Code plug-in mentioned above was made by them: <a href="https://learn.lushaylabs.com/getting-setup-with-the-tang-nano-9k/">https://learn.lushaylabs.com/getting-setup- with-the-tang-nano-9k/</a></p>
+
+<p>There are somoe codes and documents of YosysHQ projects, such as those mentioned above:</p>
+<ul>
+  <li>OSS CAD Suite：<a href="https://github.com/YosysHQ/oss-cad-suite-build">https://github.com/YosysHQ/oss-cad-suite-build</a></li>
+  <li>Project Apicula：<a href="https://github.com/YosysHQ/apicula">https://github.com/YosysHQ/apicula</a></li>
+  <li>nextpnr：<a href="https://github.com/YosysHQ/nextpnr">https://github.com/YosysHQ/nextpnr</a></li>
+</ul>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+    </body>
+</html>
