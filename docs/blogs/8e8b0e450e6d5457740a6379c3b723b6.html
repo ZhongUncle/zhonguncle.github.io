@@ -1,0 +1,141 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="In Linux, when we write a script, we must use an explicit path to use the script, for example: ./helloworld. If enter helloworld directly, we will be prompted Command &#39;helloworld&#39; not found, which is very inconvenient." />
+<meta property="og:description" content="In Linux, when we write a script, we must use an explicit path to use the script, for example: ./helloworld. If enter helloworld directly, we will be prompted Command &#39;helloworld&#39; not found, which is very inconvenient." />
+<link rel="canonical" href="http://localhost:4000/blogs/8e8b0e450e6d5457740a6379c3b723b6.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/8e8b0e450e6d5457740a6379c3b723b6.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-10-20T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-10-20T00:00:00+08:00","datePublished":"2023-10-20T00:00:00+08:00","description":"In Linux, when we write a script, we must use an explicit path to use the script, for example: ./helloworld. If enter helloworld directly, we will be prompted Command &#39;helloworld&#39; not found, which is very inconvenient.","headline":"How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/8e8b0e450e6d5457740a6379c3b723b6.html"},"url":"http://localhost:4000/blogs/8e8b0e450e6d5457740a6379c3b723b6.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)</h1>
+            <div class="bloginfo">
+                <p class="info">2023-10-20 ｜ <a href="/web.html"> Web</a> ｜ #Words: 403 </p>
+            </div>
+            <!-- excerpt-start -->
+<p>In Linux, when we write a script, we must use an explicit path to use the script, for example: <code class="language-plaintext highlighter-rouge">./helloworld</code>. If enter <code class="language-plaintext highlighter-rouge">helloworld</code> directly, we will be prompted <code class="language-plaintext highlighter-rouge">Command 'helloworld' not found</code>, which is very inconvenient.</p>
+
+<p>The reason is the system automatically searches all <code class="language-plaintext highlighter-rouge">bin</code> directories contained in the <code class="language-plaintext highlighter-rouge">$PATH</code> environment variable to find the commands used. We look at the <code class="language-plaintext highlighter-rouge">$PATH</code> and see:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">echo</span> <span class="nv">$PATH</span>
+/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/usr/local/games:/snap/bin
+</code></pre></div></div>
+
+<p>These directories are separated by colons. For example, use <code class="language-plaintext highlighter-rouge">nano</code> will searched and found <code class="language-plaintext highlighter-rouge">/bin/nano</code>.</p>
+
+<p>所以我们需要在我们的用户目录<code class="language-plaintext highlighter-rouge">~</code>下创建一个<code class="language-plaintext highlighter-rouge">bin</code>目录，并且将脚本移入该目录下（如果你的变量<code class="language-plaintext highlighter-rouge">$PATH</code>中有<code class="language-plaintext highlighter-rouge">/home/username/bin</code>目录，也就是<code class="language-plaintext highlighter-rouge">~/bin</code>目录，那就可以直接使用，不用接下来的操作）：
+So we need to create a <code class="language-plaintext highlighter-rouge">bin</code> directory under our user directory <code class="language-plaintext highlighter-rouge">~</code> and move the script into this directory (if there is a <code class="language-plaintext highlighter-rouge">/home/username/bin</code> or ` ~/bin<code class="language-plaintext highlighter-rouge"> directory in your variable </code>$PATH`, you can use it directly without the below operation):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir </span>bin
+<span class="nv">$ </span><span class="nb">mv </span>helloworld bin
+</code></pre></div></div>
+
+<p>Add below to <code class="language-plaintext highlighter-rouge">~/.bashrc</code> file (if there is not <code class="language-plaintext highlighter-rouge">~/.bashrc</code>, create one):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span>~/bin:<span class="s2">"</span><span class="nv">$PATH</span><span class="s2">"</span>
+</code></pre></div></div>
+
+<p>But now you will notice that using command directly still doesn’t work, beacuse <code class="language-plaintext highlighter-rouge">bin</code> created is not in <code class="language-plaintext highlighter-rouge">$PATH</code>. We can <strong>quit terminal and reopen</strong> or <strong>reboot</strong>, system will automatically add it to <code class="language-plaintext highlighter-rouge">$PATH</code>. If not convenient to reboot, you can use below command to active:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">source</span> .bashrc
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">.</span> .bashrc
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">.</code> is the same as the <code class="language-plaintext highlighter-rouge">source</code> command. It is a built-in command of the shell to read a specified shell command and treat it as keyboard input.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+    </body>
+</html>

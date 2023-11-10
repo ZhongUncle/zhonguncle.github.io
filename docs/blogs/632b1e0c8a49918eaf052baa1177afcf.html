@@ -1,0 +1,159 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to write a "script" using Java (How to run single Java file like script)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to write a “script” using Java (How to run single Java file like script)</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="How to write a “script” using Java (How to run single Java file like script)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine." />
+<meta property="og:description" content="Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine." />
+<link rel="canonical" href="http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-01-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to write a “script” using Java (How to run single Java file like script)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-01-10T00:00:00+08:00","datePublished":"2023-01-10T00:00:00+08:00","description":"Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.","headline":"How to write a “script” using Java (How to run single Java file like script)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html"},"url":"http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to write a "script" using Java (How to run single Java file like script)</h1>
+            <div class="bloginfo">
+                <p class="info">2023-01-10 ｜ <a href="/web.html"> Web</a> ｜ #Words: 403 </p>
+            </div>
+            <!-- excerpt-start -->
+<p>Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.</p>
+
+<p>Due to I cannot find detailed explanations, so I write this blog to explain how to write Java “scripts”.</p>
+
+<p>First, not use the <code class="language-plaintext highlighter-rouge">.java</code> suffix of Java code files , they should be directly the file name, such as <code class="language-plaintext highlighter-rouge">HelloJava</code>. Here, use vim to create a new file called <code class="language-plaintext highlighter-rouge">HelloJava</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ vi HelloJava
+</code></pre></div></div>
+
+<p>Then like other language, add a description and version in the first line:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>//Linux
+<span class="c">#!/path/to/your/bin/java --source 19</span>
+
+//macOS
+<span class="c">#!/usr/bin/java --source 19</span>
+</code></pre></div></div>
+
+<p>If you don’t know the version of Java, you can use <code class="language-plaintext highlighter-rouge">java -version</code> to check.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ java -version
+java version "19.0.1" 2022-10-18
+Java(TM) SE Runtime Environment (build 19.0.1+10-21)
+Java HotSpot(TM) 64-Bit Server VM (build 19.0.1+10-21, mixed mode, sharing)
+</code></pre></div></div>
+
+<p>The content of the ‘script’ is as follows:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">#!/usr/bin/java --source 19</span>
+ 
+public class HelloJava <span class="o">{</span>
+ 
+    public static void main<span class="o">(</span>String[] args<span class="o">)</span> <span class="o">{</span>
+        System.out.println<span class="o">(</span><span class="s2">"Hello, world!"</span><span class="o">)</span><span class="p">;</span>
+    <span class="o">}</span>
+<span class="o">}</span>
+</code></pre></div></div>
+
+<p>After using <code class="language-plaintext highlighter-rouge">:wq</code> to save and quit vi, need modify the mode of file. If you don’t modify <code class="language-plaintext highlighter-rouge">umusk</code>, you need change this to get the permission to excute the file. It’s easy, like：</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">chmod</span> +x HelloJava
+</code></pre></div></div>
+<p>After that, you can run it like a script:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./HelloJava
+Hello, world!
+</code></pre></div></div>
+
+<p>If you don’t want to use relative addresses and the storage location is fixed, simply add the directory to the <code class="language-plaintext highlighter-rouge">PATH</code> environment variable. You can find more details in <a href="https://zhonguncle.github.io/blogs/8e8b0e450e6d5457740a6379c3b723b6.html">How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)</a>.</p>
+
+<p>I guess Java doesn’t use suffixes here for distinguishes between source files and “script files”. In Unix-like systems, only users/developers need to know the type of file, and the suffix has no practical significance. The distinction between files is usually based on the content or block at the beginning of the file.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+    </body>
+</html>

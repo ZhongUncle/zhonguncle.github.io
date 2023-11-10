@@ -1,0 +1,135 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Recently, I need to read some old documents. In the old documents, the memory address is in octal instead of hexadecimal, so I need to write a small tool to convert. Although the Mac built-in calculator can do it, but it is troublesome when there are too many." />
+<meta property="og:description" content="Recently, I need to read some old documents. In the old documents, the memory address is in octal instead of hexadecimal, so I need to write a small tool to convert. Although the Mac built-in calculator can do it, but it is troublesome when there are too many." />
+<link rel="canonical" href="http://localhost:4000/blogs/321881da709ca20a23d891726c5a05b6.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/321881da709ca20a23d891726c5a05b6.html" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-06-12T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-06-12T00:00:00+08:00","datePublished":"2023-06-12T00:00:00+08:00","description":"Recently, I need to read some old documents. In the old documents, the memory address is in octal instead of hexadecimal, so I need to write a small tool to convert. Although the Mac built-in calculator can do it, but it is troublesome when there are too many.","headline":"How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/321881da709ca20a23d891726c5a05b6.html"},"url":"http://localhost:4000/blogs/321881da709ca20a23d891726c5a05b6.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)</h1>
+            <div class="bloginfo">
+                <p class="info">2023-06-12 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 326 </p>
+            </div>
+            <!-- excerpt-start -->
+<p>Recently, I need to read some old documents. In the old documents, the memory address is in octal instead of hexadecimal, so I need to write a small tool to convert. Although the Mac built-in calculator can do it, but it is troublesome when there are too many.</p>
+
+<p><img alt="Use the built-in calculator for hexadecimal calculations" src="/assets/images/98f5449d939c456ba0bab464dfc6d239.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>At first, I want to write 12 conversion functions. Although some functions can be re-used, it is still quite laborious. So I looked for a simple method. Finally I found the <code class="language-plaintext highlighter-rouge">String</code> type has a particularly magical method, like:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">String</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="nv">radix</span><span class="p">:</span> <span class="mi">16</span><span class="p">,</span> <span class="nv">uppercase</span><span class="p">:</span> <span class="kc">true</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The meaning of each parameter is as follows:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">a</code> here is the source value, you can also write a number directly here.</li>
+  <li><code class="language-plaintext highlighter-rouge">radix:</code> is followed by the size of the target base, which supports 2~36, meaning from 2 to 36 base.</li>
+  <li>The <code class="language-plaintext highlighter-rouge">uppercase:</code> is not required. It is used to capitalize the letters in some binary output.</li>
+</ol>
+
+<p>For example, the following code converts decimal to 32 base and capitalizes the letters in the output:</p>
+
+<p><img alt="Code to convert decimal to 32 base" src="/assets/images/810735a203bf4888a056ba523cb83416.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>If you want to change the base of your input numbers, Swift supports 4 natively supported bases:</p>
+<ol>
+  <li>Add <code class="language-plaintext highlighter-rouge">0b</code> in front of the number to indicate binary, such as <code class="language-plaintext highlighter-rouge">0b1011</code>;</li>
+  <li>Add <code class="language-plaintext highlighter-rouge">0o</code> in front of the number to indicate octal, such as <code class="language-plaintext highlighter-rouge">0o240</code>;</li>
+  <li>Add <code class="language-plaintext highlighter-rouge">0x</code> in front of the number to indicate hexadecimal, such as <code class="language-plaintext highlighter-rouge">0x12F</code> (the <code class="language-plaintext highlighter-rouge">F</code> here can be uppercase or lowercase);</li>
+  <li>Nothing before the number to indicate decimal, such as <code class="language-plaintext highlighter-rouge">123</code>.</li>
+</ol>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+    </body>
+</html>

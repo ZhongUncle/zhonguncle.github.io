@@ -79,13 +79,13 @@ h2:after
     border-bottom: 1px solid hsla(0, 0%, 50%, .33)
 }
 
-h3
+/* h3
 {
     font-size: 1.1em;
     margin: 1.7em 0;
     margin-bottom: 0;
     line-height: 1
-}
+} */
 
 /* 调整连接的颜色和样式，这样好看一点 */
 a {

@@ -65,7 +65,7 @@ The assembler `as` for Mac OS X needs to be used in "Terminal", similar to `masm
 `ld` is a linker.
 
 ### clang
-clang can be a assemble and preprocess C or other languages code to assembly code, you can see details in here: [《clang 如何产生汇编代码文件》](https://blog.csdn.net/qq_33919450/article/details/124358476)。Clang maybe make you use assembly easilier.
+clang can be a assemble and preprocess C or other languages code to assembly code, you can see details in [How to generate assembly code using Clang ](https://zhonguncle.github.io/blogs/6548d5f3f9473c9af2e20308a7a69b33.html). Clang maybe make you use assembly easilier.
 
 ### gcc
 We don't talk about the specific differences between `gcc` and `clang`. `gcc` has flag `-nostartfiles` ignore the linked standard library files and initialization behavior. Because sometimes you don't need to connect the C standard library and just assemble it directly. I will make a demonstration at the end.
