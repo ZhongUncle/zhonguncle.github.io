@@ -9,20 +9,21 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>How to write a “script” using Java (How to run single Java file like script)</title>
+<title>How to write a “script” using Java (How to run single Java file like script) | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="How to write a “script” using Java (How to run single Java file like script)" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine." />
-<meta property="og:description" content="Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine." />
-<link rel="canonical" href="http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html" />
+<meta name="description" content="This blog explains how to write a Java “script” that can be run on Unix-like systems without using the .java suffix. ZhongUncle provides the steps and code examples for creating a file named HelloJava that prints “Hello, world!” to the console. ZhongUncle also explains the rationale behind not using suffixes and the limitations of this method. ZhongUncle hopes to help someone in need with this information." />
+<meta property="og:description" content="This blog explains how to write a Java “script” that can be run on Unix-like systems without using the .java suffix. ZhongUncle provides the steps and code examples for creating a file named HelloJava that prints “Hello, world!” to the console. ZhongUncle also explains the rationale behind not using suffixes and the limitations of this method. ZhongUncle hopes to help someone in need with this information." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/632b1e0c8a49918eaf052baa1177afcf.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/632b1e0c8a49918eaf052baa1177afcf.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-01-10T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="How to write a “script” using Java (How to run single Java file like script)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-01-10T00:00:00+08:00","datePublished":"2023-01-10T00:00:00+08:00","description":"Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.","headline":"How to write a “script” using Java (How to run single Java file like script)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html"},"url":"http://localhost:4000/blogs/632b1e0c8a49918eaf052baa1177afcf.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-01-10T00:00:00+08:00","datePublished":"2023-01-10T00:00:00+08:00","description":"This blog explains how to write a Java “script” that can be run on Unix-like systems without using the .java suffix. ZhongUncle provides the steps and code examples for creating a file named HelloJava that prints “Hello, world!” to the console. ZhongUncle also explains the rationale behind not using suffixes and the limitations of this method. ZhongUncle hopes to help someone in need with this information.","headline":"How to write a “script” using Java (How to run single Java file like script)","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/632b1e0c8a49918eaf052baa1177afcf.html"},"url":"https://zhonguncle.github.io/blogs/632b1e0c8a49918eaf052baa1177afcf.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -43,6 +44,15 @@
         gtag('js', new Date());
 
         gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
         </script>
     </head>
     <body>
@@ -97,10 +107,9 @@
 </div>
             <h1>How to write a "script" using Java (How to run single Java file like script)</h1>
             <div class="bloginfo">
-                <p class="info">2023-01-10 ｜ <a href="/web.html"> Web</a> ｜ #Words: 403 </p>
+                <p class="info">2023-01-10 ｜ <a href="/web.html"> Web</a> ｜ #Words: 400 </p>
             </div>
-            <!-- excerpt-start -->
-<p>Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.</p>
+            <p>Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.</p>
 
 <p>Due to I cannot find detailed explanations, so I write this blog to explain how to write Java “scripts”.</p>
 

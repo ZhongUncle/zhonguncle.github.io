@@ -13,17 +13,18 @@
         
         
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>ZhongUncle 的博客</title>
+<title>ZhongUncle 的博客 | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="ZhongUncle 的博客" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/" />
-<meta property="og:url" content="http://localhost:4000/" />
+<link rel="canonical" href="https://zhonguncle.github.io/" />
+<meta property="og:url" content="https://zhonguncle.github.io/" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="ZhongUncle 的博客" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","headline":"ZhongUncle 的博客","name":"ZhongUncle","sameAs":["https://blog.csdn.net/qq_33919450","https://github.com/zhonguncle"],"url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebSite","headline":"ZhongUncle 的博客","name":"ZhongUncle","sameAs":["https://blog.csdn.net/qq_33919450","https://github.com/zhonguncle"],"url":"https://zhonguncle.github.io/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -44,6 +45,15 @@
         gtag('js', new Date());
 
         gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
         </script>
     </head>
     <body>
@@ -108,1112 +118,769 @@
     
     <li>
         <h2><a class="blog" href="/blogs/af373b825028ac40501f74fb5007bc2b.html">Test Record of Raspberry Pi 4B (CPU, FFMPEG)</a></h2>
-        <p class="info">2023-11-05 ｜ <a href="/research.html"> Research</a> ｜ 1586 字</p>
+        <p class="info">2023-11-05 ｜ <a href="/research.html"> Research</a> ｜ 1583 字</p>
         
-        
-        <p>
-This blog is used to record some reviews of Raspberry Pi 4B.
-</p>
-
-        
-        
+        <p>This blog shares some reviews and tests of the device. ZhongUncle compares the Raspberry Pi 4B with the Raspberry Pi 5 and the Mac mini 2018 i5 in terms of temperature, IO speed, CPU performance, and FFMPEG transcoding. ZhongUncle also explains why they still bought the Raspberry Pi 4B despite the release of the Raspberry Pi 5. ZhongUncle concludes that the Raspberry Pi 4B is a useful and affordable device for debugging and running some programs, but it has some limitations in cache size and parallel computing. ZhongUncle hopes that their blog post will help someone in need.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/8e8b0e450e6d5457740a6379c3b723b6.html">How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)</a></h2>
         <p class="info">2023-10-20 ｜ <a href="/web.html"> Web</a> ｜ 403 字</p>
         
-        
-        <p>
-In Linux, when we write a script, we must use an explicit path to use the script, for example: ./helloworld. If enter helloworld directly, we will be prompted Command 'helloworld' not found, which is very inconvenient.
+        <p><!-- excerpt-start -->
+<p>In Linux, when we write a script, we must use an explicit path to use the script, for example: <code class="language-plaintext highlighter-rouge">./helloworld</code>. If enter <code class="language-plaintext highlighter-rouge">helloworld</code> directly, we will be prompted <code class="language-plaintext highlighter-rouge">Command 'helloworld' not found</code>, which is very inconvenient.</p>
 </p>
-
-        
-        
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/1067904058e8c8e9d2e2fadf88655e72.html">Why GIF is static image rather than video?</a></h2>
-        <p class="info">2023-09-20 ｜ <a href="/research.html"> Research</a> ｜ 5699 字</p>
+        <h2><a class="blog" href="/blogs/%E6%B2%A1%E7%BF%BB%E8%AF%91%E5%AE%8C1067904058e8c8e9d2e2fadf88655e72.html">Why GIF is static image rather than video?</a></h2>
+        <p class="info">2023-09-20 ｜ <a href="/research.html"> Research</a> ｜ 5696 字</p>
         
-        
-        <p>
-When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?
-</p>
-
-        
-        
+        <p>This is about GIF file format and its history. It explains how GIF files are composed of different parts, such as signature, screen descriptor, color map, image descriptor, and raster data. It also shows how GIF files use LZW compression and animation features.The page also explores the origins and purposes of GIF files, which were developed by CompuServe in 1987 to provide a simple and universal graphic format for users who needed to access email and transfer files. GIF files were designed to be small, compatible, and interactive across different computer systems.The page also discusses the limitations and alternatives of GIF files, such as the 256-color restriction, the patent issue, and the PNG and MNG formats. It argues that GIF files have survived and thrived because of their ease of use, looping ability, and no need for decoding. It also wonders who came up with the idea of using GIF files for animation.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/44ab75aacedbd835e3affb2fefe390a9.html">使用树莓派Pico、DHT11和SSD1306搭建一个温度湿度计（只使用官方库，以及官方案例代码的错误之处和解决方案）</a></h2>
         <p class="info">2023-08-28 ｜ <a href="/mcu.html"> MCU</a> ｜ 10552 字</p>
         
-        
-        <p>
-最近想树莓派 Pico、DHT11 温湿度传感器和 SSD1306 OLED 屏幕做一个温度湿度计，树莓派官方案例也分别有这两个设备的案例，我就想做个简单的温度湿度计作为学习微控制器的开始，结果遇到了一个大坑，所以写本文记录一下整个过程。
+        <p><!-- excerpt-start -->
+<p>最近想树莓派 Pico、DHT11 温湿度传感器和 SSD1306 OLED 屏幕做一个温度湿度计，树莓派官方案例也分别有这两个设备的案例，我就想做个简单的温度湿度计作为学习微控制器的开始，结果遇到了一个大坑，所以写本文记录一下整个过程。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5f1a7fd5d52116befdae2e8e54b10888.html">Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</a></h2>
         <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ 2008 字</p>
         
-        
-        <p>
-本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。
-前提知识
-首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。
+        <p><!-- excerpt-start -->
+<p>本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。</p>
+<h2 id="前提知识">前提知识</h2>
+<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/911891686f4a77e37082c2b4210451c9.html">用C/C++修改I2C默认的SDA和SCL针脚</a></h2>
         <p class="info">2023-08-26 ｜ <a href="/mcu.html"> MCU</a> ｜ 432 字</p>
         
-        
-        <p>
-首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。
+        <p><!-- excerpt-start -->
+<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/ba85bee345af252c41175af8f461f68d.html">Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</a></h2>
-        <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ 2225 字</p>
+        <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ 2172 字</p>
         
-        
-        <p>
-Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA.
-</p>
-
-        
-        
+        <p>This blog explains that FPGA development involves writing two files: a .v file that contains Verilog code to describe the logic circuit, and a .cst file that specifies the pin constraints. These files are then converted into a bitstream file that can be loaded into the FPGA. The blog provides the links and instructions for installing Python, OSS CAD Suite (a tool chain that can generate the bitstream file), and VS Code (a text editor with extensions for FPGA development). The web page shows an example of a program that makes the onboard LEDs light up one by one, and explains how to write the .v and .cst files, how to build and burn the bitstream file using VS Code or terminal, and how to verify the result. And recommends some resources for further reading, such as books, blogs, and projects related to FPGA and Tang Nano 9K.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d01620c9d7201b52dcea05de04d13c14.html">如何重置树莓派 Pico（重置外围设备失败的解决方案）</a></h2>
         <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 620 字</p>
         
-        
-        <p>
-有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。
+        <p><!-- excerpt-start -->
+<p>有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/ed2b91193eab92ce65c73ced7ac607d5.html">APFS 文件系统探究</a></h2>
         <p class="info">2023-08-14 ｜ <a href="/research.html"> Research</a> ｜ 3225 字</p>
         
-        
-        <p>
-本文的创作初衷是因为我发现从底层详解 APFS 的资料很少，所以自己来进行了一些探究和整理。
+        <p><!-- excerpt-start -->
+<p>本文的创作初衷是因为我发现从底层详解 APFS 的资料很少，所以自己来进行了一些探究和整理。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/ab1c75fe3b903e1d9be0171a966a8176.html">如何使用 Go 获取 URL 的参数，以及使用时的问题</a></h2>
         <p class="info">2023-08-13 ｜ <a href="/go.html"> Go</a> ｜ 937 字</p>
         
-        
-        <p>
-Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。
+        <p><!-- excerpt-start -->
+<p>Go 获取 URL 参数也很容易，但是由于 Go 有严格的数据类型和错误管理，所以在使用时会些微有些复杂。所以本文不仅会讲如何获取 URL 的参数，也会讲在使用时的一些问题。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d879e4278e187d628848d9485115567b.html">搭建树莓派Pico交叉编译环境和工具链（arm-none-eabi-gcc）时可能会遇到的错误以及解决方案</a></h2>
         <p class="info">2023-08-10 ｜ <a href="/mcu.html"> MCU</a> ｜ 1056 字</p>
         
-        
-        <p>
-本文是一个类似手册的文章，用来记录可能遇到的错误。你可以通过侧栏选择遇到的错误来查看详细信息。
-No install step for ‘ELF2UF2Build’
-遇到这种错误有两种原因：
-
-  安装了版本不对或者不完整的arm-none-eabi-gcc；
-  没有使用正确的 C/C++ 的编译器，导致编译出来的elf2uf2不对；
-
+        <p><!-- excerpt-start -->
+<p>本文是一个类似手册的文章，用来记录可能遇到的错误。你可以通过侧栏选择遇到的错误来查看详细信息。</p>
+<h1 id="no-install-step-for-elf2uf2build">No install step for ‘ELF2UF2Build’</h1>
+<p>遇到这种错误有两种原因：</p>
+<ol>
+  <li>安装了版本不对或者不完整的<code class="language-plaintext highlighter-rouge">arm-none-eabi-gcc</code>；</li>
+  <li>没有使用正确的 C/C++ 的编译器，导致编译出来的<code class="language-plaintext highlighter-rouge">elf2uf2</code>不对；</li>
+</ol>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5e449fdb610b2a4d7ee8ee742fbfe736.html">如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</a></h2>
         <p class="info">2023-08-09 ｜ <a href="/mcu.html"> MCU</a> ｜ 4419 字</p>
         
-        
-        <p>
-写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。
+        <p><!-- excerpt-start -->
+<p>写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/cb8b4100532d7ecb35170372fdbb74eb.html">硬盘为什么在 USB 外接时会造成大量性能损失</a></h2>
         <p class="info">2023-07-19 ｜ <a href="/research.html"> Research</a> ｜ 3316 字</p>
         
-        
-        <p>
-在硬盘性能里，IOPS 是很重要的一个参数，在速度方面这是最需要关注的，而不是很多人所测量的顺序读写性能或者随机读写性能。
+        <p><!-- excerpt-start -->
+<p>在硬盘性能里，IOPS 是很重要的一个参数，在速度方面这是最需要关注的，而不是很多人所测量的顺序读写性能或者随机读写性能。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/fce3f467b9ba2de7001b8b99903dfcf0.html">如何安装本地Go Tour教程（或者叫A Tour of Go离线版），以及中文版安装不了该怎么办</a></h2>
         <p class="info">2023-07-12 ｜ <a href="/go.html"> Go</a> ｜ 1559 字</p>
         
-        
-        <p>
-Go 官方是有一个在线教程 A Tour of Go，可以在线学习 Go 的编程，并且有中文版。英文原版页面如下：
+        <p><!-- excerpt-start -->
+<p>Go 官方是有一个在线教程 <a href="https://go.dev/tour/welcome/1">A Tour of Go</a>，可以在线学习 Go 的编程，并且有中文版。英文原版页面如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/ca040c3c2f311de4fcc78304923e9054.html">Mac如何在终端使用diskutil命令装载和卸载推出外接硬盘</a></h2>
         <p class="info">2023-07-05 ｜ <a href="/unix.html"> UNIX</a> ｜ 1876 字</p>
         
-        
-        <p>
-最近用 macOS 装载外接硬盘的时候，使用mount死活装不上，很多文章也没详细的讲各种情况，所以就写一篇博客来记录一下。
+        <p><!-- excerpt-start -->
+<p>最近用 macOS 装载外接硬盘的时候，使用<code class="language-plaintext highlighter-rouge">mount</code>死活装不上，很多文章也没详细的讲各种情况，所以就写一篇博客来记录一下。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5818e6378b56f7e45cb9f37b6c780659.html">如何在Mac终端上，从底层按照字节用十六进制查看某个硬盘的内容（使用dd和hexdump实现winhex的功能，所以其他系统也可以使用这个方法）</a></h2>
         <p class="info">2023-07-05 ｜ <a href="/unix.html"> UNIX</a> ｜ 718 字</p>
         
-        
-        <p>
-首先需要强调：这种方法不能保证所有的硬盘都可以查看，有些硬盘由于一些原因会显示“Resource busy”，比如说时间机器的硬盘，内置硬盘等。
+        <p><!-- excerpt-start -->
+<p>首先需要强调：这种方法不能保证所有的硬盘都可以查看，有些硬盘由于一些原因会显示“Resource busy”，比如说时间机器的硬盘，内置硬盘等。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c5f6f87448db6955405baf3f6df2842c.html">如何使用ffmpeg将BDMV（m2ts）转换成MKV、MP4等其他格式的文件</a></h2>
         <p class="info">2023-06-23 ｜ <a href="/research.html"> Research</a> ｜ 1941 字</p>
         
-        
-        <p>
-BDMV 是蓝光碟使用的格式。这种格式没有办法使用播放软件播放，必须要用硬盘播放器，也就是专门的设备。但是最经典的 ffmpeg 可以将其转换成其他格式，并且保持相同的码率和清晰度，这样就可以很方便的查看了。
+        <p><!-- excerpt-start -->
+<p>BDMV 是蓝光碟使用的格式。这种格式没有办法使用播放软件播放，必须要用硬盘播放器，也就是专门的设备。但是最经典的 ffmpeg 可以将其转换成其他格式，并且保持相同的码率和清晰度，这样就可以很方便的查看了。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/321881da709ca20a23d891726c5a05b6.html">How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)</a></h2>
-        <p class="info">2023-06-12 ｜ <a href="/swift.html"> Swift</a> ｜ 326 字</p>
+        <p class="info">2023-06-12 ｜ <a href="/swift.html"> Swift</a> ｜ 323 字</p>
         
-        
-        <p>
-Recently, I need to read some old documents. In the old documents, the memory address is in octal instead of hexadecimal, so I need to write a small tool to convert. Although the Mac built-in calculator can do it, but it is troublesome when there are too many.
-</p>
-
-        
-        
+        <p>The is about how to convert a number from one base to another natively in Swift, a programming language. For example, decimal to hexadecimal, octal to binary, etc.The page introduces a method of the String type that can do the conversion easily. The method is String(a, radix b, uppercase c), where a is the source value, b is the target base, and c is a boolean value to indicate whether to capitalize the letters in the output.The page also explains how to write numbers in different bases natively in Swift. The prefixes are 0b for binary, 0o for octal, 0x for hexadecimal, and nothing for decimal.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/12b8d858c4ddf8042954ab5e12a2ec9f.html">clang到底是什么？gcc和clang到底有什么区别？</a></h2>
         <p class="info">2023-06-10 ｜ <a href="/research.html"> Research</a> ｜ 4487 字</p>
         
-        
-        <p>
-最近发现自己对 GNU GCC 和 Clang 的区别不太清楚，影响到一些实现和学习，所以趁这两天有空好好研究了一下。
+        <p><!-- excerpt-start -->
+<p>最近发现自己对 GNU GCC 和 Clang 的区别不太清楚，影响到一些实现和学习，所以趁这两天有空好好研究了一下。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/1280c5e381bc0e8f62fbc07f96d1ac0d.html">可执行程序和脚本的区别（什么是解释器）</a></h2>
         <p class="info">2023-06-10 ｜ <a href="/research.html"> Research</a> ｜ 1735 字</p>
         
-        
-        <p>
-本文是我从另外一篇博客里拆分出来的，不然那篇博客结构不太好。
+        <p><!-- excerpt-start -->
+<p>本文是我从另外一篇博客里拆分出来的，不然那篇博客结构不太好。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c33dfc173afb0732e22b0306f19b2d27.html">使用gcc展示完整的编译过程（gcc预处理模式、编译模式、汇编模式、连接模式）</a></h2>
         <p class="info">2023-06-08 ｜ <a href="/c.html"> C</a> ｜ 4652 字</p>
         
-        
-        <p>
-最近在了解 clang/llvm 的时候突然发现一件事：gcc是一个工具集合，包含了或者调用将程序源代码转换成可执行程序文件的所有工具，而不只是简单的编译器。这帮助我对“编译器”有了更深刻的理解，所以写下本文作为记录。
+        <p><!-- excerpt-start -->
+<p>最近在了解 clang/llvm 的时候突然发现一件事：<code class="language-plaintext highlighter-rouge">gcc</code>是一个工具集合，包含了或者调用将程序源代码转换成可执行程序文件的所有工具，而不只是简单的编译器。这帮助我对“编译器”有了更深刻的理解，所以写下本文作为记录。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/81fee8170956705465460d3f9c9dc846.html">如何使用wget下载(录制)流媒体或直播推流文件，以及下载出现“正在把输出重定向至 “wget-log.1””错误该怎么办</a></h2>
         <p class="info">2023-06-06 ｜ <a href="/research.html"> Research</a> ｜ 1839 字</p>
         
-        
-        <p>
-下载推流文件其实非常简单，就是通常使用的最简单的命令：
+        <p><!-- excerpt-start -->
+<p>下载推流文件其实非常简单，就是通常使用的最简单的命令：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c496cd614aeb2cb19c3ced9bbb0c0bf4.html">系统学习计算机技术三要素：手快、眼快、脑子快</a></h2>
         <p class="info">2023-06-02 ｜ <a href="/non-tech.html"> Non-Tech</a> ｜ 4412 字</p>
         
-        
-        <p>
-最近刚好想总结归纳一下自己这些年的学习路径和方法，没想到 CSDN 就搞了这样这样话题，既然这样就不能写一半放草稿箱里，一鼓作气写好，希望能帮到一些人。
+        <p><!-- excerpt-start -->
+<p>最近刚好想总结归纳一下自己这些年的学习路径和方法，没想到 CSDN 就搞了这样这样话题，既然这样就不能写一半放草稿箱里，一鼓作气写好，希望能帮到一些人。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c747acae8467ef7fb58d773cff1969bd.html">如何在 macOS 上录制抖音的直播（如何获取抖音的推流源）</a></h2>
         <p class="info">2023-05-31 ｜ <a href="/research.html"> Research</a> ｜ 974 字</p>
         
-        
-        <p>
-最近在抖音上看到一些直播真的很好玩，就想录制下来。所以就研究了一下如何录制这些直播，方法有两种：录屏和从推流源下载。
+        <p><!-- excerpt-start -->
+<p>最近在抖音上看到一些直播真的很好玩，就想录制下来。所以就研究了一下如何录制这些直播，方法有两种：录屏和从推流源下载。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/3a26a4104f77e68fd8bf0966492e349c.html">【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）</a></h2>
         <p class="info">2023-05-19 ｜ <a href="/assembly.html"> Assembly</a> ｜ 765 字</p>
         
-        
-        <p>
-as汇编器是苹果的汇编器，Xcode 生成的汇编代码也是as风格的，而as风格与大部分人在大学里所学的微软的masm风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。
+        <p><!-- excerpt-start -->
+<p><code class="language-plaintext highlighter-rouge">as</code>汇编器是苹果的汇编器，Xcode 生成的汇编代码也是<code class="language-plaintext highlighter-rouge">as</code>风格的，而<code class="language-plaintext highlighter-rouge">as</code>风格与大部分人在大学里所学的微软的<code class="language-plaintext highlighter-rouge">masm</code>风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/3b862852d2a3dc67a9c754b13c1878dd.html">Verify the central limit theorem using C++ (by generating a PPM format image to verify that the discrete event with non-uniform probability conforms a normal distribution curve when the sample size is large enough)</a></h2>
-        <p class="info">2023-05-16 ｜ <a href="/c.html"> C</a> ｜ 2548 字</p>
+        <p class="info">2023-05-16 ｜ <a href="/c.html"> C</a> ｜ 2545 字</p>
         
-        
-        <p>
-The reason why I want to write this blog is I watched But what is the Central Limit Theorem? - YouTube published the famous mathematical popularization account 3Blue1Brown. This video mention: regardless of whether the probabilities of various situations of this discrete event are average or not, when the number is certain to be large, it will still follow a normal distribution curve. I just want to try to see whether is the case. I think the central limit theorem (CLT) and normal distribution are a very magical part of probability theory.
-</p>
-
-        
-        
+        <p>This blog explains how to use C++ to verify the central limit theorem (CLT), which states that the sum of independent random variables tends to follow a normal distribution when the sample size is large enough. ZhongUncle uses dice points as an example of discrete events, and generates PPM format images to visualize the probability distribution of the sum of points. ZhongUncle shows that the distribution curve becomes more similar to a normal curve as the number of samples increases, and that this holds true even when the probability of each dice point is not uniform. ZhongUncle provides the source code and the output images for different scenarios, and invites the readers to try it themselves. ZhongUncle also expresses the fascination with the central limit theorem and the normal distribution.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d9b86ddcdf898f31054add26e6c6394e.html">Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？</a></h2>
         <p class="info">2023-05-12 ｜ <a href="/c.html"> C</a> ｜ 1383 字</p>
         
-        
-        <p>
-在 C 语言中，有一种叫做union的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体struct很相似：结构体是一个或多个变量的集合。
+        <p><!-- excerpt-start -->
+<p>在 C 语言中，有一种叫做<code class="language-plaintext highlighter-rouge">union</code>的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体<code class="language-plaintext highlighter-rouge">struct</code>很相似：结构体是一个或多个变量的集合。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/f922ed510fab031d5285aa224a706c14.html">使用 nvcc 的时候出现“helper_cuda.h”: No such file or directory错误该怎么办（其他xxx.h也是同样的解决方法）</a></h2>
         <p class="info">2023-05-03 ｜ <a href="/c.html"> C</a> ｜ 743 字</p>
         
-        
-        <p>
-今天在命令行中使用nvcc的时候，出现了“helper_cuda.h”: No such file or directory错误。这个错误信息表示：在编译的时候，找不到helper_cuda.h头文件（其他xxx.h如果也找不到，那么下面的解释和解决方法也通用）。
+        <p><!-- excerpt-start -->
+<p>今天在命令行中使用<code class="language-plaintext highlighter-rouge">nvcc</code>的时候，出现了<code class="language-plaintext highlighter-rouge">“helper_cuda.h”: No such file or directory</code>错误。这个错误信息表示：在编译的时候，找不到<code class="language-plaintext highlighter-rouge">helper_cuda.h</code>头文件（其他<code class="language-plaintext highlighter-rouge">xxx.h</code>如果也找不到，那么下面的解释和解决方法也通用）。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/31f6650cf8d691671ac6c28282f69f0d.html">C语言中的Typedef是什么？如何使用？有何便利之处？</a></h2>
         <p class="info">2023-04-26 ｜ <a href="/c.html"> C</a> ｜ 1856 字</p>
         
-        
-        <p>
-Typedef 是什么？
-typedef是 C 语言中的一个特色功能，被用于创建新的类型名称，从名称“type def(ine)”也可以看出其功能。typedef类似于 Unix 中的alias程序的功能，为一个对象添加另外一个名称，typedef使得多个名称其实对应的是同一个程序，但是typedef操作的对象是数据类型，也就是给数据类型“起外号”，这个外号一般首字母大写，用于表示不是基础数据类型。
+        <p><!-- excerpt-start -->
+<h2 id="typedef-是什么">Typedef 是什么？</h2>
+<p><code class="language-plaintext highlighter-rouge">typedef</code>是 C 语言中的一个特色功能，被用于创建新的类型名称，从名称“type def(ine)”也可以看出其功能。<code class="language-plaintext highlighter-rouge">typedef</code>类似于 Unix 中的<code class="language-plaintext highlighter-rouge">alias</code>程序的功能，为一个对象添加另外一个名称，<code class="language-plaintext highlighter-rouge">typedef</code>使得多个名称其实对应的是同一个程序，但是<code class="language-plaintext highlighter-rouge">typedef</code>操作的对象是数据类型，也就是给数据类型“起外号”，<strong>这个外号一般首字母大写，用于表示不是基础数据类型</strong>。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/e6b7bff32bcfb2aa2dead216306f0d2a.html">「Swift」如何将数组转换成字典（关键字为数组元素，值为下标序号）</a></h2>
         <p class="info">2023-04-22 ｜ <a href="/swift.html"> Swift</a> ｜ 753 字</p>
         
-        
-        <p>
-有时候需要将数组的下标和元素转换成字典。比如说使用数组元素来查找下标，如果使用一个函数来查找，那每次都得进行循环查找和获取，不论是计算性能还是内存需求都大，这时候将原数组转换成一个字典，关键字为数组元素，值为下标序号会更方便一些，这样就可以很轻松的通过元素的值来查找序号了，也就不用每次都进行循环查找。
+        <p><!-- excerpt-start -->
+<p>有时候需要将数组的下标和元素转换成字典。比如说使用数组元素来查找下标，如果使用一个函数来查找，那每次都得进行循环查找和获取，不论是计算性能还是内存需求都大，这时候将原数组转换成一个字典，关键字为数组元素，值为下标序号会更方便一些，这样就可以很轻松的通过元素的值来查找序号了，也就不用每次都进行循环查找。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d39f019f2cea026c456bbde68f544e70.html">如何在Mac VM Fusion上安装和使用Plan 9</a></h2>
         <p class="info">2023-04-21 ｜ <a href="/plan 9.html"> Plan 9</a> ｜ 3901 字</p>
         
-        
-        <p>
-我在 Mac 上使用 VM Fusion 安装 Plan 9 的时候遇到了很多问题，官方文档和有些前两年的国外的一些博客并没有写清楚，甚至出现了“误导”的情况（有些情况变了）。所以来写本文帮助其他也遇到的问题的人。
+        <p><!-- excerpt-start -->
+<p>我在 Mac 上使用 VM Fusion 安装 Plan 9 的时候遇到了很多问题，官方文档和有些前两年的国外的一些博客并没有写清楚，甚至出现了“误导”的情况（有些情况变了）。所以来写本文帮助其他也遇到的问题的人。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7879b9fdd0a2d0c735f4efe6c071d270.html">C语言中enum（枚举）详解</a></h2>
         <p class="info">2023-04-19 ｜ <a href="/c.html"> C</a> ｜ 1402 字</p>
         
-        
-        <p>
-enum是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种常量，被称为 enumeration constant。enum提供了一种很方便的方法来将值和名称关联起来，是#define的一种替代方法。
+        <p><!-- excerpt-start -->
+<p><code class="language-plaintext highlighter-rouge">enum</code>是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种<strong>常量</strong>，被称为 <strong>enumeration constant</strong>。<code class="language-plaintext highlighter-rouge">enum</code>提供了一种很方便的方法来将值和名称关联起来，是<code class="language-plaintext highlighter-rouge">#define</code>的一种替代方法。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/38127d39771d541157f063c041162d2d.html">“笨蛋”Siri</a></h2>
         <p class="info">2023-04-05 ｜ <a href="/non-tech.html"> Non-Tech</a> ｜ 132 字</p>
         
-        
-        <p>
-今天无意中发现 iPad 上的 Siri 计算器在一些计算里会有精度问题，比如说会对整数操作，不知道是忽略了什么东西。
+        <p><!-- excerpt-start -->
+<p>今天无意中发现 iPad 上的 Siri 计算器在一些计算里会有精度问题，比如说会对整数操作，不知道是忽略了什么东西。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7a070a71b75f583a4550f6526e5c4d78.html">「Swift」如何测量一个函数/功能的运行时间</a></h2>
         <p class="info">2023-04-02 ｜ <a href="/swift.html"> Swift</a> ｜ 1409 字</p>
         
-        
-        <p>
-当需要测试程序的性能时，Xcode 自带的测试功能有时并不能满足我们的需要，这个时候就需要自己编写测试代码。测试性能主要是测试程序或代码运行时间，不论是测试 CPU/GPU 密集型程序，还是读写密集型程序，都需要获取程序或函数的运行时间来计算性能。
+        <p><!-- excerpt-start -->
+<p>当需要测试程序的性能时，Xcode 自带的测试功能有时并不能满足我们的需要，这个时候就需要自己编写测试代码。测试性能主要是测试程序或代码运行时间，不论是测试 CPU/GPU 密集型程序，还是读写密集型程序，都需要获取程序或函数的运行时间来计算性能。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/26245a625597c3d35cdc22bee394c28a.html">New Bing（GPT-4）的使用感受和一些小发现</a></h2>
         <p class="info">2023-03-16 ｜ <a href="/research.html"> Research</a> ｜ 2372 字</p>
         
-        
-        <p>
-在文章内容开始之前，还是需要强调一下：如果你要使用 New Bing 这种 LLM（大型文本模型），那么请务必确定你可以判断答案的正确与否。因为 LLM 只是按照规则和逻辑来生成文本，而不是根据感受和想法，New Bing 也会回复类似的话语：
+        <p><h2 id="前言">前言</h2>
+<!-- excerpt-start -->
+<p>在文章内容开始之前，还是需要强调一下：<strong>如果你要使用 New Bing 这种 LLM（大型文本模型），那么请务必确定你可以判断答案的正确与否</strong>。因为 LLM 只是按照规则和逻辑来生成文本，而不是根据感受和想法，New Bing 也会回复类似的话语：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/29166fc46f332434e0395207907c2168.html">在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试</a></h2>
         <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ 908 字</p>
         
-        
-        <p>
-测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。
+        <p><!-- excerpt-start -->
+<p>测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/140e3ccb34839577b55ae97b637c9c0d.html">Sony A7R 评测（对自己相机需求的考量）</a></h2>
         <p class="info">2023-02-09 ｜ <a href="/research.html"> Research</a> ｜ 1320 字</p>
         
-        
-        <p>
-最近借用了一台 A7R，这是我第一次使用专业相机（不是卡片机那种小型娱乐的），而且就是全画幅的。所以事先在家使用学习了如何使用和各种设置下的效果如何。
+        <p><!-- excerpt-start -->
+<p>最近借用了一台 A7R，这是我第一次使用专业相机（不是卡片机那种小型娱乐的），而且就是全画幅的。所以事先在家使用学习了如何使用和各种设置下的效果如何。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d135c13d3b4d57fb93c1145435c84bca.html">如何在macOS终端Terminal上下载配置Java开发环境（官网下载的Java没有javac或者报错The operation couldn’t be completed）</a></h2>
         <p class="info">2023-01-10 ｜ <a href="/research.html"> Research</a> ｜ 708 字</p>
         
-        
-        <p>
-最近有需要要学习一下 Java，由于个人习惯，就想使用终端来开发就行了，而不是使用某个 IDE。但是万万没想到，被官网给坑了一次，下载的 Java 不能正常开发。所以就写下本文讲述如何配置。很简单，只要找对官网即可。
+        <p><!-- excerpt-start -->
+<p>最近有需要要学习一下 Java，由于个人习惯，就想使用终端来开发就行了，而不是使用某个 IDE。但是万万没想到，被官网给坑了一次，下载的 Java 不能正常开发。所以就写下本文讲述如何配置。很简单，只要找对官网即可。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/632b1e0c8a49918eaf052baa1177afcf.html">How to write a "script" using Java (How to run single Java file like script)</a></h2>
-        <p class="info">2023-01-10 ｜ <a href="/web.html"> Web</a> ｜ 403 字</p>
+        <p class="info">2023-01-10 ｜ <a href="/web.html"> Web</a> ｜ 400 字</p>
         
-        
-        <p>
-Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.
-</p>
-
-        
-        
+        <p>This blog explains how to write a Java “script” that can be run on Unix-like systems without using the .java suffix. ZhongUncle provides the steps and code examples for creating a file named HelloJava that prints “Hello, world!” to the console. ZhongUncle also explains the rationale behind not using suffixes and the limitations of this method. ZhongUncle hopes to help someone in need with this information.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/12cd844dbc41b01e53c01d0066e2a6b7.html">树选择排序（Tree Selection Sorting）介绍</a></h2>
         <p class="info">2022-12-06 ｜ <a href="/research.html"> Research</a> ｜ 1448 字</p>
         
-        
-        <p>
-简介
-或许你有一个疑问：为什么堆排序使用二叉树，但是叫堆排序，而不是树排序？
-因为堆排序的前身正是叫做树选择排序（Tree Selection Sorting），使用树结构，但是要稍微简单一些。
+        <p><!-- excerpt-start -->
+<h2 id="简介">简介</h2>
+<p>或许你有一个疑问：为什么堆排序使用二叉树，但是叫堆排序，而不是树排序？
+因为堆排序的前身正是叫做树选择排序（Tree Selection Sorting），使用树结构，但是要稍微简单一些。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7663922fd515e913c10584cf5fbcc149.html">如何在 LaTeX 中画一个树状图（使用tikz和tikz-qtree包中的宏绘制树、森林、二叉树）</a></h2>
         <p class="info">2022-12-01 ｜ <a href="/research.html"> Research</a> ｜ 2921 字</p>
         
-        
-        <p>
-简单介绍
-在计算机相关的文章中，树状图是最常见的几种图之一。树状图经常被用来用来演示结构、层次、算法等内容。而二叉树是最基础的树状图之一，掌握二叉树的画法就可以用图像展示一些算法或者数据结构了。
+        <p><!-- excerpt-start -->
+<h2 id="简单介绍">简单介绍</h2>
+<p>在计算机相关的文章中，树状图是最常见的几种图之一。树状图经常被用来用来演示结构、层次、算法等内容。而二叉树是最基础的树状图之一，掌握二叉树的画法就可以用图像展示一些算法或者数据结构了。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/a8e23c0a7de36783c5f658a0e9d6f693.html">「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</a></h2>
         <p class="info">2022-11-24 ｜ <a href="/swift.html"> Swift</a> ｜ 814 字</p>
         
-        
-        <p>
-从 iOS 16 开始，苹果开始弃用原先的NavigationView，以后会逐渐完全淘汰掉。现在开始使用NavigationStack和NavigationSplitView。NavigationStack的效果和原本的NavigationView一样，而NavigationSplitView则和现在 iPadOS 上的NavigationView效果一样。
-最近在 iPadOS 上面使用NavigationView，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：
+        <p><!-- excerpt-start -->
+<p>从 iOS 16 开始，苹果开始弃用原先的<code class="language-plaintext highlighter-rouge">NavigationView</code>，以后会逐渐完全淘汰掉。现在开始使用<code class="language-plaintext highlighter-rouge">NavigationStack</code>和<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>。<code class="language-plaintext highlighter-rouge">NavigationStack</code>的效果和原本的<code class="language-plaintext highlighter-rouge">NavigationView</code>一样，而<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>则和现在 iPadOS 上的<code class="language-plaintext highlighter-rouge">NavigationView</code>效果一样。
+最近在 iPadOS 上面使用<code class="language-plaintext highlighter-rouge">NavigationView</code>，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7e2b24953ba4917e02d86a056620b7ca.html">「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)</a></h2>
         <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 501 字</p>
         
-        
-        <p>
-​
-本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​​。
+        <p><!-- excerpt-start -->
+<p>​
+本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：<a href="/_blogs/2022-11-07-%E5%85%B3%E4%BA%8EUIScreen.main.bounds.height%E7%9A%84%E5%80%BC%E5%8F%91%E7%94%9F%E4%BA%86%E5%8F%98%E5%8C%96%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.md">《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​</a>​。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/798cd052f16bdb59307ef5762928a26d.html">关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案</a></h2>
         <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 854 字</p>
         
-        
-        <p>
-前言
-之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。
+        <p><!-- excerpt-start -->
+<h2 id="前言">前言</h2>
+<p>之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：<a href="https://blog.csdn.net/qq_33919450/article/details/113743159">《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》</a>，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/764f846cf5b57142a163720685f24e4e.html">Safari Extension 扩展插件中关于权限的二三事（例如设置权限、权限类型等）</a></h2>
         <p class="info">2022-10-25 ｜ <a href="/swift.html"> Swift</a> ｜ 1423 字</p>
         
-        
-        <p>
-Safari Extension 扩展插件的权限相关的内容大致分为下面几个方面：
-用户要掌控扩展（Users are in control）
-Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干嘛，因此扩展只有在用户进行互动之后才会运行。在第一次运行之前，扩展图表旁边会有一个提醒，点击会弹出一个标记来帮助指导用户使用。如下：
+        <p><!-- excerpt-start -->
+<p>Safari Extension 扩展插件的权限相关的内容大致分为下面几个方面：</p>
+<h3 id="用户要掌控扩展users-are-in-control">用户要掌控扩展（Users are in control）</h3>
+<p>Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干嘛，因此扩展只有在用户进行互动之后才会运行。在第一次运行之前，扩展图表旁边会有一个提醒，点击会弹出一个标记来帮助指导用户使用。如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/8adaede22e25911797d8dd6cb2f729d2.html">如何使用 R 语言来绘制图表和图（曲线等）</a></h2>
         <p class="info">2022-10-10 ｜ <a href="/research.html"> Research</a> ｜ 2734 字</p>
         
-        
-        <p>
-如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。
+        <p><h2 id="前言">前言</h2>
+<!-- excerpt-start -->
+<p>如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5ccb25e50e98b5bc0c12b9c015088a8e.html">快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</a></h2>
         <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 4427 字</p>
         
-        
-        <p>
-在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。
+        <p><!-- excerpt-start -->
+<p>在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c9a481be3f86c6be4b7cfca7d08da07c.html">「SwiftUI」如何使用自带的原生图表（Charts）</a></h2>
         <p class="info">2022-09-23 ｜ <a href="/swift.html"> Swift</a> ｜ 4245 字</p>
         
-        
-        <p>
-简介
-在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包Charts，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。
+        <p><!-- excerpt-start -->
+<h2 id="简介">简介</h2>
+<p>在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包<code class="language-plaintext highlighter-rouge">Charts</code>，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/8d41f34fbbb8cd54f63033c40fbb5b99.html">如何将已经安装的 WSL（Ubuntu）移动到其他的盘或位置</a></h2>
         <p class="info">2022-09-16 ｜ <a href="/unix.html"> UNIX</a> ｜ 742 字</p>
         
-        
-        <p>
-随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“无法移动”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。
+        <p><!-- excerpt-start -->
+<p>随着使用，最近 C 盘快满了，清理了也没清理多少，所以打算移动一下 WSL。在设置中，“Ubuntu on Windows”有一个“移动”按钮，但是被设置成“<strong>无法移动</strong>”了。清理了半天发现还是挪到别的盘使用比较好，不然很容易爆满。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7a01c6258c522a0201fc556ff8fbf08f.html">数据结构中，索引存储和散列存储区别较为详细的介绍</a></h2>
         <p class="info">2022-09-03 ｜ <a href="/research.html"> Research</a> ｜ 770 字</p>
         
-        
-        <p>
-数据结构中有两种存储结构很容易搞混，那就是索引存储结构和散列存储结构（哈希存储结构）。
+        <p><!-- excerpt-start -->
+<p>数据结构中有两种存储结构很容易搞混，那就是索引存储结构和散列存储结构（哈希存储结构）。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5485ea7ed82502b2890d737b6db02b56.html">在Ubuntu服务器上，安装和使用Nginx和PHP7，以及部分排错方法</a></h2>
         <p class="info">2022-08-14 ｜ <a href="/web.html"> Web</a> ｜ 1787 字</p>
         
-        
-        <p>
-最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。
+        <p><!-- excerpt-start -->
+<p>最近需要研究一下 PHP 语言，但是发现 PHP 不同于 Python、JavaScript 等脚本语言可以直接在本地查看，而是需要在服务器上运行。这就需要搭建一个环境来学习。当然有很多网站也提供了已经搭建好的网站，但是因为我觉得既然要学习，这也是需要学习的东西。不然在别人搭建好的地方练的炉火纯青，结果自己在服务器上弄的时候，“门”都进不去，那就极度尴尬了。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7e752d5a8bf37d6ef8d206c263e72469.html">「SwiftUI」iOS 15 新版Animation制作动画介绍</a></h2>
         <p class="info">2022-08-13 ｜ <a href="/swift.html"> Swift</a> ｜ 2022 字</p>
         
-        
-        <p>
-从iOS 15.0开始，苹果废弃了之前的.animation(Animation?)，建议开发者使用.animation(Animation?, value: Equatable)或者withAnimation替代。
+        <p><!-- excerpt-start -->
+<p>从iOS 15.0开始，苹果废弃了之前的<code class="language-plaintext highlighter-rouge">.animation(Animation?)</code>，建议开发者使用<code class="language-plaintext highlighter-rouge">.animation(Animation?, value: Equatable)</code>或者<code class="language-plaintext highlighter-rouge">withAnimation</code>替代。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/6548d5f3f9473c9af2e20308a7a69b33.html">How to generate assembly code using Clang</a></h2>
-        <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ 163 字</p>
+        <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ 160 字</p>
         
-        
-        <p>
-Sometimes for learning or debuging, I need to view the assembly code of the program. This is very convenient in many GUI IDEs. For example, in Xcode, just click “Product”-“Perform Action”-“Assemble File Name”, as follows:
-</p>
-
-        
-        
+        <p>This blog explains how to generate assembly code using Clang, a compiler for C and other languages. ZhongUncle shows how to use the cc -S command to create a file with assembly language from a C file. ZhongUncle also provides a screenshot of the assembly code and the C code. ZhongUncle hopes that this post will help someone who needs to view the assembly code of their program.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html">macOS Assembly Guide</a></h2>
-        <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ 2317 字</p>
+        <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ 2314 字</p>
         
-        
-        <p>
-Since most of the resources, methods and tools for learning assembly are based for Windows. So here I will introduce some materials and tools for macOS
-</p>
-
-        
-        
+        <p>This is a guide for learning assembly language on macO.ZhongUncle explains why learning assembly language is useful and beneficial, such as improving performance, implementing special functions, and understanding decompiled code. ZhongUncle also advises beginners to learn C language first before learning assembly. ZhongUncle recommends some documents and manuals for learning assembly language, especially for Intel and ARM architectures, and provides links to download or access them online. ZhongUncle introduces some tools and commands for writing and compiling assembly code on macOS, such as as, ld, clang, gcc, size, otool, and Xcode, and explains how to use them with examples and screenshots. ZhongUncle compares the differences between the AT&T and Intel assembly syntax styles, and gives some tips and notes for writing assembly code in different styles. ZhongUncle demonstrates how to write a simple program that prints “hello world!” in assembly language on macOS, and shows the complete source code and each line of code in detail. ZhongUncle also shows how to assemble and link the code into a Mach-O executable file using two methods: gcc and as/ld. ZhongUncle also shows the output of the program and some commands to check the file type and size.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/82b84194fc10ffa257a1e07e377ee8db.html">Linux 和 macOS 中，常见的 man pages 本质是什么格式的文件？以及如何写一个 man page</a></h2>
         <p class="info">2022-07-27 ｜ <a href="/unix.html"> UNIX</a> ｜ 999 字</p>
         
-        
-        <p>
-前言
-在 Linux 和 macOS 中，经常需要使用man xxx来查看一个程序、系统调用等的介绍和使用方法。而这个界面被称为manual page，但是有时候会被简称为manpage。
+        <p><!-- excerpt-start -->
+<h2 id="前言">前言</h2>
+<p>在 Linux 和 macOS 中，经常需要使用<code class="language-plaintext highlighter-rouge">man xxx</code>来查看一个程序、系统调用等的介绍和使用方法。而这个界面被称为<code class="language-plaintext highlighter-rouge">manual page</code>，但是有时候会被简称为<code class="language-plaintext highlighter-rouge">manpage</code>。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/a9ad294ca265f97cd282fbd8d76600d8.html">「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）</a></h2>
         <p class="info">2022-07-17 ｜ <a href="/swift.html"> Swift</a> ｜ 1895 字</p>
         
-        
-        <p>
-在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：
-
-  NavigationView法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。这个方法从 iOS 16 开始被废弃了，新的办法请移步：《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》（2022-11-24更新）。
-  指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。
-
+        <p><!-- excerpt-start -->
+<p>在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">NavigationView</code>法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。<strong>这个方法从 iOS 16 开始被废弃了，新的办法请移步：<a href="/blogs/2022-11-24-%E3%80%8CSwiftUI%E3%80%8D%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%B0%E7%9A%84NavigationStack%E5%92%8CNavigationSplitView%EF%BC%88%E5%A6%82%E4%BD%95%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC2.0%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%BE%A7%E6%A0%8F%EF%BC%89.html">《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》</a></strong>（2022-11-24更新）。</li>
+  <li>指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。</li>
+</ul>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/da687e8c4bb9628d56d2421d6d58d46d.html">如何使用 PHP 解析获取 URL 参数</a></h2>
         <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ 302 字</p>
         
-        
-        <p>
-PHP 和 Python 一样提供了函数parse_url(string $url, int $component = -1)，就很方便。
+        <p><!-- excerpt-start -->
+<p>PHP 和 Python 一样提供了函数<code class="language-plaintext highlighter-rouge">parse_url(string $url, int $component = -1)</code>，就很方便。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c137b537d8da113ee090df6660cf1490.html">URL 的参数（query）是什么，以及如何解析获取</a></h2>
         <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ 730 字</p>
         
-        
-        <p>
-本文是为了介绍 URL 中常见的参数部分，以及如何用常见的 Python、JavaScript、PHP 来解析获取参数。（可以点击左侧的目录，直接跳转想看的部分哦）
-什么是 URL 参数
-在访问一个网站的时候，可能会见到网址中有这样一段?id=1或者其他类似?xxx=xxx格式的部分。这是什么呢？
+        <p><!-- excerpt-start -->
+<p>本文是为了介绍 URL 中常见的参数部分，以及如何用常见的 Python、JavaScript、PHP 来解析获取参数。（可以点击左侧的目录，直接跳转想看的部分哦）</p>
+<h2 id="什么是-url-参数">什么是 URL 参数</h2>
+<p>在访问一个网站的时候，可能会见到网址中有这样一段<code class="language-plaintext highlighter-rouge">?id=1</code>或者其他类似<code class="language-plaintext highlighter-rouge">?xxx=xxx</code>格式的部分。这是什么呢？</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/bbfddabd0303fbbea6fc9d86b0beda74.html">Windows 如何安装 WSL（中途退出后遇到 bug 该怎么办）</a></h2>
         <p class="info">2022-07-10 ｜ <a href="/unix.html"> UNIX</a> ｜ 441 字</p>
         
-        
-        <p>
-适用于 Linux 的 Windows 子系统，被简称为WSL，安装方式很简单。但是 WSL 还是不如原生的 Linux，只能某些时候临时用一下。
+        <p><!-- excerpt-start -->
+<p>适用于 Linux 的 Windows 子系统，被简称为WSL，安装方式很简单。但是 WSL 还是不如原生的 Linux，只能某些时候临时用一下。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/3e0ba6ef9d600e998afa6a2dcdf0a649.html">汇编中的尺寸命令（Size Directives）</a></h2>
         <p class="info">2022-07-10 ｜ <a href="/assembly.html"> Assembly</a> ｜ 313 字</p>
         
-        
-        <p>
-在汇编过程中，可能需要指定预计的数据大小，例如栈的大小，这时候就需要用到尺寸命令（Size Directives）。
+        <p><!-- excerpt-start -->
+<p>在汇编过程中，可能需要指定预计的数据大小，例如栈的大小，这时候就需要用到尺寸命令（Size Directives）。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d4f89b69a701100ce7f8f8aca2abd3d4.html">How Swift parses URLs</a></h2>
         <p class="info">2022-07-08 ｜ <a href="/swift.html"> Swift</a> ｜ 136 字</p>
         
-        
-        <p>
-Although Swift is not a common language for server backends, but it can also parse URLs. Just in case, I still did some research.
+        <p><!-- excerpt-start -->
+<p>Although Swift is not a common language for server backends, but it can also parse URLs. Just in case, I still did some research.</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/e28820df13fc37ba9a671f1081e1421b.html">C语言中函数main的参数argc和argv是什么</a></h2>
         <p class="info">2022-06-17 ｜ <a href="/c.html"> C</a> ｜ 1567 字</p>
         
-        
-        <p>
-在 Xcode 中新建一个 macOS 平台 Command Line Tool，使用 C 语言，会发现 main 带了两个参数：argc和argv。如下：
+        <p><!-- excerpt-start -->
+<p>在 Xcode 中新建一个 macOS 平台 Command Line Tool，使用 C 语言，会发现 main 带了两个参数：<code class="language-plaintext highlighter-rouge">argc</code>和<code class="language-plaintext highlighter-rouge">argv</code>。如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/abbb10287803ed8be220124d9b51ed80.html">Type-C 接口为什么在不同的协议下带宽不同（引脚定义、协议等）</a></h2>
         <p class="info">2022-06-16 ｜ <a href="/research.html"> Research</a> ｜ 3512 字</p>
         
-        
-        <p>
-其实 Thunderbolt 3是一个扩展集解决方案，它包括了 USB 3.1（10Gbps），并在单个 Type-C 接口中增加了 40Gbps 的 Thunderbolt 3/4 和 DisplayPort 1.2，还有PCIe。
+        <p><h2 id="thunderbolt-34-和-usb-type-c-有什么区别">ThunderBolt 3/4 和 USB Type-C 有什么区别</h2>
+<!-- excerpt-start -->
+<p>其实 Thunderbolt 3是一个扩展集解决方案，它包括了 USB 3.1（10Gbps），并在单个 Type-C 接口中增加了 40Gbps 的 Thunderbolt 3/4 和 DisplayPort 1.2，还有PCIe。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/e0b04c2b9a40506f58d11334ac6bed13.html">如何使用 Javascript 获取 URL 参数</a></h2>
         <p class="info">2022-06-12 ｜ <a href="/web.html"> Web</a> ｜ 912 字</p>
         
-        
-        <p>
-JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。
-所以分为两步：
+        <p><!-- excerpt-start -->
+<p>JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。
+所以分为两步：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/7dc37fce4d4bd96f87677464c78b75b3.html">Python 解析获取 URL 参数以及使用</a></h2>
         <p class="info">2022-06-09 ｜ <a href="/web.html"> Web</a> ｜ 630 字</p>
         
-        
-        <p>
-Python 解析获取 URL 参数的步骤如下：
+        <p><p>下文中使用的 URL 地址是：<code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc&amp;id=12</code>
+<!-- excerpt-start -->
+Python 解析获取 URL 参数的步骤如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/fc3d2db6d7e9cfb8ed856c8f34364a11.html">Python 如何对文件读取和写入</a></h2>
         <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 926 字</p>
         
-        
-        <p>
-Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。
+        <p><!-- excerpt-start -->
+<p>Python 在读取和写入一个文件的时候，需要创建一个文件对象（file object），然后才能进行读取写入。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/97fbc1d92a2d77ff33c502660feeddd1.html">try...except...finally statement in Python</a></h2>
         <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 118 字</p>
         
-        
-        <p>
-try...except...finallystatement is used to handle errors and return information. The format is as follows:
+        <p><!-- excerpt-start -->
+<p><code class="language-plaintext highlighter-rouge">try...except...finally</code>statement is used to handle errors and return information. The format is as follows:</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/92fdbbfcb1ffe9ab8aafc3f0837d91e5.html">Python 如何输出数据</a></h2>
         <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 2076 字</p>
         
-        
-        <p>
-输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的printf函数名中的f就是 formatted（被格式化）的意思，可以通过%d等换算符（conversions）来打印不同的数据类型。
+        <p><!-- excerpt-start -->
+<p>输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的<code class="language-plaintext highlighter-rouge">printf</code>函数名中的<code class="language-plaintext highlighter-rouge">f</code>就是 formatted（被格式化）的意思，可以通过<code class="language-plaintext highlighter-rouge">%d</code>等换算符（conversions）来打印不同的数据类型。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d075c96734c261880084d7fcb16d7f8b.html">如何在 WSL 访问 Windows 中的文件</a></h2>
         <p class="info">2022-05-12 ｜ <a href="/unix.html"> UNIX</a> ｜ 99 字</p>
         
-        
-        <p>
-首先进入 WSL，然后进根目录/，使用ls可以看到一个名为mnt的目录（mnt 是 mount 加载的缩写）。
+        <p><!-- excerpt-start -->
+<p>首先进入 WSL，然后进根目录<code class="language-plaintext highlighter-rouge">/</code>，使用<code class="language-plaintext highlighter-rouge">ls</code>可以看到一个名为<code class="language-plaintext highlighter-rouge">mnt</code>的目录（mnt 是 mount 加载的缩写）。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/08bbb6f335b0b12f25545ee7a6e8492c.html">Mac 上，Xcode 导致“系统数据”占用太大</a></h2>
         <p class="info">2022-05-06 ｜ <a href="/unix.html"> UNIX</a> ｜ 428 字</p>
         
-        
-        <p>
-今天突然发现系统占用居然有一百多个g，所以打算清理一下。经过排查发现是 Xcode 导致的。（一般软件缓存会放在~/Library下，所以找出这个目录下最大的文件即可）
+        <p><!-- excerpt-start -->
+<p>今天突然发现系统占用居然有一百多个g，所以打算清理一下。经过排查发现是 Xcode 导致的。（一般软件缓存会放在<code class="language-plaintext highlighter-rouge">~/Library</code>下，所以找出这个目录下最大的文件即可）</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/d70d22ef1a896225b3f32efeb6541a27.html">「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等</a></h2>
         <p class="info">2022-03-23 ｜ <a href="/swift.html"> Swift</a> ｜ 4043 字</p>
         
-        
-        <p>
-
-  可以利用侧边的目录来跳转哦！
-  本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。
-  本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。
-
+        <p><h2 id="阅读建议和提示">阅读建议和提示</h2>
+<!-- excerpt-start -->
+<ol>
+  <li><strong>可以利用侧边的目录来跳转哦！</strong></li>
+  <li>本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。</li>
+  <li>本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。</li>
+</ol>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/f48a933188a9f65909ee25bbbb652652.html">「SwiftUI」延迟执行操作/定时自动执行操作（使用计时器Timer以及异步DispatchQueue.main.asyncAfter）</a></h2>
         <p class="info">2022-03-14 ｜ <a href="/swift.html"> Swift</a> ｜ 1393 字</p>
         
-        
-        <p>
-在开发软件的过程中，我们不仅需要用户点击的时候执行操作，有时候还需要定时自动进行一些操作。比如最常见的开屏广告倒计时关闭，还比如一些动画效果。实现这些一般有两种方法：一种是使用计时器Timer，一种是使用异步操作。
+        <p><!-- excerpt-start -->
+<p>在开发软件的过程中，我们不仅需要用户点击的时候执行操作，有时候还需要定时自动进行一些操作。比如最常见的开屏广告倒计时关闭，还比如一些动画效果。实现这些一般有两种方法：一种是使用计时器Timer，一种是使用异步操作。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/da7bb069678e3053cd6786ecc1fb634e.html">「SwiftUI」从Date类型获取各种数据（hour，minute等）</a></h2>
         <p class="info">2022-03-04 ｜ <a href="/swift.html"> Swift</a> ｜ 261 字</p>
         
-        
-        <p>
-当我们获得用户在DatePicker中选取的时间之后，我们会获取一个Date类型的数据。但是需要以其他数据类型来使用这个数据。下面就来讲讲如何实现这一点。
+        <p><!-- excerpt-start -->
+<p>当我们获得用户在DatePicker中选取的时间之后，我们会获取一个Date类型的数据。但是需要以其他数据类型来使用这个数据。下面就来讲讲如何实现这一点。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/b37f3107244c87b2dfbc54a8145a8a45.html">「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片</a></h2>
         <p class="info">2022-02-22 ｜ <a href="/swift.html"> Swift</a> ｜ 1419 字</p>
         
-        
-        <p>
-苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference
+        <p><!-- excerpt-start -->
+<p>苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：<a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorClamp">Core Image Filter Reference</a></p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/04b02762f73fe5eabfd13a3ba6e5fe18.html">「SwiftUI」推送通知（Notifications）二三事</a></h2>
         <p class="info">2022-02-21 ｜ <a href="/swift.html"> Swift</a> ｜ 1368 字</p>
         
-        
-        <p>
-有很多需要推送通知的情况，但是关于SwiftUI的通知推送说的人却不多，这里就说一些相关内容。一方面是为了自己能以后再查阅，另外一方面也是想能帮到有需要的人。
+        <p><!-- excerpt-start -->
+<p>有很多需要推送通知的情况，但是关于SwiftUI的通知推送说的人却不多，这里就说一些相关内容。一方面是为了自己能以后再查阅，另外一方面也是想能帮到有需要的人。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/a5599cad6f3ca2349043e83304f9fc84.html">「SwiftUI」如何使用iOS/iPadOS/macOS系统自带的文本转语音功能（TTS）来朗读文本</a></h2>
         <p class="info">2022-02-17 ｜ <a href="/swift.html"> Swift</a> ｜ 376 字</p>
         
-        
-        <p>
-作为独立开发者，有些时候需要大量读音的时候，就可以使用一些语音合成技术，虽然讯飞、谷歌的语音合成技术似乎更好一点，但是需要联网从云端获取，这有时候会影响软件的效率和成本。好在iOS自带语音合成技术，支持的语言包括各个地区口音的英语、中文（普通话）、日语、法语等。
+        <p><!-- excerpt-start -->
+<p>作为独立开发者，有些时候需要大量读音的时候，就可以使用一些语音合成技术，虽然讯飞、谷歌的语音合成技术似乎更好一点，但是需要联网从云端获取，这有时候会影响软件的效率和成本。好在iOS自带语音合成技术，支持的语言包括各个地区口音的英语、中文（普通话）、日语、法语等。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/3fb992d55ed96276fb1103fc45b5a0c4.html">SQLite 命令行使用方法</a></h2>
         <p class="info">2022-02-13 ｜ <a href="/research.html"> Research</a> ｜ 1822 字</p>
         
-        
-        <p>
-最近为了省钱，就打算使用开源免费的 SQLite 来做数据库。并且由于个人习惯，所以偏爱命令行。这里就来记录一下如何使用命令行来使用 SQLite。
+        <p><!-- excerpt-start -->
+<p>最近为了省钱，就打算使用开源免费的 SQLite 来做数据库。并且由于个人习惯，所以偏爱命令行。这里就来记录一下如何使用命令行来使用 SQLite。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/727652a73635f35f38b4caa67cef5bf4.html">「SwiftUI」获取网站api中的JSON，并且显示其中的文本</a></h2>
         <p class="info">2022-02-11 ｜ <a href="/swift.html"> Swift</a> ｜ 1812 字</p>
         
-        
-        <p>
-这是开发中非常常见的使用场景。
+        <p><!-- excerpt-start -->
+<p>这是开发中非常常见的使用场景。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html">「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能</a></h2>
         <p class="info">2022-01-28 ｜ <a href="/swift.html"> Swift</a> ｜ 497 字</p>
         
-        
-        <p>
-我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：
+        <p><!-- excerpt-start -->
+<p>我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c9b18f5434f81dc0c7bd01a79bf61271.html">「SwiftUI」如何获取View视图的尺寸</a></h2>
         <p class="info">2022-01-20 ｜ <a href="/swift.html"> Swift</a> ｜ 392 字</p>
         
-        
-        <p>
-我们可能在一些情况下需要获取SwiftUI的一个View的尺寸，我们可以用以下方法获取：
+        <p><!-- excerpt-start -->
+<p>我们可能在一些情况下需要获取SwiftUI的一个View的尺寸，我们可以用以下方法获取：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/93f398737ba1e12f9633bde7076ce4dc.html">「SwiftUI」如何调整SF符号大小</a></h2>
         <p class="info">2022-01-11 ｜ <a href="/swift.html"> Swift</a> ｜ 354 字</p>
         
-        
-        <p>
-苹果为开发者提供了很多图标，提高了开发者的效率，也统一了很多符号的用途，以免造成误解。这些图标被称为SF符号，苹果提供了一个软件来供开发者查找这些符号，名为SF符号（SF Symbol），在开发者官网可以找到，如下：
+        <p><!-- excerpt-start -->
+<p>苹果为开发者提供了很多图标，提高了开发者的效率，也统一了很多符号的用途，以免造成误解。这些图标被称为SF符号，苹果提供了一个软件来供开发者查找这些符号，名为<code class="language-plaintext highlighter-rouge">SF符号（SF Symbol）</code>，在开发者官网可以找到，如下：</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/aee411476fc73cce549a99ba71eb4e56.html">「SwiftUI」UIDevice的一些属性（设备系统名称以及电池电量）</a></h2>
         <p class="info">2021-04-03 ｜ <a href="/swift.html"> Swift</a> ｜ 585 字</p>
         
-        
-        <p>
-UIDevice是获取设备信息的一个API。
+        <p><!-- excerpt-start -->
+<p>UIDevice是获取设备信息的一个API。</p>
 </p>
-
-        
-        
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/ee422942d328ed888f7af71fa2a9d5de.html">「SwiftUI」自定义颜色（UIColor和Color Set包括dark model黑暗模式）</a></h2>
         <p class="info">2021-03-14 ｜ <a href="/swift.html"> Swift</a> ｜ 1164 字</p>
         
-        
-        <p>
-苹果官方不建议自定义颜色，而是使用官方提供的颜色。详情参见：Color - Foundations - Human Interface Guidelines - Design - Apple Developer
-但是还是可以SwiftUI里自定义一些属性的颜色（例如背景），有两种办法：
+        <p><!-- excerpt-start -->
+<p>苹果官方不建议自定义颜色，而是使用官方提供的颜色。详情参见：<a href="https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/color/">Color - Foundations - Human Interface Guidelines - Design - Apple Developer</a>
+但是还是可以SwiftUI里自定义一些属性的颜色（例如背景），有两种办法：</p>
 </p>
-
-        
-        
     </li>
     
 </ul>

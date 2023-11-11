@@ -9,20 +9,21 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</title>
+<title>Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA) | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA." />
-<meta property="og:description" content="Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA." />
-<link rel="canonical" href="http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html" />
+<meta name="description" content="This blog explains that FPGA development involves writing two files: a .v file that contains Verilog code to describe the logic circuit, and a .cst file that specifies the pin constraints. These files are then converted into a bitstream file that can be loaded into the FPGA. The blog provides the links and instructions for installing Python, OSS CAD Suite (a tool chain that can generate the bitstream file), and VS Code (a text editor with extensions for FPGA development). The web page shows an example of a program that makes the onboard LEDs light up one by one, and explains how to write the .v and .cst files, how to build and burn the bitstream file using VS Code or terminal, and how to verify the result. And recommends some resources for further reading, such as books, blogs, and projects related to FPGA and Tang Nano 9K." />
+<meta property="og:description" content="This blog explains that FPGA development involves writing two files: a .v file that contains Verilog code to describe the logic circuit, and a .cst file that specifies the pin constraints. These files are then converted into a bitstream file that can be loaded into the FPGA. The blog provides the links and instructions for installing Python, OSS CAD Suite (a tool chain that can generate the bitstream file), and VS Code (a text editor with extensions for FPGA development). The web page shows an example of a program that makes the onboard LEDs light up one by one, and explains how to write the .v and .cst files, how to build and burn the bitstream file using VS Code or terminal, and how to verify the result. And recommends some resources for further reading, such as books, blogs, and projects related to FPGA and Tang Nano 9K." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/ba85bee345af252c41175af8f461f68d.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/ba85bee345af252c41175af8f461f68d.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-08-19T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-19T00:00:00+08:00","datePublished":"2023-08-19T00:00:00+08:00","description":"Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA.","headline":"Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html"},"url":"http://localhost:4000/blogs/ba85bee345af252c41175af8f461f68d.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-19T00:00:00+08:00","datePublished":"2023-08-19T00:00:00+08:00","description":"This blog explains that FPGA development involves writing two files: a .v file that contains Verilog code to describe the logic circuit, and a .cst file that specifies the pin constraints. These files are then converted into a bitstream file that can be loaded into the FPGA. The blog provides the links and instructions for installing Python, OSS CAD Suite (a tool chain that can generate the bitstream file), and VS Code (a text editor with extensions for FPGA development). The web page shows an example of a program that makes the onboard LEDs light up one by one, and explains how to write the .v and .cst files, how to build and burn the bitstream file using VS Code or terminal, and how to verify the result. And recommends some resources for further reading, such as books, blogs, and projects related to FPGA and Tang Nano 9K.","headline":"Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/ba85bee345af252c41175af8f461f68d.html"},"url":"https://zhonguncle.github.io/blogs/ba85bee345af252c41175af8f461f68d.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -43,6 +44,15 @@
         gtag('js', new Date());
 
         gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
         </script>
     </head>
     <body>
@@ -97,10 +107,9 @@
 </div>
             <h1>Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</h1>
             <div class="bloginfo">
-                <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ #Words: 2225 </p>
+                <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ #Words: 2172 </p>
             </div>
-            <!-- excerpt-start -->
-<p>Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA.</p>
+            <p>Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA.</p>
 
 <p>The official document recommand to use GOWIN IDE to develop GOWIN FPGA, but you need to apply for a license and submit a lot of information. Since it was a gift, So it is not convenient. In addition, IDE is actually not very suitable for learning and putting into production, because IDE hides many details. So I want to find other workflows, just like using any text editor and Clang/LLVM to compile C/C++ programs.</p>
 
@@ -280,7 +289,6 @@ IO_LOC  "led[5]" 16;
       <th>name</th>
       <th>device</th>
       <th>board</th>
-      <th> </th>
     </tr>
   </thead>
   <tbody>
@@ -288,49 +296,41 @@ IO_LOC  "led[5]" 16;
       <td>Trenz TEC0117</td>
       <td>GW1NR-UV9QN881C6/I5</td>
       <td>tec0117</td>
-      <td> </td>
     </tr>
     <tr>
       <td>Sipeed Tang Nano:</td>
       <td>GW1N-LV1QN48C6/I5</td>
-      <td>tangnano</td>
       <td>tangnano</td>
     </tr>
     <tr>
       <td>Sipeed Tang Nano 1K</td>
       <td>GW1NZ-LV1QN48C6/I5</td>
       <td>tangnano1k</td>
-      <td> </td>
     </tr>
     <tr>
       <td>Sipeed Tang Nano 4K</td>
       <td>GW1NSR-LV4CQN48PC7/I6</td>
       <td>tangnano4k</td>
-      <td> </td>
     </tr>
     <tr>
       <td>Sipeed Tang Nano 9K</td>
       <td>GW1NR-LV9QN88PC6/I5</td>
       <td>tangnano9k</td>
-      <td> </td>
     </tr>
     <tr>
       <td>Seeed RUNBER</td>
       <td>GW1N-UV4LQ144C6/I5</td>
       <td>runber</td>
-      <td> </td>
     </tr>
     <tr>
       <td>@Disasm honeycomb</td>
       <td>GW1NS-UX2CQN48C5/I4</td>
       <td>honeycomb</td>
-      <td> </td>
     </tr>
   </tbody>
 </table>
 
-<p><strong>接下来需要注意</strong>，如果你和我一样是 Tang nano 9K，那么使用下面的语句（设备不能写上面那个长的）：
-<strong>Next</strong>, if you have a Tang nano 9K like me, then use the following command (the device cannot write the long one in table):</p>
+<p><strong>Next</strong>, if you have a Tang nano 9K like me, then use the following command (the device cannot write the long one in table):</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gowin_pack -d GW1N-9C -o top.fs test_pnr.json
 </code></pre></div></div>

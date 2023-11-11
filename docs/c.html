@@ -13,17 +13,18 @@
         
         
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>C</title>
+<title>C | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="C" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/c.html" />
-<meta property="og:url" content="http://localhost:4000/c.html" />
+<link rel="canonical" href="https://zhonguncle.github.io/c.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/c.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="C" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","headline":"C","url":"http://localhost:4000/c.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","headline":"C","url":"https://zhonguncle.github.io/c.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -44,6 +45,15 @@
         gtag('js', new Date());
 
         gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
         </script>
     </head>
     <body>
@@ -147,10 +157,9 @@
                 <h2><a class="blog" href="/blogs/c33dfc173afb0732e22b0306f19b2d27.html">使用gcc展示完整的编译过程（gcc预处理模式、编译模式、汇编模式、连接模式）</a></h2>
                 <p class="info">2023-06-08 ｜ #Words: 4652 </p>
                 
-                <p>
-最近在了解 clang/llvm 的时候突然发现一件事：gcc是一个工具集合，包含了或者调用将程序源代码转换成可执行程序文件的所有工具，而不只是简单的编译器。这帮助我对“编译器”有了更深刻的理解，所以写下本文作为记录。
+                <p><!-- excerpt-start -->
+<p>最近在了解 clang/llvm 的时候突然发现一件事：<code class="language-plaintext highlighter-rouge">gcc</code>是一个工具集合，包含了或者调用将程序源代码转换成可执行程序文件的所有工具，而不只是简单的编译器。这帮助我对“编译器”有了更深刻的理解，所以写下本文作为记录。</p>
 </p>
-                
             </li>
         
     
@@ -165,12 +174,9 @@
         
             <li>
                 <h2><a class="blog" href="/blogs/3b862852d2a3dc67a9c754b13c1878dd.html">Verify the central limit theorem using C++ (by generating a PPM format image to verify that the discrete event with non-uniform probability conforms a normal distribution curve when the sample size is large enough)</a></h2>
-                <p class="info">2023-05-16 ｜ #Words: 2548 </p>
+                <p class="info">2023-05-16 ｜ #Words: 2545 </p>
                 
-                <p>
-The reason why I want to write this blog is I watched But what is the Central Limit Theorem? - YouTube published the famous mathematical popularization account 3Blue1Brown. This video mention: regardless of whether the probabilities of various situations of this discrete event are average or not, when the number is certain to be large, it will still follow a normal distribution curve. I just want to try to see whether is the case. I think the central limit theorem (CLT) and normal distribution are a very magical part of probability theory.
-</p>
-                
+                <p>This blog explains how to use C++ to verify the central limit theorem (CLT), which states that the sum of independent random variables tends to follow a normal distribution when the sample size is large enough. ZhongUncle uses dice points as an example of discrete events, and generates PPM format images to visualize the probability distribution of the sum of points. ZhongUncle shows that the distribution curve becomes more similar to a normal curve as the number of samples increases, and that this holds true even when the probability of each dice point is not uniform. ZhongUncle provides the source code and the output images for different scenarios, and invites the readers to try it themselves. ZhongUncle also expresses the fascination with the central limit theorem and the normal distribution.</p>
             </li>
         
     
@@ -179,10 +185,9 @@ The reason why I want to write this blog is I watched But what is the Central Li
                 <h2><a class="blog" href="/blogs/d9b86ddcdf898f31054add26e6c6394e.html">Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？</a></h2>
                 <p class="info">2023-05-12 ｜ #Words: 1383 </p>
                 
-                <p>
-在 C 语言中，有一种叫做union的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体struct很相似：结构体是一个或多个变量的集合。
+                <p><!-- excerpt-start -->
+<p>在 C 语言中，有一种叫做<code class="language-plaintext highlighter-rouge">union</code>的变量，是用来在不同的情况下，存放不同类型和大小的对象的变量。这与结构体<code class="language-plaintext highlighter-rouge">struct</code>很相似：结构体是一个或多个变量的集合。</p>
 </p>
-                
             </li>
         
     
@@ -191,10 +196,9 @@ The reason why I want to write this blog is I watched But what is the Central Li
                 <h2><a class="blog" href="/blogs/f922ed510fab031d5285aa224a706c14.html">使用 nvcc 的时候出现“helper_cuda.h”: No such file or directory错误该怎么办（其他xxx.h也是同样的解决方法）</a></h2>
                 <p class="info">2023-05-03 ｜ #Words: 743 </p>
                 
-                <p>
-今天在命令行中使用nvcc的时候，出现了“helper_cuda.h”: No such file or directory错误。这个错误信息表示：在编译的时候，找不到helper_cuda.h头文件（其他xxx.h如果也找不到，那么下面的解释和解决方法也通用）。
+                <p><!-- excerpt-start -->
+<p>今天在命令行中使用<code class="language-plaintext highlighter-rouge">nvcc</code>的时候，出现了<code class="language-plaintext highlighter-rouge">“helper_cuda.h”: No such file or directory</code>错误。这个错误信息表示：在编译的时候，找不到<code class="language-plaintext highlighter-rouge">helper_cuda.h</code>头文件（其他<code class="language-plaintext highlighter-rouge">xxx.h</code>如果也找不到，那么下面的解释和解决方法也通用）。</p>
 </p>
-                
             </li>
         
     
@@ -203,11 +207,10 @@ The reason why I want to write this blog is I watched But what is the Central Li
                 <h2><a class="blog" href="/blogs/31f6650cf8d691671ac6c28282f69f0d.html">C语言中的Typedef是什么？如何使用？有何便利之处？</a></h2>
                 <p class="info">2023-04-26 ｜ #Words: 1856 </p>
                 
-                <p>
-Typedef 是什么？
-typedef是 C 语言中的一个特色功能，被用于创建新的类型名称，从名称“type def(ine)”也可以看出其功能。typedef类似于 Unix 中的alias程序的功能，为一个对象添加另外一个名称，typedef使得多个名称其实对应的是同一个程序，但是typedef操作的对象是数据类型，也就是给数据类型“起外号”，这个外号一般首字母大写，用于表示不是基础数据类型。
+                <p><!-- excerpt-start -->
+<h2 id="typedef-是什么">Typedef 是什么？</h2>
+<p><code class="language-plaintext highlighter-rouge">typedef</code>是 C 语言中的一个特色功能，被用于创建新的类型名称，从名称“type def(ine)”也可以看出其功能。<code class="language-plaintext highlighter-rouge">typedef</code>类似于 Unix 中的<code class="language-plaintext highlighter-rouge">alias</code>程序的功能，为一个对象添加另外一个名称，<code class="language-plaintext highlighter-rouge">typedef</code>使得多个名称其实对应的是同一个程序，但是<code class="language-plaintext highlighter-rouge">typedef</code>操作的对象是数据类型，也就是给数据类型“起外号”，<strong>这个外号一般首字母大写，用于表示不是基础数据类型</strong>。</p>
 </p>
-                
             </li>
         
     
@@ -220,10 +223,9 @@ typedef是 C 语言中的一个特色功能，被用于创建新的类型名称�
                 <h2><a class="blog" href="/blogs/7879b9fdd0a2d0c735f4efe6c071d270.html">C语言中enum（枚举）详解</a></h2>
                 <p class="info">2023-04-19 ｜ #Words: 1402 </p>
                 
-                <p>
-enum是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种常量，被称为 enumeration constant。enum提供了一种很方便的方法来将值和名称关联起来，是#define的一种替代方法。
+                <p><!-- excerpt-start -->
+<p><code class="language-plaintext highlighter-rouge">enum</code>是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种<strong>常量</strong>，被称为 <strong>enumeration constant</strong>。<code class="language-plaintext highlighter-rouge">enum</code>提供了一种很方便的方法来将值和名称关联起来，是<code class="language-plaintext highlighter-rouge">#define</code>的一种替代方法。</p>
 </p>
-                
             </li>
         
     
@@ -290,10 +292,9 @@ enum是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种
                 <h2><a class="blog" href="/blogs/e28820df13fc37ba9a671f1081e1421b.html">C语言中函数main的参数argc和argv是什么</a></h2>
                 <p class="info">2022-06-17 ｜ #Words: 1567 </p>
                 
-                <p>
-在 Xcode 中新建一个 macOS 平台 Command Line Tool，使用 C 语言，会发现 main 带了两个参数：argc和argv。如下：
+                <p><!-- excerpt-start -->
+<p>在 Xcode 中新建一个 macOS 平台 Command Line Tool，使用 C 语言，会发现 main 带了两个参数：<code class="language-plaintext highlighter-rouge">argc</code>和<code class="language-plaintext highlighter-rouge">argv</code>。如下：</p>
 </p>
-                
             </li>
         
     

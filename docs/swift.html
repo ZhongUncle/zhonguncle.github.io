@@ -13,17 +13,18 @@
         
         
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Swift</title>
+<title>Swift | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="Swift" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/swift.html" />
-<meta property="og:url" content="http://localhost:4000/swift.html" />
+<link rel="canonical" href="https://zhonguncle.github.io/swift.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/swift.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Swift" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","headline":"Swift","url":"http://localhost:4000/swift.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","headline":"Swift","url":"https://zhonguncle.github.io/swift.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -44,6 +45,15 @@
         gtag('js', new Date());
 
         gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
         </script>
     </head>
     <body>
@@ -139,12 +149,9 @@
         
             <li>
                 <h2><a class="blog" href="/blogs/321881da709ca20a23d891726c5a05b6.html">How to convert a number from some base to other base natively in Swift(for example, decimal to hexadecimal, octal to binary)</a></h2>
-                <p class="info">2023-06-12 ｜ #Words: 326 </p>
+                <p class="info">2023-06-12 ｜ #Words: 323 </p>
                 
-                <p>
-Recently, I need to read some old documents. In the old documents, the memory address is in octal instead of hexadecimal, so I need to write a small tool to convert. Although the Mac built-in calculator can do it, but it is troublesome when there are too many.
-</p>
-                
+                <p>The is about how to convert a number from one base to another natively in Swift, a programming language. For example, decimal to hexadecimal, octal to binary, etc.The page introduces a method of the String type that can do the conversion easily. The method is String(a, radix b, uppercase c), where a is the source value, b is the target base, and c is a boolean value to indicate whether to capitalize the letters in the output.The page also explains how to write numbers in different bases natively in Swift. The prefixes are 0b for binary, 0o for octal, 0x for hexadecimal, and nothing for decimal.</p>
             </li>
         
     
@@ -175,10 +182,9 @@ Recently, I need to read some old documents. In the old documents, the memory ad
                 <h2><a class="blog" href="/blogs/e6b7bff32bcfb2aa2dead216306f0d2a.html">「Swift」如何将数组转换成字典（关键字为数组元素，值为下标序号）</a></h2>
                 <p class="info">2023-04-22 ｜ #Words: 753 </p>
                 
-                <p>
-有时候需要将数组的下标和元素转换成字典。比如说使用数组元素来查找下标，如果使用一个函数来查找，那每次都得进行循环查找和获取，不论是计算性能还是内存需求都大，这时候将原数组转换成一个字典，关键字为数组元素，值为下标序号会更方便一些，这样就可以很轻松的通过元素的值来查找序号了，也就不用每次都进行循环查找。
+                <p><!-- excerpt-start -->
+<p>有时候需要将数组的下标和元素转换成字典。比如说使用数组元素来查找下标，如果使用一个函数来查找，那每次都得进行循环查找和获取，不论是计算性能还是内存需求都大，这时候将原数组转换成一个字典，关键字为数组元素，值为下标序号会更方便一些，这样就可以很轻松的通过元素的值来查找序号了，也就不用每次都进行循环查找。</p>
 </p>
-                
             </li>
         
     
@@ -193,10 +199,9 @@ Recently, I need to read some old documents. In the old documents, the memory ad
                 <h2><a class="blog" href="/blogs/7a070a71b75f583a4550f6526e5c4d78.html">「Swift」如何测量一个函数/功能的运行时间</a></h2>
                 <p class="info">2023-04-02 ｜ #Words: 1409 </p>
                 
-                <p>
-当需要测试程序的性能时，Xcode 自带的测试功能有时并不能满足我们的需要，这个时候就需要自己编写测试代码。测试性能主要是测试程序或代码运行时间，不论是测试 CPU/GPU 密集型程序，还是读写密集型程序，都需要获取程序或函数的运行时间来计算性能。
+                <p><!-- excerpt-start -->
+<p>当需要测试程序的性能时，Xcode 自带的测试功能有时并不能满足我们的需要，这个时候就需要自己编写测试代码。测试性能主要是测试程序或代码运行时间，不论是测试 CPU/GPU 密集型程序，还是读写密集型程序，都需要获取程序或函数的运行时间来计算性能。</p>
 </p>
-                
             </li>
         
     
@@ -219,11 +224,10 @@ Recently, I need to read some old documents. In the old documents, the memory ad
                 <h2><a class="blog" href="/blogs/a8e23c0a7de36783c5f658a0e9d6f693.html">「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</a></h2>
                 <p class="info">2022-11-24 ｜ #Words: 814 </p>
                 
-                <p>
-从 iOS 16 开始，苹果开始弃用原先的NavigationView，以后会逐渐完全淘汰掉。现在开始使用NavigationStack和NavigationSplitView。NavigationStack的效果和原本的NavigationView一样，而NavigationSplitView则和现在 iPadOS 上的NavigationView效果一样。
-最近在 iPadOS 上面使用NavigationView，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：
+                <p><!-- excerpt-start -->
+<p>从 iOS 16 开始，苹果开始弃用原先的<code class="language-plaintext highlighter-rouge">NavigationView</code>，以后会逐渐完全淘汰掉。现在开始使用<code class="language-plaintext highlighter-rouge">NavigationStack</code>和<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>。<code class="language-plaintext highlighter-rouge">NavigationStack</code>的效果和原本的<code class="language-plaintext highlighter-rouge">NavigationView</code>一样，而<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>则和现在 iPadOS 上的<code class="language-plaintext highlighter-rouge">NavigationView</code>效果一样。
+最近在 iPadOS 上面使用<code class="language-plaintext highlighter-rouge">NavigationView</code>，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：</p>
 </p>
-                
             </li>
         
     
@@ -232,11 +236,10 @@ Recently, I need to read some old documents. In the old documents, the memory ad
                 <h2><a class="blog" href="/blogs/7e2b24953ba4917e02d86a056620b7ca.html">「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)</a></h2>
                 <p class="info">2022-11-07 ｜ #Words: 501 </p>
                 
-                <p>
-​
-本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​​。
+                <p><!-- excerpt-start -->
+<p>​
+本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：<a href="/_blogs/2022-11-07-%E5%85%B3%E4%BA%8EUIScreen.main.bounds.height%E7%9A%84%E5%80%BC%E5%8F%91%E7%94%9F%E4%BA%86%E5%8F%98%E5%8C%96%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.md">《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​</a>​。</p>
 </p>
-                
             </li>
         
     
@@ -245,11 +248,10 @@ Recently, I need to read some old documents. In the old documents, the memory ad
                 <h2><a class="blog" href="/blogs/798cd052f16bdb59307ef5762928a26d.html">关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案</a></h2>
                 <p class="info">2022-11-07 ｜ #Words: 854 </p>
                 
-                <p>
-前言
-之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。
+                <p><!-- excerpt-start -->
+<h2 id="前言">前言</h2>
+<p>之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：<a href="https://blog.csdn.net/qq_33919450/article/details/113743159">《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》</a>，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。</p>
 </p>
-                
             </li>
         
     
@@ -258,12 +260,11 @@ Recently, I need to read some old documents. In the old documents, the memory ad
                 <h2><a class="blog" href="/blogs/764f846cf5b57142a163720685f24e4e.html">Safari Extension 扩展插件中关于权限的二三事（例如设置权限、权限类型等）</a></h2>
                 <p class="info">2022-10-25 ｜ #Words: 1423 </p>
                 
-                <p>
-Safari Extension 扩展插件的权限相关的内容大致分为下面几个方面：
-用户要掌控扩展（Users are in control）
-Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干嘛，因此扩展只有在用户进行互动之后才会运行。在第一次运行之前，扩展图表旁边会有一个提醒，点击会弹出一个标记来帮助指导用户使用。如下：
+                <p><!-- excerpt-start -->
+<p>Safari Extension 扩展插件的权限相关的内容大致分为下面几个方面：</p>
+<h3 id="用户要掌控扩展users-are-in-control">用户要掌控扩展（Users are in control）</h3>
+<p>Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干嘛，因此扩展只有在用户进行互动之后才会运行。在第一次运行之前，扩展图表旁边会有一个提醒，点击会弹出一个标记来帮助指导用户使用。如下：</p>
 </p>
-                
             </li>
         
     
@@ -276,11 +277,10 @@ Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干
                 <h2><a class="blog" href="/blogs/c9a481be3f86c6be4b7cfca7d08da07c.html">「SwiftUI」如何使用自带的原生图表（Charts）</a></h2>
                 <p class="info">2022-09-23 ｜ #Words: 4245 </p>
                 
-                <p>
-简介
-在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包Charts，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。
+                <p><!-- excerpt-start -->
+<h2 id="简介">简介</h2>
+<p>在 WWDC2022 上，苹果为 SwiftUI 提供了图表相关的包<code class="language-plaintext highlighter-rouge">Charts</code>，这下就不用自己费劲实现图表功能了。代码量一下子从四五百行变成了十几行，甚至几行（还记得当时为了写图表功能写的快吐血了）。所以就想好好研究一下自带的图表功能，这样方便以后的开发和使用。</p>
 </p>
-                
             </li>
         
     
@@ -295,10 +295,9 @@ Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干
                 <h2><a class="blog" href="/blogs/7e752d5a8bf37d6ef8d206c263e72469.html">「SwiftUI」iOS 15 新版Animation制作动画介绍</a></h2>
                 <p class="info">2022-08-13 ｜ #Words: 2022 </p>
                 
-                <p>
-从iOS 15.0开始，苹果废弃了之前的.animation(Animation?)，建议开发者使用.animation(Animation?, value: Equatable)或者withAnimation替代。
+                <p><!-- excerpt-start -->
+<p>从iOS 15.0开始，苹果废弃了之前的<code class="language-plaintext highlighter-rouge">.animation(Animation?)</code>，建议开发者使用<code class="language-plaintext highlighter-rouge">.animation(Animation?, value: Equatable)</code>或者<code class="language-plaintext highlighter-rouge">withAnimation</code>替代。</p>
 </p>
-                
             </li>
         
     
@@ -313,14 +312,13 @@ Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干
                 <h2><a class="blog" href="/blogs/a9ad294ca265f97cd282fbd8d76600d8.html">「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）</a></h2>
                 <p class="info">2022-07-17 ｜ #Words: 1895 </p>
                 
-                <p>
-在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：
-
-  NavigationView法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。这个方法从 iOS 16 开始被废弃了，新的办法请移步：《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》（2022-11-24更新）。
-  指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。
-
+                <p><!-- excerpt-start -->
+<p>在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">NavigationView</code>法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。<strong>这个方法从 iOS 16 开始被废弃了，新的办法请移步：<a href="/blogs/2022-11-24-%E3%80%8CSwiftUI%E3%80%8D%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%B0%E7%9A%84NavigationStack%E5%92%8CNavigationSplitView%EF%BC%88%E5%A6%82%E4%BD%95%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC2.0%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%BE%A7%E6%A0%8F%EF%BC%89.html">《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》</a></strong>（2022-11-24更新）。</li>
+  <li>指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。</li>
+</ul>
 </p>
-                
             </li>
         
     
@@ -337,10 +335,9 @@ Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干
                 <h2><a class="blog" href="/blogs/d4f89b69a701100ce7f8f8aca2abd3d4.html">How Swift parses URLs</a></h2>
                 <p class="info">2022-07-08 ｜ #Words: 136 </p>
                 
-                <p>
-Although Swift is not a common language for server backends, but it can also parse URLs. Just in case, I still did some research.
+                <p><!-- excerpt-start -->
+<p>Although Swift is not a common language for server backends, but it can also parse URLs. Just in case, I still did some research.</p>
 </p>
-                
             </li>
         
     
@@ -367,14 +364,14 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/d70d22ef1a896225b3f32efeb6541a27.html">「SwiftUI」如何修改TabView的各种属性（包括tabItem的属性），例如颜色、位置、大小等</a></h2>
                 <p class="info">2022-03-23 ｜ #Words: 4043 </p>
                 
-                <p>
-
-  可以利用侧边的目录来跳转哦！
-  本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。
-  本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。
-
+                <p><h2 id="阅读建议和提示">阅读建议和提示</h2>
+<!-- excerpt-start -->
+<ol>
+  <li><strong>可以利用侧边的目录来跳转哦！</strong></li>
+  <li>本文所有代码适用于最新版本的 iOS 15 和 SwiftUI。</li>
+  <li>本文中没有列出所有的属性，是因为有些属性会和其他属性发生冲突而失效，所以忽略了可以被忽略的属性。</li>
+</ol>
 </p>
-                
             </li>
         
     
@@ -383,10 +380,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/f48a933188a9f65909ee25bbbb652652.html">「SwiftUI」延迟执行操作/定时自动执行操作（使用计时器Timer以及异步DispatchQueue.main.asyncAfter）</a></h2>
                 <p class="info">2022-03-14 ｜ #Words: 1393 </p>
                 
-                <p>
-在开发软件的过程中，我们不仅需要用户点击的时候执行操作，有时候还需要定时自动进行一些操作。比如最常见的开屏广告倒计时关闭，还比如一些动画效果。实现这些一般有两种方法：一种是使用计时器Timer，一种是使用异步操作。
+                <p><!-- excerpt-start -->
+<p>在开发软件的过程中，我们不仅需要用户点击的时候执行操作，有时候还需要定时自动进行一些操作。比如最常见的开屏广告倒计时关闭，还比如一些动画效果。实现这些一般有两种方法：一种是使用计时器Timer，一种是使用异步操作。</p>
 </p>
-                
             </li>
         
     
@@ -395,10 +391,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/da7bb069678e3053cd6786ecc1fb634e.html">「SwiftUI」从Date类型获取各种数据（hour，minute等）</a></h2>
                 <p class="info">2022-03-04 ｜ #Words: 261 </p>
                 
-                <p>
-当我们获得用户在DatePicker中选取的时间之后，我们会获取一个Date类型的数据。但是需要以其他数据类型来使用这个数据。下面就来讲讲如何实现这一点。
+                <p><!-- excerpt-start -->
+<p>当我们获得用户在DatePicker中选取的时间之后，我们会获取一个Date类型的数据。但是需要以其他数据类型来使用这个数据。下面就来讲讲如何实现这一点。</p>
 </p>
-                
             </li>
         
     
@@ -407,10 +402,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/b37f3107244c87b2dfbc54a8145a8a45.html">「SwiftUI」如何使用Core Image官方滤镜（CIFilter）来处理照片</a></h2>
                 <p class="info">2022-02-22 ｜ #Words: 1419 </p>
                 
-                <p>
-苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：Core Image Filter Reference
+                <p><!-- excerpt-start -->
+<p>苹果在Core Image API中提供了14个大类、共174个图像处理方式以及一些常见滤镜，其中一些滤镜还能处理视频甚至是实时视频，各个滤镜详情参见：<a href="https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorClamp">Core Image Filter Reference</a></p>
 </p>
-                
             </li>
         
     
@@ -419,10 +413,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/04b02762f73fe5eabfd13a3ba6e5fe18.html">「SwiftUI」推送通知（Notifications）二三事</a></h2>
                 <p class="info">2022-02-21 ｜ #Words: 1368 </p>
                 
-                <p>
-有很多需要推送通知的情况，但是关于SwiftUI的通知推送说的人却不多，这里就说一些相关内容。一方面是为了自己能以后再查阅，另外一方面也是想能帮到有需要的人。
+                <p><!-- excerpt-start -->
+<p>有很多需要推送通知的情况，但是关于SwiftUI的通知推送说的人却不多，这里就说一些相关内容。一方面是为了自己能以后再查阅，另外一方面也是想能帮到有需要的人。</p>
 </p>
-                
             </li>
         
     
@@ -431,10 +424,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/a5599cad6f3ca2349043e83304f9fc84.html">「SwiftUI」如何使用iOS/iPadOS/macOS系统自带的文本转语音功能（TTS）来朗读文本</a></h2>
                 <p class="info">2022-02-17 ｜ #Words: 376 </p>
                 
-                <p>
-作为独立开发者，有些时候需要大量读音的时候，就可以使用一些语音合成技术，虽然讯飞、谷歌的语音合成技术似乎更好一点，但是需要联网从云端获取，这有时候会影响软件的效率和成本。好在iOS自带语音合成技术，支持的语言包括各个地区口音的英语、中文（普通话）、日语、法语等。
+                <p><!-- excerpt-start -->
+<p>作为独立开发者，有些时候需要大量读音的时候，就可以使用一些语音合成技术，虽然讯飞、谷歌的语音合成技术似乎更好一点，但是需要联网从云端获取，这有时候会影响软件的效率和成本。好在iOS自带语音合成技术，支持的语言包括各个地区口音的英语、中文（普通话）、日语、法语等。</p>
 </p>
-                
             </li>
         
     
@@ -445,10 +437,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/727652a73635f35f38b4caa67cef5bf4.html">「SwiftUI」获取网站api中的JSON，并且显示其中的文本</a></h2>
                 <p class="info">2022-02-11 ｜ #Words: 1812 </p>
                 
-                <p>
-这是开发中非常常见的使用场景。
+                <p><!-- excerpt-start -->
+<p>这是开发中非常常见的使用场景。</p>
 </p>
-                
             </li>
         
     
@@ -457,10 +448,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html">「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能</a></h2>
                 <p class="info">2022-01-28 ｜ #Words: 497 </p>
                 
-                <p>
-我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：
+                <p><!-- excerpt-start -->
+<p>我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：</p>
 </p>
-                
             </li>
         
     
@@ -469,10 +459,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/c9b18f5434f81dc0c7bd01a79bf61271.html">「SwiftUI」如何获取View视图的尺寸</a></h2>
                 <p class="info">2022-01-20 ｜ #Words: 392 </p>
                 
-                <p>
-我们可能在一些情况下需要获取SwiftUI的一个View的尺寸，我们可以用以下方法获取：
+                <p><!-- excerpt-start -->
+<p>我们可能在一些情况下需要获取SwiftUI的一个View的尺寸，我们可以用以下方法获取：</p>
 </p>
-                
             </li>
         
     
@@ -481,10 +470,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/93f398737ba1e12f9633bde7076ce4dc.html">「SwiftUI」如何调整SF符号大小</a></h2>
                 <p class="info">2022-01-11 ｜ #Words: 354 </p>
                 
-                <p>
-苹果为开发者提供了很多图标，提高了开发者的效率，也统一了很多符号的用途，以免造成误解。这些图标被称为SF符号，苹果提供了一个软件来供开发者查找这些符号，名为SF符号（SF Symbol），在开发者官网可以找到，如下：
+                <p><!-- excerpt-start -->
+<p>苹果为开发者提供了很多图标，提高了开发者的效率，也统一了很多符号的用途，以免造成误解。这些图标被称为SF符号，苹果提供了一个软件来供开发者查找这些符号，名为<code class="language-plaintext highlighter-rouge">SF符号（SF Symbol）</code>，在开发者官网可以找到，如下：</p>
 </p>
-                
             </li>
         
     
@@ -493,10 +481,9 @@ Although Swift is not a common language for server backends, but it can also par
                 <h2><a class="blog" href="/blogs/aee411476fc73cce549a99ba71eb4e56.html">「SwiftUI」UIDevice的一些属性（设备系统名称以及电池电量）</a></h2>
                 <p class="info">2021-04-03 ｜ #Words: 585 </p>
                 
-                <p>
-UIDevice是获取设备信息的一个API。
+                <p><!-- excerpt-start -->
+<p>UIDevice是获取设备信息的一个API。</p>
 </p>
-                
             </li>
         
     
@@ -505,11 +492,10 @@ UIDevice是获取设备信息的一个API。
                 <h2><a class="blog" href="/blogs/ee422942d328ed888f7af71fa2a9d5de.html">「SwiftUI」自定义颜色（UIColor和Color Set包括dark model黑暗模式）</a></h2>
                 <p class="info">2021-03-14 ｜ #Words: 1164 </p>
                 
-                <p>
-苹果官方不建议自定义颜色，而是使用官方提供的颜色。详情参见：Color - Foundations - Human Interface Guidelines - Design - Apple Developer
-但是还是可以SwiftUI里自定义一些属性的颜色（例如背景），有两种办法：
+                <p><!-- excerpt-start -->
+<p>苹果官方不建议自定义颜色，而是使用官方提供的颜色。详情参见：<a href="https://developer.apple.com/design/human-interface-guidelines/ios/visual-design/color/">Color - Foundations - Human Interface Guidelines - Design - Apple Developer</a>
+但是还是可以SwiftUI里自定义一些属性的颜色（例如背景），有两种办法：</p>
 </p>
-                
             </li>
         
     

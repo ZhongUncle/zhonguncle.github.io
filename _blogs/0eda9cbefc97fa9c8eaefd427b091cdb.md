@@ -3,8 +3,8 @@ layout: article
 category: Assembly
 date: 2022-08-13
 title: macOS Assembly Guide
+excerpt: "This is a guide for learning assembly language on macO.ZhongUncle explains why learning assembly language is useful and beneficial, such as improving performance, implementing special functions, and understanding decompiled code. ZhongUncle also advises beginners to learn C language first before learning assembly. ZhongUncle recommends some documents and manuals for learning assembly language, especially for Intel and ARM architectures, and provides links to download or access them online. ZhongUncle introduces some tools and commands for writing and compiling assembly code on macOS, such as as, ld, clang, gcc, size, otool, and Xcode, and explains how to use them with examples and screenshots. ZhongUncle compares the differences between the AT&T and Intel assembly syntax styles, and gives some tips and notes for writing assembly code in different styles. ZhongUncle demonstrates how to write a simple program that prints “hello world!” in assembly language on macOS, and shows the complete source code and each line of code in detail. ZhongUncle also shows how to assemble and link the code into a Mach-O executable file using two methods: gcc and as/ld. ZhongUncle also shows the output of the program and some commands to check the file type and size."
 ---
-<!-- excerpt-start -->
 Since most of the resources, methods and tools for learning assembly are based for Windows. So here I will introduce some materials and tools for macOS
 
 I will continuously update this article and also using it as a personal note.
