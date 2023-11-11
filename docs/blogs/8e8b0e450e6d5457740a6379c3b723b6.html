@@ -107,7 +107,7 @@
 </div>
             <h1>How to directly use scripts in Linux (configure all bin directories included in the $PATH variable)</h1>
             <div class="bloginfo">
-                <p class="info">2023-10-20 ｜ <a href="/web.html"> Web</a> ｜ #Words: 403 </p>
+                <p class="info">2023-10-20 ｜ <a href="/web.html"> Web</a> ｜ #Words: 318 </p>
             </div>
             <!-- excerpt-start -->
 <p>In Linux, when we write a script, we must use an explicit path to use the script, for example: <code class="language-plaintext highlighter-rouge">./helloworld</code>. If enter <code class="language-plaintext highlighter-rouge">helloworld</code> directly, we will be prompted <code class="language-plaintext highlighter-rouge">Command 'helloworld' not found</code>, which is very inconvenient.</p>
@@ -120,8 +120,7 @@
 
 <p>These directories are separated by colons. For example, use <code class="language-plaintext highlighter-rouge">nano</code> will searched and found <code class="language-plaintext highlighter-rouge">/bin/nano</code>.</p>
 
-<p>所以我们需要在我们的用户目录<code class="language-plaintext highlighter-rouge">~</code>下创建一个<code class="language-plaintext highlighter-rouge">bin</code>目录，并且将脚本移入该目录下（如果你的变量<code class="language-plaintext highlighter-rouge">$PATH</code>中有<code class="language-plaintext highlighter-rouge">/home/username/bin</code>目录，也就是<code class="language-plaintext highlighter-rouge">~/bin</code>目录，那就可以直接使用，不用接下来的操作）：
-So we need to create a <code class="language-plaintext highlighter-rouge">bin</code> directory under our user directory <code class="language-plaintext highlighter-rouge">~</code> and move the script into this directory (if there is a <code class="language-plaintext highlighter-rouge">/home/username/bin</code> or ` ~/bin<code class="language-plaintext highlighter-rouge"> directory in your variable </code>$PATH`, you can use it directly without the below operation):</p>
+<p>So we need to create a <code class="language-plaintext highlighter-rouge">bin</code> directory under our user directory <code class="language-plaintext highlighter-rouge">~</code> and move the script into this directory (if there is a <code class="language-plaintext highlighter-rouge">/home/username/bin</code> or ` ~/bin<code class="language-plaintext highlighter-rouge"> directory in your variable </code>$PATH`, you can use it directly without the below operation):</p>
 
 <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">mkdir </span>bin
 <span class="nv">$ </span><span class="nb">mv </span>helloworld bin
@@ -146,6 +145,13 @@ So we need to create a <code class="language-plaintext highlighter-rouge">bin</c
 
 <p>I hope these will help someone in need~</p>
 
+        </div>
+        <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
         </div>
     </body>
 </html>
