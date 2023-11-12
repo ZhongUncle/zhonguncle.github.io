@@ -15,15 +15,15 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。" />
 <meta property="og:description" content="本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。" />
-<link rel="canonical" href="https://zhonguncle.github.io/blogs/5f1a7fd5d52116befdae2e8e54b10888.html" />
-<meta property="og:url" content="https://zhonguncle.github.io/blogs/5f1a7fd5d52116befdae2e8e54b10888.html" />
+<link rel="canonical" href="http://localhost:4000/blogs/5f1a7fd5d52116befdae2e8e54b10888.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/5f1a7fd5d52116befdae2e8e54b10888.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-08-27T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-27T00:00:00+08:00","datePublished":"2023-08-27T00:00:00+08:00","description":"本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。","headline":"Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/5f1a7fd5d52116befdae2e8e54b10888.html"},"url":"https://zhonguncle.github.io/blogs/5f1a7fd5d52116befdae2e8e54b10888.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-27T00:00:00+08:00","datePublished":"2023-08-27T00:00:00+08:00","description":"本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。 前提知识 首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。","headline":"Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/5f1a7fd5d52116befdae2e8e54b10888.html"},"url":"http://localhost:4000/blogs/5f1a7fd5d52116befdae2e8e54b10888.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -293,12 +293,12 @@
         crossorigin="anonymous"
         async>
         </script>
-        <div class="footer__html">
+        <!-- <div class="footer__html">
             <p>
                 You can find me in: 
                 <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
                 <a href="https://github.com/ZhongUncle">GitHub</a>
             </p>
-        </div>
+        </div> -->
     </body>
 </html>
