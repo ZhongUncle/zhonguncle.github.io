@@ -19,11 +19,11 @@
 <meta property="og:url" content="https://zhonguncle.github.io/blogs/1067904058e8c8e9d2e2fadf88655e72.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2023-09-20T00:00:00+08:00" />
+<meta property="article:published_time" content="2023-02-03T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Why GIF is static image rather than video?" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-09-20T00:00:00+08:00","datePublished":"2023-09-20T00:00:00+08:00","description":"This is about GIF file format and its history. It explains how GIF files are composed of different parts, such as signature, screen descriptor, color map, image descriptor, and raster data. It also shows how GIF files use LZW compression and animation features.The page also explores the origins and purposes of GIF files, which were developed by CompuServe in 1987 to provide a simple and universal graphic format for users who needed to access email and transfer files. GIF files were designed to be small, compatible, and interactive across different computer systems.The page also discusses the limitations and alternatives of GIF files, such as the 256-color restriction, the patent issue, and the PNG and MNG formats. It argues that GIF files have survived and thrived because of their ease of use, looping ability, and no need for decoding. It also wonders who came up with the idea of using GIF files for animation.","headline":"Why GIF is static image rather than video?","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/1067904058e8c8e9d2e2fadf88655e72.html"},"url":"https://zhonguncle.github.io/blogs/1067904058e8c8e9d2e2fadf88655e72.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-03T00:00:00+08:00","datePublished":"2023-02-03T00:00:00+08:00","description":"This is about GIF file format and its history. It explains how GIF files are composed of different parts, such as signature, screen descriptor, color map, image descriptor, and raster data. It also shows how GIF files use LZW compression and animation features.The page also explores the origins and purposes of GIF files, which were developed by CompuServe in 1987 to provide a simple and universal graphic format for users who needed to access email and transfer files. GIF files were designed to be small, compatible, and interactive across different computer systems.The page also discusses the limitations and alternatives of GIF files, such as the 256-color restriction, the patent issue, and the PNG and MNG formats. It argues that GIF files have survived and thrived because of their ease of use, looping ability, and no need for decoding. It also wonders who came up with the idea of using GIF files for animation.","headline":"Why GIF is static image rather than video?","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/1067904058e8c8e9d2e2fadf88655e72.html"},"url":"https://zhonguncle.github.io/blogs/1067904058e8c8e9d2e2fadf88655e72.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -100,7 +100,7 @@
 </div>
             <h1>Why GIF is static image rather than video?</h1>
             <div class="bloginfo">
-                <p class="info">2023-09-20 ｜ <a href="/research.html"> Research</a> ｜ #Words: 5696 </p>
+                <p class="info">2023-02-03 ｜ <a href="/research.html"> Research</a> ｜ #Words: 4222 </p>
             </div>
             <p>When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?</p>
 
@@ -221,163 +221,190 @@
 (1 &lt;&lt;((0xf6 &amp; 0x07) + 1)) * 3 = 128*3=384
 </code></pre></div></div>
 
-<p>So the data block size for the global color map above is 384 bytes.
-所以上面的全局颜色映射的数据块大小为 384 个字节。</p>
+<p>So the data block size for the global color map above is 384 bytes.</p>
 
-<h3 id="扩展块">扩展块</h3>
-<p>在这个地方，可能还会有一个或多个扩展块，以<code class="language-plaintext highlighter-rouge">21h</code>开头，<code class="language-plaintext highlighter-rouge">00h</code>结尾。可以用来说明动画间隔和背景透明度等很多相关信息。
-扩展块的大小是固定的，不过 87a 和 89a 的不一样大。如果是 87a，那么这部分是图形控制扩展块（8 字节）。
-如果是 89a，那么会有图形控制扩展块（8 字节）、纯文本扩展块（15 字节）、应用程序扩展块（14 字节）、注释扩展块（5～256 字节） 这 4 个扩展块，每个扩展块都以<code class="language-plaintext highlighter-rouge">21h</code>开头，区分在于第二个字节：</p>
+<h3 id="extension-block">Extension block</h3>
+<p>At this place, there may be one or more extension blocks, starting with <code class="language-plaintext highlighter-rouge">21h</code> and ending with <code class="language-plaintext highlighter-rouge">00h</code>. They can be used to describe animation intervals and background transparency and many other related information.</p>
+
+<p>The size of the extension block is fixed, but 87a and 89a are not the same size. If it is 87a, then this part is the graphics control extension block (8 bytes).</p>
+
+<p>If it is 89a, then there will be four graphics control extension blocks (8 bytes), plain text extension blocks (15 bytes), application extension blocks (14 bytes), and comment extension blocks (5 to 256 bytes). Extension blocks, each extension block starts with <code class="language-plaintext highlighter-rouge">21h</code>, and the difference lies in the second byte:</p>
 <ul>
-  <li>如果是<code class="language-plaintext highlighter-rouge">f9h</code>，那么将数据块标识为图形控制扩展块；</li>
-  <li>如果是<code class="language-plaintext highlighter-rouge">01h</code>，那么将数据块标识为纯文本扩展块；</li>
-  <li>如果是<code class="language-plaintext highlighter-rouge">ffh</code>，那么将数据块标识为应用程序扩展块；</li>
+  <li>If it is <code class="language-plaintext highlighter-rouge">f9h</code>, then identify the data block as a graphics control extension block;</li>
+  <li>If it is <code class="language-plaintext highlighter-rouge">01h</code>, then identify the data block as a plain text extension block;</li>
+  <li>If it is <code class="language-plaintext highlighter-rouge">ffh</code>, then identify the data block as an application extension block;</li>
 </ul>
 
-<p>还是以上面的图为例，截取扩展块的部分：</p>
+<p>Still taking the above picture as an example, intercept the part of the expansion block:</p>
 
-<p><img src="/assets/images/c0c63b817af74bc087dbd5c220b2e9df.png" alt="GIF 扩展块的部分" /></p>
+<p><img src="/assets/images/c0c63b817af74bc087dbd5c220b2e9df.png" alt="GIF extension block" /></p>
 
-<p>两条红线之间的字节便是扩展块的部分。</p>
+<p>The bytes between the two red lines are extension block.</p>
 
-<p><strong>首先<code class="language-plaintext highlighter-rouge">21h ffh</code>说明为应用程序扩展块。</strong>
-<code class="language-plaintext highlighter-rouge">0bh</code>为应用程序标识符和 Authent Code 字段中的字节数（这个值是固定的，必须是<code class="language-plaintext highlighter-rouge">0b</code>）。AuthentCode 字段包含一个值，该值用于标识创建应用程序扩展块的软件应用程序。如果识别此标识符值成功，则读取数据块的剩余部分，并对其数据进行操作。如果无法识别标识符值，则读取数据块的剩余部分并丢弃其数据。
-接下来的<code class="language-plaintext highlighter-rouge">4e 45 54 53 43 41 50 45</code>（十六进制）就是应用程序标识符，根据 ASCII 可以得到“NETSCAPE”。<code class="language-plaintext highlighter-rouge">32 2e 30</code>（十六进制）则为 Authent Code，根据 ASCII 可以得到“2.0”。这后面则是取决于应用程序和开发者。最后<code class="language-plaintext highlighter-rouge">00h</code>结束块。</p>
+<ul>
+  <li><strong><code class="language-plaintext highlighter-rouge">21h ffh</code> is explained as the application extension block at first</strong>.</li>
+  <li><code class="language-plaintext highlighter-rouge">0bh</code> is the number of bytes in the Application Identifier and Authent Code fields (this value is fixed and must be <code class="language-plaintext highlighter-rouge">0b</code>). The AuthentCode field contains a value that identifies the software application that created the application extension block. If the recognition of this identifier value is successful, the remainder of the data block is read and its data is operated on. If the identifier value cannot be recognized, the remainder of the data block is read and its data is discarded.</li>
+  <li><code class="language-plaintext highlighter-rouge">4e 45 54 53 43 41 50 45</code> (hexadecimal) is the application identifier. It means “NETSCAPE” in ASCII code.</li>
+  <li><code class="language-plaintext highlighter-rouge">32 2e 30</code> (hexadecimal) is the Authent Code, which means “2.0” in ASCII code.</li>
+  <li>this part depend on the application and developer.</li>
+  <li><code class="language-plaintext highlighter-rouge">00h</code> is end block.</li>
+</ul>
 
 <blockquote>
-  <p>Netscape 是第一个允许用户与图像交互的浏览器，比如说创新性地可以点击图像跳转页面。可以说 Netscape 拯救了 GIF，不然当时就没了，这点也是 CompuServe 总裁在采访的时候所说的。</p>
+  <p>Netscape was the first browser to allow users to interact with images, such as the innovative ability to click on an image to jump to a page. It can be said that Netscape saved GIF, otherwise it would have disappeared. This is what the president of CompuServe said in the interview.</p>
 </blockquote>
 
-<p><strong>然后<code class="language-plaintext highlighter-rouge">21h f9h</code>表示为图形控制扩展块。</strong>
-接下来的<code class="language-plaintext highlighter-rouge">04h</code>是固定的值，为 Packed、DelayTime 和ColorIndex 字段的字节数总和，也就是一共 4 个字节。<strong>（如果是 GIF87a 则只有一个<code class="language-plaintext highlighter-rouge">21h</code>）</strong>
-Packed 字段有 4 个部分，上图中为<code class="language-plaintext highlighter-rouge">04h</code>，二进制为<code class="language-plaintext highlighter-rouge">0000 0100</code>。</p>
+<p><strong>Then <code class="language-plaintext highlighter-rouge">21h f9h</code> is represented as a graphics control extension block.</strong></p>
+
+<p>The next <code class="language-plaintext highlighter-rouge">04h</code> is a fixed value, which is the sum of the number of bytes of the Packed, DelayTime and ColorIndex, totally 4 bytes. <strong>(In case of GIF87a there is only one <code class="language-plaintext highlighter-rouge">21h</code>)</strong>
+The Packed is <code class="language-plaintext highlighter-rouge">04h</code> in the above figure and <code class="language-plaintext highlighter-rouge">0000 0100</code> in binary. It is divided into 4 parts:</p>
 <ul>
-  <li>第 1 位用来表示 ColorIndex 字段中颜色透明度字段是否有值，这里为<code class="language-plaintext highlighter-rouge">0</code>说明没有值。</li>
-  <li>第 2 位是用户输入标志，如果进入下一个图像序列之前需要用户输入（按下某键或者点击鼠标），那么此处为<code class="language-plaintext highlighter-rouge">1</code>，否则为<code class="language-plaintext highlighter-rouge">0</code>。这里为<code class="language-plaintext highlighter-rouge">0</code>说明不需要用户操作即可进入下一图像。</li>
-  <li>第 3～5 位表示图像显示后如何处理，（这里的数字为二进制）
+  <li>Bit 1 is used to indicate whether the color transparency field in the ColorIndex field has a value. Here, <code class="language-plaintext highlighter-rouge">0</code> means there is no value.</li>
+  <li>Bit 2 is the user input flag. If user input is required before entering the next image sequence (press a key or click the mouse), then it is <code class="language-plaintext highlighter-rouge">1</code>, otherwise it is <code class="language-plaintext highlighter-rouge">0</code>. <code class="language-plaintext highlighter-rouge">0</code> here indicates that no user operation is required to enter the next image.</li>
+  <li>Bits 3~5 indicate how to process the image after it is displayed (the numbers here are binary)
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">000</code>（未指定处置方法）</li>
-      <li><code class="language-plaintext highlighter-rouge">001</code>（不处理图形），图中是<code class="language-plaintext highlighter-rouge">001</code>，所以就没有任何操作。</li>
-      <li><code class="language-plaintext highlighter-rouge">010</code>（用背景颜色覆盖图形）</li>
-      <li><code class="language-plaintext highlighter-rouge">011</code>（用以前的图形覆盖图形）</li>
+      <li><code class="language-plaintext highlighter-rouge">000</code> (no disposal method specified)</li>
+      <li><code class="language-plaintext highlighter-rouge">001</code> (does not process graphics), it is <code class="language-plaintext highlighter-rouge">001</code> in the picture, so there is no operation.</li>
+      <li><code class="language-plaintext highlighter-rouge">010</code> (overlay graphic with background color)</li>
+      <li><code class="language-plaintext highlighter-rouge">011</code> (overwrite graph with previous graph)</li>
     </ul>
   </li>
-  <li>第 6～8 位是保留的，不过 GIF89a 中不实用此子字段，所以始终为<code class="language-plaintext highlighter-rouge">0</code>。</li>
+  <li>Bits 6~8 are reserved, but this subfield is not used in GIF89a, so it is always <code class="language-plaintext highlighter-rouge">0</code>.</li>
 </ul>
 
-<p>可以看到图形控制扩展块的内容可以让 GIF 变得可以像 PPT 一样。</p>
+<p>You can see the content of the graphics control extension block can make GIF look like PPT.</p>
 
-<p>接下来的 1 个字节便是 DelayTime 字段，内容为<code class="language-plaintext highlighter-rouge">0ah</code>，表示等待 0.1 秒再播放下一图像。0.1 秒也就是 1/10 秒，也就是可以理解成每秒显示 10 帧。
-下面 2 个字节是颜色透明度，这里是<code class="language-plaintext highlighter-rouge">00h</code>，而且前面 Packed 字段中第一位是<code class="language-plaintext highlighter-rouge">0</code>。也就是说没有这个字段略过，也就是没有调整颜色透明度。
-紧接着的<code class="language-plaintext highlighter-rouge">ffh</code>这个字节应该是<code class="language-plaintext highlighter-rouge">00h</code>，这里应该是软件自己的特色。
-最后<code class="language-plaintext highlighter-rouge">00h</code>表示扩展块结束。</p>
+<p>The next 1 byte is the DelayTime field, the content is <code class="language-plaintext highlighter-rouge">0ah</code>, which means wait 0.1 seconds before playing the next image. 0.1 second is 1/10 second, which can be understood as displaying 10 frames per second.
+The next 2 bytes are color transparency, here it is <code class="language-plaintext highlighter-rouge">00h</code>, and the first bit in the previous Packed field is <code class="language-plaintext highlighter-rouge">0</code>. That is to say, this field is not skipped, that is, the color transparency is not adjusted.
+The following byte of <code class="language-plaintext highlighter-rouge">ffh</code> should be <code class="language-plaintext highlighter-rouge">00h</code>, which should be the characteristics of the software itself.
+The last <code class="language-plaintext highlighter-rouge">00h</code> indicates the end of the extension block.</p>
 
-<h3 id="图像">图像</h3>
-<p>然后便是 GIF 中每一张图像的内容了。GIF 中的图像数据使用 LZW（Lempel-Ziv-Welch）算法进行压缩，由<code class="language-plaintext highlighter-rouge">2ch</code>（ASCII 对应<code class="language-plaintext highlighter-rouge">,</code>）开始，并且由三部分以下组成：</p>
+<h3 id="image">Image</h3>
+<p>Then let us move to the content of each image in the GIF. The image data in GIF is compressed by LZW (Lempel-Ziv-Welch) algorithm, starting from <code class="language-plaintext highlighter-rouge">2ch</code> (ASCII corresponds to <code class="language-plaintext highlighter-rouge">,</code>), and consists of the following three parts:</p>
 <ul>
-  <li>图像描述符；</li>
-  <li>局部颜色映射（这个当然也是可选的了）；</li>
-  <li>光栅数据。</li>
+  <li>Image descriptor;</li>
+  <li>Local color mapping (of course this is also optional);</li>
+  <li>Raster data.</li>
 </ul>
 
-<h4 id="图像描述符local-image-descriptor">图像描述符（Local Image Descriptor）</h4>
-<p>图像描述符又被称为图像标题，以<code class="language-plaintext highlighter-rouge">2ch</code>开始，<code class="language-plaintext highlighter-rouge">07h</code>结束，也就是下图这部分：</p>
+<h4 id="image-descriptor-local-image-descriptor">Image Descriptor (Local Image Descriptor)</h4>
+<p>The image descriptor is also called image title, starting with <code class="language-plaintext highlighter-rouge">2ch</code> and ending with <code class="language-plaintext highlighter-rouge">07h</code>, which is the part below:</p>
 
-<p><img src="/assets/images/b3b5e962a4704942b8fb7feb224ad953.png" alt="图像标题，以 2ch 开始，07h 结束" /></p>
+<p><img src="/assets/images/b3b5e962a4704942b8fb7feb224ad953.png" alt="Image title, starting with 2ch and ending with 07h" /></p>
 
-<p>这部分内容包含了图像描述符的分隔符<code class="language-plaintext highlighter-rouge">2ch</code>（一个字节），图像的坐标 X 和 Y（各两个字节）、图像的长和宽（各两个字节）、图像和颜色映射数据的信息（一个字节），以及终止符<code class="language-plaintext highlighter-rouge">07h</code>（一个字节）。
-由上图可知，图像的坐标 X 和 Y 都为 <code class="language-plaintext highlighter-rouge">00h 00h</code>。图像尺寸和前文一样，长宽都是 72x72 像素。
-图像和颜色映射数据的信息有 4 个子字段，这里的<code class="language-plaintext highlighter-rouge">00h</code>二进制为<code class="language-plaintext highlighter-rouge">0000 0000</code>，那么：</p>
+<p>This part contains the delimiter <code class="language-plaintext highlighter-rouge">2ch</code> of the image descriptor (1 byte), the coordinates X and Y of the image (2 bytes each), the length and width of the image (2 bytes each), the image and color Information about the mapping data (1 byte), and the terminator <code class="language-plaintext highlighter-rouge">07h</code> (1 byte).</p>
+
+<p>As the above image, the coordinates X and Y of the image are both <code class="language-plaintext highlighter-rouge">00h 00h</code>. The image dimensions are the same as before, 72x72 pixels in length and width.
+The information of image and color mapping data has 4 subfields. The <code class="language-plaintext highlighter-rouge">00h</code> binary here is <code class="language-plaintext highlighter-rouge">0000 0000</code>, then:</p>
 <ul>
-  <li>第 1 位为局部颜色映射标志，如果此位为<code class="language-plaintext highlighter-rouge">1</code>，则图像有个局部颜色映射，使用局部颜色映射；如果为<code class="language-plaintext highlighter-rouge">0</code>，那么使用全局颜色映射。图中这里为<code class="language-plaintext highlighter-rouge">0</code>，说明使用全局颜色映射。</li>
-  <li>第 2 位为隔行生成标志，如果此处为<code class="language-plaintext highlighter-rouge">1</code>，那么图像是隔行生成的，<code class="language-plaintext highlighter-rouge">0</code>反之。图中这里为<code class="language-plaintext highlighter-rouge">0</code>，说明不是隔行生成。</li>
-  <li>第 3 位是分类标志，用于表示颜色映射是否按照出现频率排列（或者其他因素）。不过只适用于 GIF89a。如果是 GIF87a，这部分始终为<code class="language-plaintext highlighter-rouge">0</code>。图中这里为<code class="language-plaintext highlighter-rouge">0</code>，说明没有排序颜色映射。</li>
-  <li>第 3～4 位是保留位，始终为0。</li>
-  <li>第 5～8 位是局部颜色映射条目的数量，用来表示局部颜色映射条目的数量。这里为<code class="language-plaintext highlighter-rouge">0</code>，说明此图像没有局部颜色映射。</li>
+  <li>Bit 1 is the local color mapping flag. If this bit is <code class="language-plaintext highlighter-rouge">1</code>, the image has a local color map and the local color map is used; if it is <code class="language-plaintext highlighter-rouge">0</code>, the global color map is used. Here in the figure is <code class="language-plaintext highlighter-rouge">0</code>, indicating the use of global color mapping.</li>
+  <li>Bit 2 is the interlaced generation flag. If it is <code class="language-plaintext highlighter-rouge">1</code>, the image is interlaced, and <code class="language-plaintext highlighter-rouge">0</code> is the opposite. Here in the picture is <code class="language-plaintext highlighter-rouge">0</code>, indicating that it is not interlaced.</li>
+  <li>Bit 3 is a classification flag, indicating whether the color map is arranged by frequency of occurrence (or other factors). Only works with GIF89a though. In the case of GIF87a, this part is always <code class="language-plaintext highlighter-rouge">0</code>. Here in the picture is <code class="language-plaintext highlighter-rouge">0</code>, indicating that there is no sorted color mapping.</li>
+  <li>Bits 3～4 are reserved bits and are always <code class="language-plaintext highlighter-rouge">0</code>.</li>
+  <li>Bits 5～8 are the number of local color map entries, used to indicate the number of local color map entries. Here is <code class="language-plaintext highlighter-rouge">0</code>, indicating that this image has no local color mapping.</li>
 </ul>
 
-<h3 id="局部颜色映射">局部颜色映射</h3>
-<p>局部颜色映射和全局颜色映射是一样的。而且由上一节可知，这里没有局部颜色映射，所以没啥好说的了。</p>
+<h3 id="local-color-mapping">Local color mapping</h3>
+<p>Local color mapping is same as global color mapping. And as we can see from the last section, there is no local color mapping section, so we do not talk about it.</p>
 
-<h3 id="光栅数据">光栅数据</h3>
-<p>光栅数据（Raster data）就是图像数据（Image data）。
-这部分数据由一块一块的数据构成。每一块由“块大小的计数字节”开始，值为 1～255（1h～ffh）。每一块的数据都使用 LZW（Lempel-Ziv-Welch）算法进行压缩。</p>
+<h3 id="raster-data">Raster data</h3>
+<p>Raster data is image data, consisting of pieces of data compressed using the LZW (Lempel-Ziv-Welch) algorithm. Each block starts with “block size count bytes”, which values ranging from 1 to 255 (1h to ffh).</p>
 
-<p>还是以上面的例子说明一下，第一个图像的光栅数据是从<code class="language-plaintext highlighter-rouge">1b3h</code>的这个<code class="language-plaintext highlighter-rouge">ff</code>开始的，<code class="language-plaintext highlighter-rouge">ff</code>表示接下来的这块数据为 255 字节：</p>
+<p>Also use the above example to explain. The raster data of the first image starts from the <code class="language-plaintext highlighter-rouge">ff</code> of <code class="language-plaintext highlighter-rouge">1b3h</code>. <code class="language-plaintext highlighter-rouge">ff</code> means that the next piece of data is 255 bytes:</p>
 
-<p><img src="/assets/images/7a3da15792f144e8b9356d91d4bdf3bb.png" alt="图中的 ff 表示接下来的这块数据为 255 字节" /></p>
+<p><img src="/assets/images/7a3da15792f144e8b9356d91d4bdf3bb.png" alt="The ff in the picture indicates that the next piece of data is 255 bytes" /></p>
 
-<p>那么我们继续往下翻可以看到<code class="language-plaintext highlighter-rouge">2b3h</code>、<code class="language-plaintext highlighter-rouge">3b3h</code>、<code class="language-plaintext highlighter-rouge">4b3h</code>、<code class="language-plaintext highlighter-rouge">5b3h</code> 都是<code class="language-plaintext highlighter-rouge">ff</code>，也就是往后挪 256 位：</p>
+<p>Then scroll down, we can see that <code class="language-plaintext highlighter-rouge">2b3h</code>, <code class="language-plaintext highlighter-rouge">3b3h</code>, <code class="language-plaintext highlighter-rouge">4b3h</code>, and <code class="language-plaintext highlighter-rouge">5b3h</code> are all <code class="language-plaintext highlighter-rouge">ff</code>, that is, moved back 256 places:</p>
 
 <p><img src="/assets/images/461d3a18260d498cbf27e348dff52b10.png" alt="2b3h" />
 <img src="/assets/images/bf592b796f7a416e8d3c9e30a04ca656.png" alt="3b3h" />
 <img src="/assets/images/d6c1380062094079ac0ca5b0a93f4ea5.png" alt="4b3h" />
 <img src="/assets/images/3eecaeb70889446abccb1fc83f00aadd.png" alt="5b3h" /></p>
 
-<p>但是<code class="language-plaintext highlighter-rouge">6b3h</code>这个位置上是<code class="language-plaintext highlighter-rouge">c3</code>：</p>
+<p>But it is <code class="language-plaintext highlighter-rouge">c3</code> in <code class="language-plaintext highlighter-rouge">6b3h</code>:</p>
 
-<p><img src="/assets/images/6dd54b3ed6984768bcc27a98ab2b6ec6.png" alt="6b3h这个位置上是c3h" /></p>
+<p><img src="/assets/images/6dd54b3ed6984768bcc27a98ab2b6ec6.png" alt="it is `c3` in `6b3h`" /></p>
 
-<p>那么就往后挪 196（c3h + 1 = 195 + 1=196）位看看，也就是<code class="language-plaintext highlighter-rouge">777h</code>（6b0h + c3h + 1h）这个位置：</p>
+<p>So move back 196 (c3h + 1 = 195 + 1=196) and take a look, which is the position <code class="language-plaintext highlighter-rouge">777h</code> (6b0h + c3h + 1h):</p>
 
 <p><img src="/assets/images/44d252a4588d49c59911c1722ea5513a.png" alt="777h" /></p>
 
-<p>可以看到这个位置为<code class="language-plaintext highlighter-rouge">00</code>，这表示当前图像块的光栅数据结束了（因为这里需要理解成下面的这块数据块有 0 个，然后就没有然后了）。</p>
+<p>You can see that this position is <code class="language-plaintext highlighter-rouge">00</code>, which means that the raster data of the current image block has ended (because it needs to be understood that the following data block has 0, and then there is no more).</p>
 
-<p>然后往后继续读取，在下一行<code class="language-plaintext highlighter-rouge">780h</code>的位置可以看到<code class="language-plaintext highlighter-rouge">2c</code>，表示新的图像描述符开始了。就这样循环往复，直到结束。</p>
+<p>Then continue down, you can see <code class="language-plaintext highlighter-rouge">2c</code> at the position of <code class="language-plaintext highlighter-rouge">780h</code> on the next line, indicating that a new image descriptor has started. The cycle repeats like this until it ends.</p>
 
-<p>但是需要注意的是，不是每个块都是 255+255+…+xxx 这样美好的格式，有的是乱的，只要每个值在</p>
+<p>However, it should be noted that not every block is in the beautiful format of <code class="language-plaintext highlighter-rouge">255+255+...+xxx</code>, some are messy in actual.</p>
 
-<h3 id="gif文件结尾">GIF文件结尾</h3>
-<p>如果你了解一些底层的知识，会知道文件和数据可以没有开始符，但是需要结尾符。例如 C（或者 Python 这种 C 延伸出来的语言）的字符串都是以<code class="language-plaintext highlighter-rouge">\0</code>表示字符串结尾的。因为这样作为数据流在 UNIX 系统中就知道在哪里结束。那么 GIF 文件的结尾是什么呢？
-GIF 的终止符是<code class="language-plaintext highlighter-rouge">;</code>，十六进制为<code class="language-plaintext highlighter-rouge">3b</code>。
-<img src="/assets/images/e41d254e86ab4b7689805019bf339c8b.png" alt="GIF 的终止符是`;`，十六进制为`3b`。" /></p>
+<h3 id="end-of-gif-file">End of GIF file</h3>
+<p>If you know some low-level about system, you maybe know that files and data can have no start character, but must have an end character. For example, strings in C (or languages like Python that are extended from C) end with <code class="language-plaintext highlighter-rouge">\0</code> to indicate the end of the string. Because as a data stream in the UNIX system, system must know where it ends. So what does the GIF file end with?</p>
 
-<p>可以看到终止符<code class="language-plaintext highlighter-rouge">3bh</code>前面有个<code class="language-plaintext highlighter-rouge">00h</code>，表示一个光栅数据的结尾。</p>
+<p>The terminator of GIF is <code class="language-plaintext highlighter-rouge">;</code>, which is <code class="language-plaintext highlighter-rouge">3b</code> in hexadecimal.
+<img src="/assets/images/e41d254e86ab4b7689805019bf339c8b.png" alt="The terminator of GIF is `;`, which is `3b` in hexadecimal " /></p>
 
-<h2 id="gif的静态图像长什么样">GIF的静态图像长什么样</h2>
-<p>在 GIF 诞生的头几年，GIF 只有静态图像这一个用法。
-下面这个图像是一个 GIF 文件（源自《Encyclopedia of Graphics File Formats, 2nd Edition》，是 2005 年的一本书），只有一个图像，分辨率为 1419 × 1001，你可以右键下载看看原图：</p>
+<p>You can see a <code class="language-plaintext highlighter-rouge">00h</code> in front of the terminator <code class="language-plaintext highlighter-rouge">3bh</code>, which indicates the end of a raster data.</p>
 
-<p><img src="/assets/images/0e51c3fe424242bb869777e3f2247029.GIF" alt="源自《Encyclopedia of Graphics File Formats, 2nd Edition》的静态GIF文件" /></p>
+<h2 id="what-does-a-static-image-of-a-gif-look-like">What does a static image of a GIF look like?</h2>
+<p>In the first few years after GIF birthed, GIF was only used for static images. The image below is a GIF file (from “Encyclopedia of Graphics File Formats, 2nd Edition”, a book in 2005). There is only one image in GIF file with resolution of 1419 × 1001. You can right-click to download and see the original image:</p>
 
-<h2 id="gif-的历史">GIF 的历史</h2>
-<h3 id="诞生">诞生</h3>
-<h4 id="背景知识">背景知识</h4>
-<p>GIF 诞生在互联网出现之前。在互联网出现之前，有很多计算机厂商，这些厂商不像今天的厂商，只负责组装或者生产一部分硬件，当时大部分计算机厂商是要负责开发计算机的系统，甚至包括软件，例如现在大名鼎鼎的苹果就是当时众多计算机厂商中的一员。
-不同的硬件、不同的目的导致设计出来的系统和应用也不是互相兼容的，当时买电脑会送一本书，这本书会告诉你如何在这台电脑上编程。比如下面的 Apple II 的说明书：</p>
+<p><img src="/assets/images/0e51c3fe424242bb869777e3f2247029.GIF" alt="Static GIF file from &quot;Encyclopedia of Graphics File Formats, 2nd Edition&quot;" /></p>
 
-<p><img src="/assets/images/20fa8f6d21e04522a1994071541d8ea9.jpeg" alt="Apple II 的说明书" /></p>
+<h2 id="history-of-gifs">History of GIFs</h2>
+<h3 id="birth">Birth</h3>
+<h4 id="background-knowledge">background knowledge</h4>
+<p>GIFs were born before the Internet.</p>
 
-<h4 id="目的">目的</h4>
-<p>当时CompuServe 的老板 Sandy Trevor 需要程序员为他解决两个主要问题：
-首先，CompuServe 为需要访问电子邮件和传输文件的用户提供订阅（按小时计算），这需要一种可以在所有计算机上无缝显示的简单图形格式。也就是说，这个文件必须要通用。
-其次，可能有些用电脑比较早的人还会记得，很早之前用拨号上网的时候，由于网速很慢，浏览网页会出现图片一点点往下刷新，如果网络出问题了，等了半天的图片就没了，需要刷新页面重新下载。所以这个文件必须要小。
-最后，由于当时电脑内存太小了，所以不能占用太多的内存的同时，还要保持画面质量。</p>
+<p>Before the advent of the Internet, there were many computer manufacturers. Unlike today, they are only responsible for assembling or producing part of the hardware. At that time, most computer manufacturers were responsible for developing computer systems and even software. For example, the Apple was one of many computer manufacturers at that time.</p>
 
-<p>为了解决这个问题 CompuServe 就开发了 GIF。GIF 可以做到将数据流按照一块块地传输到客户端，然后逐步显示图片。或者隔行生成图像，那么就可以将图像隔行传输数据给客户端，这样虽然画面有损耗，但是可以脑补一下。比如说下面这样的图片隔行显示，看到下图中左边和中间的图像都可以大致脑补出图片内容，而逐行显示如果一点点从上到下显示是没办法脑补的。</p>
+<p>Different hardware and purposes led to the systems and applications not being compatible with each other. At that time, when you bought a computer, you would get a book, which would tell you how to program on this computer. For example, the following instruction manual for the Apple II:</p>
 
-<p><img src="/assets/images/042f05e2224040a7801deadc39b6d061.jpeg" alt="逐行显示和隔行显示的区别" /></p>
+<p><img src="/assets/images/20fa8f6d21e04522a1994071541d8ea9.jpeg" alt="Apple II manual" /></p>
 
-<h3 id="替代品">替代品</h3>
-<p>GIF 虽然是无损压缩的，但是单张图像的颜色最多只有 256 色。如果想实现颜色细腻的话可以使用拼接法，这样会导致文件过大，以及过于复杂。再者说就算费大劲解决了前面的问题（这个时候文件大小会非常恐怖），最高只能支持 24 位的 RGB 色彩空间也使得 GIF 的色彩是不会特别细腻的（现在的屏幕）。
-其他方面，GIF 理论上最多可以显示约 43 亿像素的图片（这点可以看下面“GIF 文件格式”的内容），这点直到现在都不落伍。
-但是 GIF 的尺寸和颜色一直是两大致命问题，所以就发明了 PNG 格式用来淘汰 GIF，甚至 PNG 的全称就是“PNG’s not GIF”，不过这是 1995 年之后的故事了，此时 GIF 已经诞生了快十年。
-现在的我们可以看到，PNG 作为无损压缩图片很成功地在静态图像方面替代了 GIF，全方位优于 GIF（而且当时 GIF 由于使用 LZW 算法的原因是有专利限制的，而 PNG 是完全开源的）。但是 GIF 的动态图像却一直没有可替代者。
-1999年的互联网上还有过一段全方位销毁 GIF 的活动，但是没有成功，现在也还有这样的行为，感兴趣可以看看<a href="https://burnallgifs.org/archives/">https://burnallgifs.org/archives/</a>。
-没有成功是因为没有任何一个文件可以做到又容易实现、无声、又可以循环播放一个小动画。<strong>还有一个更重要的原因就是：GIF 是不需要任何解码器的就可以播放的。这样几乎所有的浏览器都可以播放 GIF 文件。</strong> 
-2001 年虽然围绕着 PNG 诞生了 MNG（Multiple-image Network Graphics）多图像文件，并且功能和画质远好于 GIF，但是还是没有战胜 GIF（个人猜测是因为过于复杂了，MNG 甚至可以加上音轨，这种程度不如直接使用 MP4 等视频格式）。</p>
+<h4 id="purpose">Purpose</h4>
+<p>The boss of CompuServe Sandy Trevor needed programmers to solve two main problems:</p>
+<ol>
+  <li>First, CompuServe offers subscriptions (on an hourly basis) to users who need to access email and transfer files, which requires a simple graphical format that can be displayed seamlessly on all computers. In other words, this file must be universal.</li>
+  <li>Secondly, some people who have used computers for a long time may still remember that when we used dial-up Internet a long time ago, due to the slow speed of the Internet, the pictures on the web page would be refreshed little by little. If there was a problem with the network, we would have to wait for a long time. The image is gone and you need to refresh the page and download it again. So the file must be small.</li>
+  <li>Because the computer memory at that time was too small, it could not occupy too much memory while maintaining picture quality.</li>
+</ol>
 
-<h2 id="结论">结论</h2>
-<p>GIF诞生之初是为了作为静态图片使用，就相当于今天的 PNG 和 JEPG。不过它的结构可以理解成一个简易版 PPT。pptx 文件是由 xml 和 图像文件组成的一个 tar 包，GIF 文件是由一些信息块、控制块和 LZW 压缩过后的光栅图像构成的，而且很巧合的是 Power Point 和 GIF 是同一年诞生的。但是可以通过控制显示 GIF 文件中每个光栅图像之间的间隔和动画，使得它可以呈现出动画/运动的效果（就像幻灯片可以做动画片，但是不能说幻灯片是视频一样）。</p>
+<p>To solve this problem CompuServe developed GIF. GIF can transmit the data stream to the client piece by piece, and then display the picture step by step. Or generate interlaced images, then the image data can be interlaced and transmitted to the client. In this way, although the picture is lossy, you can make up for it. For example, if the picture below is displayed in alternate lines, you can roughly figure out the content of the picture when you see the left and middle images in the picture below. However, if the picture is displayed line by line and displayed bit by bit from top to bottom, it is impossible to figure out the content.</p>
 
-<h2 id="大胆的推测">大胆的推测</h2>
-<p>由于时间太过久远，我有一个想法无法得到验证。就是那个时候是不是有一股技术热潮，内容就是如何在计算机上做出幻灯片；于此同时 GIF 的开发者既想展现图片，又想有一些特殊的功能（不过更大的可能是公司要求）。
-因为 GIF 可以响应用户操作这个功能就可以达到幻灯片的效果，而至今为止最出名的幻灯片软件 Power Point 也是同年诞生的，发布在苹果的 Macintosh 上。如果只是为了解决图片显示的问题，那么没有必要给 GIF 添加一些没必要的功能。
-这里要考虑到当时还没有互联网，计算机科学这个学科也才诞生 20 多年，各种技术和应用还不成熟，个人计算机才刚刚推广开来。一些现在看来自然存在的技术和应用，是在当时多方竞争下存活的，比如 GIF，再比如 Linux 内核。所以我觉得这真的挺奇妙的：GIF 可能是根据要求加了一些额外的功能，但是碰巧是这些功能，让其没有被淘汰掉。 
-话说是谁想到的 GIF 可以做动画呢？</p>
+<p><img src="/assets/images/042f05e2224040a7801deadc39b6d061.jpeg" alt="The difference between progressive display and interlaced display" /></p>
 
-<p>希望本文能帮助到和我一样有疑惑的人哦～</p>
+<h3 id="alternatives">alternatives</h3>
+<p>Although GIF is lossless compression, but the color of a single image is only 256 colors at most. If you want to achieve delicate colors, you can use the splicing method, which will cause the file to be too large and too complex. Furthermore, even if you success to solve the splicing problem (the file size will be very scary at this time), it can only support up to 24-bit RGB color space, which means that the color of GIF will not be particularly delicate (for current screens).</p>
+
+<p>In other respects, GIF can theoretically display images of up to about 4.3 billion pixels (for this, please see the content of “GIF File Format” above), which is not out of date until now.</p>
+
+<p>However, the size and color of GIF have always been two fatal problems, so the PNG format was invented to eliminate GIF. Do you know the full name of PNG is “PNG’s not GIF”, but this is a story after 1995, when GIF was almost ten years old.</p>
+
+<p>Now we can see that PNG, as a lossless compressed image, has successfully replaced GIF in terms of static images. Because it is better than GIF in all aspects (and at that time, GIF had patent restrictions due to the use of the LZW algorithm, while PNG was completely open source). But there has never been a substitute for the dynamic images of GIF.</p>
+
+<p>In 1999, there was a comprehensive campaign to destroy GIFs on the Internet, but it was not successful. Such behavior is still happening now. If you are interested, you can take a look <a href="https:// burnallgifs.org/archives/">https://burnallgifs.org/archives/</a>.</p>
+
+<p>There was no success because there was no file that could be easily implemented, no sound and show animation in a loop. <strong>There is another more important reason: GIF can be played without any codec. So all browsers can play GIFs.</strong></p>
+
+<p>Although the MNG (Multiple-image Network Graphics) multi-image file around PNG was born in 2001 and its functions and image quality are much better than GIF, it still did not defeat GIF (my personal guess is that it is too complicated, MNG can even add audio track. If I need sound, why not using MP4?).</p>
+
+<h2 id="conclusion">Conclusion</h2>
+<p>GIF was originally created to be used as a static image, like today’s PNG and JEPG. However, its structure can be look as a simplified version of Microsoft PowerPoint. The pptx file is a tar package composed of xml and image files. The GIF file is composed of some information blocks, control blocks and LZW compressed raster images. It is a coincidence that Microsoft PowerPoint and GIF were born in the same year. However, you can control the spacing and animation between each raster image in the GIF file, so that it can show animation/motion effects (just like you can use PowerPoint to create an animation, but you can’t say this PowerPoint is a video).</p>
+
+<h2 id="bold-speculation">Bold speculation</h2>
+<p>I have an idea， but due to so long ago, so I can’t verify. If you know something about below content, please tell me, thanks!</p>
+
+<p>At that time, there was a technology trend. Tech Companies to develop something like slideshows on computers; So GIF developers wanted to not only display pictures, but also have some special functions (but it was more likely to be company requirements).</p>
+
+<p>Because GIF can respond to user operations, like the effect of a slideshow. The most famous slideshow software birthed at that time. For example, Power Point, was also born in the same year and released on Apple’s Macintosh in 1985.</p>
+
+<p>If GIF is just to solve the problem of image display, then there is no need to add some unnecessary functions to GIF.</p>
+
+<p>We should remember no Internet at that time, computer science had only been born for more than 20 years, various technologies and applications were not yet mature and personal computers had just been popularized. Some technologies and applications that seem to exist naturally today survived the competition from many parties at that time actually, such as GIF and the Linux kernel.</p>
+
+<p>So I think this is so dramatic: GIF may have had some extra features added by request, but it is precisely because of these features that it has not been eliminated.</p>
+
+<p>By the way, who thought GIFs could be animated first?</p>
+
+<p>I hope these will help someone in need~</p>
 
 <h2 id="references">References</h2>
 <p><a href="https://www.cs.cmu.edu/~cil/lzw.and.gif.txt">《LZW and GIF explained—-Steve Blackstock》</a></p>
@@ -390,14 +417,6 @@ GIF 的终止符是<code class="language-plaintext highlighter-rouge">;</code>�
 
 
         </div>
-        <!-- comment by utterances -->
-        <script src="https://utteranc.es/client.js"
-        repo="ZhongUncle/zhonguncle.github.io"
-        issue-term="url"
-        theme="github-light"
-        crossorigin="anonymous"
-        async>
-        </script>
         <!-- comment by utterances -->
         <script src="https://utteranc.es/client.js"
         repo="ZhongUncle/zhonguncle.github.io"
