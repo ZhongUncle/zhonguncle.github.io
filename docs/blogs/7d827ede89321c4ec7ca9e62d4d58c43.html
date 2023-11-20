@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>What is Typedef in C language? How to use? What are the conveniences?</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is Typedef in C language? How to use? What are the conveniences? | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="What is Typedef in C language? How to use? What are the conveniences?" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="typedef is a special feature in the C language, which is used to create new type names. You also can know from the name “type def(ine)”. typedef is similar to alias program in Unix, which adds another name to an object. typedef also makes multiple names actually correspond to same objext, but the object of typedef operation is a data type. It is to “give a nickname” to the data type. This nickname usually has the first letter capitalized and is used to indicate that it is not an underlying data type. In C, typedef is very similar to macro #define. The difference between the two is put at the end, because you need to understand typedef first before you can understand the difference between it and macros." />
+<meta property="og:description" content="typedef is a special feature in the C language, which is used to create new type names. You also can know from the name “type def(ine)”. typedef is similar to alias program in Unix, which adds another name to an object. typedef also makes multiple names actually correspond to same objext, but the object of typedef operation is a data type. It is to “give a nickname” to the data type. This nickname usually has the first letter capitalized and is used to indicate that it is not an underlying data type. In C, typedef is very similar to macro #define. The difference between the two is put at the end, because you need to understand typedef first before you can understand the difference between it and macros." />
+<link rel="canonical" href="http://localhost:4000/blogs/7d827ede89321c4ec7ca9e62d4d58c43.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/7d827ede89321c4ec7ca9e62d4d58c43.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-26T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What is Typedef in C language? How to use? What are the conveniences?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-26T00:00:00+08:00","datePublished":"2023-04-26T00:00:00+08:00","description":"typedef is a special feature in the C language, which is used to create new type names. You also can know from the name “type def(ine)”. typedef is similar to alias program in Unix, which adds another name to an object. typedef also makes multiple names actually correspond to same objext, but the object of typedef operation is a data type. It is to “give a nickname” to the data type. This nickname usually has the first letter capitalized and is used to indicate that it is not an underlying data type. In C, typedef is very similar to macro #define. The difference between the two is put at the end, because you need to understand typedef first before you can understand the difference between it and macros.","headline":"What is Typedef in C language? How to use? What are the conveniences?","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/7d827ede89321c4ec7ca9e62d4d58c43.html"},"url":"http://localhost:4000/blogs/7d827ede89321c4ec7ca9e62d4d58c43.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>What is Typedef in C language? How to use? What are the conveniences?</h1>
+            <div class="bloginfo">
+                <p class="info">2023-04-26 ｜ <a href="/c.html"> C</a> ｜ #Words: 1293 </p>
+            </div>
+            <h2 id="what-is-typedef">What is Typedef?</h2>
+<p><code class="language-plaintext highlighter-rouge">typedef</code> is a special feature in the C language, which is used to create new type names. You also can know from the name “type def(ine)”. <code class="language-plaintext highlighter-rouge">typedef</code> is similar to <code class="language-plaintext highlighter-rouge">alias</code> program in Unix, which adds another name to an object. <code class="language-plaintext highlighter-rouge">typedef</code> also makes multiple names actually correspond to same objext, but the object of <code class="language-plaintext highlighter-rouge">typedef</code> operation is a data type. It is to “give a nickname” to the data type. <strong>This nickname usually has the first letter capitalized and is used to indicate that it is not an underlying data type</strong>.</p>
+
+<p>In C, <code class="language-plaintext highlighter-rouge">typedef</code> is very similar to macro <code class="language-plaintext highlighter-rouge">#define</code>. The difference between the two is put at the end, because you need to understand <code class="language-plaintext highlighter-rouge">typedef</code> first before you can understand the difference between it and macros.</p>
+
+<h2 id="how-to-use-typedef">How to use Typedef?</h2>
+<p>For example, in C language, there is the concept of string: an array of type <code class="language-plaintext highlighter-rouge">char</code> using <code class="language-plaintext highlighter-rouge">\0</code> to terminate string, and a <code class="language-plaintext highlighter-rouge">char</code> array is actually equivalent to a pointer to <code class="language-plaintext highlighter-rouge">char</code>. But there is no <code class="language-plaintext highlighter-rouge">String</code> type in C language. Then you can use the following statements to achieve <code class="language-plaintext highlighter-rouge">String</code> type:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//String is a pointer, *String is equal to char. In other words, String is equal to char *</span>
+<span class="k">typedef</span> <span class="kt">char</span> <span class="o">*</span><span class="n">String</span>
+</code></pre></div></div>
+
+<p>You can also find nickname is not after type, rather than after <code class="language-plaintext highlighter-rouge">typedef</code>. (In C language, when declaring and defining variables, does variable is after type?)</p>
+
+<p>At this time, you can use the following statements to declare, assign, and output “String” type data. As follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">typedef</span> <span class="kt">char</span> <span class="o">*</span><span class="n">String</span><span class="p">;</span>
+    
+    <span class="n">String</span> <span class="n">p</span> <span class="o">=</span> <span class="s">"abc"</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The output is:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">abc</span>
+</code></pre></div></div>
+
+<p>Again emphasizing, <code class="language-plaintext highlighter-rouge">typedef</code> does not create a new type, it just gives it a “nickname”. The String here is also implemented using the mechanism of the C language itself.</p>
+
+<p>This method is not very common. In most cases, we wouldn’t give nickname for basic type. The names of most basic data types are already very concise and easy to understand. String is an exception. The most common thing is to use <code class="language-plaintext highlighter-rouge">typedef</code> to find a simpler or more understandable synonym when using a structure, and it can also make the code more concise and efficient.</p>
+
+<p>For example, the following code is a very classic binary tree node structure:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">tnode</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="o">*</span><span class="n">word</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">count</span><span class="p">;</span> 
+    <span class="k">struct</span> <span class="n">tnode</span> <span class="o">*</span><span class="n">left</span><span class="p">;</span> 
+    <span class="k">struct</span> <span class="n">tnode</span> <span class="o">*</span><span class="n">right</span><span class="p">;</span> 
+<span class="p">};</span>
+</code></pre></div></div>
+
+<p>If you create a new node and allocate space without <code class="language-plaintext highlighter-rouge">typedef</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">struct</span> <span class="n">tnode</span> <span class="o">*</span><span class="nf">talloc</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="k">struct</span> <span class="n">tnode</span> <span class="o">*</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">tnode</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>如果使用<code class="language-plaintext highlighter-rouge">typedef</code>的方法，也就是在声明结构体<code class="language-plaintext highlighter-rouge">tnode</code>的同时，用<code class="language-plaintext highlighter-rouge">typedef</code>给它起一个“外号”<code class="language-plaintext highlighter-rouge">Treenode</code>，如下：
+If you use <code class="language-plaintext highlighter-rouge">typedef</code>, it means to use <code class="language-plaintext highlighter-rouge">typedef</code> to give it a “nickname” <code class="language-plaintext highlighter-rouge">Treenode</code> while declaring the structure <code class="language-plaintext highlighter-rouge">tnode</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tnode</span> <span class="p">{</span>
+	<span class="kt">char</span> <span class="o">*</span><span class="n">word</span><span class="p">;</span>
+	<span class="kt">int</span> <span class="n">count</span><span class="p">;</span>
+	<span class="n">Treeptr</span> <span class="n">left</span><span class="p">;</span>
+	<span class="n">Treeptr</span> <span class="n">right</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">Treenode</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Then use <code class="language-plaintext highlighter-rouge">typedef</code> to define <code class="language-plaintext highlighter-rouge">*Treeptr</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">struct</span> <span class="n">tnode</span> <span class="o">*</span><span class="n">Treeptr</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>In this case, creating and allocating memory is simple and can be written in a style without the pointer symbol <code class="language-plaintext highlighter-rouge">*</code>, as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Treenode</span> <span class="nf">talloc</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">Treeptr</span><span class="p">)</span> <span class="n">malloc</span><span class="p">(</span><span class="k">sizeof</span><span class="p">(</span><span class="k">struct</span> <span class="n">Treenode</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Compared with the previous version, it is much easier to understand.</p>
+
+<h2 id="conveniences-of-typedef">Conveniences of Typedef</h2>
+<p>The main purpose of <code class="language-plaintext highlighter-rouge">typedef</code> and <code class="language-plaintext highlighter-rouge">#define</code> is to make the code more concise, and to make the code more beautiful.</p>
+
+<p>In addition, <code class="language-plaintext highlighter-rouge">typedef</code> has two other advantages:</p>
+<ol>
+  <li>Parameterized programs to improve portability. This is less useful for current development. The data types of early computer were different on different computers. Such as size or name. If you use <code class="language-plaintext highlighter-rouge">typedef</code>, you only need to modify the <code class="language-plaintext highlighter-rouge">typedef</code> part when develop for different platforms. <code class="language-plaintext highlighter-rouge">size_t</code> and <code class="language-plaintext highlighter-rouge">ptrdiff_t</code> in the standard library are two examples.</li>
+  <li>Make the code more understandable, because pointers in complex data types will be more difficult to understand. It will be much simpler if you use <code class="language-plaintext highlighter-rouge">typedef</code>. <code class="language-plaintext highlighter-rouge">talloc</code> in the previous section is an example.</li>
+</ol>
+
+<h2 id="the-difference-between-typedef-and-define">The difference between Typedef and #define</h2>
+<p>Next, I will explain the difference between <code class="language-plaintext highlighter-rouge">typedef</code> and <code class="language-plaintext highlighter-rouge">#define</code>.</p>
+
+<p>The main purpose of <code class="language-plaintext highlighter-rouge">typedef</code> and <code class="language-plaintext highlighter-rouge">#define</code> is to make the code more concise, so they both can replace text  in source code. The difference is that <code class="language-plaintext highlighter-rouge">typedef</code> text replacement is much more powerful than macros, because <code class="language-plaintext highlighter-rouge">typedef</code> can be understood by the compiler.</p>
+
+<p>Macros only can do simple text replacement, such as direct text replacement, simple calculations and operations. Here is a simple text replacement example:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define MAXWORD 100
+</span>
+<span class="kt">int</span> <span class="n">a</span><span class="p">[</span><span class="n">MAXWORD</span><span class="p">];</span>
+</code></pre></div></div>
+
+<p>When compiling, <code class="language-plaintext highlighter-rouge">MAXWORD</code> will be directly replaced with <code class="language-plaintext highlighter-rouge">100</code>, then compile after text replacement. <code class="language-plaintext highlighter-rouge">MAXWORD</code> will not be treated as a variable or constant. Therefore, the scope of macro is also called the preprocessor.</p>
+
+<p>By using <code class="language-plaintext highlighter-rouge">typedef</code>, you can implement some complex functions. For example, the following line of code creates a new type <code class="language-plaintext highlighter-rouge">PFI</code>, which is a pointer to a function which has two <code class="language-plaintext highlighter-rouge">char *</code> parameters and return value <code class="language-plaintext highlighter-rouge">int</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="nf">int</span> <span class="p">(</span><span class="o">*</span><span class="n">PFI</span><span class="p">)(</span><span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>This is very convenient when declaring some functions, such as the following function:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">strcmp</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">s</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="n">t</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span> <span class="p">;</span> <span class="o">*</span><span class="n">s</span> <span class="o">==</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span> <span class="n">s</span><span class="o">++</span><span class="p">,</span> <span class="n">t</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="o">*</span><span class="n">s</span> <span class="o">==</span> <span class="sc">'\0'</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">*</span><span class="n">s</span> <span class="o">-</span> <span class="o">*</span><span class="n">t</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You can declare it like following:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">PFI</span> <span class="n">strcmp</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Compared to original declaration:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">strcmp</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Isn’t it much more concise? If there are multiple functions like about, they can be written on one line. More concise.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

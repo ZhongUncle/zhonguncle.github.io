@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>如何使用 R 语言来绘制图表和图（曲线等）</title>
+        <title>How to use R language to draw charts and graphs (curves, etc.)</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>如何使用 R 语言来绘制图表和图（曲线等） | ZhongUncle’s Blog</title>
+<title>How to use R language to draw charts and graphs (curves, etc.) | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="如何使用 R 语言来绘制图表和图（曲线等）" />
+<meta property="og:title" content="How to use R language to draw charts and graphs (curves, etc.)" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="前言 如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。" />
-<meta property="og:description" content="前言 如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。" />
-<link rel="canonical" href="https://zhonguncle.github.io/blogs/8adaede22e25911797d8dd6cb2f729d2.html" />
-<meta property="og:url" content="https://zhonguncle.github.io/blogs/8adaede22e25911797d8dd6cb2f729d2.html" />
+<meta name="description" content="If you are studying or engaged in data analysis-related, you must have used or been told to use R language. But with so many languages for data analysis, why use R? Because R can output very nice charts for publication. It may not be necessary for blogs, but it is necessary for publications such as papers and books. After all, the charts in most publications are not in color or flashy.Let’s create a new chart, but without coordinate axis. First, we need some data to display. This part is as follows" />
+<meta property="og:description" content="If you are studying or engaged in data analysis-related, you must have used or been told to use R language. But with so many languages for data analysis, why use R? Because R can output very nice charts for publication. It may not be necessary for blogs, but it is necessary for publications such as papers and books. After all, the charts in most publications are not in color or flashy.Let’s create a new chart, but without coordinate axis. First, we need some data to display. This part is as follows" />
+<link rel="canonical" href="http://localhost:4000/blogs/8e9be9247ebfa34a1046a9c06e461032.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/8e9be9247ebfa34a1046a9c06e461032.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-10-10T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="如何使用 R 语言来绘制图表和图（曲线等）" />
+<meta property="twitter:title" content="How to use R language to draw charts and graphs (curves, etc.)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-10T00:00:00+08:00","datePublished":"2022-10-10T00:00:00+08:00","description":"前言 如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。","headline":"如何使用 R 语言来绘制图表和图（曲线等）","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/8adaede22e25911797d8dd6cb2f729d2.html"},"url":"https://zhonguncle.github.io/blogs/8adaede22e25911797d8dd6cb2f729d2.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-10T00:00:00+08:00","datePublished":"2022-10-10T00:00:00+08:00","description":"If you are studying or engaged in data analysis-related, you must have used or been told to use R language. But with so many languages for data analysis, why use R? Because R can output very nice charts for publication. It may not be necessary for blogs, but it is necessary for publications such as papers and books. After all, the charts in most publications are not in color or flashy.Let’s create a new chart, but without coordinate axis. First, we need some data to display. This part is as follows","headline":"How to use R language to draw charts and graphs (curves, etc.)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/8e9be9247ebfa34a1046a9c06e461032.html"},"url":"http://localhost:4000/blogs/8e9be9247ebfa34a1046a9c06e461032.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,79 +98,82 @@
         </a>
     
 </div>
-            <h1>如何使用 R 语言来绘制图表和图（曲线等）</h1>
+            <h1>How to use R language to draw charts and graphs (curves, etc.)</h1>
             <div class="bloginfo">
-                <p class="info">2022-10-10 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2734 </p>
+                <p class="info">2022-10-10 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1857 </p>
             </div>
-            <h2 id="前言">前言</h2>
-<!-- excerpt-start -->
-<p>如果你是学习或者从事数据分析相关的专业，那么你一定使用过或者被告知要使用 R 语言。但是有那么多可以数据分析的语言，为什么要使用 R 呢？因为 R 可以输出非常好的可以出版的图像，对于博客可能不需要这样，但是对于论文、书籍这种出版物就很有必要了，毕竟大多数出版物的图表都不是彩色的。</p>
+            <h2 id="preface">Preface</h2>
+<p>If you are studying or engaged in data analysis-related, you must have used or been told to use R language. But with so many languages for data analysis, why use R? Because R can output very nice charts for publication. It may not be necessary for blogs, but it is necessary for publications such as papers and books. After all, the charts in most publications are not in color or flashy.</p>
 
-<p><strong>需要注意，本文只用于记录如何使用 R 来绘制图表或图，所以只对语句有简单的介绍，如果想看全面完整的语句介绍，可以看官方文档：<a href="https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf">《An Introduction to R》</a></strong></p>
+<p><strong>Notice, this article just record how to use R to draw charts or graphs, so it provides a brief introduction to statements. If you want to see a comprehensive introduction to statements, you can read the official document: [“An Introduction to R”] (https://cran.r-project.org/doc/manuals/r-release/R-intro.pdf)</strong></p>
 
-<h2 id="绘制各种图表">绘制各种图表</h2>
+<h2 id="draw-various-charts">Draw various charts</h2>
+<h3 id="draw-a-fan-chart">Draw a fan chart</h3>
+<p>Let’s create a new chart, but without coordinate axis.</p>
 
-<h3 id="绘制扇形图">绘制扇形图</h3>
-<p>这时候让我们新建一个，但是不要绘制坐标轴了。</p>
-
-<p>首先需要生成一些数据用来显示，这部分内容如下（输入<code class="language-plaintext highlighter-rouge">&gt;</code>开头的行即可）：</p>
+<p>First, we need some data to display. This part is as follows:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">margin.table</span><span class="p">(</span><span class="n">UCBAdmissions</span><span class="p">,</span><span class="m">3</span><span class="p">)</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Department</span><span class="w">
 </span></code></pre></div></div>
-<p><code class="language-plaintext highlighter-rouge">margin.table(UCBAdmissions, 3) </code>会通过数据集<code class="language-plaintext highlighter-rouge">UCBAdmissions</code>（这个数据是伯克利招生的数据，自带的）来生成一个表<code class="language-plaintext highlighter-rouge">Department</code>。然后使用<code class="language-plaintext highlighter-rouge">pie()</code>函数来生成“Department”各部分占比的扇形图：</p>
+
+<p><code class="language-plaintext highlighter-rouge">margin.table(UCBAdmissions, 3)</code> will generate a table <code class="language-plaintext highlighter-rouge">Department</code> through the data set <code class="language-plaintext highlighter-rouge">UCBAdmissions</code> (it is Berkeley admissions data and embedded in R). Then use the <code class="language-plaintext highlighter-rouge">pie()</code> function to generate a pie chart with proportions of each part of “Department”:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">pie</span><span class="p">(</span><span class="n">Department</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/a2363db2fdb049a7a4e3072258530ff6.png" alt="扇形示意图" /></p>
+<p><img src="/assets/images/a2363db2fdb049a7a4e3072258530ff6.png" alt="pie chart" /></p>
 
-<h3 id="绘制条形图">绘制条形图</h3>
-<h4 id="简单的条形图">简单的条形图</h4>
-<p>还是上面一节的数据，利用它们来继续生成条形图。生成条形图使用<code class="language-plaintext highlighter-rouge">barplot()</code>函数即可，<code class="language-plaintext highlighter-rouge">xlab=</code>是横轴的标题，<code class="language-plaintext highlighter-rouge">ylab=</code>是纵轴的标题：</p>
+<h3 id="draw-a-bar-chart">Draw a bar chart</h3>
+<h4 id="simple-bar-chart">Simple bar chart</h4>
+<p>Still using the previous data table to generate bar charts. To generate a bar chart, use the <code class="language-plaintext highlighter-rouge">barplot()</code> function. <code class="language-plaintext highlighter-rouge">xlab=</code> is the title of the horizontal axis, and <code class="language-plaintext highlighter-rouge">ylab=</code> is the title of the vertical axis:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">barplot</span><span class="p">(</span><span class="n">Department</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s2">"Department"</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="o">=</span><span class="s2">"Number"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/fd1fd8f2f0f740f7b4e8e48d859ee488.png" alt="简单条形示意图" /></p>
+<p><img src="/assets/images/fd1fd8f2f0f740f7b4e8e48d859ee488.png" alt="simple bar chart" /></p>
 
-<h4 id="堆叠条形图">堆叠条形图</h4>
-<p>生成复合条形图的话，上面那种数据格式就不够用了，所以重新生成一个表：</p>
+<h4 id="composite-bar-chart">Composite Bar Chart</h4>
+<p>When generating a composite bar chart, the above data table format is not enough, so regenerate a table:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">margin.table</span><span class="p">(</span><span class="n">UCBAdmissions</span><span class="p">,</span><span class="w"> </span><span class="nf">c</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">3</span><span class="p">))</span><span class="w"> </span><span class="o">-&gt;</span><span class="w"> </span><span class="n">Admit.by.Dept</span><span class="w">
 </span></code></pre></div></div>
-<p>如果直接使用<code class="language-plaintext highlighter-rouge">barplot()</code>来调用数据的话，生成的条形图如下：</p>
+
+<p>If directly use <code class="language-plaintext highlighter-rouge">barplot()</code> to call data, the generated bar chart is as follows:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">barplot</span><span class="p">(</span><span class="n">Admit.by.Dept</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/7691660fd87c478dbf83d1ecc84bb9a0.png" alt="堆叠条形示意图" /></p>
+<p><img src="/assets/images/7691660fd87c478dbf83d1ecc84bb9a0.png" alt="Composite Bar Chart" /></p>
 
-<h4 id="并排条形图">并排条形图</h4>
-<p>如果想生成两个并排靠在一起的条形图，使用以下语句：</p>
+<h4 id="side-by-side-bar-chart">Side by Side Bar Chart</h4>
+<p>If generate two bar charts side by side, use the following statement:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">barplot</span><span class="p">(</span><span class="n">Admit.by.Dept</span><span class="p">,</span><span class="w"> </span><span class="n">beside</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">ylim</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">0</span><span class="p">,</span><span class="m">1000</span><span class="p">),</span><span class="w"> </span><span class="n">legend</span><span class="o">=</span><span class="nb">T</span><span class="p">,</span><span class="w"> </span><span class="n">main</span><span class="o">=</span><span class="s2">"Admissions by Department"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p><code class="language-plaintext highlighter-rouge">beside=T</code>表示<code class="language-plaintext highlighter-rouge">beside</code>为真（<code class="language-plaintext highlighter-rouge">T</code>表示<code class="language-plaintext highlighter-rouge">True</code>），如果为真的话，绘制成并列条形图，如果为假的话，那么就生成上面的堆叠条形图；<code class="language-plaintext highlighter-rouge">ylim=</code>表示纵轴的范围；<code class="language-plaintext highlighter-rouge">legend</code>表示图例，也就是下图右上角那个，这里既可以使用 T/F 来表示是否显示图例，也可以直接输入值来自定义图例；<code class="language-plaintext highlighter-rouge">main</code>表示主标题。</p>
 
-<p><img src="/assets/images/61129a370fde4519a7bb8d79ea926db7.png" alt="并排条形示意图" /></p>
+<p><code class="language-plaintext highlighter-rouge">beside=T</code> means <code class="language-plaintext highlighter-rouge">beside</code> is true (<code class="language-plaintext highlighter-rouge">T</code> means <code class="language-plaintext highlighter-rouge">True</code>). If it is true, a side-by-side bar chart will be drawn. If it is <code class="language-plaintext highlighter-rouge">F</code> false, then Composite bar chart above will be generated; <code class="language-plaintext highlighter-rouge">ylim =</code> represents the range of the vertical axis; <code class="language-plaintext highlighter-rouge">legend</code> represents the legend, which is in the upper right corner of the figure below. You can use <code class="language-plaintext highlighter-rouge">T</code> or <code class="language-plaintext highlighter-rouge">F</code> to indicate whether to display the legend, or you can directly enter the value to customize the legend; <code class="language-plaintext highlighter-rouge">main</code> represents the main title .</p>
 
-<h3 id="绘制曲线图">绘制曲线图</h3>
-<p>绘制曲线图不能使用上面这种按类分列的表，所以来使用<code class="language-plaintext highlighter-rouge">faithful</code>数据集进行演示。
-首先引入<code class="language-plaintext highlighter-rouge">faithful</code>数据集来做好准备：</p>
+<p><img src="/assets/images/61129a370fde4519a7bb8d79ea926db7.png" alt="Side by Side Bar Chart" /></p>
+
+<h3 id="draw-a-curve-chart">Draw a curve chart</h3>
+<p>The category of above table classified cannot be used to draw a curve chart, so let’s use the <code class="language-plaintext highlighter-rouge">faithful</code> data set for demonstration.</p>
+
+<p>First introduce the <code class="language-plaintext highlighter-rouge">faithful</code> data set to prepare:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">attach</span><span class="p">(</span><span class="n">faithful</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p>然后使用<code class="language-plaintext highlighter-rouge">plot(density(...))</code>来生成曲线图:</p>
+
+<p>Then use <code class="language-plaintext highlighter-rouge">plot(density(...))</code> to generate the chart:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot</span><span class="p">(</span><span class="n">density</span><span class="p">(</span><span class="n">waiting</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
-<p><code class="language-plaintext highlighter-rouge">waiting</code>为横轴标签。</p>
 
-<p><img src="/assets/images/994e6c04e6504baa8890f22af967e99a.png" alt="曲线示意图" /></p>
+<p><code class="language-plaintext highlighter-rouge">waiting</code> is the x-axis label.</p>
 
-<h3 id="绘制点图">绘制点图</h3>
+<p><img src="/assets/images/994e6c04e6504baa8890f22af967e99a.png" alt="curve chart" /></p>
 
-<p>点图需要使用一个新的数据集来进行演示，<code class="language-plaintext highlighter-rouge">&gt;</code>开头的是需要手动输入的：</p>
+<h3 id="draw-a-dot-plot-chart">Draw a dot plot chart</h3>
+<p>Dot plots need to use a new data set for demonstration. You need enter below lines manually which starting with <code class="language-plaintext highlighter-rouge">&gt;</code>:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;</span><span class="w"> </span><span class="n">data</span><span class="p">(</span><span class="n">mammals</span><span class="p">,</span><span class="w"> </span><span class="n">package</span><span class="o">=</span><span class="s2">"MASS"</span><span class="p">)</span><span class="w">
 </span><span class="o">&gt;</span><span class="w"> </span><span class="n">str</span><span class="p">(</span><span class="n">mammals</span><span class="p">)</span><span class="w">
@@ -178,121 +181,130 @@
  </span><span class="o">$</span><span class="w"> </span><span class="n">body</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">num</span><span class="w">  </span><span class="m">3.38</span><span class="w"> </span><span class="m">0.48</span><span class="w"> </span><span class="m">1.35</span><span class="w"> </span><span class="m">465</span><span class="w"> </span><span class="m">36.33</span><span class="w"> </span><span class="n">...</span><span class="w">
  </span><span class="o">$</span><span class="w"> </span><span class="n">brain</span><span class="o">:</span><span class="w"> </span><span class="n">num</span><span class="w">  </span><span class="m">44.5</span><span class="w"> </span><span class="m">15.5</span><span class="w"> </span><span class="m">8.1</span><span class="w"> </span><span class="m">423</span><span class="w"> </span><span class="m">119.5</span><span class="w"> </span><span class="n">...</span><span class="w">
 </span></code></pre></div></div>
-<p>第一行生成了一个数据集<code class="language-plaintext highlighter-rouge">mammals</code>。输入<code class="language-plaintext highlighter-rouge">str(mammals)</code>可以看到数据的内容，但是这里由于太长了就没有显示完全。</p>
 
-<p>然后使用<code class="language-plaintext highlighter-rouge">attach()</code>函数导入数据集，然后使用<code class="language-plaintext highlighter-rouge">plot()</code>函数绘制图像：</p>
+<p>The first line generates a dataset <code class="language-plaintext highlighter-rouge">mammals</code>. Enter <code class="language-plaintext highlighter-rouge">str(mammals)</code> to see the content. But the display is not fully because it is too long.</p>
+
+<p>Then use the <code class="language-plaintext highlighter-rouge">attach()</code> function to import the dataset, then use the <code class="language-plaintext highlighter-rouge">plot()</code> function to draw the plot chart:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">attach</span><span class="p">(</span><span class="n">mammals</span><span class="p">)</span><span class="w">
 </span><span class="n">plot</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">body</span><span class="p">),</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">brain</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
-<p>这里需要注意以下，绘制图像的语句还可以这样：</p>
+
+<p>Or you can use:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">body</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">brain</span><span class="p">,</span><span class="w"> </span><span class="n">log</span><span class="o">=</span><span class="s2">"xy"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p>二者效果一样。</p>
 
-<p><img src="/assets/images/fde0f44445e7424a922c7bd681b99ba9.png" alt="点示意图" /></p>
+<p><img src="/assets/images/fde0f44445e7424a922c7bd681b99ba9.png" alt="plot chart" /></p>
 
-<p>这时候可以发现点好像聚集在一条线附近，R 支持绘制出这条线：</p>
+<p>At this time, you may find that the points seem to be gathered near a line, and R supports drawing this line:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">scatter.smooth</span><span class="p">(</span><span class="nf">log</span><span class="p">(</span><span class="n">body</span><span class="p">),</span><span class="w"> </span><span class="nf">log</span><span class="p">(</span><span class="n">brain</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
-<p><img src="/assets/images/b1705e87d591417a96c2370dcae7f355.png" alt="点的曲线示意图" /></p>
 
-<h2 id="绘制图坐标轴曲线等">绘制图（坐标轴、曲线等）</h2>
-<h3 id="添加坐标轴">添加坐标轴</h3>
-<p>画绝大部分类型的图表的第一步当然是添加坐标轴啦。语句很简单，需要使用<code class="language-plaintext highlighter-rouge">plot()</code>函数，如下：</p>
+<p><img src="/assets/images/b1705e87d591417a96c2370dcae7f355.png" alt="line of plots" /></p>
+
+<h2 id="draw-graphs-coordinate-axes-curves-and-etc">Draw graphs (coordinate axes, curves and etc.)</h2>
+<h3 id="add-coordinate-axis">Add coordinate axis</h3>
+<p>The mostly first step in drawing is adding axes. The statement is very simple, just need the <code class="language-plaintext highlighter-rouge">plot()</code> function, as follows:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">plot</span><span class="p">(</span><span class="m">0</span><span class="o">:</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="m">0</span><span class="o">:</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">type</span><span class="o">=</span><span class="s2">"n"</span><span class="p">,</span><span class="w"> </span><span class="n">xlab</span><span class="o">=</span><span class="s2">"a"</span><span class="p">,</span><span class="w"> </span><span class="n">ylab</span><span class="o">=</span><span class="s2">"b"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p>这时候效果如下：</p>
 
-<p><img src="/assets/images/93be2880786c4f67b1cc3e2628ef0341.png" alt="绘制坐标轴" /></p>
+<p>The effect is:</p>
 
-<p><code class="language-plaintext highlighter-rouge">plot()</code>函数是一个“high-level”函数。括号中的<code class="language-plaintext highlighter-rouge">0:100</code>表示坐标从<code class="language-plaintext highlighter-rouge">0</code>开始到<code class="language-plaintext highlighter-rouge">100</code>；<code class="language-plaintext highlighter-rouge">type="n"</code>表示只绘制坐标轴，不绘制任何其他的图像（感兴趣可以去掉这个参数看看默认情况下的点图是什么样的）；<code class="language-plaintext highlighter-rouge">xlab="a"</code>表示横坐标轴的标签，<code class="language-plaintext highlighter-rouge">ylab="b"</code>同理。</p>
+<p><img src="/assets/images/93be2880786c4f67b1cc3e2628ef0341.png" alt="draw axes" /></p>
 
-<h3 id="绘制曲线">绘制曲线</h3>
-<p>然后来在上面的坐标轴中绘制 $b=0.01a^2$ 的曲线，需要使用<code class="language-plaintext highlighter-rouge">curve()</code>函数，如下：</p>
+<p>The <code class="language-plaintext highlighter-rouge">plot()</code> function is a “high-level” function. <code class="language-plaintext highlighter-rouge">0:100</code> in brackets means the coordinates start from <code class="language-plaintext highlighter-rouge">0</code> to <code class="language-plaintext highlighter-rouge">100</code>; <code class="language-plaintext highlighter-rouge">type="n"</code> means that only the coordinate axis is drawn without any ohter things (if you are interested, you can remove this parameter and see the default plot chart); <code class="language-plaintext highlighter-rouge">xlab="a"</code> represents the label of the x-axis, and <code class="language-plaintext highlighter-rouge">ylab="b"</code> is the same.</p>
+
+<h3 id="draw-curve">Draw curve</h3>
+<p>Then to draw the curve of b=0.01a^2 in above coordinate axis, you need to use the <code class="language-plaintext highlighter-rouge">curve()</code> function:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">curve</span><span class="p">(</span><span class="n">x</span><span class="o">^</span><span class="m">2</span><span class="o">/</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">add</span><span class="o">=</span><span class="kc">TRUE</span><span class="p">)</span><span class="w">  
 </span></code></pre></div></div>
-<p><img src="/assets/images/c86042b7fc524e20a69952d89064b7fa.png" alt="绘制曲线" /></p>
 
-<p>这里应该只用解释一下<code class="language-plaintext highlighter-rouge">add=TRUE</code>是干嘛的。<code class="language-plaintext highlighter-rouge">add=TRUE</code>会强制<code class="language-plaintext highlighter-rouge">curve()</code>函数作为一个“low-level”图像来绘制曲线，从而将其绘制在当前已经存在的图像上面（如果有的话）。</p>
+<p><img src="/assets/images/c86042b7fc524e20a69952d89064b7fa.png" alt="draw curve" /></p>
 
-<h3 id="绘制点">绘制点</h3>
-<p>绘制点分为两种：绘制单独的点，以及绘制某一曲线上的点。但是不论哪种类型，一般都要使用<code class="language-plaintext highlighter-rouge">points()</code>函数。</p>
+<p>I should just explain what <code class="language-plaintext highlighter-rouge">add=TRUE</code> does here. <code class="language-plaintext highlighter-rouge">add=TRUE</code> will force the <code class="language-plaintext highlighter-rouge">curve()</code> function to draw the curve as a “low-level” image, thereby drawing it on top of the currently existing image (if there is one).</p>
 
-<p>按顺序来，先讲讲前者。绘制单独的点的语句很简单，直接使用坐标即可，如下：</p>
+<h3 id="draw-points">Draw points</h3>
+<p>There are two types of points: drawing individual points and drawing points on a curve. But no matter which type, you generally need to use the <code class="language-plaintext highlighter-rouge">points()</code> function.</p>
+
+<p>In order, let’s talk about the former first. The statement to draw individual points is very simple, just use the coordinates directly, as follows:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">points</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="m">50</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p><img src="/assets/images/36020b15c84a4c4c93cbb53010c447af.png" alt="绘制点" /></p>
 
-<p>可以看到在曲线的右侧绘制了一个空心的圆点。</p>
+<p><img src="/assets/images/36020b15c84a4c4c93cbb53010c447af.png" alt="draw individual point" /></p>
 
-<p>那么如果想在 $b=0.01a^2$ 的曲线上标记一些点呢？有两种方法，一种和一个个输入差不多，不过可以结合到一起，稍微精简一点，如下：</p>
+<p>You can see that a hollow dot is drawn on the right side of the curve.</p>
+
+<p>So if you want to mark some points on the curve of $b=0.01a^2$? There are two methods. One is inputting one by one, but it can be combined together to make it a little easier:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">points</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">20</span><span class="p">,</span><span class="w"> </span><span class="m">60</span><span class="p">,</span><span class="w"> </span><span class="m">90</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="nf">c</span><span class="p">(</span><span class="m">4</span><span class="p">,</span><span class="w"> </span><span class="m">36</span><span class="p">,</span><span class="w"> </span><span class="m">81</span><span class="p">),</span><span class="w"> </span><span class="n">pch</span><span class="o">=</span><span class="m">6</span><span class="p">)</span><span class="w">  
 </span></code></pre></div></div>
-<p>但是也可以使用另外一种方法，只用输入横坐标<code class="language-plaintext highlighter-rouge">x</code>和函数即可，如下：</p>
+
+<p>But you can also use another method, just enter values of <code class="language-plaintext highlighter-rouge">x</code> and function, as follows:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">points</span><span class="p">(</span><span class="n">x</span><span class="o">&lt;-</span><span class="nf">c</span><span class="p">(</span><span class="m">20</span><span class="p">,</span><span class="m">60</span><span class="p">,</span><span class="m">90</span><span class="p">),</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="o">^</span><span class="m">2</span><span class="o">/</span><span class="m">100</span><span class="p">,</span><span class="w"> </span><span class="n">pch</span><span class="o">=</span><span class="m">6</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p>二者效果一样的：</p>
 
-<p><img src="/assets/images/f514f31c5c6d4fd9ba472a1681405d9f.png" alt="另一种绘制点的方法" /></p>
+<p>Both have the same effect:</p>
 
-<h4 id="更改点的样式">更改点的样式</h4>
-<p>那么可不可以更改点的样式呢？加上<code class="language-plaintext highlighter-rouge">pch</code>参数即可，如下：</p>
+<p><img src="/assets/images/f514f31c5c6d4fd9ba472a1681405d9f.png" alt="Another way to mark point" /></p>
+
+<h4 id="change-the-style-of-points">Change the style of points</h4>
+<p>Can we change the point style? Just add the <code class="language-plaintext highlighter-rouge">pch</code> parameter:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">points</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="n">pch</span><span class="o">=</span><span class="n">...</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
-<p><code class="language-plaintext highlighter-rouge">pch=</code>后面可以直接跟<code class="language-plaintext highlighter-rouge">+</code>、<code class="language-plaintext highlighter-rouge">*</code>这种符号，用引号包裹就行。比如说想点变成星号<code class="language-plaintext highlighter-rouge">*</code>就可以像下面这样：</p>
+
+<p><code class="language-plaintext highlighter-rouge">pch=</code> can be directly followed by symbols, such as <code class="language-plaintext highlighter-rouge">+</code> and <code class="language-plaintext highlighter-rouge">*</code>, just wrap it in quotation marks. For example, if you want to change the dot into an asterisk <code class="language-plaintext highlighter-rouge">*</code>:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">points</span><span class="p">(</span><span class="m">100</span><span class="p">,</span><span class="m">50</span><span class="p">,</span><span class="w"> </span><span class="n">pch</span><span class="o">=</span><span class="s2">"*"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p>也可以跟数字，不同数字表示的内容如下：</p>
+<p>It can also be followed by numbers. The contents represented by different numbers are as follows:</p>
 
-<p><img src="/assets/images/7496c5c733ee42f8abc2714def9c9510.png" alt="数字对应点的样式" /></p>
+<p><img src="/assets/images/7496c5c733ee42f8abc2714def9c9510.png" alt="contents represented by different numbers" /></p>
 
-<p>此外：</p>
+<p>In addition:</p>
 <ol>
-  <li>26～31 之间的数字没有作用；</li>
-  <li>2/32～127 之间是对应着 ASCII 码；</li>
-  <li>128～255 之间是仅在单字节的位置的原始字符，并且使用符号字体，其中 129～159 只能在 Windows 中使用；</li>
-  <li>-32 用来在支持的地方使用 Unicode 码。</li>
+  <li>Numbers between 26 and 31 have no effect;</li>
+  <li>The range between 2/32 and 127 corresponds to the ASCII code;</li>
+  <li>Between 128 and 255 are original characters that are only in single-byte positions and use symbolic fonts. Among them, 129 to 159 can only be used in Windows;</li>
+  <li>-32 is used to use Unicode codes where supported.</li>
 </ol>
 
-<h3 id="绘制直线以及自定义线的颜色">绘制直线（以及自定义线的颜色）</h3>
-<p>假设现在需要过曲线上两点做一条红色的直线，那么可以使用<code class="language-plaintext highlighter-rouge">abline()</code>函数和<code class="language-plaintext highlighter-rouge">col</code>参数，如下：</p>
+<h3 id="draw-a-straight-line-and-customize-the-color-of-the-line">Draw a straight line (and customize the color of the line)</h3>
+<p>Suppose now need to draw a red straight line through two points on the curve, then you can use the <code class="language-plaintext highlighter-rouge">abline()</code> function and the <code class="language-plaintext highlighter-rouge">col</code> parameter to set color:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">abline</span><span class="p">(</span><span class="n">a</span><span class="o">=</span><span class="m">-18</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="o">=</span><span class="m">1.1</span><span class="p">,</span><span class="w"> </span><span class="n">col</span><span class="o">=</span><span class="s2">"red"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p>其中<code class="language-plaintext highlighter-rouge">a=</code>后面跟的是纵坐标；<code class="language-plaintext highlighter-rouge">b=</code>后面跟的是斜率；<code class="language-plaintext highlighter-rouge">col=</code>后面跟的是颜色。
-<img src="/assets/images/541c0e141fef49358c4c903b26ad3bdd.png" alt="参数表示直线的属性，`a=`后面跟的是纵坐标；`b=`后面跟的是斜率；`col=`后面跟的是颜色" /></p>
+<p><code class="language-plaintext highlighter-rouge">a=</code> is followed by the ordinate; <code class="language-plaintext highlighter-rouge">b=</code> is followed by the slope; <code class="language-plaintext highlighter-rouge">col=</code> is followed by the color.</p>
 
-<h3 id="设置主标题">设置主标题</h3>
-<p>设置主标题需要使用<code class="language-plaintext highlighter-rouge">title(main="...")</code>函数，如下：</p>
+<p><img src="/assets/images/541c0e141fef49358c4c903b26ad3bdd.png" alt="straight line" /></p>
+
+<h3 id="set-main-title">Set main title</h3>
+<p>To set the main title, you need to use the <code class="language-plaintext highlighter-rouge">title(main="...")</code> function:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">title</span><span class="p">(</span><span class="n">main</span><span class="o">=</span><span class="s2">"This is the first chart of R"</span><span class="p">)</span><span class="w">
 </span></code></pre></div></div>
 
-<p><img src="/assets/images/1fa21011d7104264afcbfa11faf01354.png" alt="设置主标题" /></p>
+<p><img src="/assets/images/1fa21011d7104264afcbfa11faf01354.png" alt="set main title" /></p>
 
-<h3 id="在图中的任意位置绘制文本">在图中的任意位置绘制文本</h3>
-<p>假设我们想在曲线 $b=0.01a^2$ 旁边写上函数式，那么可以使用<code class="language-plaintext highlighter-rouge">text()</code>函数，如下：</p>
+<h3 id="draw-text-anywhere-in-chart-image">Draw text anywhere in chart image</h3>
+<p>Suppose we want to write a functional expression next to the curve b=0.01a^2, then we can use the <code class="language-plaintext highlighter-rouge">text()</code> function:</p>
 
 <div class="language-r highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">text</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="m">80</span><span class="p">,</span><span class="w"> </span><span class="n">y</span><span class="o">=</span><span class="m">37</span><span class="p">,</span><span class="w"> </span><span class="nf">expression</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">frac</span><span class="p">(</span><span class="m">1</span><span class="p">,</span><span class="m">100</span><span class="p">)</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">b</span><span class="o">^</span><span class="m">2</span><span class="p">))</span><span class="w">
 </span></code></pre></div></div>
 
-<p>其中，<code class="language-plaintext highlighter-rouge">a</code>和<code class="language-plaintext highlighter-rouge">b</code>是将显示在图上的，<strong>而前面的<code class="language-plaintext highlighter-rouge">x</code>和<code class="language-plaintext highlighter-rouge">y</code>是不能修改的。</strong></p>
+<p><code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">b</code> will be displayed on the picture, <strong>but the previous <code class="language-plaintext highlighter-rouge">x</code> and <code class="language-plaintext highlighter-rouge">y</code> cannot be modified.</strong></p>
 
-<p><img src="/assets/images/d00e5caada58438e9a0473fbb4a4b74b.png" alt="在图中的任意位置绘制文本" /></p>
+<p><img src="/assets/images/d00e5caada58438e9a0473fbb4a4b74b.png" alt="Draw text anywhere in chart image" /></p>
 
-<p>希望可以帮到有需要的人~</p>
+<p>I hope these will help someone in need~</p>
 
         </div>
         <!-- comment by utterances -->
