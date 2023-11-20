@@ -17,14 +17,14 @@
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="ZhongUncle 的博客" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/" />
-<meta property="og:url" content="http://localhost:4000/" />
+<link rel="canonical" href="https://zhonguncle.github.io/" />
+<meta property="og:url" content="https://zhonguncle.github.io/" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="ZhongUncle 的博客" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","headline":"ZhongUncle 的博客","name":"ZhongUncle","sameAs":["https://blog.csdn.net/qq_33919450","https://github.com/zhonguncle"],"url":"http://localhost:4000/"}</script>
+{"@context":"https://schema.org","@type":"WebSite","headline":"ZhongUncle 的博客","name":"ZhongUncle","sameAs":["https://blog.csdn.net/qq_33919450","https://github.com/zhonguncle"],"url":"https://zhonguncle.github.io/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -133,23 +133,17 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/5f1a7fd5d52116befdae2e8e54b10888.html">Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</a></h2>
-        <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ 2008 字</p>
+        <h2><a class="blog" href="/blogs/514d58f2961fd8f7d36176bdb1208af0.html">Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico</a></h2>
+        <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ 1379 字</p>
         
-        <p><!-- excerpt-start -->
-<p>本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。</p>
-<h2 id="前提知识">前提知识</h2>
-<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
-</p>
+        <p>This article begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored. How to choose which I2C controller, and SDA and SCL pins Declare three variables or macros before setting to facilitate development. It is recommended to use macros, which is more in line with the development style of Raspberry Pi define I2C_SCL_PIN 5If macro expansion goes wrong, use variables.Then when initializing I2C, set which I2C controller to use, and which SDA and SCL pins. Here are the settings based on the settings above</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/911891686f4a77e37082c2b4210451c9.html">用C/C++修改I2C默认的SDA和SCL针脚</a></h2>
-        <p class="info">2023-08-26 ｜ <a href="/mcu.html"> MCU</a> ｜ 432 字</p>
+        <h2><a class="blog" href="/blogs/6a9f2929e74ab84354bed126ebd135b3.html">Modify the default SDA and SCL pins of I2C using C/C++</a></h2>
+        <p class="info">2023-08-26 ｜ <a href="/mcu.html"> MCU</a> ｜ 254 字</p>
         
-        <p><!-- excerpt-start -->
-<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
-</p>
+        <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled. It means, even if you modify the pin, but not in `I2C0`, it still doesn't work.There are two ways to correctly modify the SDA and SCL default pins of I2C, and there is also a not recommended method (but still a method).Another method is modifying in the source code, which is not recommended because it may be replaced by something. Place the following code after import library. But the replacement may be replaced cover again</p>
     </li>
     
     <li>
@@ -160,12 +154,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/d01620c9d7201b52dcea05de04d13c14.html">如何重置树莓派 Pico（重置外围设备失败的解决方案）</a></h2>
-        <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 620 字</p>
+        <h2><a class="blog" href="/blogs/589dba6103e6828777f8c9d196585565.html">How to reset the Raspberry Pi Pico (resetting the peripheral device failed)</a></h2>
+        <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 429 字</p>
         
-        <p><!-- excerpt-start -->
-<p>有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。</p>
-</p>
+        <p>Sometimes you need to reset the Raspberry Pi Pico. One way is to press and hold the BOOTSEL button on the Pico and then plug in the USB; or connect the RUN and GND pins with a button, and then press this button and BOOTSEL at the same time button. This puts you into USB mode, which resets it to a degree. If this situation occurs where the peripheral device cannot be reset, then compile a reset program and put it into Pico to reset it. This reset procedure is official. Just drag it to the Pico in USB mode. Below I have extracted it, because this binary executable file was not originally built separately. After that, the above method may sometimes fail to stop the LED from flashing.</p>
     </li>
     
     <li>
@@ -187,27 +179,17 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/d879e4278e187d628848d9485115567b.html">搭建树莓派Pico交叉编译环境和工具链（arm-none-eabi-gcc）时可能会遇到的错误以及解决方案</a></h2>
-        <p class="info">2023-08-10 ｜ <a href="/mcu.html"> MCU</a> ｜ 1056 字</p>
+        <h2><a class="blog" href="/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html">Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico</a></h2>
+        <p class="info">2023-08-10 ｜ <a href="/mcu.html"> MCU</a> ｜ 646 字</p>
         
-        <p><!-- excerpt-start -->
-<p>本文是一个类似手册的文章，用来记录可能遇到的错误。你可以通过侧栏选择遇到的错误来查看详细信息。</p>
-<h1 id="no-install-step-for-elf2uf2build">No install step for ‘ELF2UF2Build’</h1>
-<p>遇到这种错误有两种原因：</p>
-<ol>
-  <li>安装了版本不对或者不完整的<code class="language-plaintext highlighter-rouge">arm-none-eabi-gcc</code>；</li>
-  <li>没有使用正确的 C/C++ 的编译器，导致编译出来的<code class="language-plaintext highlighter-rouge">elf2uf2</code>不对；</li>
-</ol>
-</p>
+        <p>This blog is a manual-like article used to record errors that may be encountered. You can view detailed information by selecting the error encountered via the sidebar. No install step for ‘ELF2UF2Build’, fatal error: cannot read spec file ‘nosys.specs’ No such file or directory, connection error</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/5e449fdb610b2a4d7ee8ee742fbfe736.html">如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</a></h2>
-        <p class="info">2023-08-09 ｜ <a href="/mcu.html"> MCU</a> ｜ 4419 字</p>
+        <h2><a class="blog" href="/blogs/a6dab84ce4891d654646336e2ae01e69.html">How to use the Mac Terminal to developfor Raspberry Pi Pico using C/C++, and how to deal with various problems without using IDE or editor (such as VS Code)</a></h2>
+        <p class="info">2023-08-09 ｜ <a href="/mcu.html"> MCU</a> ｜ 2524 字</p>
         
-        <p><!-- excerpt-start -->
-<p>写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。</p>
-</p>
+        <p>The reason for writing this article is that the official tutorial is outdated. If you follow the official tutorial to configure it on Mac now, you will encounter a lot of problems. For example, I almost stepped on all the pits that I could step on. Therefore, the complete process, as well as the causes and handling methods of various errors are recorded here. Otherwise, if you change to Mac or encounter the same problem on other platforms in the future, you will be in trouble if you forget how to deal with it. Next, we will record the overall installation process, introduce some background knowledge, explain and explain some errors, and finally sort out the errors No install step for ELF2UF2Build. fatal error cannot read spec fil</p>
     </li>
     
     <li>
@@ -317,12 +299,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/3a26a4104f77e68fd8bf0966492e349c.html">【更新中】苹果自家的as汇编器的特色风格（与微软masm汇编器语言风格的不同）</a></h2>
-        <p class="info">2023-05-19 ｜ <a href="/assembly.html"> Assembly</a> ｜ 765 字</p>
+        <h2><a class="blog" href="/blogs/84be222e873c5db5bd5e558b688a75e7.html">「Updating」The syntax style of Apple's as assembler (different from the language style of Microsoft's masm assembler)</a></h2>
+        <p class="info">2023-05-19 ｜ <a href="/assembly.html"> Assembly</a> ｜ 486 字</p>
         
-        <p><!-- excerpt-start -->
-<p><code class="language-plaintext highlighter-rouge">as</code>汇编器是苹果的汇编器，Xcode 生成的汇编代码也是<code class="language-plaintext highlighter-rouge">as</code>风格的，而<code class="language-plaintext highlighter-rouge">as</code>风格与大部分人在大学里所学的微软的<code class="language-plaintext highlighter-rouge">masm</code>风格大相径庭，所以本文会列出二者的不同。不过由于细节太多，没法一次性写出所有的不同，所以会持续更新。</p>
-</p>
+        <p></p>
     </li>
     
     <li>
@@ -397,12 +377,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/7a070a71b75f583a4550f6526e5c4d78.html">「Swift」如何测量一个函数/功能的运行时间</a></h2>
-        <p class="info">2023-04-02 ｜ <a href="/swift.html"> Swift</a> ｜ 1409 字</p>
+        <h2><a class="blog" href="/blogs/c8e8ab7950fb9b47c736e665efaa666f.html">How to measure running time of function in Swift/SwiftUI</a></h2>
+        <p class="info">2023-04-02 ｜ <a href="/swift.html"> Swift</a> ｜ 973 字</p>
         
-        <p><!-- excerpt-start -->
-<p>当需要测试程序的性能时，Xcode 自带的测试功能有时并不能满足我们的需要，这个时候就需要自己编写测试代码。测试性能主要是测试程序或代码运行时间，不论是测试 CPU/GPU 密集型程序，还是读写密集型程序，都需要获取程序或函数的运行时间来计算性能。</p>
-</p>
+        <p>Sometimes, Xcode Test cannot meet our need, so we need to write the testing function mannully. The main of testing function is measure time of code. Whether it is testing a CPU/GPU-intensive program or a read-write-intensive program, it is necessary to obtain the running time of the program or function to calculate performance. If you measure the CLI (Command Line Interface) program, you can get the running time of the entire program by `time` command. But if you want to test the running time of a function in the program code, or test a GUI program, this method will not work. We need to add a timer to the code to schedule the measurement work mannully.</p>
     </li>
     
     <li>
@@ -488,23 +466,17 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/7e2b24953ba4917e02d86a056620b7ca.html">「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)</a></h2>
-        <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 501 字</p>
+        <h2><a class="blog" href="/blogs/76cc2df1309fab57adb3429785b2d3c9.html">How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI</a></h2>
+        <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 346 字</p>
         
-        <p><!-- excerpt-start -->
-<p>​
-本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：<a href="/_blogs/2022-11-07-%E5%85%B3%E4%BA%8EUIScreen.main.bounds.height%E7%9A%84%E5%80%BC%E5%8F%91%E7%94%9F%E4%BA%86%E5%8F%98%E5%8C%96%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.md">《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​</a>​。</p>
-</p>
+        <p>This blog was originally published on 2021-02-07, but due to a modification (or say a bug, which I has been reported) discovered on 2022-11-6, so I add something about that. For details, please see: The height of UIScreen.main.bounds occurs change (not right value)​.</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/798cd052f16bdb59307ef5762928a26d.html">关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案</a></h2>
-        <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 854 字</p>
+        <h2><a class="blog" href="/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html">The height of UIScreen.main.bounds occurs change (not right value)</a></h2>
+        <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 497 字</p>
         
-        <p><!-- excerpt-start -->
-<h2 id="前言">前言</h2>
-<p>之前写了一篇博客来讲如何以 point 和 pixel 两种格式获取 iPhone、iPad 等苹果设备的屏幕尺寸：<a href="https://blog.csdn.net/qq_33919450/article/details/113743159">《SwiftUI——得到屏幕尺寸(bounds和nativeBounds)》</a>，但是苹果最近做了修改，所以写这篇博客来作为补充和改进（原博客也进行了修改）。</p>
-</p>
+        <p>I have wrote a blog that introduce two methods how to get the screen size of iPhone, iPad and other Apple devices How to get the screen size (bounds and nativeBounds) in SwiftSwiftUI, but recently Apple changes something, so I wrote this blog as addition (the original blog has also been modified).Recently, one of my open source project ZhongUncleSwiftUI_ImageCropper received an issue saying that there was a bug. I don’t think it is possible. But I still to test it, there was indeed a bug. After some research, I found that Apple had changed the value of UIScreen.main.bounds.height. But Apple has not officially mentioned this, it still refers to the boundaries of the entire screen. as follows</p>
     </li>
     
     <li>
@@ -529,12 +501,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/5ccb25e50e98b5bc0c12b9c015088a8e.html">快速排序（QuickSort）方法的历史、代码、测试，以及Hoare-Partition和Lomuto-Partition的区别（还有很多其他快速排序算法）</a></h2>
-        <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 4427 字</p>
+        <h2><a class="blog" href="/blogs/16a9a15ed4a778c817fc7580b380b7b9.html">The Origin, Code, Performance of QuickSort, including the Differences Between Hoare-Partition and Lomuto-Partition (More)</a></h2>
+        <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 2899 字</p>
         
-        <p><!-- excerpt-start -->
-<p>在学习快速排序的时候，发现很多人说的快速排序方法不一样（比如教材和网上说到的快速排序过程不一样），很好奇是为什么，而且开发、考试等很多场景都需要用到。就去翻阅了一下《算法导论》想搞明白，发现这种情况的原因和快速排序的发展史有关。</p>
-</p>
+        <p>When I was learning quick sort, I found that many people said that the quick sort method was different (for example, the quick sort process mentioned in the textbook and online was different). I was very curious why, and it is needed in many scenarios such as development and exams. I went to read Introduction to Algorithms to find out, and found that the reason for this situation is related to the development history of quick sort. So I consulted a lot of information and wrote this article as a record.</p>
     </li>
     
     <li>
@@ -557,12 +527,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/7a01c6258c522a0201fc556ff8fbf08f.html">数据结构中，索引存储和散列存储区别较为详细的介绍</a></h2>
-        <p class="info">2022-09-03 ｜ <a href="/research.html"> Research</a> ｜ 770 字</p>
+        <h2><a class="blog" href="/blogs/7f2bfec8a9dba87f478cb2895fb693c0.html">Difference between index storage and hash storage in detail in the data structure</a></h2>
+        <p class="info">2022-09-03 ｜ <a href="/research.html"> Research</a> ｜ 456 字</p>
         
-        <p><!-- excerpt-start -->
-<p>数据结构中有两种存储结构很容易搞混，那就是索引存储结构和散列存储结构（哈希存储结构）。</p>
-</p>
+        <p>There are two storage structures in data structures that are easily confused, namely index storage structure and hash storage structure (hash storage structure). Index storage The corresponding keyword can be found according to the address. It can be understood as a yellow pages. You can find a person's phone number based on his name. Hash storage The “hash” in the name is the often heard hash (hash value). The hash is calculated through an algorithm, such as MD5. In this storage format, the address is calculated into a hash value of the same length through a hash algorithm, and then the hash value is stored instead of directly storing the address. When accessing the keyword, the hash value will be decoded through operation and then accessed again. At this time, festival</p>
     </li>
     
     <li>
@@ -575,12 +543,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/7e752d5a8bf37d6ef8d206c263e72469.html">「SwiftUI」iOS 15 新版Animation制作动画介绍</a></h2>
-        <p class="info">2022-08-13 ｜ <a href="/swift.html"> Swift</a> ｜ 2022 字</p>
+        <h2><a class="blog" href="/blogs/da5bd1f639e9b57c04a61f0eaa75518b.html">How to product new version UI animation after iOS 15 using SwiftUI</a></h2>
+        <p class="info">2022-08-13 ｜ <a href="/swift.html"> Swift</a> ｜ 1375 字</p>
         
-        <p><!-- excerpt-start -->
-<p>从iOS 15.0开始，苹果废弃了之前的<code class="language-plaintext highlighter-rouge">.animation(Animation?)</code>，建议开发者使用<code class="language-plaintext highlighter-rouge">.animation(Animation?, value: Equatable)</code>或者<code class="language-plaintext highlighter-rouge">withAnimation</code>替代。</p>
-</p>
+        <p>Starting from iOS 15.0, Apple has abandoned the previous.animation(Animation?) and recommends developers to use .animation(Animation?, value: Equatable) or withAnimation instead.Personally, I feel that although I may not be used to it after the revision, the possibilities and freedom of development are greater.But before talking about the difference between the two, we need to understand UI animation. You can skip this part if you understand it.What is animation.Animation is a process of attribute changes such as various displacements, color changes, size changes, etc.Specific to SwiftUI's View, it is their .offset, .foregroundC</p>
     </li>
     
     <li>
@@ -695,13 +661,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/7dc37fce4d4bd96f87677464c78b75b3.html">Python 解析获取 URL 参数以及使用</a></h2>
-        <p class="info">2022-06-09 ｜ <a href="/web.html"> Web</a> ｜ 630 字</p>
+        <h2><a class="blog" href="/blogs/6cea52b72dd2b0d5ddbc163b7ee2cb59.html">How Python parses and obtains URL parameters and uses</a></h2>
+        <p class="info">2022-06-09 ｜ <a href="/web.html"> Web</a> ｜ 421 字</p>
         
-        <p><p>下文中使用的 URL 地址是：<code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc&amp;id=12</code>
-<!-- excerpt-start -->
-Python 解析获取 URL 参数的步骤如下：</p>
-</p>
+        <p>The steps for Python to parse and obtain URL parameters are as follows URL for example is https://www.example.com/?keyword=abc&id=12 import urllib.parse in Python3 This module is used to parse the URL into parts (note that it is parsing a string, so it needs to be quoted)</p>
     </li>
     
     <li>
@@ -741,12 +704,10 @@ Python 解析获取 URL 参数的步骤如下：</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/08bbb6f335b0b12f25545ee7a6e8492c.html">Mac 上，Xcode 导致“系统数据”占用太大</a></h2>
-        <p class="info">2022-05-06 ｜ <a href="/unix.html"> UNIX</a> ｜ 428 字</p>
+        <h2><a class="blog" href="/blogs/045fa379a8cd9921e75ce86a360345a3.html">How to solve System Data too large on Mac (Xcode causes)?</a></h2>
+        <p class="info">2022-05-06 ｜ <a href="/unix.html"> UNIX</a> ｜ 269 字</p>
         
-        <p><!-- excerpt-start -->
-<p>今天突然发现系统占用居然有一百多个g，所以打算清理一下。经过排查发现是 Xcode 导致的。（一般软件缓存会放在<code class="language-plaintext highlighter-rouge">~/Library</code>下，所以找出这个目录下最大的文件即可）</p>
-</p>
+        <p>ZhongUncle noticed that the “System Data” on their Mac occupied over 100 GB and wanted to clean it up. ZhongUncle found that most of the “System Data” came from Xcode, especially the directory ~/Library/Developer/Xcode/UserData/Previews/Simulator Devices, which was generated by using SwiftUI’s Preview feature. ZhongUncle deleted this directory and suggested others to do the same if they encounter the same problem. ZhongUncle also mentioned that macOS Monterey has a new “Developer” category in “Storage Space - Management” that can help clean up some Xcode caches.</p>
     </li>
     
     <li>
@@ -791,12 +752,10 @@ Python 解析获取 URL 参数的步骤如下：</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/04b02762f73fe5eabfd13a3ba6e5fe18.html">「SwiftUI」推送通知（Notifications）二三事</a></h2>
-        <p class="info">2022-02-21 ｜ <a href="/swift.html"> Swift</a> ｜ 1368 字</p>
+        <h2><a class="blog" href="/blogs/4c17a96936428770a50a3140cfee0392.html">SwiftUI - How to Handle Push Notifications</a></h2>
+        <p class="info">2022-02-21 ｜ <a href="/swift.html"> Swift</a> ｜ 1081 字</p>
         
-        <p><!-- excerpt-start -->
-<p>有很多需要推送通知的情况，但是关于SwiftUI的通知推送说的人却不多，这里就说一些相关内容。一方面是为了自己能以后再查阅，另外一方面也是想能帮到有需要的人。</p>
-</p>
+        <p>There are many situations where push notifications are needed, but not many people talk about push notifications in SwiftUI. Here is some relevant content. On the one hand, it is so that I can refer to it later, and on the other hand, I also want to help people in need. This article will describe basic push (the most common notification) and scheduled push (such as alarms, anniversaries, etc.). Before describing the specific operations, you need to pay attention to one thing: notifications cannot appear when the app is open. When testing, use the simulator or real machine to test. After pressing the button, exit the app. Basic Push First, let’s talk about the most basic push, which is also the most commonly used. The style is as follows and the code is as follows import SwiftUI import UserNotifi</p>
     </li>
     
     <li>
@@ -809,12 +768,10 @@ Python 解析获取 URL 参数的步骤如下：</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/3fb992d55ed96276fb1103fc45b5a0c4.html">SQLite 命令行使用方法</a></h2>
-        <p class="info">2022-02-13 ｜ <a href="/research.html"> Research</a> ｜ 1822 字</p>
+        <h2><a class="blog" href="/blogs/15a1501df7ebd6e227e8da6e713514b3.html">SQLite command line usage</a></h2>
+        <p class="info">2022-02-13 ｜ <a href="/research.html"> Research</a> ｜ 1425 字</p>
         
-        <p><!-- excerpt-start -->
-<p>最近为了省钱，就打算使用开源免费的 SQLite 来做数据库。并且由于个人习惯，所以偏爱命令行。这里就来记录一下如何使用命令行来使用 SQLite。</p>
-</p>
+        <p>Recently, in order to save money, I plan to use the open source and free SQLite as the database. And due to personal habits, I prefer the command line. Here we will record how to use sqlite using the command line. For installation, macOS comes with sqlite3, and Linux can use the software package (apt-get or yum download). A small introduction to sqlite interactive operations. Here we introduce some small operations outside of the database. Taking macOS as an example, after opening the Terminal, enter the following command to open a database (if there is not one, a new one will be created) sqlite3 name.db. At this time, the sqlite operation interface will be entered, as follows sqlite3 test.sql</p>
     </li>
     
     <li>
@@ -827,12 +784,10 @@ Python 解析获取 URL 参数的步骤如下：</p>
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html">「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能</a></h2>
-        <p class="info">2022-01-28 ｜ <a href="/swift.html"> Swift</a> ｜ 497 字</p>
+        <h2><a class="blog" href="/blogs/69db0f8766f0ac03250d663892586d8a.html">VideoPlayer in SwiftUI without a back button or missing other functions</a></h2>
+        <p class="info">2022-01-28 ｜ <a href="/swift.html"> Swift</a> ｜ 409 字</p>
         
-        <p><!-- excerpt-start -->
-<p>我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：</p>
-</p>
+        <p>When I use the VideoPlayer in SwiftUI, I notice no “X” button to return in iPod Touch, like below iPod Touch iPhone 13 mini I don’t want this kind of UI, and I couldn’t find a solution from Google. Finally I found a magical solution to this problem. First, use code below to call VideoPlayer</p>
     </li>
     
     <li>

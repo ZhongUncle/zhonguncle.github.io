@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能</title>
+        <title>VideoPlayer in SwiftUI without a back button or missing other functions</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能 | ZhongUncle’s Blog</title>
+<title>VideoPlayer in SwiftUI without a back button or missing other functions | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能" />
+<meta property="og:title" content="VideoPlayer in SwiftUI without a back button or missing other functions" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：" />
-<meta property="og:description" content="我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：" />
-<link rel="canonical" href="http://localhost:4000/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html" />
+<meta name="description" content="When I use the VideoPlayer in SwiftUI, I notice no “X” button to return in iPod Touch, like below iPod Touch iPhone 13 mini I don’t want this kind of UI, and I couldn’t find a solution from Google. Finally I found a magical solution to this problem. First, use code below to call VideoPlayer" />
+<meta property="og:description" content="When I use the VideoPlayer in SwiftUI, I notice no “X” button to return in iPod Touch, like below iPod Touch iPhone 13 mini I don’t want this kind of UI, and I couldn’t find a solution from Google. Finally I found a magical solution to this problem. First, use code below to call VideoPlayer" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/69db0f8766f0ac03250d663892586d8a.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/69db0f8766f0ac03250d663892586d8a.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-01-28T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能" />
+<meta property="twitter:title" content="VideoPlayer in SwiftUI without a back button or missing other functions" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-01-28T00:00:00+08:00","datePublished":"2022-01-28T00:00:00+08:00","description":"我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：","headline":"「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html"},"url":"http://localhost:4000/blogs/5e87aff8cdfd470c5e37336d08fdfe5f.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-01-28T00:00:00+08:00","datePublished":"2022-01-28T00:00:00+08:00","description":"When I use the VideoPlayer in SwiftUI, I notice no “X” button to return in iPod Touch, like below iPod Touch iPhone 13 mini I don’t want this kind of UI, and I couldn’t find a solution from Google. Finally I found a magical solution to this problem. First, use code below to call VideoPlayer","headline":"VideoPlayer in SwiftUI without a back button or missing other functions","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/69db0f8766f0ac03250d663892586d8a.html"},"url":"https://zhonguncle.github.io/blogs/69db0f8766f0ac03250d663892586d8a.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,26 +98,26 @@
         </a>
     
 </div>
-            <h1>「SwiftUI」使用VideoPlayer的时候，没有返回的叉叉，或者缺少其他功能</h1>
+            <h1>VideoPlayer in SwiftUI without a back button or missing other functions</h1>
             <div class="bloginfo">
-                <p class="info">2022-01-28 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 497 </p>
+                <p class="info">2022-01-28 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 409 </p>
             </div>
-            <!-- excerpt-start -->
-<p>我在使用 SwiftUI 自带的 VideoPlayer 的时候，发现在 iPod Touch 中，有返回的叉叉，但是在其他设备，例如 iPhone 13 mini 上就没有。如下：</p>
+            <p>When I use the VideoPlayer in SwiftUI, I notice no “X” button to return in iPod Touch, like below:</p>
 
-<p><img src="/assets/images/fcdb6a4107274fc9abf7c85db3029316.png" alt="iPod Touch示意图" />
-<img src="/assets/images/6fa52574611f443d96f788462df7bebf.png" alt="iPhone 13 mini示意图" /></p>
+<p><img alt="iPod Touch" src="/assets/images/fcdb6a4107274fc9abf7c85db3029316.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
-<p>这不是我想要的，查找半天之后都没找到解决办法。最后我发现可以很神奇的解决这一点。</p>
+<p><img alt="iPhone 13 mini" src="/assets/images/6fa52574611f443d96f788462df7bebf.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
-<p>首先我是通过以下代码来调用VideoPlayer</p>
+<p>I don’t want this kind of UI, and I couldn’t find a solution from Google. Finally I found a magical solution to this problem.</p>
+
+<p>First, use code below to call VideoPlayer:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">TableCellView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">playVideo</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
     
     <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
         <span class="kt">ZStack</span> <span class="p">{</span>
-        <span class="c1">//点击该按钮后全屏</span>
+        <span class="c1">// Click this to fullscreen</span>
         <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
                         <span class="n">playVideo</span> <span class="o">=</span> <span class="kc">true</span>
                     <span class="p">},</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
@@ -134,19 +134,20 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>解决方法简单的离谱，忽略安全区域即可，也就是添加如下代码到VideoPlayer即可：</p>
+<p>The solution is ridiculously simple: just ignore the safe area. A</p>
+
+<p>dd the following code under VideoPlayer:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.</span><span class="nf">ignoresSafeArea</span><span class="p">()</span>
 </code></pre></div></div>
 
-<p>完整代码如下：</p>
+<p>The full code is:</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">TableCellView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">playVideo</span><span class="p">:</span> <span class="kt">Bool</span> <span class="o">=</span> <span class="kc">false</span>
     
     <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
         <span class="kt">ZStack</span> <span class="p">{</span>
-        <span class="c1">//点击该按钮后全屏</span>
         <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
                         <span class="n">playVideo</span> <span class="o">=</span> <span class="kc">true</span>
                     <span class="p">},</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
@@ -164,7 +165,9 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>真的是麻了</p>
+<p>It works fine now!</p>
+
+<p>I hope these will help someone in need~</p>
 
         </div>
         <!-- comment by utterances -->

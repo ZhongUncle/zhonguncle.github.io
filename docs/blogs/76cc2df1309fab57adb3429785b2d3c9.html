@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)</title>
+        <title>How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>「SwiftUI」得到屏幕尺寸(bounds和nativeBounds) | ZhongUncle’s Blog</title>
+<title>How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)" />
+<meta property="og:title" content="How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="​ 本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​​。" />
-<meta property="og:description" content="​ 本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​​。" />
-<link rel="canonical" href="http://localhost:4000/blogs/7e2b24953ba4917e02d86a056620b7ca.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/7e2b24953ba4917e02d86a056620b7ca.html" />
+<meta name="description" content="This blog was originally published on 2021-02-07, but due to a modification (or say a bug, which I has been reported) discovered on 2022-11-6, so I add something about that. For details, please see: The height of UIScreen.main.bounds occurs change (not right value)​." />
+<meta property="og:description" content="This blog was originally published on 2021-02-07, but due to a modification (or say a bug, which I has been reported) discovered on 2022-11-6, so I add something about that. For details, please see: The height of UIScreen.main.bounds occurs change (not right value)​." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/76cc2df1309fab57adb3429785b2d3c9.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/76cc2df1309fab57adb3429785b2d3c9.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-11-07T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)" />
+<meta property="twitter:title" content="How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-07T00:00:00+08:00","datePublished":"2022-11-07T00:00:00+08:00","description":"​ 本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​​。","headline":"「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/7e2b24953ba4917e02d86a056620b7ca.html"},"url":"http://localhost:4000/blogs/7e2b24953ba4917e02d86a056620b7ca.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-07T00:00:00+08:00","datePublished":"2022-11-07T00:00:00+08:00","description":"This blog was originally published on 2021-02-07, but due to a modification (or say a bug, which I has been reported) discovered on 2022-11-6, so I add something about that. For details, please see: The height of UIScreen.main.bounds occurs change (not right value)​.","headline":"How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/76cc2df1309fab57adb3429785b2d3c9.html"},"url":"https://zhonguncle.github.io/blogs/76cc2df1309fab57adb3429785b2d3c9.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,45 +98,42 @@
         </a>
     
 </div>
-            <h1>「SwiftUI」得到屏幕尺寸(bounds和nativeBounds)</h1>
+            <h1>How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI</h1>
             <div class="bloginfo">
-                <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 501 </p>
+                <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 346 </p>
             </div>
-            <!-- excerpt-start -->
-<p>​
-本文原本写于 2021-02-07 17:12:03，但是由于 2022-11-6 发现了一个修改（或者说 bug，已经上报了），所以补充了一些相关说明，详情请查看：<a href="/_blogs/2022-11-07-%E5%85%B3%E4%BA%8EUIScreen.main.bounds.height%E7%9A%84%E5%80%BC%E5%8F%91%E7%94%9F%E4%BA%86%E5%8F%98%E5%8C%96%E7%9A%84%E5%8E%9F%E5%9B%A0%E5%92%8C%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88.md">《关于UIScreen.main.bounds.height的值发生了变化的原因和解决方案》​​​​​​</a>​。</p>
+            <p>This blog was originally published on 2021-02-07 17:12:03, but due to a modification (or say a bug, which I has been reported) discovered on 2022-11-6, so I add something about that. For details, please see: <a href="/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html">The height of UIScreen.main.bounds occurs change (not right value)</a>​.</p>
 
 <h2 id="bounds">bounds</h2>
-
-<p><strong>关于这个值有个地方需要注意一下，请一定查看上面的链接。</strong></p>
+<p><strong>There are something you must notice, please check the link above.</strong></p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">screenBounds</span><span class="p">:</span><span class="kt">CGRect</span> <span class="o">=</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bounds</span>
 </code></pre></div></div>
 
-<p>bounds得到的是单位为点（point）的尺寸。</p>
+<p>The unit of <code class="language-plaintext highlighter-rouge">UIScreen.main.bounds</code> is point.</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">width</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">width</span>
 <span class="k">var</span> <span class="nv">height</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">bounds</span><span class="o">.</span><span class="n">height</span>
 </code></pre></div></div>
 
-<p>这样就可以得到 CGFloat 格式的数据，可以使用该值进行一些绘制界面，比如画格子之类的、移动组件的位置。</p>
+<p>Now you can get screen size in CGFloat. You can use this value to drawing some UIs, such as drawing grids and moving the position of components.</p>
 
-<p>之所以该格式的数据被用于绘图、移动组件的位置是因为 View 一般都是使用 CGFloat 格式的数据来进行操作的，如果使用 nativeBounds 是没办法来进行操作的，因为点（point）和像素（pixel）不是一一对应的。并且由于范围稍微“宽松”一些，这样可以有效避免因为计算时四舍五入导致的误差。</p>
+<p>The reason why <code class="language-plaintext highlighter-rouge">bound</code> for drawing and moving component positions is View generally uses CGFloat format data for operations. If you use <code class="language-plaintext highlighter-rouge">nativeBounds</code>, there is no way to operate because points and pixels is not one-to-one correspondence. And because the range is slightly “loose”, this can effectively avoid errors caused by rounding during calculation.</p>
 
 <h2 id="nativebounds">nativeBounds</h2>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">screenBounds</span><span class="p">:</span> <span class="kt">CGRect</span> <span class="o">=</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">nativeBounds</span>
 </code></pre></div></div>
 
-<p>nativeBounds得到的是单位为像素（pixel）的尺寸。</p>
+<p><code class="language-plaintext highlighter-rouge">nativeBounds</code> is in pixel.</p>
 
 <div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">var</span> <span class="nv">width</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">nativeBounds</span><span class="o">.</span><span class="n">width</span>
 <span class="k">var</span> <span class="nv">height</span><span class="p">:</span> <span class="kt">CGFloat</span> <span class="o">=</span> <span class="kt">UIScreen</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="n">nativeBounds</span><span class="o">.</span><span class="n">height</span>
 </code></pre></div></div>
 
-<p>这样就可以得到CGFloat格式的数据，一般用于返回屏幕尺寸或者某个组件的像素值。绘制、移动组件一般不用这个数据。</p>
+<p>Use this method you can get size in CGFloat, but usually use it to get the size of some View or entire screen. Drawing View or move components do not use it usually.</p>
 
-<p>作为对比，参考iPhone 11 Pro数据：</p>
+<p>Below is the values of iPhone 11 Pro:</p>
 
 <table>
   <thead>
@@ -159,6 +156,8 @@
     </tr>
   </tbody>
 </table>
+
+<p>I hope these will help someone in need~</p>
 
         </div>
         <!-- comment by utterances -->

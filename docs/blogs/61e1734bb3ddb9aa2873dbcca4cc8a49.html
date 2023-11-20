@@ -1,0 +1,149 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>The height of UIScreen.main.bounds occurs change (not right value)</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>The height of UIScreen.main.bounds occurs change (not right value) | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="The height of UIScreen.main.bounds occurs change (not right value)" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I have wrote a blog that introduce two methods how to get the screen size of iPhone, iPad and other Apple devices How to get the screen size (bounds and nativeBounds) in SwiftSwiftUI, but recently Apple changes something, so I wrote this blog as addition (the original blog has also been modified).Recently, one of my open source project ZhongUncleSwiftUI_ImageCropper received an issue saying that there was a bug. I don’t think it is possible. But I still to test it, there was indeed a bug. After some research, I found that Apple had changed the value of UIScreen.main.bounds.height. But Apple has not officially mentioned this, it still refers to the boundaries of the entire screen. as follows" />
+<meta property="og:description" content="I have wrote a blog that introduce two methods how to get the screen size of iPhone, iPad and other Apple devices How to get the screen size (bounds and nativeBounds) in SwiftSwiftUI, but recently Apple changes something, so I wrote this blog as addition (the original blog has also been modified).Recently, one of my open source project ZhongUncleSwiftUI_ImageCropper received an issue saying that there was a bug. I don’t think it is possible. But I still to test it, there was indeed a bug. After some research, I found that Apple had changed the value of UIScreen.main.bounds.height. But Apple has not officially mentioned this, it still refers to the boundaries of the entire screen. as follows" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-11-07T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="The height of UIScreen.main.bounds occurs change (not right value)" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-11-07T00:00:00+08:00","datePublished":"2022-11-07T00:00:00+08:00","description":"I have wrote a blog that introduce two methods how to get the screen size of iPhone, iPad and other Apple devices How to get the screen size (bounds and nativeBounds) in SwiftSwiftUI, but recently Apple changes something, so I wrote this blog as addition (the original blog has also been modified).Recently, one of my open source project ZhongUncleSwiftUI_ImageCropper received an issue saying that there was a bug. I don’t think it is possible. But I still to test it, there was indeed a bug. After some research, I found that Apple had changed the value of UIScreen.main.bounds.height. But Apple has not officially mentioned this, it still refers to the boundaries of the entire screen. as follows","headline":"The height of UIScreen.main.bounds occurs change (not right value)","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html"},"url":"https://zhonguncle.github.io/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>The height of UIScreen.main.bounds occurs change (not right value)</h1>
+            <div class="bloginfo">
+                <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 497 </p>
+            </div>
+            <h2 id="preface">Preface</h2>
+<p>I have wrote a blog that introduce two methods how to get the screen size of iPhone, iPad and other Apple devices: <a href="/blog/76cc2df1309fab57adb3429785b2d3c9.html">How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI</a>, but recently Apple changes something, so I wrote this blog as addition (the original blog has also been modified).</p>
+
+<h2 id="reasons-i-guess">Reasons (I guess)</h2>
+<p>Recently, one of my open source project <a href="https://github.com/ZhongUncle/SwiftUI_ImageCropper">ZhongUncle/SwiftUI_ImageCropper</a> received an issue saying that there was a bug. I don’t think it is possible. But I still to test it, there was indeed a bug. After some research, I found that Apple had changed the value of <code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.height</code>. But Apple has not officially mentioned this, it still refers to the boundaries of the entire screen. as follows:</p>
+
+<p><img src="/assets/images/ef8efb9e1367425e975ee7a51bbccca2.png" alt="introduction of Apple document for UIScreen.main.bounds.height" /></p>
+
+<p>Such as iPhone 11 Pro, the value of <code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.height</code> has changed from 1125pt to 812pt, but <code class="language-plaintext highlighter-rouge">UIScreen.main.bounds. width</code> is still 375pt. You may think it is without safety area height, but the actual measurement is not that, it is the height of the entire screen.</p>
+
+<p>I don’t know if it’s a bug or just modification. My personal guess is that it is a bug for two reasons:</p>
+<ol>
+  <li>Originally, the height-to-width ratio of iPhone 11 Pro was <code class="language-plaintext highlighter-rouge">3:1</code> for both <code class="language-plaintext highlighter-rouge">bounds</code> and <code class="language-plaintext highlighter-rouge">nativeBounds</code>. But the current <code class="language-plaintext highlighter-rouge">bounds</code> ratio is about <code class="language-plaintext highlighter-rouge">2.1:1</code>.</li>
+  <li>The value of <code class="language-plaintext highlighter-rouge">UIScreen.main.bounds.height</code> is 812pt, but the original value of <code class="language-plaintext highlighter-rouge">UIScreen.main.nativeBounds.height</code> of iPhone 11 Pro is 812px. So I doubt that the data is wrong.</li>
+</ol>
+
+<p>Based on these suspicions, I report to Apple.</p>
+
+<h2 id="solution">Solution</h2>
+<p>In this case, if you use proportion to control the component size, it basically does not affect anything. But if you use specified values to control the size of components, or use the screen ratio, you need some solutions. Below are solutions for both (if you have any additions, please comment):</p>
+<ol>
+  <li>When using a specified value to control the size of a component, you need a <code class="language-plaintext highlighter-rouge">scale</code> to multiply the original value. The <code class="language-plaintext highlighter-rouge">scale</code> expression is <code class="language-plaintext highlighter-rouge">(UIScreen.main.bounds.height/UIScreen.main.bounds.width)/(UIScreen.main.nativeBounds.height/UIScreen.main.nativeBounds.width)</code>. Here we bring in the original screen height of the iPhone 11 Pro to verify: After calculating the <code class="language-plaintext highlighter-rouge">scale</code> of the iPhone 11 Pro, we get the rounded value <code class="language-plaintext highlighter-rouge">0.72177...</code> from <code class="language-plaintext highlighter-rouge">2.16533.../3</code>. Multiply it by the original height <code class="language-plaintext highlighter-rouge">1125</code> can get the current <code class="language-plaintext highlighter-rouge">812</code>.</li>
+  <li>For code that uses proportions, either be a little more troublesome and use different proportions for height and width, or use the first method. For example, the image cropper I made needs to use the size and proportion of the view in the image part. However, due to the change in the proportion here, a bug appeared, so different proportions were used for the height and width.</li>
+</ol>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

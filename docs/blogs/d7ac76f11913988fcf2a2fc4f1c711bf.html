@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>“笨蛋”Siri</title>
+        <title>Size Directives in Assembly</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>“笨蛋”Siri | ZhongUncle’s Blog</title>
+<title>Size Directives in Assembly | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="“笨蛋”Siri" />
+<meta property="og:title" content="Size Directives in Assembly" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="今天无意中发现 iPad 上的 Siri 计算器在一些计算里会有精度问题，比如说会对整数操作，不知道是忽略了什么东西。" />
-<meta property="og:description" content="今天无意中发现 iPad 上的 Siri 计算器在一些计算里会有精度问题，比如说会对整数操作，不知道是忽略了什么东西。" />
-<link rel="canonical" href="https://zhonguncle.github.io/blogs/38127d39771d541157f063c041162d2d.html" />
-<meta property="og:url" content="https://zhonguncle.github.io/blogs/38127d39771d541157f063c041162d2d.html" />
+<meta name="description" content="During the assembly, you may need to specify some data size, such as the size of stack. In this case, you need to use the size command (Size Directives)." />
+<meta property="og:description" content="During the assembly, you may need to specify some data size, such as the size of stack. In this case, you need to use the size command (Size Directives)." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/d7ac76f11913988fcf2a2fc4f1c711bf.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/d7ac76f11913988fcf2a2fc4f1c711bf.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
-<meta property="article:published_time" content="2023-04-05T00:00:00+08:00" />
+<meta property="article:published_time" content="2022-07-10T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="“笨蛋”Siri" />
+<meta property="twitter:title" content="Size Directives in Assembly" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-05T00:00:00+08:00","datePublished":"2023-04-05T00:00:00+08:00","description":"今天无意中发现 iPad 上的 Siri 计算器在一些计算里会有精度问题，比如说会对整数操作，不知道是忽略了什么东西。","headline":"“笨蛋”Siri","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/38127d39771d541157f063c041162d2d.html"},"url":"https://zhonguncle.github.io/blogs/38127d39771d541157f063c041162d2d.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-10T00:00:00+08:00","datePublished":"2022-07-10T00:00:00+08:00","description":"During the assembly, you may need to specify some data size, such as the size of stack. In this case, you need to use the size command (Size Directives).","headline":"Size Directives in Assembly","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/d7ac76f11913988fcf2a2fc4f1c711bf.html"},"url":"https://zhonguncle.github.io/blogs/d7ac76f11913988fcf2a2fc4f1c711bf.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,20 +98,26 @@
         </a>
     
 </div>
-            <h1>“笨蛋”Siri</h1>
+            <h1>Size Directives in Assembly</h1>
             <div class="bloginfo">
-                <p class="info">2023-04-05 ｜ <a href="/non-tech.html"> Non-Tech</a> ｜ #Words: 132 </p>
+                <p class="info">2022-07-10 ｜ <a href="/assembly.html"> Assembly</a> ｜ #Words: 210 </p>
             </div>
-            <!-- excerpt-start -->
-<p>今天无意中发现 iPad 上的 Siri 计算器在一些计算里会有精度问题，比如说会对整数操作，不知道是忽略了什么东西。</p>
+            <p>During the assembly, you may need to specify some data size, such as the size of stack. In this case, you need to use the size command (Size Directives).</p>
 
-<p>比如说计算 0.4 的平方时，算出来的结果是约等于 0.16（为什么是“约等于”？）。然后“1 - 0.4的平方约等于0.83（这都能算错就很离谱了）”。</p>
+<p>There are three types of size for command (can be lowercase):</p>
 
-<p>截图如下：</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">BYTE PTR [eax]</code>: represents 1 byte starting from the address stored in eax.</li>
+  <li><code class="language-plaintext highlighter-rouge">WORD PTR [eax]</code>: represents the 2 bytes starting from the address stored in eax.</li>
+  <li><code class="language-plaintext highlighter-rouge">DWORD PTR [eax]</code>: represents the 4 bytes starting from the address stored in eax.</li>
+</ol>
 
-<p><img src="/assets/images/IMG_4272.jpg" alt="0.4^2 约等于 0.16" /></p>
-
-<p><img src="/assets/images/IMG_4273.jpg" alt="1 - 0.4^2 约等于 0.83" /></p>
+<p>What needs to be noted here is if you use the <code class="language-plaintext highlighter-rouge">mov</code> instruction to set a position, then:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">mov BYTE PTR [eax],32</code>: means to move 32 in the format of 8-bit integer (1 byte) (00100000) to the position of 1 byte starting from the address stored in eax.</li>
+  <li><code class="language-plaintext highlighter-rouge">mov WORD PTR [eax],32</code>: Indicates moving 32 in the format of a 16-bit integer (2 bytes) (00000000 00100000) to the position of 2 bytes starting from the address stored in eax.</li>
+  <li><code class="language-plaintext highlighter-rouge">mov DWORD PTR [eax],32</code>: Indicates moving 32 in the format of a 32-bit integer (4 bytes) (00000000 00000000 00000000 00100000) to the 4-byte address starting from the address stored in eax Location.</li>
+</ol>
 
         </div>
         <!-- comment by utterances -->

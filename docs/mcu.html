@@ -17,14 +17,14 @@
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="MCU" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/mcu.html" />
-<meta property="og:url" content="http://localhost:4000/mcu.html" />
+<link rel="canonical" href="https://zhonguncle.github.io/mcu.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/mcu.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="MCU" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","headline":"MCU","url":"http://localhost:4000/mcu.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","headline":"MCU","url":"https://zhonguncle.github.io/mcu.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -120,25 +120,19 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/5f1a7fd5d52116befdae2e8e54b10888.html">Pico如何C/C++选择使用哪个I2C控制器，以及SDA和SCL针脚</a></h2>
-                <p class="info">2023-08-27 ｜ #Words: 2008 </p>
+                <h2><a class="blog" href="/blogs/514d58f2961fd8f7d36176bdb1208af0.html">Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico</a></h2>
+                <p class="info">2023-08-27 ｜ #Words: 1379 </p>
                 
-                <p><!-- excerpt-start -->
-<p>本文一开始讲述了解决方案，后面是我做的笔记，用来讲述我的发现流程和探究的 Pico I2C 代码结构。</p>
-<h2 id="前提知识">前提知识</h2>
-<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
-</p>
+                <p>This article begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored. How to choose which I2C controller, and SDA and SCL pins Declare three variables or macros before setting to facilitate development. It is recommended to use macros, which is more in line with the development style of Raspberry Pi define I2C_SCL_PIN 5If macro expansion goes wrong, use variables.Then when initializing I2C, set which I2C controller to use, and which SDA and SCL pins. Here are the settings based on the settings above</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/911891686f4a77e37082c2b4210451c9.html">用C/C++修改I2C默认的SDA和SCL针脚</a></h2>
-                <p class="info">2023-08-26 ｜ #Words: 432 </p>
+                <h2><a class="blog" href="/blogs/6a9f2929e74ab84354bed126ebd135b3.html">Modify the default SDA and SCL pins of I2C using C/C++</a></h2>
+                <p class="info">2023-08-26 ｜ #Words: 254 </p>
                 
-                <p><!-- excerpt-start -->
-<p>首先要说明一点：Pico 有两个 I2C，也就是两套 SDA 和 SCL。这点你可以在针脚图中名字看出，比如下图的 Pin 4 和 Pin 5是 I2C1 的，而默认的 Pin 6 和 Pin 7 是 I2C0 的。</p>
-</p>
+                <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled. It means, even if you modify the pin, but not in `I2C0`, it still doesn't work.There are two ways to correctly modify the SDA and SCL default pins of I2C, and there is also a not recommended method (but still a method).Another method is modifying in the source code, which is not recommended because it may be replaced by something. Place the following code after import library. But the replacement may be replaced cover again</p>
             </li>
         
     
@@ -153,12 +147,10 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/d01620c9d7201b52dcea05de04d13c14.html">如何重置树莓派 Pico（重置外围设备失败的解决方案）</a></h2>
-                <p class="info">2023-08-15 ｜ #Words: 620 </p>
+                <h2><a class="blog" href="/blogs/589dba6103e6828777f8c9d196585565.html">How to reset the Raspberry Pi Pico (resetting the peripheral device failed)</a></h2>
+                <p class="info">2023-08-15 ｜ #Words: 429 </p>
                 
-                <p><!-- excerpt-start -->
-<p>有时候需要重置树莓派 Pico，一种方法是按住 Pico 上的“BOOTSEL”按钮再插入 USB；或者用按钮连接“RUN”和“GND”针脚，然后同时按下这个按钮和“BOOTSEL”按钮。这样就可以进入 USB 模式，这样从一定程度进行了重置。</p>
-</p>
+                <p>Sometimes you need to reset the Raspberry Pi Pico. One way is to press and hold the BOOTSEL button on the Pico and then plug in the USB; or connect the RUN and GND pins with a button, and then press this button and BOOTSEL at the same time button. This puts you into USB mode, which resets it to a degree. If this situation occurs where the peripheral device cannot be reset, then compile a reset program and put it into Pico to reset it. This reset procedure is official. Just drag it to the Pico in USB mode. Below I have extracted it, because this binary executable file was not originally built separately. After that, the above method may sometimes fail to stop the LED from flashing.</p>
             </li>
         
     
@@ -168,29 +160,19 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/d879e4278e187d628848d9485115567b.html">搭建树莓派Pico交叉编译环境和工具链（arm-none-eabi-gcc）时可能会遇到的错误以及解决方案</a></h2>
-                <p class="info">2023-08-10 ｜ #Words: 1056 </p>
+                <h2><a class="blog" href="/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html">Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico</a></h2>
+                <p class="info">2023-08-10 ｜ #Words: 646 </p>
                 
-                <p><!-- excerpt-start -->
-<p>本文是一个类似手册的文章，用来记录可能遇到的错误。你可以通过侧栏选择遇到的错误来查看详细信息。</p>
-<h1 id="no-install-step-for-elf2uf2build">No install step for ‘ELF2UF2Build’</h1>
-<p>遇到这种错误有两种原因：</p>
-<ol>
-  <li>安装了版本不对或者不完整的<code class="language-plaintext highlighter-rouge">arm-none-eabi-gcc</code>；</li>
-  <li>没有使用正确的 C/C++ 的编译器，导致编译出来的<code class="language-plaintext highlighter-rouge">elf2uf2</code>不对；</li>
-</ol>
-</p>
+                <p>This blog is a manual-like article used to record errors that may be encountered. You can view detailed information by selecting the error encountered via the sidebar. No install step for ‘ELF2UF2Build’, fatal error: cannot read spec file ‘nosys.specs’ No such file or directory, connection error</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/5e449fdb610b2a4d7ee8ee742fbfe736.html">如何使用Mac终端给树莓派pico构建C/C++程序进行开发，以及遇到各种问题该怎么处理，不使用任何IDE或编辑器（例如VS Code）</a></h2>
-                <p class="info">2023-08-09 ｜ #Words: 4419 </p>
+                <h2><a class="blog" href="/blogs/a6dab84ce4891d654646336e2ae01e69.html">How to use the Mac Terminal to developfor Raspberry Pi Pico using C/C++, and how to deal with various problems without using IDE or editor (such as VS Code)</a></h2>
+                <p class="info">2023-08-09 ｜ #Words: 2524 </p>
                 
-                <p><!-- excerpt-start -->
-<p>写本文的原因是官方的教程已经过时了，如果你现在按照官方教程来在 Mac 上进行配置，那么会遇到一堆问题，比如我几乎把能踩的“雷”都踩了。所以这里记录了完整过程，以及各种错误的原因和处理方法，不然以后换 Mac 了或者在其他平台遇到同样的问题，忘记怎么处理的就头大了。</p>
-</p>
+                <p>The reason for writing this article is that the official tutorial is outdated. If you follow the official tutorial to configure it on Mac now, you will encounter a lot of problems. For example, I almost stepped on all the pits that I could step on. Therefore, the complete process, as well as the causes and handling methods of various errors are recorded here. Otherwise, if you change to Mac or encounter the same problem on other platforms in the future, you will be in trouble if you forget how to deal with it. Next, we will record the overall installation process, introduce some background knowledge, explain and explain some errors, and finally sort out the errors No install step for ELF2UF2Build. fatal error cannot read spec fil</p>
             </li>
         
     

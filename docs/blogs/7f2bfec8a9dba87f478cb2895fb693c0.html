@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Difference between index storage and hash storage in detail in the data structure</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Difference between index storage and hash storage in detail in the data structure | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Difference between index storage and hash storage in detail in the data structure" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="There are two storage structures in data structures that are easily confused, namely index storage structure and hash storage structure (hash storage structure). Index storage The corresponding keyword can be found according to the address. It can be understood as a yellow pages. You can find a person’s phone number based on his name. Hash storage The “hash” in the name is the often heard hash (hash value). The hash is calculated through an algorithm, such as MD5. In this storage format, the address is calculated into a hash value of the same length through a hash algorithm, and then the hash value is stored instead of directly storing the address. When accessing the keyword, the hash value will be decoded through operation and then accessed again. At this time, festival" />
+<meta property="og:description" content="There are two storage structures in data structures that are easily confused, namely index storage structure and hash storage structure (hash storage structure). Index storage The corresponding keyword can be found according to the address. It can be understood as a yellow pages. You can find a person’s phone number based on his name. Hash storage The “hash” in the name is the often heard hash (hash value). The hash is calculated through an algorithm, such as MD5. In this storage format, the address is calculated into a hash value of the same length through a hash algorithm, and then the hash value is stored instead of directly storing the address. When accessing the keyword, the hash value will be decoded through operation and then accessed again. At this time, festival" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/7f2bfec8a9dba87f478cb2895fb693c0.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/7f2bfec8a9dba87f478cb2895fb693c0.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-03T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Difference between index storage and hash storage in detail in the data structure" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-03T00:00:00+08:00","datePublished":"2022-09-03T00:00:00+08:00","description":"There are two storage structures in data structures that are easily confused, namely index storage structure and hash storage structure (hash storage structure). Index storage The corresponding keyword can be found according to the address. It can be understood as a yellow pages. You can find a person’s phone number based on his name. Hash storage The “hash” in the name is the often heard hash (hash value). The hash is calculated through an algorithm, such as MD5. In this storage format, the address is calculated into a hash value of the same length through a hash algorithm, and then the hash value is stored instead of directly storing the address. When accessing the keyword, the hash value will be decoded through operation and then accessed again. At this time, festival","headline":"Difference between index storage and hash storage in detail in the data structure","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/7f2bfec8a9dba87f478cb2895fb693c0.html"},"url":"https://zhonguncle.github.io/blogs/7f2bfec8a9dba87f478cb2895fb693c0.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Difference between index storage and hash storage in detail in the data structure</h1>
+            <div class="bloginfo">
+                <p class="info">2022-09-03 ｜ <a href="/research.html"> Research</a> ｜ #Words: 456 </p>
+            </div>
+            <p>There are two kinds storage structures in data structures that are easily confused, namely <em>index storage structure</em> and <em>hash storage structure (hash storage structure)</em>.</p>
+
+<h2 id="index-storage">Index storage</h2>
+<p>You can find corresponding keyword according to address. It can be understood as a yellow pages. You can find someone’s phone number based on name. <strong>So index storage is also called <em>direct addressing</em>.</strong></p>
+
+<p>Array is a kind of index storage structure that can be directly accessed through subscripts (array’s subscripts is a variant address). You can say <strong>keywords and addresses are related</strong>.</p>
+
+<h2 id="hash-storage">Hash storage</h2>
+<p>The “hash” in the name of “hash storage” is calculated through an algorithm, such as MD5. In this storage format, the address is calculated into a hash value of the same length through a hash algorithm, and then the hash value is stored instead of directly storing the address. When accessing the keyword, the hash value will be decoded through operation and then accessed again, or directly use. You can say <strong>there is a certain mapping relationship between the node’s storage address and the keyword.</strong></p>
+
+<h2 id="difference">Difference</h2>
+<p>The difference between the two is an additional hash function operation process. But why do we need to do this extra step and “waste” the computer’s performance?</p>
+
+<p>The answer is <strong>saving space</strong>.</p>
+
+<p>Because the computer’s storage space is finite, if ignore the storage space limit, you can create a large dictionary, reserve positions for each possible keyword, and then directly address it through the index.</p>
+
+<p>However, in some cases, the actual number of stored keywords is often much less than the possible number of keywords, resulting in a huge waste of space. If use hash storage instead of index storage at this case will save space.</p>
+
+<p>For example, if the possible value is in array <code class="language-plaintext highlighter-rouge">a</code> to <code class="language-plaintext highlighter-rouge">z</code>, but most values are in array <code class="language-plaintext highlighter-rouge">z</code>. Ok, we need prepare all arrays, <code class="language-plaintext highlighter-rouge">a</code> to <code class="language-plaintext highlighter-rouge">z</code>, to save possible values, in fact, just <code class="language-plaintext highlighter-rouge">z</code> and some arrays be used. If we use the hash to store values, we just need one array! And saving much space.</p>
+
+<p>Another benefit of hashing is excellent average-case performance, and it can also provide excellent worst-case performance when the set of keywords is static.</p>
+
+<p>In terms of time complexity, perfect hashing and basic dictionary operations both require O(1) time, it means there is not much difference in time.</p>
+
+<p>And sometimes the two need to be mixed, so the difference is not big.</p>
+
+<p>However, some people need to take an exam, and relevant questions will appear in the exam. Just remember <strong>there is a certain mapping relationship between address and keywords using hash storage structure.</strong></p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

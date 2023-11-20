@@ -1,0 +1,196 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This blog is a manual-like article used to record errors that may be encountered. You can view detailed information by selecting the error encountered via the sidebar. No install step for ‘ELF2UF2Build’, fatal error: cannot read spec file ‘nosys.specs’ No such file or directory, connection error" />
+<meta property="og:description" content="This blog is a manual-like article used to record errors that may be encountered. You can view detailed information by selecting the error encountered via the sidebar. No install step for ‘ELF2UF2Build’, fatal error: cannot read spec file ‘nosys.specs’ No such file or directory, connection error" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-10T00:00:00+08:00","datePublished":"2023-08-10T00:00:00+08:00","description":"This blog is a manual-like article used to record errors that may be encountered. You can view detailed information by selecting the error encountered via the sidebar. No install step for ‘ELF2UF2Build’, fatal error: cannot read spec file ‘nosys.specs’ No such file or directory, connection error","headline":"Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html"},"url":"https://zhonguncle.github.io/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-10 ｜ <a href="/mcu.html"> MCU</a> ｜ #Words: 646 </p>
+            </div>
+            <p>This blog likes a manual used to record possible errors.</p>
+
+<h1 id="no-install-step-for-elf2uf2build">No install step for ‘ELF2UF2Build’</h1>
+<p>There are two reasons for this error:</p>
+<ol>
+  <li>An incorrect or incomplete version of <code class="language-plaintext highlighter-rouge">arm-none-eabi-gcc</code> is installed;</li>
+  <li>Failure to use the correct C/C++ compiler resulted in the compiled <code class="language-plaintext highlighter-rouge">elf2uf2</code> being incorrect;</li>
+</ol>
+
+<h2 id="the-first-reason">The first reason</h2>
+<p>It usually occurs when use <code class="language-plaintext highlighter-rouge">brew</code>. In this case, use the following commands to uninstall and clean up the content installed by <code class="language-plaintext highlighter-rouge">brew</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Uninstall arm-none-eabi-gcc
+$ brew uninstall arm-none-eabi-gcc
+# Remove some according content downloaded
+$ brew cleanup arm-none-eabi-gcc
+# brew install binary file to /usr/local/bin/ in default. Although have been uninstalled, but maybe have some remaining files. Remove manually
+$ sudo rm /usr/local/bin/arm-none-eabi-*
+</code></pre></div></div>
+
+<p>Now we can download from offical website:</p>
+
+<p>Open <a href="https://developer.arm.com/downloads/-/arm-gnu-toolchain-downloads">Arm GNU Toolchain Downloads</a>, use the on-page search function to search for “macOS” because there are so many links. There are so many links just under macOS:</p>
+
+<p><img src="/assets/images/e77c7d2e994a425cabc292a72e2e57e8.png" alt="There are so many links just under macOS" /></p>
+
+<p>Select the link in <code class="language-plaintext highlighter-rouge">AArch32 bare-metal target (arm-none-eabi)</code> for your corresponding platform (processor architecture) and click to download. Choose <code class="language-plaintext highlighter-rouge">AArch32</code> because the Arm Cortex M0 included in RP2040 is 32-bit, which means <code class="language-plaintext highlighter-rouge">AArch32</code>. If you download <code class="language-plaintext highlighter-rouge">AArch64 bare-metal target (aarch64-none-elf)</code>, it will cannot compile successfully.</p>
+
+<h2 id="the-second-reason">The second reason</h2>
+<p>The solution to this problem is to set the environment variables <code class="language-plaintext highlighter-rouge">CMAKE_C_COMPILER</code> and <code class="language-plaintext highlighter-rouge">CMAKE_CXX_COMPILER</code> to let <code class="language-plaintext highlighter-rouge">cmake</code> know which compiler specfied. Otherwise, the local Clang will be selected as the compiler by default, but this local Clang cannot compile the program we need.</p>
+
+<p>There are two solutions at this time.</p>
+
+<h3 id="set-in-shell-configuration-file">Set in Shell configuration file</h3>
+<p>At this time, you can choose to add the following statements to your Shell configuration file (the following paths need to be modified according to your own settings):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export CC="/usr/local/bin/arm-none-eabi-gcc"
+export CXX="/usr/local/bin/arm-none-eabi-g++"
+</code></pre></div></div>
+
+<p>or</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export CMAKE_C_COMPILER="/usr/local/bin/arm-none-eabi-gcc"
+export CMAKE_CXX_COMPILER="/usr/local/bin/arm-none-eabi-g++"
+</code></pre></div></div>
+
+<p>Then use <code class="language-plaintext highlighter-rouge">source</code> to activate the change, or you can close the Terminal window and re-open it.</p>
+
+<h3 id="set-in-cmakeliststxt">Set in CMakeLists.txt</h3>
+<p>You can set it in the <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> configuration file in the CMake project. Add the following commands before <code class="language-plaintext highlighter-rouge">project(...)</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set(CMAKE_C_COMPILER /usr/local/bin/arm-none-eabi-gcc)
+set(CMAKE_CXX_COMPILER /usr/local/bin/arm-none-eabi-g++)
+</code></pre></div></div>
+
+<p>Then clear the directory <code class="language-plaintext highlighter-rouge">build</code> and re-build.</p>
+
+<h1 id="fatal-error-cannot-read-spec-file-nosysspecs-no-such-file-or-directory">fatal error: cannot read spec file ‘nosys.specs’: No such file or directory，</h1>
+<p><code class="language-plaintext highlighter-rouge">fatal error: cannot read spec file 'nosys.specs': No such file or directory</code> shows that the <code class="language-plaintext highlighter-rouge">nosys.specs</code> file cannot be read. This may be because when <code class="language-plaintext highlighter-rouge">nosys.specs</code> needs to be read, <code class="language-plaintext highlighter-rouge">nosys. specs</code> is not ready yet. This error usually occurs when using <code class="language-plaintext highlighter-rouge">make</code> to finally build the binary file. The solution is to use <code class="language-plaintext highlighter-rouge">make -j4</code> (personal test is at least <code class="language-plaintext highlighter-rouge">4</code>) to process 4 tasks at the same time, so this error disappears.</p>
+
+<h1 id="link-error">Link error</h1>
+<p>This error has many kinds of reasons, the mainly appearance is: compilation errors, check the information and find it caused by <code class="language-plaintext highlighter-rouge">ld</code> or <code class="language-plaintext highlighter-rouge">arm-none-eabi-ld</code>. This is because the <code class="language-plaintext highlighter-rouge">-isysroot</code> parameter used by linker is wrong. Generally, this error is caused by link to the local SDK instead of the <code class="language-plaintext highlighter-rouge">.so</code> file required by Linux.</p>
+
+<p>This kind of error requires adding the following commands before <code class="language-plaintext highlighter-rouge">project(...)</code> in the <code class="language-plaintext highlighter-rouge">CMakeLists.txt</code> of project (the following paths need to be modified according to your own settings):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>set(CMAKE_SYSROOT /usr/local/lib/arm-none-eabi/bfd-plugins/libdep.so)
+</code></pre></div></div>
+
+<p>Then empty the <code class="language-plaintext highlighter-rouge">build</code>, and re-build.</p>
+
+<p>I couldn’t remember all errors, because I didn’t take notes. I will complement later when I remembered them.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
