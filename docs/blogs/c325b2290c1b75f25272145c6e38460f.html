@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to move installed WSL (Ubuntu) to another drive or location</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to move installed WSL (Ubuntu) to another drive or location | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="How to move installed WSL (Ubuntu) to another drive or location" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Due to my C drive is almost full, and not empty much after try to clean it, so I plan to move WSL to a new drive." />
+<meta property="og:description" content="Due to my C drive is almost full, and not empty much after try to clean it, so I plan to move WSL to a new drive." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/c325b2290c1b75f25272145c6e38460f.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/c325b2290c1b75f25272145c6e38460f.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-09-16T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to move installed WSL (Ubuntu) to another drive or location" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-09-16T00:00:00+08:00","datePublished":"2022-09-16T00:00:00+08:00","description":"Due to my C drive is almost full, and not empty much after try to clean it, so I plan to move WSL to a new drive.","headline":"How to move installed WSL (Ubuntu) to another drive or location","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/c325b2290c1b75f25272145c6e38460f.html"},"url":"https://zhonguncle.github.io/blogs/c325b2290c1b75f25272145c6e38460f.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to move installed WSL (Ubuntu) to another drive or location</h1>
+            <div class="bloginfo">
+                <p class="info">2022-09-16 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 452 </p>
+            </div>
+            <p>Recently, the <code class="language-plaintext highlighter-rouge">C</code> drive is almost full with using, and not empty much after cleaning it, so I plan to move WSL to a new drive. In the settings, “Ubuntu on Windows” has a “Move” button, but it is set to “<strong>cannot Move</strong>”. After spending a long time to try to cleaning, I found that it is better to move it to another drive, otherwise it will easily fill up.</p>
+
+<h2 id="method-and-notices">Method and notices</h2>
+<p>After some research, I didn’t find a perfect implementation method, but I find a method that barely be regarded as a method, it is imperfect (why it is not perfect will be explained in detail later). The operation logic is:</p>
+<ol>
+  <li>Export the current WSL as a compressed package (the compressed package is due to command restrictions and can speed up the movement. And the <code class="language-plaintext highlighter-rouge">C</code> drive is full, it is better to directly export to the target drive).</li>
+  <li>Import the previously compressed WSL compressed package.</li>
+</ol>
+
+<p><strong>One thing you must notice: The reason why this method is not perfect is that all associated data and software will be lost.</strong> Because for import, need to log out and uninstall the old WSL to free up the full space and use the following commands to do:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --unregister WSL_NAME_INSTALLED
+</code></pre></div></div>
+
+<p>This command will lost all settings, data and softwares of WSL.</p>
+
+<p>=======2023-04-10========
+You can back up your old WSL data and software from <code class="language-plaintext highlighter-rouge">C:\Users\USERNAME\AppData\Local\Packages\CanonicalGroupLimited.Ubuntu_79rhkp1fndgsc</code>. This is the default path for WSL.</p>
+
+<h2 id="export-the-wsl-that-needs-to-be-moved">Export the WSL that needs to be moved</h2>
+<p>The first step is to export the WSL installed. The method is very simple.</p>
+
+<p>Open PowerShell and use the following command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --export WSL_NAME_INSTALLE TARGET_PATH\CUSTOM_NAME.tar
+</code></pre></div></div>
+
+<p>For example, there is a WSL named “<code class="language-plaintext highlighter-rouge">Ubuntu</code>” located on the <code class="language-plaintext highlighter-rouge">C</code> drive. We want to move it to the <code class="language-plaintext highlighter-rouge">G</code> drive, and the output tar file is named “<code class="language-plaintext highlighter-rouge">myUbuntu.tar</code>”:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --export Ubuntu G:\\WSL\myUbuntu.tar
+</code></pre></div></div>
+
+<h2 id="import-wsl-compressed-package">Import WSL compressed package</h2>
+<p>Importing a compressed package is same as importing a distribution.</p>
+
+<p>But you need free space of old WSL, so use following command:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --unregister WSL_NAME_INSTELLED
+</code></pre></div></div>
+
+<p>This command will lost all settings, data and softwares of WSL.</p>
+
+<p>This is an example as before:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --unregister Ubuntu
+</code></pre></div></div>
+
+<p>Then import the WSL package:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --import WSL_NAME PATH WSL_PACKAGE_PATH
+</code></pre></div></div>
+
+<p>For example:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>wsl --import Ubuntu G:\\WSL G:\\WSL\myUbuntu.tar
+</code></pre></div></div>
+
+<p>It have moved to new position and you can re-open terminal to use, but lost all data.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

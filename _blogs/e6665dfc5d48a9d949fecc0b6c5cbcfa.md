@@ -2,8 +2,8 @@
 layout: article
 category: Web
 date: 2023-01-10
-title: How to write a "script" using Java (How to run single Java file like script)
-excerpt: "This blog explains how to write a Java “script” that can be run on Unix-like systems without using the .java suffix. ZhongUncle provides the steps and code examples for creating a file named HelloJava that prints “Hello, world!” to the console. ZhongUncle also explains the rationale behind not using suffixes and the limitations of this method. ZhongUncle hopes to help someone in need with this information."
+title: How to use Java like script (How to run single Java file like script)
+excerpt: "How to use Java like script on Unix-like systems without using the .java suffix."
 ---
 Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.
 

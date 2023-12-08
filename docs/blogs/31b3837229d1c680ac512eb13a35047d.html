@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>Test Record of Raspberry Pi 4B (CPU, FFMPEG)</title>
+        <title>Performance Record of Raspberry Pi 4B (CPU, Disk, FFMPEG, CV, llama2)</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Test Record of Raspberry Pi 4B (CPU, FFMPEG) | ZhongUncle’s Blog</title>
+<title>Performance Record of Raspberry Pi 4B (CPU, Disk, FFMPEG, CV, llama2) | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="Test Record of Raspberry Pi 4B (CPU, FFMPEG)" />
+<meta property="og:title" content="Performance Record of Raspberry Pi 4B (CPU, Disk, FFMPEG, CV, llama2)" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This blog shares some reviews and tests of the device. ZhongUncle compares the Raspberry Pi 4B with the Raspberry Pi 5 and the Mac mini 2018 i5 in terms of temperature, IO speed, CPU performance, and FFMPEG transcoding. ZhongUncle also explains why they still bought the Raspberry Pi 4B despite the release of the Raspberry Pi 5. ZhongUncle concludes that the Raspberry Pi 4B is a useful and affordable device for debugging and running some programs, but it has some limitations in cache size and parallel computing. ZhongUncle hopes that their blog post will help someone in need." />
-<meta property="og:description" content="This blog shares some reviews and tests of the device. ZhongUncle compares the Raspberry Pi 4B with the Raspberry Pi 5 and the Mac mini 2018 i5 in terms of temperature, IO speed, CPU performance, and FFMPEG transcoding. ZhongUncle also explains why they still bought the Raspberry Pi 4B despite the release of the Raspberry Pi 5. ZhongUncle concludes that the Raspberry Pi 4B is a useful and affordable device for debugging and running some programs, but it has some limitations in cache size and parallel computing. ZhongUncle hopes that their blog post will help someone in need." />
-<link rel="canonical" href="http://localhost:4000/blogs/af373b825028ac40501f74fb5007bc2b.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/af373b825028ac40501f74fb5007bc2b.html" />
+<meta name="description" content="This blog shares some reviews and tests of Raspberry Pi 4B. ZhongUncle compares it with Mac mini 2018 i5 in many aspects." />
+<meta property="og:description" content="This blog shares some reviews and tests of Raspberry Pi 4B. ZhongUncle compares it with Mac mini 2018 i5 in many aspects." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/31b3837229d1c680ac512eb13a35047d.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/31b3837229d1c680ac512eb13a35047d.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-11-05T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Test Record of Raspberry Pi 4B (CPU, FFMPEG)" />
+<meta property="twitter:title" content="Performance Record of Raspberry Pi 4B (CPU, Disk, FFMPEG, CV, llama2)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-11-05T00:00:00+08:00","datePublished":"2023-11-05T00:00:00+08:00","description":"This blog shares some reviews and tests of the device. ZhongUncle compares the Raspberry Pi 4B with the Raspberry Pi 5 and the Mac mini 2018 i5 in terms of temperature, IO speed, CPU performance, and FFMPEG transcoding. ZhongUncle also explains why they still bought the Raspberry Pi 4B despite the release of the Raspberry Pi 5. ZhongUncle concludes that the Raspberry Pi 4B is a useful and affordable device for debugging and running some programs, but it has some limitations in cache size and parallel computing. ZhongUncle hopes that their blog post will help someone in need.","headline":"Test Record of Raspberry Pi 4B (CPU, FFMPEG)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/af373b825028ac40501f74fb5007bc2b.html"},"url":"http://localhost:4000/blogs/af373b825028ac40501f74fb5007bc2b.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-11-05T00:00:00+08:00","datePublished":"2023-11-05T00:00:00+08:00","description":"This blog shares some reviews and tests of Raspberry Pi 4B. ZhongUncle compares it with Mac mini 2018 i5 in many aspects.","headline":"Performance Record of Raspberry Pi 4B (CPU, Disk, FFMPEG, CV, llama2)","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/31b3837229d1c680ac512eb13a35047d.html"},"url":"https://zhonguncle.github.io/blogs/31b3837229d1c680ac512eb13a35047d.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,9 +98,9 @@
         </a>
     
 </div>
-            <h1>Test Record of Raspberry Pi 4B (CPU, FFMPEG)</h1>
+            <h1>Performance Record of Raspberry Pi 4B (CPU, Disk, FFMPEG, CV, llama2)</h1>
             <div class="bloginfo">
-                <p class="info">2023-11-05 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1583 </p>
+                <p class="info">2023-11-05 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1680 </p>
             </div>
             <p>This blog is used to record some reviews of Raspberry Pi 4B.</p>
 
@@ -460,6 +460,42 @@
 </table>
 
 <p>Raspberry Pi 4B has increased its speed by 6-10 times after using hardware acceleration. However, the ‘h264’_V4l2m2m` occupies CPU usage. And if you are running other programs, the performance will decrease slightly.</p>
+
+<h2 id="machine-learning">Machine Learning</h2>
+<p>The speed of image recognition and large language model was tested.</p>
+
+<h3 id="image-identification">Image Identification</h3>
+
+<p>30 frames 224x224 size from the camera, using mobilenet_v2 for recognition, the speed is about 36 fps.
+<img src="/assets/images/4c8e4b5ab7d9481ca4b2b9c3b3a332a7.png" alt="30 frames 224x224 size from the camera" /></p>
+
+<h3 id="large-language-model">Large language model</h3>
+<p>Use a small large language model <a href="https://github.com/karpathy/llama2.c">karpathy/llama2.c</a> for testing. Models with different size parameters have different speeds:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Model parameter size</th>
+      <th>Speed (tokens/s)</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>15M</td>
+      <td>30.1</td>
+    </tr>
+    <tr>
+      <td>42M</td>
+      <td>11.2</td>
+    </tr>
+    <tr>
+      <td>110M</td>
+      <td>4.3</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="/assets/images/d0959cf3e7164019b3676f9c04341eed.png" alt="llama speed above" /></p>
 
 <h2 id="why-i-still-buy-raspberry-pi-4">Why I still buy Raspberry Pi 4</h2>
 <p>Why although Raspberry Pi 5 has been released, I still bought Raspberry Pi 4B, considering the following points:</p>

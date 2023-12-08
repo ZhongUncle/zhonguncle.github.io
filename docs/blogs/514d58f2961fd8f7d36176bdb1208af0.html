@@ -13,17 +13,17 @@
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This article begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored. How to choose which I2C controller, and SDA and SCL pins Declare three variables or macros before setting to facilitate development. It is recommended to use macros, which is more in line with the development style of Raspberry Pi define I2C_SCL_PIN 5If macro expansion goes wrong, use variables.Then when initializing I2C, set which I2C controller to use, and which SDA and SCL pins. Here are the settings based on the settings above" />
-<meta property="og:description" content="This article begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored. How to choose which I2C controller, and SDA and SCL pins Declare three variables or macros before setting to facilitate development. It is recommended to use macros, which is more in line with the development style of Raspberry Pi define I2C_SCL_PIN 5If macro expansion goes wrong, use variables.Then when initializing I2C, set which I2C controller to use, and which SDA and SCL pins. Here are the settings based on the settings above" />
-<link rel="canonical" href="http://localhost:4000/blogs/514d58f2961fd8f7d36176bdb1208af0.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/514d58f2961fd8f7d36176bdb1208af0.html" />
+<meta name="description" content="This blog begins with a description of the solution, and record my discovery process and the structure of the Pico I2C code ZhongUncle explored." />
+<meta property="og:description" content="This blog begins with a description of the solution, and record my discovery process and the structure of the Pico I2C code ZhongUncle explored." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/514d58f2961fd8f7d36176bdb1208af0.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/514d58f2961fd8f7d36176bdb1208af0.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-08-27T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-27T00:00:00+08:00","datePublished":"2023-08-27T00:00:00+08:00","description":"This article begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored. How to choose which I2C controller, and SDA and SCL pins Declare three variables or macros before setting to facilitate development. It is recommended to use macros, which is more in line with the development style of Raspberry Pi define I2C_SCL_PIN 5If macro expansion goes wrong, use variables.Then when initializing I2C, set which I2C controller to use, and which SDA and SCL pins. Here are the settings based on the settings above","headline":"Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/514d58f2961fd8f7d36176bdb1208af0.html"},"url":"http://localhost:4000/blogs/514d58f2961fd8f7d36176bdb1208af0.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-27T00:00:00+08:00","datePublished":"2023-08-27T00:00:00+08:00","description":"This blog begins with a description of the solution, and record my discovery process and the structure of the Pico I2C code ZhongUncle explored.","headline":"Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/514d58f2961fd8f7d36176bdb1208af0.html"},"url":"https://zhonguncle.github.io/blogs/514d58f2961fd8f7d36176bdb1208af0.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -100,9 +100,9 @@
 </div>
             <h1>Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico</h1>
             <div class="bloginfo">
-                <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ #Words: 1379 </p>
+                <p class="info">2023-08-27 ｜ <a href="/mcu.html"> MCU</a> ｜ #Words: 1374 </p>
             </div>
-            <p>This blog begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored.</p>
+            <p>This blog begins with a description of the solution, and record my discovery process and the structure of the Pico I2C code ZhongUncle explored.</p>
 
 <h2 id="prerequisite-knowledge">Prerequisite knowledge</h2>
 <p>First let me explain: Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. For example, Pin 4 and Pin 5 in below are for <code class="language-plaintext highlighter-rouge">I2C1</code>, while the default Pin 6 and Pin 7 are for <code class="language-plaintext highlighter-rouge">I2C0</code>.</p>

@@ -17,14 +17,14 @@
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="MCU" />
 <meta property="og:locale" content="en_US" />
-<link rel="canonical" href="http://localhost:4000/mcu.html" />
-<meta property="og:url" content="http://localhost:4000/mcu.html" />
+<link rel="canonical" href="https://zhonguncle.github.io/mcu.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/mcu.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="MCU" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","headline":"MCU","url":"http://localhost:4000/mcu.html"}</script>
+{"@context":"https://schema.org","@type":"WebPage","headline":"MCU","url":"https://zhonguncle.github.io/mcu.html"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -121,9 +121,9 @@
         
             <li>
                 <h2><a class="blog" href="/blogs/514d58f2961fd8f7d36176bdb1208af0.html">Choose I2C controller, SDA and SCL pins using C/C++ on Raspberry Pi Pico</a></h2>
-                <p class="info">2023-08-27 ｜ #Words: 1379 </p>
+                <p class="info">2023-08-27 ｜ #Words: 1374 </p>
                 
-                <p>This article begins with a description of the solution, followed by notes I took to describe my discovery process and the structure of the Pico I2C code I explored. How to choose which I2C controller, and SDA and SCL pins Declare three variables or macros before setting to facilitate development. It is recommended to use macros, which is more in line with the development style of Raspberry Pi define I2C_SCL_PIN 5If macro expansion goes wrong, use variables.Then when initializing I2C, set which I2C controller to use, and which SDA and SCL pins. Here are the settings based on the settings above</p>
+                <p>This blog begins with a description of the solution, and record my discovery process and the structure of the Pico I2C code ZhongUncle explored.</p>
             </li>
         
     
@@ -132,25 +132,25 @@
                 <h2><a class="blog" href="/blogs/6a9f2929e74ab84354bed126ebd135b3.html">Modify the default SDA and SCL pins of I2C using C/C++</a></h2>
                 <p class="info">2023-08-26 ｜ #Words: 254 </p>
                 
-                <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled. It means, even if you modify the pin, but not in `I2C0`, it still doesn't work.There are two ways to correctly modify the SDA and SCL default pins of I2C, and there is also a not recommended method (but still a method).Another method is modifying in the source code, which is not recommended because it may be replaced by something. Place the following code after import library. But the replacement may be replaced cover again</p>
+                <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled.</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/ba85bee345af252c41175af8f461f68d.html">Guide of Mac developing Tang Nano FPGA (use Terminal or VS Code with extension, for all Gowin FPGA)</a></h2>
+                <h2><a class="blog" href="/blogs/80f935655ed9d7c2a3fca26cad424c71.html">Guide of developing Tang Nano FPGA on Mac</a></h2>
                 <p class="info">2023-08-19 ｜ #Words: 2172 </p>
                 
-                <p>This blog explains that FPGA development involves writing two files: a .v file that contains Verilog code to describe the logic circuit, and a .cst file that specifies the pin constraints. These files are then converted into a bitstream file that can be loaded into the FPGA. The blog provides the links and instructions for installing Python, OSS CAD Suite (a tool chain that can generate the bitstream file), and VS Code (a text editor with extensions for FPGA development). The web page shows an example of a program that makes the onboard LEDs light up one by one, and explains how to write the .v and .cst files, how to build and burn the bitstream file using VS Code or terminal, and how to verify the result. And recommends some resources for further reading, such as books, blogs, and projects related to FPGA and Tang Nano 9K.</p>
+                <p>This blog is a guide for developing Tang Nano FPGA on Mac using terminal and VS Code. And tell you how to build environment.</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/589dba6103e6828777f8c9d196585565.html">How to reset the Raspberry Pi Pico (resetting the peripheral device failed)</a></h2>
+                <h2><a class="blog" href="/blogs/589dba6103e6828777f8c9d196585565.html">How to reset Raspberry Pi Pico (reset peripheral device failed)</a></h2>
                 <p class="info">2023-08-15 ｜ #Words: 429 </p>
                 
-                <p>Sometimes you need to reset the Raspberry Pi Pico. One way is to press and hold the BOOTSEL button on the Pico and then plug in the USB; or connect the RUN and GND pins with a button, and then press this button and BOOTSEL at the same time button. This puts you into USB mode, which resets it to a degree. If this situation occurs where the peripheral device cannot be reset, then compile a reset program and put it into Pico to reset it. This reset procedure is official. Just drag it to the Pico in USB mode. Below I have extracted it, because this binary executable file was not originally built separately. After that, the above method may sometimes fail to stop the LED from flashing.</p>
+                <p>Sometimes you need to reset the Raspberry Pi Pico. Common method sometimes does not work, so need a program to reset.</p>
             </li>
         
     
@@ -160,22 +160,20 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html">Errors and solutions when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico</a></h2>
+                <h2><a class="blog" href="/blogs/9b63dbe2e5867f88f21ded5922f36e2b.html">Errors and solutions when building Raspberry Pico cross-compilation environment</a></h2>
                 <p class="info">2023-08-10 ｜ #Words: 646 </p>
                 
-                <p>This blog is a manual-like article used to record errors that may be encountered. You can view detailed information by selecting the error encountered via the sidebar. No install step for ‘ELF2UF2Build’, fatal error: cannot read spec file ‘nosys.specs’ No such file or directory, connection error</p>
+                <p>This blog lists errors that may be encountered when prepare cross-compilation environment and tool chain (arm-none-eabi-gcc) for Raspberry Pi Pico.</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/a6dab84ce4891d654646336e2ae01e69.html">How to use the Mac Terminal to developfor Raspberry Pi Pico using C/C++, and how to deal with various problems without using IDE or editor (such as VS Code)</a></h2>
+                <h2><a class="blog" href="/blogs/ad8e86abe0c5cfe760fe5a008701913e.html">How to use the Mac Terminal to develop Raspberry Pi Pico using C/C++</a></h2>
                 <p class="info">2023-08-09 ｜ #Words: 2524 </p>
                 
-                <p>The reason for writing this article is that the official tutorial is outdated. If you follow the official tutorial to configure it on Mac now, you will encounter a lot of problems. For example, I almost stepped on all the pits that I could step on. Therefore, the complete process, as well as the causes and handling methods of various errors are recorded here. Otherwise, if you change to Mac or encounter the same problem on other platforms in the future, you will be in trouble if you forget how to deal with it. Next, we will record the overall installation process, introduce some background knowledge, explain and explain some errors, and finally sort out the errors No install step for ELF2UF2Build. fatal error cannot read spec fil</p>
+                <p>The official tutorial is outdated. If you follow the official tutorial to configure it on Mac now, you will encounter a lot of problems.</p>
             </li>
-        
-    
         
     
         

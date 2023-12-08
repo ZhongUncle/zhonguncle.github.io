@@ -1,0 +1,448 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Use gcc to learn C compilation process</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Use gcc to learn C compilation process | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="Use gcc to learn C compilation process" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I learn C compilation process using gcc and flags/options, and actucally I learn more about compiler and other things." />
+<meta property="og:description" content="I learn C compilation process using gcc and flags/options, and actucally I learn more about compiler and other things." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/c14da178a37d0ea2c5363e04df841a7f.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/c14da178a37d0ea2c5363e04df841a7f.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-06-08T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Use gcc to learn C compilation process" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-06-08T00:00:00+08:00","datePublished":"2023-06-08T00:00:00+08:00","description":"I learn C compilation process using gcc and flags/options, and actucally I learn more about compiler and other things.","headline":"Use gcc to learn C compilation process","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/c14da178a37d0ea2c5363e04df841a7f.html"},"url":"https://zhonguncle.github.io/blogs/c14da178a37d0ea2c5363e04df841a7f.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Use gcc to learn C compilation process</h1>
+            <div class="bloginfo">
+                <p class="info">2023-06-08 ｜ <a href="/c.html"> C</a> ｜ #Words: 3210 </p>
+            </div>
+            <p>Recently, I suddenly discovered something when I was learning about clang/llvm: <code class="language-plaintext highlighter-rouge">gcc</code> is a collection of tools that includes or calls all tools that convert source code into executable program, not just a simple compiler. This helped me gain a deeper understanding of “compilers”, so I wrote this article as a record.</p>
+
+<p>More details about the principles and mechanisms of “compiler” are in another article: <a href="/blogs/4693280e7d152780ee5ed9d12d080386.html">“What is the differences between gcc and Clang/LLVM?”</a></p>
+
+<h2 id="complete-process-of-converting-source-code-into-executable-program">Complete process of converting source code into executable program</h2>
+<p>The complete process of converting source code into an executable program, which is what we usually call the “compilation process”, is actually as follows (rounded brackets represent code, square brackets represent various processors):</p>
+
+<p><img alt="compilation process" src="/assets/images/3ece4e97ca2b711666de57b448acc4a8.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>From source code to executable program, it has to go through preprocessor, compiler, assembler, linker or loader. The compiler is only responsible for converting the source code into corresponding assembly code.</p>
+
+<p>Next, use <code class="language-plaintext highlighter-rouge">gcc</code> to show the process above.</p>
+
+<h3 id="gcc-and-cpp-as-ld">gcc and cpp, as, ld</h3>
+<p>Except the compiler and assembler, the other three programs above are rarely used or even heard. Let’s use the most classic C language and <code class="language-plaintext highlighter-rouge">gcc</code> to introduce this process. <code class="language-plaintext highlighter-rouge">gcc</code> contains the preprocessor <code class="language-plaintext highlighter-rouge">cpp</code>, and also calls the assembler <code class="language-plaintext highlighter-rouge">as</code> and the connector <code class="language-plaintext highlighter-rouge">ld</code>.</p>
+
+<blockquote>
+  <p>I thought <code class="language-plaintext highlighter-rouge">as</code> and <code class="language-plaintext highlighter-rouge">ld</code> were also included in <code class="language-plaintext highlighter-rouge">gcc</code>. But the GNU development team told me that <code class="language-plaintext highlighter-rouge">gcc</code> only contains the preprocessor and compiler. The assembler and linker are not part of the GCC project and must be provided separately (in many systems, it is provided by the binutils project) (verified, Ubuntu is in this way)</p>
+</blockquote>
+
+<p>The manuals of gcc, as, ld are as follows:</p>
+
+<p><img src="/assets/images/a51ab43c9e1447aa8e3f9e20528793f4.png" alt="manuals of gcc, as, ld" /></p>
+
+<p>As an annoyance, although the <code class="language-plaintext highlighter-rouge">gcc</code> command is called “compiler”, it includes a preprocessor and automatically calls other processing programs. So on the surface, <code class="language-plaintext highlighter-rouge">gcc</code> converts the source code to executable program by itself completely.</p>
+
+<p>Since it is composed of multiple tools, you can also decide which step to proceed to, you can see it below.</p>
+
+<h2 id="preparation-of-demonstration">Preparation of demonstration</h2>
+<p>In order to facilitate readers to understand the process of compilation, I will use an sample program to demonstrate. The sample program will calculate <code class="language-plaintext highlighter-rouge">12*13*14</code> and when the value is less than <code class="language-plaintext highlighter-rouge">1000</code>, outputing the value. Otherwise output the value exceeded the limit (In here, it will definitely exceed the limit).</p>
+
+<p>We need three files and a blank directory <code class="language-plaintext highlighter-rouge">build</code>.</p>
+
+<p>The empty directory <code class="language-plaintext highlighter-rouge">build</code> is for processing generated files conveniently. Just clear this folder after testing. Otherwise the two tests might make a mess. Use command below to generate <code class="language-plaintext highlighter-rouge">build</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>mkdir build
+</code></pre></div></div>
+
+<p>Three files are <code class="language-plaintext highlighter-rouge">main.c</code>、<code class="language-plaintext highlighter-rouge">calc.c</code>和<code class="language-plaintext highlighter-rouge">calc.h</code>. The code are：</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//main.c</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"calc.h"</span><span class="cp">
+</span>
+<span class="cp">#define MAXNUM 1000
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="kt">int</span> <span class="n">a</span> <span class="o">=</span> <span class="n">calc</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span> <span class="mi">13</span><span class="p">,</span> <span class="mi">14</span><span class="p">);</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">a</span> <span class="o">&gt;=</span> <span class="n">MAXNUM</span><span class="p">)</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Over Limit!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="k">else</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Result: %d"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//calc.c</span>
+<span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">"calc.h"</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">calc</span><span class="p">(</span><span class="kt">int</span> <span class="n">a</span><span class="p">,</span> <span class="kt">int</span> <span class="n">b</span><span class="p">,</span> <span class="kt">int</span> <span class="n">c</span><span class="p">)</span>
+<span class="p">{</span>
+	<span class="k">return</span> <span class="n">a</span><span class="o">*</span><span class="n">b</span><span class="o">*</span><span class="n">c</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//calc.h</span>
+<span class="kt">int</span> <span class="nf">calc</span><span class="p">(</span><span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h2 id="use-gcc-to-demonstrate-the-compilation-process-step-by-step">Use <code class="language-plaintext highlighter-rouge">gcc</code> to demonstrate the compilation process step by step</h2>
+<p><code class="language-plaintext highlighter-rouge">gcc</code> supports stopping at a specified step, it is also can be thought as set the end point. When you operate it manually in sequence, it means only performing a certain step. We will use this mechanism to show the entire compilation process.</p>
+
+<p>The usages of most programs is almost equivalent to <code class="language-plaintext highlighter-rouge">gcc</code> options, except for some small details. <strong>The only large difference is the linker.</strong></p>
+
+<p>So this section is just to let you understand the process. Next section will explain the details of each processor.</p>
+
+<h3 id="preprocess">Preprocess</h3>
+<p>The first is to preprocess the source code. If you need to stop after preprocessing, you need to use the option <code class="language-plaintext highlighter-rouge">-E</code> (it is also mean just use preprocessor):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -E ../calc.c -o calc.i
+$ gcc -E ../main.c -o main.i
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">-o</code> to specify the output file name here. Because preprocessor <code class="language-plaintext highlighter-rouge">cpp</code> called by <code class="language-plaintext highlighter-rouge">gcc</code> will output processed code to standard output, instead of generating a file. The suffix of processed code files is <code class="language-plaintext highlighter-rouge">.i</code>, so here the suffix is changed to <code class="language-plaintext highlighter-rouge">.i</code>.</p>
+
+<p>Use <code class="language-plaintext highlighter-rouge">ls</code> to view the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
+calc.i  main.i
+</code></pre></div></div>
+
+<h3 id="compile">Compile</h3>
+<p>Next is the compilation. If you want to compile but not assemble, use the <code class="language-plaintext highlighter-rouge">-S</code> option:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -S main.i calc.i
+</code></pre></div></div>
+
+<p>Here, the two files will be compiled and generate the assembly language file and suffix of filename is replaced with <code class="language-plaintext highlighter-rouge">.s</code>. Use <code class="language-plaintext highlighter-rouge">ls</code> to view the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls 
+calc.i  calc.s  main.i  main.s
+</code></pre></div></div>
+
+<h3 id="assemble">Assemble</h3>
+<p>Next is the assembly stage. The option <code class="language-plaintext highlighter-rouge">-c</code> compiles and assembles but does not link. The suffix is used to determine which step of the entire compilation process to start from and stop. We compiled just now, but not assembled.</p>
+
+<p>Use <code class="language-plaintext highlighter-rouge">-c</code> here is equivalent to using only the assembler:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -c calc.s main.s
+</code></pre></div></div>
+
+<p>Like the <code class="language-plaintext highlighter-rouge">-S</code> option, it will generate an object file. The file name uses <code class="language-plaintext highlighter-rouge">.o</code> to replace the <code class="language-plaintext highlighter-rouge">.c</code>, <code class="language-plaintext highlighter-rouge">.i</code>, <code class="language-plaintext highlighter-rouge">.s</code> and other suffixes in the source file name. At this time, use <code class="language-plaintext highlighter-rouge">ls</code> to view the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
+calc.i  calc.o  calc.s  main.i  main.o  main.s
+</code></pre></div></div>
+
+<h3 id="link">Link</h3>
+<p>The final step is linking object files. You can use <code class="language-plaintext highlighter-rouge">-o</code> to output directly, because the result from object files is executable program, it is the same as result from source code to executable program. These options only set terminal step. Here we set the output file name to <code class="language-plaintext highlighter-rouge">calc</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -o calc main.o calc.o
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">ls</code> to view the following:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls
+calc  calc.i  calc.o  calc.s  main.i  main.o  main.s
+</code></pre></div></div>
+
+<p>Run <code class="language-plaintext highlighter-rouge">calc</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./calc
+Over Limit!
+</code></pre></div></div>
+
+<p>Work nice!</p>
+
+<h2 id="call-cpp-gcc-as-ld-individually">Call <code class="language-plaintext highlighter-rouge">cpp</code>, <code class="language-plaintext highlighter-rouge">gcc</code>, <code class="language-plaintext highlighter-rouge">as</code>, <code class="language-plaintext highlighter-rouge">ld</code> individually</h2>
+<p>Except for the linker, others are almost same as using <code class="language-plaintext highlighter-rouge">gcc</code> plus options, so I will talk about a lot of details and extensions.</p>
+
+<p><strong>This is for demonstration and learning purposes, so I will use <code class="language-plaintext highlighter-rouge">cpp</code>, <code class="language-plaintext highlighter-rouge">gcc</code>, <code class="language-plaintext highlighter-rouge">as</code>, <code class="language-plaintext highlighter-rouge">ld</code> step by step. In actual, you don’t compile program like below usually. It just for  education.</strong></p>
+
+<h3 id="use-preprocessor-cpp">Use preprocessor <code class="language-plaintext highlighter-rouge">cpp</code></h3>
+<p>The first step is to use the preprocessor <code class="language-plaintext highlighter-rouge">cpp</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cpp ../calc.c -o calc.i
+$ cpp ../main.c -o main.i
+$ ls
+calc.i main.i
+</code></pre></div></div>
+
+<p>Directly use <code class="language-plaintext highlighter-rouge">cpp</code> does not generate a file, because it directly output to standard output. If you want to save it as a file, you need to use the option <code class="language-plaintext highlighter-rouge">-o</code>. Due to we need use it, so must use <code class="language-plaintext highlighter-rouge">-o</code>. But since <code class="language-plaintext highlighter-rouge">cpp</code> is one-to-one, so we need use two commands.</p>
+
+<p>The preprocessor will replace the referenced header files (#include), macros (#define), state controls (ifdef, etc.) in the source code. Since this step is <strong>mainly</strong> to replace macros and preprocessor, so it is also called a macro processor.</p>
+
+<p><strong>The preprocessed code will use for other tool, not just for compiler, because the preprocessor may be run more than once, or for other purposes</strong>. You can even add C macros to the assembly code, then use the preprocessor to process it, and then use the assembler to convert it into an executable program (<a href="http://thomasloven.com/blog/2012/06/C-Headers-In-Asm/">C headers in Asm</a>).</p>
+
+<p>Let’s look at the preprocessed code (<code class="language-plaintext highlighter-rouge">main.i</code>). We can see that a lot of code has been generated (<code class="language-plaintext highlighter-rouge">wc</code> statistics are 743 lines, and the source code is only 16 lines), but much of them is replacement of <code class="language-plaintext highlighter-rouge">#include &lt;stdio.h&gt;</code>, so we only look the end part:</p>
+
+<p><img src="/assets/images/ed67ee6d08894774950aeaa390e6e89f.png" alt="Preprocessed Code" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">#include "calc.h"</code> has been replaced by <code class="language-plaintext highlighter-rouge">int calc(int, int, int);</code>, which is in the header file, and the macro <code class="language-plaintext highlighter-rouge">MAXNUM</code> has also been replaced by corresponding <code class="language-plaintext highlighter-rouge">1000</code>.</p>
+
+<h3 id="use-compiler-gcc">Use compiler <code class="language-plaintext highlighter-rouge">gcc</code></h3>
+<p>Next, the preprocessed code is used by compiler. For some internal details of compiler, please see my another blog <a href="/assets/blogs/4693280e7d152780ee5ed9d12d080386.html">“What is the differences between gcc and Clang/LLVM?”</a></p>
+
+<p>Since the compiler is <code class="language-plaintext highlighter-rouge">gcc</code>, we still need to use <code class="language-plaintext highlighter-rouge">gcc -S</code> to convert the preprocessed file into an assembly code file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ gcc -S main.i calc.i
+$ ls 
+calc.i  calc.s  main.i  main.s
+</code></pre></div></div>
+
+<p>The file generated is in assembly language:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	.file	"calc.c"
+	.text
+	.globl	calc
+	.type	calc, @function
+calc:
+.LFB0:
+	.cfi_startproc
+	endbr64
+	pushq	%rbp
+	.cfi_def_cfa_offset 16
+	.cfi_offset 6, -16
+	movq	%rsp, %rbp
+	.cfi_def_cfa_register 6
+	movl	%edi, -4(%rbp)
+	movl	%esi, -8(%rbp)
+	movl	%edx, -12(%rbp)
+	movl	-4(%rbp), %eax
+	imull	-8(%rbp), %eax
+	imull	-12(%rbp), %eax
+	popq	%rbp
+	.cfi_def_cfa 7, 8
+	ret
+	.cfi_endproc
+.LFE0:
+	.size	calc, .-calc
+	.ident	"GCC: (Ubuntu 11.3.0-1ubuntu1~22.04.1) 11.3.0"
+	.section	.note.GNU-stack,"",@progbits
+	.section	.note.gnu.property,"a"
+	.align 8
+	.long	1f - 0f
+	.long	4f - 1f
+	.long	5
+0:
+	.string	"GNU"
+1:
+	.align 8
+	.long	0xc0000002
+	.long	3f - 2f
+2:
+	.long	0x3
+3:
+	.align 8
+4:
+</code></pre></div></div>
+
+<p><strong>Notice, if you want to use assembly code generated like above, you maybe need to read my articles: <a href="/blogs/59a03173ec1a5fae2ec513ef01eba386.html">「Updating」The syntax style of Apple’s as assembler</a>, because I know that many people learn assembly through university or textbooks, and many textbooks are base on Microsoft’s <code class="language-plaintext highlighter-rouge">masm</code> assembler-style assembly language (Intel syntax), which is different from the syntax of <code class="language-plaintext highlighter-rouge">as</code> (AT&amp;T syntax), is in some places opposite. Although Apple wrote its own <code class="language-plaintext highlighter-rouge">as</code>, it is only slightly different from GNU’s <code class="language-plaintext highlighter-rouge">as</code>. Many syntaxes are almost the same, so you can refer to them</strong>.</p>
+
+<p><strong>However, not recommended to use the assembly code generated by <code class="language-plaintext highlighter-rouge">gcc</code> to learn assembly, because there are too many things hidden. You can see how many libraries are referenced in the <code class="language-plaintext highlighter-rouge">ld</code> part later.</strong></p>
+
+<h3 id="use-assembler-as">Use assembler <code class="language-plaintext highlighter-rouge">as</code></h3>
+<p>We will use assembler <code class="language-plaintext highlighter-rouge">as</code> to convert the assembly file into an object file (containing machine language), which requires <code class="language-plaintext highlighter-rouge">as</code>, which will automatically replace the suffix like <code class="language-plaintext highlighter-rouge">gcc -c</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ as calc.s -o calc.o
+$ as main.s -o main.o
+$ ls
+a.out  calc.o calc.i  calc.s  main.i  main.o main.s
+</code></pre></div></div>
+
+<p>You don’t process two files at one time, otherwise happen error like:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ as calc.s main.s
+main.s: Assembler messages:
+main.s:12: Error: symbol `.LFB0' is already defined
+main.s:45: Error: symbol `.LFE0' is already defined
+</code></pre></div></div>
+
+<p>Because both files have <code class="language-plaintext highlighter-rouge">.LFB0</code> and <code class="language-plaintext highlighter-rouge">.LFE0</code> section, they are repeated. So you can compile them separately and the link will automatically process them later. Or you also can drop these parts manually to generate it into one object file.</p>
+
+<h3 id="using-linker-ld">Using linker <code class="language-plaintext highlighter-rouge">ld</code></h3>
+<p>To be honest, <code class="language-plaintext highlighter-rouge">ld</code> is only used for display. Even if you are handwriting assembly code, it is recommended to use <code class="language-plaintext highlighter-rouge">gcc</code> for link, rather than use <code class="language-plaintext highlighter-rouge">ld</code>. Because the reference library of Ubuntu is very complicated now, the path accessible by <code class="language-plaintext highlighter-rouge">ld</code> is empty by default and so you need to set manually. The use of <code class="language-plaintext highlighter-rouge">crt0.o</code> mentioned in the documentation and on the Internet also not work.</p>
+
+<h4 id="连接器的工作">连接器的工作</h4>
+<p>为了介绍连接器，这里需要先解释一下程序实际上是如何运行的，详细信息你可以自己看看一些专业书，这里只做简单不严谨的解释：程序本质是存放机器语言的文件，在打开之后会放进内存，不论是 swap 还是快表等任何内存存放机制，它在逻辑上是连续的，有一个程序计数器会记录当前的绝对内存地址，当内存地址到这个程序的空间内的时候，就开始调用这个程序的指令（机器语言）来进行操作。所以不论如何跳转、循环，它实际上都是连续、顺序的。</p>
+
+<p>存放指令的文件就是对象文件，但是这时候可能顺序不对、不包括引用的外部库的指令，或者有其他的问题还不能直接执行。而将这些指令按照源代码设计、顺序摆放到一起，变成一个可以放到内存中的可执行文件，这就是连接器的工作。</p>
+
+<p>此时如果用<code class="language-plaintext highlighter-rouge">file</code>查看此时的<code class="language-plaintext highlighter-rouge">main.o</code>文件，那么可以看到这是一个“relocatable（可重新分配的）”文件：</p>
+<h4 id="how-linker-work">How linker work</h4>
+<p>In order to introduce the linker, first need to explain how the program runs. You can read some professional books yourself for details. I just give a simple explanation: the essence of the program is a file that stores machine code. After executing, it will be put into the memory. Whether it is swap or any memory storage mechanism, logically it is continuous. There is a program counter that will record the current absolute memory address. When the memory address reaches the space of this program, it will start calling the instructions of this program to perform operations. So no matter how you jump or loop, it is actually continuous and sequential.</p>
+
+<p>The file that stores instructions is object file, but the order may be wrong, or instructions of the referenced external library may not be included. So we need linker to put these instructions together in right order.</p>
+
+<p>If you use <code class="language-plaintext highlighter-rouge">file</code> command to view the <code class="language-plaintext highlighter-rouge">main.o</code>, you can see it is a “relocatable” file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ file main.o
+main.o: ELF 64-bit LSB relocatable, x86-64, version 1 (SYSV), not stripped
+</code></pre></div></div>
+
+<p>If you run it, it will show:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./main.o
+-bash: ./main.o: cannot execute binary file: Exec format error
+</code></pre></div></div>
+<p>Linker will “link” it and other object file together, allocate relative address of each section, final get an execution file. After that, if program is running, process will gengerate absolute address.</p>
+
+<h4 id="use-ld-to-finish">Use <code class="language-plaintext highlighter-rouge">ld</code> to finish</h4>
+<p>If you use <code class="language-plaintext highlighter-rouge">ld</code> to simply link the two object files, the following error will occur:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ld main.o calc.o
+ld: warning: cannot find entry symbol _start; defaulting to 0000000000401000
+ld: main.o: in function `main':
+main.c:(.text+0x37): undefined reference to `puts'
+ld: main.c:(.text+0x52): undefined reference to `printf'
+</code></pre></div></div>
+
+<p>There are two types of errors, let’s explain below:</p>
+<ul>
+  <li>The first error <code class="language-plaintext highlighter-rouge">ld: warning: cannot find entry symbol _start; defaulting to 0000000000401000</code> is because the default entry of the Ubuntu program is <code class="language-plaintext highlighter-rouge">_start</code> instead of the classic <code class="language-plaintext highlighter-rouge">main</code>, so it needs to be modified.</li>
+  <li>The second error is because <code class="language-plaintext highlighter-rouge">puts</code> and <code class="language-plaintext highlighter-rouge">printf</code> are part of the C standard library, but <code class="language-plaintext highlighter-rouge">ld</code> does not automatically call and connect the C standard library and needs to be called manually.</li>
+</ul>
+
+<p>In order to fixing these errors, the simple command is as follows (actually the program generated by this command has error):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ld main.o calc.o -o calc -I/lib64/ld-linux-x86-64.so.2 -lc -e main
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">ld</code> will no longer report error, but when you run the generated executable program, you will find that although <code class="language-plaintext highlighter-rouge">Over Limit!</code> is output, the error <code class="language-plaintext highlighter-rouge">Segmentation fault (core dumped)</code> will be reported. as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./calc
+Over Limit!
+Segmentation fault (core dumped)
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">Segmentation fault (core dumped)</code> error is because the settings of link are incorrect (the library is incorrect or not enough), so generated executable program will access memory space that out of process space.</p>
+
+<p>To solve this problem, the complete command will be very long.</p>
+
+<p>If it’s Ubuntu 20.04:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ld -o calc -I /usr/lib/gcc/x86_64-linux-gnu/9/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/9/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/9/lto-wrapper -plugin-opt=-fresolution=/tmp/ccywuOTu.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o main /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/9/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/9 -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/9/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/9/../../.. calc.o main.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/9/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/9/../../../x86_64-linux-gnu/crtn.o
+</code></pre></div></div>
+
+<p>If Ubuntu (WSL):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ld -o calc -I /usr/lib/gcc/x86_64-linux-gnu/11/collect2 -plugin /usr/lib/gcc/x86_64-linux-gnu/11/liblto_plugin.so -plugin-opt=/usr/lib/gcc/x86_64-linux-gnu/11/lto-wrapper -plugin-opt=-fresolution=/tmp/cc4YfMoM.res -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s -plugin-opt=-pass-through=-lc -plugin-opt=-pass-through=-lgcc -plugin-opt=-pass-through=-lgcc_s --build-id --eh-frame-hdr -m elf_x86_64 --hash-style=gnu --as-needed -dynamic-linker /lib64/ld-linux-x86-64.so.2 -pie -z now -z relro -o calc /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/Scrt1.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crti.o /usr/lib/gcc/x86_64-linux-gnu/11/crtbeginS.o -L/usr/lib/gcc/x86_64-linux-gnu/11 -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu -L/usr/lib/gcc/x86_64-linux-gnu/11/../../../../lib -L/lib/x86_64-linux-gnu -L/lib/../lib -L/usr/lib/x86_64-linux-gnu -L/usr/lib/../lib -L/usr/lib/gcc/x86_64-linux-gnu/11/../../.. main.o calc.o -lgcc --push-state --as-needed -lgcc_s --pop-state -lc -lgcc --push-state --as-needed -lgcc_s --pop-state /usr/lib/gcc/x86_64-linux-gnu/11/crtendS.o /usr/lib/gcc/x86_64-linux-gnu/11/../../../x86_64-linux-gnu/crtn.o
+</code></pre></div></div>
+
+<p>You can copy it to see how long this command is. When you use <code class="language-plaintext highlighter-rouge">gcc</code> to generate a program, <code class="language-plaintext highlighter-rouge">gcc</code> will call <code class="language-plaintext highlighter-rouge">ld</code> and above flags and options to generate. So when you need to link in actual work, you just use <code class="language-plaintext highlighter-rouge">gcc</code> directly.</p>
+
+<p>The executable program generated in this way works perfectly, as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./calc
+Over Limit!
+</code></pre></div></div>
+
+<p>I learned a lot when writing this article, I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

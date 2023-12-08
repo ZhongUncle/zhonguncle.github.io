@@ -3,7 +3,7 @@ layout: article
 category: Web
 date: 2022-06-09
 title: How Python parses and obtains URL parameters and uses
-excerpt: "The steps for Python to parse and obtain URL parameters are as follows URL for example is https://www.example.com/?keyword=abc&id=12 import urllib.parse in Python3 This module is used to parse the URL into parts (note that it is parsing a string, so it needs to be quoted)"
+excerpt: "ZhongUncle will introduce how to parse and obtains the URL parameters in Python, and how to use them"
 ---
 The steps for Python to parse and obtain URL parameters are as follows.
 

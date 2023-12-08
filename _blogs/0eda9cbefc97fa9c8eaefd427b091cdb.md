@@ -3,7 +3,7 @@ layout: article
 category: Assembly
 date: 2022-08-13
 title: macOS Assembly Guide
-excerpt: "This is a guide for learning assembly language on macO.ZhongUncle explains why learning assembly language is useful and beneficial, such as improving performance, implementing special functions, and understanding decompiled code. ZhongUncle also advises beginners to learn C language first before learning assembly. ZhongUncle recommends some documents and manuals for learning assembly language, especially for Intel and ARM architectures, and provides links to download or access them online. ZhongUncle introduces some tools and commands for writing and compiling assembly code on macOS, such as as, ld, clang, gcc, size, otool, and Xcode, and explains how to use them with examples and screenshots. ZhongUncle compares the differences between the AT&T and Intel assembly syntax styles, and gives some tips and notes for writing assembly code in different styles. ZhongUncle demonstrates how to write a simple program that prints “hello world!” in assembly language on macOS, and shows the complete source code and each line of code in detail. ZhongUncle also shows how to assemble and link the code into a Mach-O executable file using two methods: gcc and as/ld. ZhongUncle also shows the output of the program and some commands to check the file type and size."
+excerpt: "This is a guide for assembly language on macOS. ZhongUncle explains why learning assembly language is useful and beneficial."
 ---
 Since most of the resources, methods and tools for learning assembly are based for Windows. So here I will introduce some materials and tools for macOS
 
@@ -95,17 +95,9 @@ Xcode is Apple development IDE, it not only have GUI application, but also have 
 ![write assembly code in Xcode](/assets/images/ecd23a611ef7430eb8c667d0e9676718.png)
 
 ## Syntax differences
-Many people may know some assembly, but probably Windows based. But the style and syntax in Mac OS X or C language is different. 
+Many people may know some assembly, but probably Windows based. But the style and syntax in Mac OS X or C language is different. Because Intel and MASM use Intel syntax, and other use AT&T syntax.
 
-Apple `as` or GCC, clang use AT&T assembly style. Windows MASM or NASM use Intel assembly style. Let’s talk about differences.
-
-### Register
-If you use clang or gcc to assemble it in C language or other situations, rather than in `as`, then you don't need to this section.
-
-In Windows and C assembly syntax, register names are written directly, such as `mov ax,2`. But in `as` AT&T style, avoiding to be confused with the identifier (actually, it often be called as variable), you need to add the percent sign `%` before the register, such as `mov %ax,2`. And all registers must be written in **lowercase letters**, not case-insensitive like in Windows or C.
-
-### Hex format
-In Windows, hexadecimal numbers are written ending in `H` or `h`, for example `5c0dH`. But in Mac OS X, it needs to be written starting with `0x`, such as `0x1234`. In C language, both are fine.
+The detail you can see in ["「Updating」The syntax style of Apple's as assembler"](/assets/blogs/59a03173ec1a5fae2ec513ef01eba386.html)
 
 
 ## Let’s write a Hello World in assembly!

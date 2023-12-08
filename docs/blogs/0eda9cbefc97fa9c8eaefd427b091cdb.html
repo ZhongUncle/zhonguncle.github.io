@@ -13,17 +13,17 @@
 <meta name="generator" content="Jekyll v4.3.1" />
 <meta property="og:title" content="macOS Assembly Guide" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="This is a guide for learning assembly language on macO.ZhongUncle explains why learning assembly language is useful and beneficial, such as improving performance, implementing special functions, and understanding decompiled code. ZhongUncle also advises beginners to learn C language first before learning assembly. ZhongUncle recommends some documents and manuals for learning assembly language, especially for Intel and ARM architectures, and provides links to download or access them online. ZhongUncle introduces some tools and commands for writing and compiling assembly code on macOS, such as as, ld, clang, gcc, size, otool, and Xcode, and explains how to use them with examples and screenshots. ZhongUncle compares the differences between the AT&amp;T and Intel assembly syntax styles, and gives some tips and notes for writing assembly code in different styles. ZhongUncle demonstrates how to write a simple program that prints “hello world!” in assembly language on macOS, and shows the complete source code and each line of code in detail. ZhongUncle also shows how to assemble and link the code into a Mach-O executable file using two methods: gcc and as/ld. ZhongUncle also shows the output of the program and some commands to check the file type and size." />
-<meta property="og:description" content="This is a guide for learning assembly language on macO.ZhongUncle explains why learning assembly language is useful and beneficial, such as improving performance, implementing special functions, and understanding decompiled code. ZhongUncle also advises beginners to learn C language first before learning assembly. ZhongUncle recommends some documents and manuals for learning assembly language, especially for Intel and ARM architectures, and provides links to download or access them online. ZhongUncle introduces some tools and commands for writing and compiling assembly code on macOS, such as as, ld, clang, gcc, size, otool, and Xcode, and explains how to use them with examples and screenshots. ZhongUncle compares the differences between the AT&amp;T and Intel assembly syntax styles, and gives some tips and notes for writing assembly code in different styles. ZhongUncle demonstrates how to write a simple program that prints “hello world!” in assembly language on macOS, and shows the complete source code and each line of code in detail. ZhongUncle also shows how to assemble and link the code into a Mach-O executable file using two methods: gcc and as/ld. ZhongUncle also shows the output of the program and some commands to check the file type and size." />
-<link rel="canonical" href="http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html" />
+<meta name="description" content="This is a guide for assembly language on macOS. ZhongUncle explains why learning assembly language is useful and beneficial." />
+<meta property="og:description" content="This is a guide for assembly language on macOS. ZhongUncle explains why learning assembly language is useful and beneficial." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-08-13T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="macOS Assembly Guide" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-13T00:00:00+08:00","datePublished":"2022-08-13T00:00:00+08:00","description":"This is a guide for learning assembly language on macO.ZhongUncle explains why learning assembly language is useful and beneficial, such as improving performance, implementing special functions, and understanding decompiled code. ZhongUncle also advises beginners to learn C language first before learning assembly. ZhongUncle recommends some documents and manuals for learning assembly language, especially for Intel and ARM architectures, and provides links to download or access them online. ZhongUncle introduces some tools and commands for writing and compiling assembly code on macOS, such as as, ld, clang, gcc, size, otool, and Xcode, and explains how to use them with examples and screenshots. ZhongUncle compares the differences between the AT&amp;T and Intel assembly syntax styles, and gives some tips and notes for writing assembly code in different styles. ZhongUncle demonstrates how to write a simple program that prints “hello world!” in assembly language on macOS, and shows the complete source code and each line of code in detail. ZhongUncle also shows how to assemble and link the code into a Mach-O executable file using two methods: gcc and as/ld. ZhongUncle also shows the output of the program and some commands to check the file type and size.","headline":"macOS Assembly Guide","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html"},"url":"http://localhost:4000/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-08-13T00:00:00+08:00","datePublished":"2022-08-13T00:00:00+08:00","description":"This is a guide for assembly language on macOS. ZhongUncle explains why learning assembly language is useful and beneficial.","headline":"macOS Assembly Guide","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html"},"url":"https://zhonguncle.github.io/blogs/0eda9cbefc97fa9c8eaefd427b091cdb.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -100,7 +100,7 @@
 </div>
             <h1>macOS Assembly Guide</h1>
             <div class="bloginfo">
-                <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ #Words: 2314 </p>
+                <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ #Words: 2165 </p>
             </div>
             <p>Since most of the resources, methods and tools for learning assembly are based for Windows. So here I will introduce some materials and tools for macOS</p>
 
@@ -199,17 +199,9 @@ Contents of (__TEXT,__cstring) section
 <p><img src="/assets/images/ecd23a611ef7430eb8c667d0e9676718.png" alt="write assembly code in Xcode" /></p>
 
 <h2 id="syntax-differences">Syntax differences</h2>
-<p>Many people may know some assembly, but probably Windows based. But the style and syntax in Mac OS X or C language is different.</p>
+<p>Many people may know some assembly, but probably Windows based. But the style and syntax in Mac OS X or C language is different. Because Intel and MASM use Intel syntax, and other use AT&amp;T syntax.</p>
 
-<p>Apple <code class="language-plaintext highlighter-rouge">as</code> or GCC, clang use AT&amp;T assembly style. Windows MASM or NASM use Intel assembly style. Let’s talk about differences.</p>
-
-<h3 id="register">Register</h3>
-<p>If you use clang or gcc to assemble it in C language or other situations, rather than in <code class="language-plaintext highlighter-rouge">as</code>, then you don’t need to this section.</p>
-
-<p>In Windows and C assembly syntax, register names are written directly, such as <code class="language-plaintext highlighter-rouge">mov ax,2</code>. But in <code class="language-plaintext highlighter-rouge">as</code> AT&amp;T style, avoiding to be confused with the identifier (actually, it often be called as variable), you need to add the percent sign <code class="language-plaintext highlighter-rouge">%</code> before the register, such as <code class="language-plaintext highlighter-rouge">mov %ax,2</code>. And all registers must be written in <strong>lowercase letters</strong>, not case-insensitive like in Windows or C.</p>
-
-<h3 id="hex-format">Hex format</h3>
-<p>In Windows, hexadecimal numbers are written ending in <code class="language-plaintext highlighter-rouge">H</code> or <code class="language-plaintext highlighter-rouge">h</code>, for example <code class="language-plaintext highlighter-rouge">5c0dH</code>. But in Mac OS X, it needs to be written starting with <code class="language-plaintext highlighter-rouge">0x</code>, such as <code class="language-plaintext highlighter-rouge">0x1234</code>. In C language, both are fine.</p>
+<p>The detail you can see in <a href="/assets/blogs/59a03173ec1a5fae2ec513ef01eba386.html">“「Updating」The syntax style of Apple’s as assembler”</a></p>
 
 <h2 id="lets-write-a-hello-world-in-assembly">Let’s write a Hello World in assembly!</h2>
 
