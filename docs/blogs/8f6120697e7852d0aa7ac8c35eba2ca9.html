@@ -1,0 +1,166 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to check disk in hexadecimal by bytes in terminal on Mac or Linux</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to check disk in hexadecimal by bytes in terminal on Mac or Linux | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="How to check disk in hexadecimal by bytes in terminal on Mac or Linux" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ZhongUncle introduce how to view disk in hexadecimal by bytes on Mac or Linux, use dd and hexdump to implement winhex functions in Terminal or Console CLI." />
+<meta property="og:description" content="ZhongUncle introduce how to view disk in hexadecimal by bytes on Mac or Linux, use dd and hexdump to implement winhex functions in Terminal or Console CLI." />
+<link rel="canonical" href="http://localhost:4000/blogs/8f6120697e7852d0aa7ac8c35eba2ca9.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/8f6120697e7852d0aa7ac8c35eba2ca9.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-05T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to check disk in hexadecimal by bytes in terminal on Mac or Linux" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-07-05T00:00:00+08:00","datePublished":"2023-07-05T00:00:00+08:00","description":"ZhongUncle introduce how to view disk in hexadecimal by bytes on Mac or Linux, use dd and hexdump to implement winhex functions in Terminal or Console CLI.","headline":"How to check disk in hexadecimal by bytes in terminal on Mac or Linux","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/8f6120697e7852d0aa7ac8c35eba2ca9.html"},"url":"http://localhost:4000/blogs/8f6120697e7852d0aa7ac8c35eba2ca9.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to check disk in hexadecimal by bytes in terminal on Mac or Linux</h1>
+            <div class="bloginfo">
+                <p class="info">2023-07-05 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 546 </p>
+            </div>
+            <p>Before start to introduce, something be emphasized: This method does not guarantee to view all hard disks. Some hard disks will display “Resource busy” due to some reasons, such as Time Machine and built-in hard disks.</p>
+
+<p>Supplies:</p>
+<ol>
+  <li>Mac;</li>
+  <li>Program <code class="language-plaintext highlighter-rouge">hexdump</code></li>
+  <li>Program <code class="language-plaintext highlighter-rouge">dd</code></li>
+</ol>
+
+<p>We will use <code class="language-plaintext highlighter-rouge">dd</code> to dump the content of disk, and we can view something:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo dd if=/dev/disk4 count=100000 | hexdump -C &gt; disk.txt
+</code></pre></div></div>
+
+<p>Here are some explanations:</p>
+<ol>
+  <li>You must use <code class="language-plaintext highlighter-rouge">sudo</code> to obtain permissions, otherwise you cannot open hard disk file in <code class="language-plaintext highlighter-rouge">/dev/</code>. This is different from some Linux distributions.</li>
+  <li><code class="language-plaintext highlighter-rouge">dd</code> is a program that is often used to copy hard disks and systems in byte format, so we can use it to output.</li>
+  <li><code class="language-plaintext highlighter-rouge">if=/dev/disk4</code> is the path of the input file, and <code class="language-plaintext highlighter-rouge">/dev/disk4</code> here is the hard disk we want to view. Notice: <strong>It must be a hard disk, not a partition</strong>. If you can’t distinguish this, then please read my other blog <a href="/blogs/53937ce484ce9fcae747fc78a53b7953.html">“How to use terminal commands to mount and uninstall an external hard drive in macOS (exploration of the use of diskutil command and APFS format)”</a>’s “Extended Knowledge” section.</li>
+  <li><code class="language-plaintext highlighter-rouge">count=100000</code> means outputting 100000 blocks. If you just want to see some information about the file system, then only using 1000 is almost enough.</li>
+  <li>After output, we will use <code class="language-plaintext highlighter-rouge">hexdump -C</code> to read it. <code class="language-plaintext highlighter-rouge">hexdump</code> is a program for viewing files in hexadecimal on the terminal. <code class="language-plaintext highlighter-rouge">-C</code> will display the corresponding characters on the right side.</li>
+  <li>` &gt; disk.txt<code class="language-plaintext highlighter-rouge"> will output a file named </code>disk.txt` to view conveniently.</li>
+</ol>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>00000000  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000001b0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 fe  |...............�|
+000001c0  ff ff ee fe ff ff 01 00  00 00 fe ff ff ff 00 00  |������....����..|
+000001d0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+*
+000001f0  00 00 00 00 00 00 00 00  00 00 00 00 00 00 55 aa  |..............U�|
+00000200  45 46 49 20 50 41 52 54  00 00 01 00 5c 00 00 00  |EFI PART....\...|
+00000210  15 51 0f ff 00 00 00 00  01 00 00 00 00 00 00 00  |.Q.�............|
+00000220  ff ff bf 46 07 00 00 00  22 00 00 00 00 00 00 00  |���F....".......|
+00000230  de ff bf 46 07 00 00 00  84 ec 00 4a 8e 8c fd 47  |���F.....�.J..�G|
+00000240  8a 78 25 48 bf a4 90 99  02 00 00 00 00 00 00 00  |.x%H��..........|
+00000250  80 00 00 00 80 00 00 00  98 27 08 16 00 00 00 00  |.........'......|
+00000260  00 00 00 00 00 00 00 00  00 00 00 00 00 00 00 00  |................|
+</code></pre></div></div>
+
+<p>Other systems also can use this method, the difference is the path of disk devices. In Linux, it is in <code class="language-plaintext highlighter-rouge">/mnt/</code> usually.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

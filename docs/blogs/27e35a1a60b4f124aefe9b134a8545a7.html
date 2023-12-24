@@ -15,15 +15,15 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Why heap sorting use tree but called “heap”, because already have tree sorting, heap sorting is a update of tree sorting." />
 <meta property="og:description" content="Why heap sorting use tree but called “heap”, because already have tree sorting, heap sorting is a update of tree sorting." />
-<link rel="canonical" href="http://localhost:4000/blogs/12cd844dbc41b01e53c01d0066e2a6b7.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/12cd844dbc41b01e53c01d0066e2a6b7.html" />
+<link rel="canonical" href="http://localhost:4000/blogs/27e35a1a60b4f124aefe9b134a8545a7.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/27e35a1a60b4f124aefe9b134a8545a7.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-12-06T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Introduction to Tree Selection Sorting" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-12-06T00:00:00+08:00","datePublished":"2022-12-06T00:00:00+08:00","description":"Why heap sorting use tree but called “heap”, because already have tree sorting, heap sorting is a update of tree sorting.","headline":"Introduction to Tree Selection Sorting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/12cd844dbc41b01e53c01d0066e2a6b7.html"},"url":"http://localhost:4000/blogs/12cd844dbc41b01e53c01d0066e2a6b7.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-12-06T00:00:00+08:00","datePublished":"2022-12-06T00:00:00+08:00","description":"Why heap sorting use tree but called “heap”, because already have tree sorting, heap sorting is a update of tree sorting.","headline":"Introduction to Tree Selection Sorting","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/27e35a1a60b4f124aefe9b134a8545a7.html"},"url":"http://localhost:4000/blogs/27e35a1a60b4f124aefe9b134a8545a7.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -100,7 +100,7 @@
 </div>
             <h1>Introduction to Tree Selection Sorting</h1>
             <div class="bloginfo">
-                <p class="info">2022-12-06 ｜ <a href="/research.html"> Research</a> ｜ #Words: 989 </p>
+                <p class="info">2022-12-06 ｜ <a href="/research.html"> Research</a> ｜ #Words: 797 </p>
             </div>
             <h2 id="question">Question</h2>
 <p>Maybe you like me have a question: Why heap sorting using a binary tree, but it is called heap sorting, rather than tree sorting?</p>
@@ -147,9 +147,6 @@
 <p>The improved version is to compare the values of leaf nodes and place them in the appropriate position, then delete the previous nodes, which can greatly reduce the number of comparisons. Like this:</p>
 
 <p><img src="/assets/images/816b83d354544c1183d09377570e545a.jpeg" alt="After one selection" /></p>
-
-<p>这时候如果忽略$\infty$的话，那么元素顺序应该是<code class="language-plaintext highlighter-rouge">1 3 2 5 7 9</code>。如果重复迭代运行改进版本的树选择排序算法，那么你会发现在不断迭代之后，最终二叉树会在两种情况之间“反复横跳”。所以需要想办法改进，这个办法就是堆排序（heapsort）。
-或者你可以在第一次树选择排序之后，使用直接选择排序。因为此时元素已经比之前有序许多了，这时候使用不稳定的排序方法会快一些。例如此时只有<code class="language-plaintext highlighter-rouge">3</code>和<code class="language-plaintext highlighter-rouge">2</code>的位置不对，直接选择会快很多。</p>
 
 <p>If ignore +∞, the order of elements should be <code class="language-plaintext highlighter-rouge">1 3 2 5 7 9</code>. If you run the improved version iteratively, you will find that after some iterations, the final binary tree will “jump repeatedly” between the two situations. So we need to improve it, and this method is heap sort. That is why invent heap sort.</p>
 

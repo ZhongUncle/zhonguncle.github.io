@@ -205,16 +205,11 @@
         
     
         
-    
-        
             <li>
-                <h2><a class="blog" href="/blogs/a8e23c0a7de36783c5f658a0e9d6f693.html">「SwiftUI」如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）</a></h2>
-                <p class="info">2022-11-24 ｜ #Words: 814 </p>
+                <h2><a class="blog" href="/blogs/c22c5e9a56f043258e7be58704a259ac.html">New Navigation mode in SwiftUI from iOS 16</a></h2>
+                <p class="info">2022-11-24 ｜ #Words: 603 </p>
                 
-                <p><!-- excerpt-start -->
-<p>从 iOS 16 开始，苹果开始弃用原先的<code class="language-plaintext highlighter-rouge">NavigationView</code>，以后会逐渐完全淘汰掉。现在开始使用<code class="language-plaintext highlighter-rouge">NavigationStack</code>和<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>。<code class="language-plaintext highlighter-rouge">NavigationStack</code>的效果和原本的<code class="language-plaintext highlighter-rouge">NavigationView</code>一样，而<code class="language-plaintext highlighter-rouge">NavigationSplitView</code>则和现在 iPadOS 上的<code class="language-plaintext highlighter-rouge">NavigationView</code>效果一样。
-最近在 iPadOS 上面使用<code class="language-plaintext highlighter-rouge">NavigationView</code>，内容会放在侧栏，而不是像 iOS 或者以前一样，如下：</p>
-</p>
+                <p>From iOS 16, Apple start to deprecate NavigationView ZhongUncle introduces how to use new NavigationStack and NavigationSplitView how it works and similar things</p>
             </li>
         
     
@@ -238,14 +233,10 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/764f846cf5b57142a163720685f24e4e.html">Safari Extension 扩展插件中关于权限的二三事（例如设置权限、权限类型等）</a></h2>
-                <p class="info">2022-10-25 ｜ #Words: 1423 </p>
+                <h2><a class="blog" href="/blogs/ec740071304f54f9a488261c5d203685.html">How to grant different permissions of Safari Extension</a></h2>
+                <p class="info">2022-10-25 ｜ #Words: 823 </p>
                 
-                <p><!-- excerpt-start -->
-<p>Safari Extension 扩展插件的权限相关的内容大致分为下面几个方面：</p>
-<h3 id="用户要掌控扩展users-are-in-control">用户要掌控扩展（Users are in control）</h3>
-<p>Safari Extension 扩展插件是要在用户控制下的，不能想干嘛就干嘛，因此扩展只有在用户进行互动之后才会运行。在第一次运行之前，扩展图表旁边会有一个提醒，点击会弹出一个标记来帮助指导用户使用。如下：</p>
-</p>
+                <p>ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds.</p>
             </li>
         
     
@@ -288,16 +279,10 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/a9ad294ca265f97cd282fbd8d76600d8.html">「SwiftUI」界面间的“闪转腾挪”（页面跳转的各种方法）</a></h2>
-                <p class="info">2022-07-17 ｜ #Words: 1895 </p>
+                <h2><a class="blog" href="/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html">Jump between Views in SwiftUI (How to jump to other page)</a></h2>
+                <p class="info">2022-07-17 ｜ #Words: 1393 </p>
                 
-                <p><!-- excerpt-start -->
-<p>在开发过程中，我们经常需要在多个界面之间“闪转腾挪”，在SwiftUI有两种方法：</p>
-<ul>
-  <li><code class="language-plaintext highlighter-rouge">NavigationView</code>法：最常见的方法。每层之间都可以传递数据。由于是一层一层界面跳转，不过不适合几个界面之间跳转。<strong>这个方法从 iOS 16 开始被废弃了，新的办法请移步：<a href="/blogs/2022-11-24-%E3%80%8CSwiftUI%E3%80%8D%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8%E6%96%B0%E7%9A%84NavigationStack%E5%92%8CNavigationSplitView%EF%BC%88%E5%A6%82%E4%BD%95%E9%A1%B5%E9%9D%A2%E8%B7%B3%E8%BD%AC2.0%E4%BB%A5%E5%8F%8A%E5%A6%82%E4%BD%95%E5%88%B6%E4%BD%9C%E4%BE%A7%E6%A0%8F%EF%BC%89.html">《如何使用新的NavigationStack和NavigationSplitView（如何页面跳转2.0以及如何制作侧栏）》</a></strong>（2022-11-24更新）。</li>
-  <li>指定跳转法：可以几个界面之间跳转。不过问题在于界面数据不太方便传递，只适合“写定”的界面之间（使用时界面不能带参数）。</li>
-</ul>
-</p>
+                <p>ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.</p>
             </li>
         
     
@@ -395,17 +380,6 @@
         
     
         
-            <li>
-                <h2><a class="blog" href="/blogs/a5599cad6f3ca2349043e83304f9fc84.html">「SwiftUI」如何使用iOS/iPadOS/macOS系统自带的文本转语音功能（TTS）来朗读文本</a></h2>
-                <p class="info">2022-02-17 ｜ #Words: 376 </p>
-                
-                <p><!-- excerpt-start -->
-<p>作为独立开发者，有些时候需要大量读音的时候，就可以使用一些语音合成技术，虽然讯飞、谷歌的语音合成技术似乎更好一点，但是需要联网从云端获取，这有时候会影响软件的效率和成本。好在iOS自带语音合成技术，支持的语言包括各个地区口音的英语、中文（普通话）、日语、法语等。</p>
-</p>
-            </li>
-        
-    
-        
     
         
             <li>
@@ -429,34 +403,28 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/c9b18f5434f81dc0c7bd01a79bf61271.html">「SwiftUI」如何获取View视图的尺寸</a></h2>
-                <p class="info">2022-01-20 ｜ #Words: 392 </p>
+                <h2><a class="blog" href="/blogs/5219cdfcfa19b0f9192d3a6ad5f7409d.html">How to obatin the size of a View in SwiftUI</a></h2>
+                <p class="info">2022-01-20 ｜ #Words: 324 </p>
                 
-                <p><!-- excerpt-start -->
-<p>我们可能在一些情况下需要获取SwiftUI的一个View的尺寸，我们可以用以下方法获取：</p>
-</p>
+                <p>ZhongUncle introduce how to obatin the size of a View in SwiftUI. You can get height or width of a View component.</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/93f398737ba1e12f9633bde7076ce4dc.html">「SwiftUI」如何调整SF符号大小</a></h2>
-                <p class="info">2022-01-11 ｜ #Words: 354 </p>
+                <h2><a class="blog" href="/blogs/931b83d9bcb9f86d823587658797407c.html">How to modify the size of SF Symbol in SwiftUI</a></h2>
+                <p class="info">2022-01-11 ｜ #Words: 234 </p>
                 
-                <p><!-- excerpt-start -->
-<p>苹果为开发者提供了很多图标，提高了开发者的效率，也统一了很多符号的用途，以免造成误解。这些图标被称为SF符号，苹果提供了一个软件来供开发者查找这些符号，名为<code class="language-plaintext highlighter-rouge">SF符号（SF Symbol）</code>，在开发者官网可以找到，如下：</p>
-</p>
+                <p>ZhongUncle will introduce how to modify the size of SF Symbol in SwiftUI.</p>
             </li>
         
     
         
             <li>
-                <h2><a class="blog" href="/blogs/aee411476fc73cce549a99ba71eb4e56.html">「SwiftUI」UIDevice的一些属性（设备系统名称以及电池电量）</a></h2>
-                <p class="info">2021-04-03 ｜ #Words: 585 </p>
+                <h2><a class="blog" href="/blogs/555c18584a5f515e39f5defa584749b6.html">How to obtain information of device, system and battery in Swift.</a></h2>
+                <p class="info">2021-04-03 ｜ #Words: 420 </p>
                 
-                <p><!-- excerpt-start -->
-<p>UIDevice是获取设备信息的一个API。</p>
-</p>
+                <p>ZhongUncle introduces how to obtain information of device, system and battery in Swift.</p>
             </li>
         
     

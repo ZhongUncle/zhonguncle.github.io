@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to grant different permissions of Safari Extension</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to grant different permissions of Safari Extension | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="How to grant different permissions of Safari Extension" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds." />
+<meta property="og:description" content="ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds." />
+<link rel="canonical" href="http://localhost:4000/blogs/ec740071304f54f9a488261c5d203685.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/ec740071304f54f9a488261c5d203685.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-10-25T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to grant different permissions of Safari Extension" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-10-25T00:00:00+08:00","datePublished":"2022-10-25T00:00:00+08:00","description":"ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds.","headline":"How to grant different permissions of Safari Extension","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/ec740071304f54f9a488261c5d203685.html"},"url":"http://localhost:4000/blogs/ec740071304f54f9a488261c5d203685.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to grant different permissions of Safari Extension</h1>
+            <div class="bloginfo">
+                <p class="info">2022-10-25 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 823 </p>
+            </div>
+            <p>The permissions of Safari Extension extensions are roughly divided into the following aspects:</p>
+
+<h3 id="users-are-in-control">Users are in control</h3>
+<p>Safari Extension extensions are under user control and cannot do whatever extensions want, so the extension will only run after user interaction. Before the first time running, it will shows a notification next to the extension chart, and clicking on it will pop up a mark to guide the user. as follows:</p>
+
+<p><img src="/assets/images/49da440dcaf04105aecb069ccf3b6c03.png" alt="guild user" /></p>
+
+<p>After activated, extension icon will turn blue.</p>
+
+<p><img src="/assets/images/79b32688277043f9bfa2d0251ad229ba.png" alt="blue icon" /></p>
+
+<h3 id="permissions-are-per-website">Permissions are per-website</h3>
+<p>Safari Extension extension permissions can be granted for different websites, so that users can decide whether to use extensions on some websites or not to use extensions on some websites. (Developers also can set permissions for different websites. I will talk about them in the next section)</p>
+
+<p>Click the “Edit Website” button in the red box of image below to see the website and permissions for which the extension has been configured. (<strong>Recommended readers try to change default <code class="language-plaintext highlighter-rouge">example.com</code> to <code class="language-plaintext highlighter-rouge">*</code> to match all websites, then click to activate the extension, then visit a few websites to see what the following window will look like.</strong>)</p>
+
+<p><img alt="Edit allowed sites" src="/assets/images/295c2292bc66490a901f49fc4ab08594.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p><img alt="View allowed sites" src="/assets/images/73a0543bbcb343c09c2ff43fe97b594a.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<h3 id="four-types-of-permission">Four types of permission</h3>
+<p>When developers set or adjust permission types, they need to change relevant settings in the project’s manifest.json.</p>
+
+<h4 id="script-injection-permission">Script injection Permission</h4>
+<p>The script insertion permission allows extension to insert JavaScript scripts and CSS style sheets into browsing page.</p>
+
+<p>The format in json is as follows:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"content_scripts"</span><span class="p">:</span><span class="w"> </span><span class="p">[{</span><span class="w">
+	</span><span class="nl">"js"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"content.js"</span><span class="w"> </span><span class="p">],</span><span class="w">
+	</span><span class="nl">"css"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"content.css"</span><span class="w"> </span><span class="p">],</span><span class="w">
+	</span><span class="nl">"matches"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> </span><span class="s2">"*://example.com/*"</span><span class="w"> </span><span class="p">]</span><span class="w">
+</span><span class="p">}]</span><span class="err">,</span><span class="w">
+</span></code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">"js"</code> means that if the current page is on the matched website, insert the content.js script.</li>
+  <li><code class="language-plaintext highlighter-rouge">"css"</code> means that if the current page is on the matched website, then insert the content.css style sheet.</li>
+  <li><code class="language-plaintext highlighter-rouge">"matches"</code> represents a regular expression that matches the domain names. Regular expressions are used to determine whether the current page is in domain names that allows script insertion.</li>
+</ul>
+
+<p>If the current page is in matching domain names, the user can click Enable Script to insert a script or style sheet.</p>
+
+<h4 id="implicit-permission">Implicit Permission</h4>
+<p>In the default manifest.json file, you can see this piece of code (because it is placed at the end, there is actually no final comma <code class="language-plaintext highlighter-rouge">,</code>):</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="s">"permissions"</span><span class="p">:</span> <span class="p">[</span> <span class="p">],</span>
+</code></pre></div></div>
+
+<p>The implicit permission are set in <code class="language-plaintext highlighter-rouge">[ ]</code>. Here’s an example:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> 
+	</span><span class="err">//</span><span class="w"> </span><span class="err">Part</span><span class="w"> </span><span class="mi">1</span><span class="w">
+	</span><span class="s2">"alarms"</span><span class="p">,</span><span class="s2">"clipboardWrite"</span><span class="p">,</span><span class="w"> </span><span class="s2">"menus"</span><span class="p">,</span><span class="w"> </span><span class="s2">"nativeMessaging"</span><span class="p">,</span><span class="w"> </span><span class="s2">"storage"</span><span class="p">,</span><span class="w">
+
+	</span><span class="err">//</span><span class="w"> </span><span class="err">Part</span><span class="w"> </span><span class="mi">2</span><span class="w">
+	</span><span class="s2">"cookies"</span><span class="p">,</span><span class="w"> </span><span class="s2">"tabs"</span><span class="p">,</span><span class="w"> </span><span class="s2">"webNavigation"</span><span class="w">
+</span><span class="p">]</span><span class="err">,</span><span class="w">
+</span></code></pre></div></div>
+
+<p>The Part 1 is non-sensitive permission because they don’t require additional privileges; the Part 2 is sensitive permission because they have website identifying data, such as cookies.</p>
+
+<p><strong>The principle of implicit permissions is</strong>, when you access the API, it will wait for callbacks and data. **After the user interacts with the extension, he will see a prompt asking for permissions (that is, the user applies for permissions) . After the user gives permission, the callback is executed, data is returned, and all allowed operations are performed immediately.</p>
+
+<h4 id="explicit-permission">Explicit Permission</h4>
+<p>The “explicit” of explicit permissions is for the extension will asks for permissions by itself, and the prompt to ask for permissions is always modal, without mark. This is because the extension is asking for permission, not the user.</p>
+
+<p>This permission needs to be written in the background.js file, as follows:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">const</span> <span class="nx">permissionsToRequest</span> <span class="o">=</span> <span class="p">{</span>
+	<span class="na">permissions</span><span class="p">:</span> <span class="p">[</span><span class="dl">"</span><span class="s2">tabs</span><span class="dl">"</span><span class="p">],</span>
+	<span class="na">origins</span><span class="p">:</span> <span class="p">[</span><span class="dl">"</span><span class="s2">*://example.com/*</span><span class="dl">"</span><span class="p">]</span>
+<span class="p">}</span>
+<span class="nx">browser</span><span class="p">.</span><span class="nx">permissions</span><span class="p">.</span><span class="nx">request</span><span class="p">([</span><span class="dl">"</span><span class="s2">permissionsToRequest</span><span class="dl">"</span><span class="p">]);</span>
+</code></pre></div></div>
+
+<h4 id="active-tab-permission">Active Tab Permission</h4>
+<p>This permission is set in <code class="language-plaintext highlighter-rouge">"permissions": [ ]</code>, as follows:</p>
+
+<div class="language-json highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">"permissions"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w"> 
+	</span><span class="s2">"activeTab"</span><span class="w">
+</span><span class="p">]</span><span class="err">,</span><span class="w">
+
+</span></code></pre></div></div>
+
+<p>This is a special case, if you don’t want to show notifications at this time, you can use active tabs. Users need to interact with the extension through the toolbar (on Mac, also can use shortcut keys or menus). If this permission is enabled, tab permissions will be granted for the domain name of the current tab.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

@@ -1,0 +1,192 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>What is format of man page in Linux and macOS? How to write a man page</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What is format of man page in Linux and macOS? How to write a man page | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="What is format of man page in Linux and macOS? How to write a man page" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Manpage is a main part of Unix, ZhongUncle will introduce how to find and create a man page." />
+<meta property="og:description" content="Manpage is a main part of Unix, ZhongUncle will introduce how to find and create a man page." />
+<link rel="canonical" href="http://localhost:4000/blogs/096b0a6f079768ecbf051361faebb334.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/096b0a6f079768ecbf051361faebb334.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-07-27T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What is format of man page in Linux and macOS? How to write a man page" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-27T00:00:00+08:00","datePublished":"2022-07-27T00:00:00+08:00","description":"Manpage is a main part of Unix, ZhongUncle will introduce how to find and create a man page.","headline":"What is format of man page in Linux and macOS? How to write a man page","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/096b0a6f079768ecbf051361faebb334.html"},"url":"http://localhost:4000/blogs/096b0a6f079768ecbf051361faebb334.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>What is format of man page in Linux and macOS? How to write a man page</h1>
+            <div class="bloginfo">
+                <p class="info">2022-07-27 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 576 </p>
+            </div>
+            <h2 id="preface">Preface</h2>
+<p>In Linux and macOS, we often need to use <code class="language-plaintext highlighter-rouge">man xxx</code> to view the introduction and usage of a program, system call, etc. This interface is called <code class="language-plaintext highlighter-rouge">manual page</code>, but sometimes it is simply called <code class="language-plaintext highlighter-rouge">manpage</code>.</p>
+
+<p>I’m curious about:</p>
+<ol>
+  <li>What format is the <code class="language-plaintext highlighter-rouge">man page</code> file?</li>
+  <li>How to write it?</li>
+  <li>Where is it usually stored?</li>
+</ol>
+
+<p>The <code class="language-plaintext highlighter-rouge">man page</code> is a very important part of UNIX and Linux. Next, let’s study and explain these issues one by one. I believe that after you finish reading this blog, you will have a deeper understanding of the <code class="language-plaintext highlighter-rouge">man</code> and <code class="language-plaintext highlighter-rouge">man page</code>, and can deepen your understanding of Linux and UNIX.</p>
+
+<h2 id="what-is-format-of-man-page">What is format of <code class="language-plaintext highlighter-rouge">man page</code>?</h2>
+<blockquote>
+  <p>Real UNIX books should be written in troff.</p>
+</blockquote>
+
+<p>This sentence is from the preface of “Advanced Programming in the UNIX Environment (First Edition)” by W. Richard Stevens. It tells a key: troff is a very important text processor on UNIX.</p>
+
+<p>troff is a text formatting system. Similar to Markdown, which is more popular now, and LaTex, which is used more in academic.</p>
+
+<p>But just like UNIX and many programs born in UNIX, due to historical reasons, troff also havs modern version - <strong>groff</strong>.</p>
+
+<blockquote>
+  <p>if you want to know more, you can read the book “Unix: A History and a Memoir”. The author was a member of Bell Labs and the No. 9 user of the UNIX system.</p>
+</blockquote>
+
+<p>groff is the GNU version of troff. It is functionally compatible with troff, but has many extensions. You can see specific differences by using the command <code class="language-plaintext highlighter-rouge">man 7 groff_diff</code> in the terminal.</p>
+
+<p><strong>The format of <code class="language-plaintext highlighter-rouge">manpage</code> is also troff.</strong> In Ubuntu it is nroff (also a derivative of troff).</p>
+
+<p>To prove it,</p>
+
+<p>Mac users can use the following command to view the file type of pwd(1)’s <code class="language-plaintext highlighter-rouge">manpage</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>file /usr/share/man/man1/pwd.1
+/usr/share/man/man1/pwd.1: troff or preprocessor input text, ASCII text
+</code></pre></div></div>
+
+<p>Linux users can use the following command to view the file content, because Ubuntu archives with gzip, and after viewing it, you can see that it is in troff syntax:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>less /usr/share/man/man1/pwd.1
+</code></pre></div></div>
+
+<p>But now <code class="language-plaintext highlighter-rouge">man</code> supports reading HTML files, so you also can use HTML to write <code class="language-plaintext highlighter-rouge">manpage</code>, but it is not common.</p>
+
+<h2 id="how-to-write-a-manpage">How to write a manpage</h2>
+<p>We must know the troff/groff syntax before writing it.</p>
+
+<p>Regarding how to use groff, you can use <code class="language-plaintext highlighter-rouge">info groff</code> command to view a very detailed tutorial.</p>
+
+<p>Regarding the syntax of groff, you can use <code class="language-plaintext highlighter-rouge">man 7 groff</code> command to view it.</p>
+
+<p>groff’s official website: <a href="https://www.gnu.org/software/groff/#documentation">https://www.gnu.org/software/groff/#documentation</a></p>
+
+<p>Here is a simple <code class="language-plaintext highlighter-rouge">manpage</code> to demonstrate. The source file is as follows:</p>
+
+<p><img src="/assets/images/f641fce660064bdcbd0f75817ef9d2bd.png" alt="source code of manpage" /></p>
+
+<p>You can use <code class="language-plaintext highlighter-rouge">man</code> command to view it:</p>
+
+<p><img src="/assets/images/789a1803991a469ab101be558b5eec70.png" alt="man view" /></p>
+
+<h2 id="where-is-manpage-stored">Where is manpage stored?</h2>
+<p>The <code class="language-plaintext highlighter-rouge">man</code> command uses the environment variable <code class="language-plaintext highlighter-rouge">$MANPATH</code> and the configuration file <code class="language-plaintext highlighter-rouge">/private/etc/man.conf</code> file (macOS) or <code class="language-plaintext highlighter-rouge">/etc/manpath.config</code> (Ubuntu) to find the directories where <code class="language-plaintext highlighter-rouge">manpage</code> is stored.</p>
+
+<p>So if you find manpage file through them. Moreover, we can also modify both of them, or add <code class="language-plaintext highlighter-rouge">manpage</code> to the specified directory.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

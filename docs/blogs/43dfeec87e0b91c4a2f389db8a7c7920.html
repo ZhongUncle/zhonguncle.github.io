@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>Python 如何输出数据</title>
+        <title>How output data in Python</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>Python 如何输出数据 | ZhongUncle’s Blog</title>
+<title>How output data in Python | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="Python 如何输出数据" />
+<meta property="og:title" content="How output data in Python" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的printf函数名中的f就是 formatted（被格式化）的意思，可以通过%d等换算符（conversions）来打印不同的数据类型。" />
-<meta property="og:description" content="输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的printf函数名中的f就是 formatted（被格式化）的意思，可以通过%d等换算符（conversions）来打印不同的数据类型。" />
-<link rel="canonical" href="http://localhost:4000/blogs/92fdbbfcb1ffe9ab8aafc3f0837d91e5.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/92fdbbfcb1ffe9ab8aafc3f0837d91e5.html" />
+<meta name="description" content="ZhongUncle will introduce how output data directly or with some format, like string with delimiter or split by separator." />
+<meta property="og:description" content="ZhongUncle will introduce how output data directly or with some format, like string with delimiter or split by separator." />
+<link rel="canonical" href="http://localhost:4000/blogs/43dfeec87e0b91c4a2f389db8a7c7920.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/43dfeec87e0b91c4a2f389db8a7c7920.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-06-03T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="Python 如何输出数据" />
+<meta property="twitter:title" content="How output data in Python" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-03T00:00:00+08:00","datePublished":"2022-06-03T00:00:00+08:00","description":"输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的printf函数名中的f就是 formatted（被格式化）的意思，可以通过%d等换算符（conversions）来打印不同的数据类型。","headline":"Python 如何输出数据","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/92fdbbfcb1ffe9ab8aafc3f0837d91e5.html"},"url":"http://localhost:4000/blogs/92fdbbfcb1ffe9ab8aafc3f0837d91e5.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-03T00:00:00+08:00","datePublished":"2022-06-03T00:00:00+08:00","description":"ZhongUncle will introduce how output data directly or with some format, like string with delimiter or split by separator.","headline":"How output data in Python","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/43dfeec87e0b91c4a2f389db8a7c7920.html"},"url":"http://localhost:4000/blogs/43dfeec87e0b91c4a2f389db8a7c7920.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,98 +98,93 @@
         </a>
     
 </div>
-            <h1>Python 如何输出数据</h1>
+            <h1>How output data in Python</h1>
             <div class="bloginfo">
-                <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ #Words: 2076 </p>
+                <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ #Words: 1466 </p>
             </div>
-            <!-- excerpt-start -->
-<p>输出数据有从格式上来说有两种：格式化输出和直接输出。比如 C 语言中最常见的<code class="language-plaintext highlighter-rouge">printf</code>函数名中的<code class="language-plaintext highlighter-rouge">f</code>就是 formatted（被格式化）的意思，可以通过<code class="language-plaintext highlighter-rouge">%d</code>等换算符（conversions）来打印不同的数据类型。</p>
+            <p>There are two types of output data formats: formatted output and direct output. For example, the <code class="language-plaintext highlighter-rouge">f</code> of <code class="language-plaintext highlighter-rouge">printf</code> function in C language means formatted. Different data types can be printed through conversions such as <code class="language-plaintext highlighter-rouge">%d</code>. Python also has two types.</p>
 
-<p>Python 也分这两种：一般用于直接输出的有表达式，<code class="language-plaintext highlighter-rouge">str()</code>和<code class="language-plaintext highlighter-rouge">print()</code>函数（需要注意的是它不光只能用于直接输出）；格式化输出有很多种，后面细说。</p>
+<p>In generally,  <code class="language-plaintext highlighter-rouge">str()</code> and <code class="language-plaintext highlighter-rouge">print()</code> functions are used for direct output (not only for direct output); there are many types of formatted output, we will talk about it later.</p>
 
-<h2 id="直接输出">直接输出</h2>
-<p>直接输出有以下几种方式：</p>
-<h3 id="表达式">表达式</h3>
-<p>通过表达式可以直接输出结果，如下：</p>
+<h2 id="direct-output">Direct output</h2>
+<p>There are some ways to directly output:</p>
+<h3 id="expression">Expression</h3>
+<p>The results can be output directly through expressions, as follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="mi">1</span><span class="o">+</span><span class="mi">1</span>
 <span class="mi">2</span>
 </code></pre></div></div>
 
 <h3 id="str">str()</h3>
-<p><code class="language-plaintext highlighter-rouge">str()</code>会直接以字符串输出括号里的内容。如下：</p>
+<p><code class="language-plaintext highlighter-rouge">str()</code> will directly output the content in parentheses as a string. as follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="nb">str</span><span class="p">(</span><span class="sa">b</span><span class="s">'Zoot!'</span><span class="p">)</span>
 <span class="s">"b'Zoot!'"</span>
 </code></pre></div></div>
 
 <h3 id="print">print()</h3>
-<p><code class="language-plaintext highlighter-rouge">print()</code>以字符串（string）格式输出。</p>
+<p><code class="language-plaintext highlighter-rouge">print()</code> output in stringformat:</p>
 
-<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># 输出数字
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Output number
 </span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="mi">123</span><span class="p">)</span>
 <span class="mi">123</span>
-<span class="c1"># 输出字符串
+<span class="c1"># Output string
 </span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">"abc"</span><span class="p">)</span>
 <span class="n">abc</span>
-<span class="c1"># 一次性输出三个变量的值，变量用逗号隔开，那么输出的值会用空格隔开
+<span class="c1"># Output three variables at once with commas separated, then the output values ​​will be separated by space
 </span><span class="o">&gt;&gt;&gt;</span> <span class="n">a</span><span class="o">=</span><span class="mi">1</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">b</span><span class="o">=</span><span class="mi">2</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">c</span><span class="o">=</span><span class="s">"abc"</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="n">b</span><span class="p">,</span><span class="n">c</span><span class="p">)</span>
 <span class="mi">1</span> <span class="mi">2</span> <span class="n">abc</span>
-<span class="c1"># 一次性输出两个值，用逗号隔开，那么输出的字符串会用空格隔开
+<span class="c1"># Output two values at once with commas separated, the output string will be separated by space 
 </span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">"Hello"</span><span class="p">,</span><span class="s">"World!"</span><span class="p">)</span>
 <span class="n">Hello</span> <span class="n">World</span><span class="err">!</span>
-<span class="c1"># 一次性输出两个值，不用逗号隔开，那么输出的字符串就是连起来的
+<span class="c1"># Output two values at once, but without commas separating them, the output strings will be concatenated, no any separator
 </span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">"Hello""World!"</span><span class="p">)</span>
 <span class="n">HelloWorld</span><span class="err">!</span>
-<span class="c1"># 一次性输出两个值，用逗号隔开，并且设置分隔符是句点，那么输出的字符串会用句点隔开
-# 这个可以用来输出网址、路径之类的格式明确的的东西（这个已经算有点格式化了）
+<span class="c1"># Output two values at once with commas separated, and set the separator to a period, then the output string will be separated by a period
+# This can be used to output clearly formatted things such as URLs and paths (a little bit formatted)
 </span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">"www"</span><span class="p">,</span><span class="s">"python"</span><span class="p">,</span><span class="s">"org"</span><span class="p">,</span><span class="n">sep</span><span class="o">=</span><span class="s">"."</span><span class="p">)</span>
 <span class="n">www</span><span class="p">.</span><span class="n">python</span><span class="p">.</span><span class="n">org</span>
 </code></pre></div></div>
 
-<p>这里其实比较特殊的是最后几个，尤其是最后一个还可以设置分隔符。这是 Python 提供的参数，<code class="language-plaintext highlighter-rouge">print()</code>函数默认的完整样式如下：</p>
+<p>The complete arguments of <code class="language-plaintext highlighter-rouge">print()</code> function are as follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">print</span><span class="p">(</span><span class="o">*</span><span class="n">objects</span><span class="p">,</span> <span class="n">sep</span><span class="o">=</span><span class="s">' '</span><span class="p">,</span> <span class="n">end</span><span class="o">=</span><span class="s">'</span><span class="se">\n</span><span class="s">'</span><span class="p">,</span> <span class="nb">file</span><span class="o">=</span><span class="n">sys</span><span class="p">.</span><span class="n">stdout</span><span class="p">,</span> <span class="n">flush</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
 </code></pre></div></div>
 
-<p>参数含义如下：</p>
-
+<p>The meaning of arguments:</p>
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">*objects</code>：输入的对象，例如之前的<code class="language-plaintext highlighter-rouge">"Hello","World!"</code>。</li>
-  <li><code class="language-plaintext highlighter-rouge">sep=' '</code>：分隔符，必须是字符串。这里默认设置为空格，也可以设置为<code class="language-plaintext highlighter-rouge">None</code>。</li>
-  <li><code class="language-plaintext highlighter-rouge">end='\n'</code>：设置字符串最后分隔符，必须是字符串。这里默认是<code class="language-plaintext highlighter-rouge">\n</code>，也可以设置为<code class="language-plaintext highlighter-rouge">None</code>。如果没有给定<code class="language-plaintext highlighter-rouge">*objects</code>，那么<code class="language-plaintext highlighter-rouge">print()</code>只输出<code class="language-plaintext highlighter-rouge">end</code>设置的内容。</li>
-  <li><code class="language-plaintext highlighter-rouge">file</code>：设置输出的位置。这里默认设置为<code class="language-plaintext highlighter-rouge">sys.stdout</code>，也就是标准输出（不知道这个的话去查一下吧，系统的一部分）。</li>
-  <li><code class="language-plaintext highlighter-rouge">flush</code>：如果为<code class="language-plaintext highlighter-rouge">True</code>，那么强制刷新数据流（stream）。这个可能比较难懂，不过运行完下面的代码，并且按照注释来再做一次，就应该知道了：</li>
+  <li><code class="language-plaintext highlighter-rouge">*objects</code>: Input objects, such as the previous <code class="language-plaintext highlighter-rouge">"Hello", "World!"</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">sep=' '</code>: separator, it must be a string. The default value is a space <code class="language-plaintext highlighter-rouge">" "</code>. You also can set it to <code class="language-plaintext highlighter-rouge">None</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">end='\n'</code>: Set the last delimiter of the string, which must be a string. The default is <code class="language-plaintext highlighter-rouge">\n</code>. You also can set it to <code class="language-plaintext highlighter-rouge">None</code>. If <code class="language-plaintext highlighter-rouge">*objects</code> is not given, then <code class="language-plaintext highlighter-rouge">print()</code> only outputs the content set by <code class="language-plaintext highlighter-rouge">end</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">file</code>: Set the output location. The default setting here is <code class="language-plaintext highlighter-rouge">sys.stdout</code>.</li>
+  <li><code class="language-plaintext highlighter-rouge">flush</code>: If <code class="language-plaintext highlighter-rouge">True</code>, then the data stream is forced to be flushed. This may be difficult to understand, but after running the following code, you should understand:</li>
 </ul>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">#!/usr/bin/env python3
 </span>
 <span class="kn">import</span> <span class="nn">time</span>
 
-<span class="k">print</span><span class="p">(</span><span class="s">"---RUNOOB EXAMPLE ： Loading 效果---"</span><span class="p">)</span>
+<span class="k">print</span><span class="p">(</span><span class="s">"--- Loading ---"</span><span class="p">)</span>
 
 <span class="k">print</span><span class="p">(</span><span class="s">"Loading"</span><span class="p">,</span><span class="n">end</span> <span class="o">=</span> <span class="s">""</span><span class="p">)</span>
 <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">20</span><span class="p">):</span>
-	<span class="c1"># 运行完把这里的 False 修改成 True，看看就知道了
+    <span class="c1"># Change the False to True, you will know how flush work
 </span>    <span class="k">print</span><span class="p">(</span><span class="s">"."</span><span class="p">,</span><span class="n">end</span> <span class="o">=</span> <span class="s">''</span><span class="p">,</span><span class="n">flush</span> <span class="o">=</span> <span class="bp">False</span><span class="p">)</span>
     <span class="n">time</span><span class="p">.</span><span class="n">sleep</span><span class="p">(</span><span class="mf">0.5</span><span class="p">)</span>
 </code></pre></div></div>
 
-<h2 id="各种格式化输出">各种格式化输出</h2>
+<h2 id="formatted-output">Formatted output</h2>
+<p>We have talked about setting the delimiter mentioned previously in <code class="language-plaintext highlighter-rouge">print()</code>, it may be called as a formatted output. Except it, there are several ways to format the output.</p>
 
-<p>除了之前在<code class="language-plaintext highlighter-rouge">print()</code>中提及的设置分隔符之外，还有一些方法可以格式化输出。</p>
+<h4 id="formatted-string-literals">Formatted String Literals</h4>
+<p>Formatted String Literals, aka f-strings. Use <code class="language-plaintext highlighter-rouge">f</code> or <code class="language-plaintext highlighter-rouge">F</code> before the opening single or triple quote, and you can write Python expressions in a string between a pair of curly braces to reference variables or literal values.</p>
 
-<h4 id="格式化的字符串文字formatted-string-literals">格式化的字符串文字（Formatted String Literals）</h4>
-<p>格式化的字符串文字（Formatted String Literals），简称为 f 字符串（f-strings）。</p>
+<p>Here are some offical samples:</p>
 
-<p>在开头的单引号或者三重引号之前使用<code class="language-plaintext highlighter-rouge">f</code>或者<code class="language-plaintext highlighter-rouge">F</code>，并且在字符串中，能在一对大括号之间写 Python 表达式，用于引用变量或字面值。</p>
-
-<p>官方示例如下：</p>
-
-<p>简单的引用变量：</p>
+<p>Simple reference variables:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">year</span> <span class="o">=</span> <span class="mi">2016</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">event</span> <span class="o">=</span> <span class="s">'Referendum'</span>
@@ -197,13 +192,14 @@
 <span class="s">'Results of the 2016 Referendum'</span>
 </code></pre></div></div>
 
-<p>控制浮点数的位数，这里设置成小数点后 3 位：</p>
+<p>Controls the digits of precision, here we set 3 decimal digits:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="kn">import</span> <span class="nn">math</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'The value of pi is approximately </span><span class="si">{</span><span class="n">math</span><span class="p">.</span><span class="n">pi</span><span class="si">:</span><span class="p">.</span><span class="mi">3</span><span class="n">f</span><span class="si">}</span><span class="s">.'</span><span class="p">)</span>
 <span class="n">The</span> <span class="n">value</span> <span class="n">of</span> <span class="n">pi</span> <span class="ow">is</span> <span class="n">approximately</span> <span class="mf">3.142</span><span class="p">.</span>
 </code></pre></div></div>
-<p>在<code class="language-plaintext highlighter-rouge">:</code>后面设置一个整数将设置该字段的最小字符宽度，这可以用来列对齐。</p>
+
+<p>Setting an integer after <code class="language-plaintext highlighter-rouge">:</code> will set the minimum digits of the number, which can align column.</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="k">for</span> <span class="n">name</span><span class="p">,</span> <span class="n">phone</span> <span class="ow">in</span> <span class="n">table</span><span class="p">.</span><span class="n">items</span><span class="p">():</span>
 <span class="p">...</span>     <span class="k">print</span><span class="p">(</span><span class="sa">f</span><span class="s">'</span><span class="si">{</span><span class="n">name</span><span class="si">:</span><span class="mi">10</span><span class="si">}</span><span class="s"> ==&gt; </span><span class="si">{</span><span class="n">phone</span><span class="si">:</span><span class="mi">10</span><span class="n">d</span><span class="si">}</span><span class="s">'</span><span class="p">)</span>
@@ -214,23 +210,23 @@
 </code></pre></div></div>
 
 <h4 id="strformat">str.format()</h4>
-<p>这个方式的格式就是名字，就是把引用的变量和值放到<code class="language-plaintext highlighter-rouge">.format()</code>的括号里了，如下：</p>
+<p>This method like <code class="language-plaintext highlighter-rouge">print()</code>, but put the referenced arguments ​in <code class="language-plaintext highlighter-rouge">.format()</code>, as follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">yes_votes</span> <span class="o">=</span> <span class="mi">42_572_654</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">no_votes</span> <span class="o">=</span> <span class="mi">43_132_495</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="n">percentage</span> <span class="o">=</span> <span class="n">yes_votes</span> <span class="o">/</span> <span class="p">(</span><span class="n">yes_votes</span> <span class="o">+</span> <span class="n">no_votes</span><span class="p">)</span>
-<span class="c1"># 这里的第一对单引号就是`str`字符串，后面`.format()`括号里就是对应的变量
+<span class="c1"># The content of single quotes is the `str` of `print()`, and the following `.format()` brackets are the corresponding arguments.
 </span><span class="o">&gt;&gt;&gt;</span> <span class="s">'{:-9} YES votes  {:2.2%}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">yes_votes</span><span class="p">,</span> <span class="n">percentage</span><span class="p">)</span>
 <span class="s">' 42572654 YES votes  49.67%'</span>
 </code></pre></div></div>
 
-<p>那个数字的可能有点难理解，这里有个字符串的：</p>
+<p>Here is for number:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">'We are the {} who say "{}!"'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'knights'</span><span class="p">,</span> <span class="s">'Ni'</span><span class="p">))</span>
 <span class="n">We</span> <span class="n">are</span> <span class="n">the</span> <span class="n">knights</span> <span class="n">who</span> <span class="n">say</span> <span class="s">"Ni!"</span>
 </code></pre></div></div>
 
-<p>当然这是默认情况，还可以使用变量对应的符号来引用。后面括号里第一个字符串对应着序号<code class="language-plaintext highlighter-rouge">0</code>，以此类推。具体如下：</p>
+<p>This is default, and you also can use the symbol corresponding to the argument to reference it. The first string in the brackets corresponds to the number <code class="language-plaintext highlighter-rouge">0</code>, and so on. As follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">'{0} and {1}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'spam'</span><span class="p">,</span> <span class="s">'eggs'</span><span class="p">))</span>
 <span class="n">spam</span> <span class="ow">and</span> <span class="n">eggs</span>
@@ -238,40 +234,40 @@
 <span class="n">eggs</span> <span class="ow">and</span> <span class="n">spam</span>
 </code></pre></div></div>
 
-<p>也可以使用关键词参数，用参数的名称来引用值，如下：</p>
+<p>You can also use keyword arguments to reference the value by the name of the arguments, as follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">'This {food} is {adjective}.'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span>
 <span class="p">...</span>       <span class="n">food</span><span class="o">=</span><span class="s">'spam'</span><span class="p">,</span> <span class="n">adjective</span><span class="o">=</span><span class="s">'absolutely horrible'</span><span class="p">))</span>
 <span class="n">This</span> <span class="n">spam</span> <span class="ow">is</span> <span class="n">absolutely</span> <span class="n">horrible</span><span class="p">.</span>
 </code></pre></div></div>
 
-<p>上面二者可以混合使用，如下：</p>
+<p>Combine them:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">'The story of {0}, {1}, and {other}.'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="s">'Bill'</span><span class="p">,</span> <span class="s">'Manfred'</span><span class="p">,</span><span class="n">other</span><span class="o">=</span><span class="s">'Georg'</span><span class="p">))</span>
 <span class="n">The</span> <span class="n">story</span> <span class="n">of</span> <span class="n">Bill</span><span class="p">,</span> <span class="n">Manfred</span><span class="p">,</span> <span class="ow">and</span> <span class="n">Georg</span><span class="p">.</span>
 </code></pre></div></div>
 
-<p>还可以通过引用位置序号和使用名称来获取一个表中的变量，可以通过用中括号<code class="language-plaintext highlighter-rouge">[]</code>来框住变量名。具体使用方法如下：</p>
+<p>You also can access variables value from a table by referencing the index or the name. Enclose the variable name with square brackets <code class="language-plaintext highlighter-rouge">[]</code>. As follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s">'Sjoerd'</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s">'Jack'</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s">'Dcab'</span><span class="p">:</span> <span class="mi">8637678</span><span class="p">}</span>
-<span class="c1"># 中括号框住了需要引用的变量名
+<span class="c1"># Enclose the variable name with square brackets `[]`
 </span><span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">'Jack: {0[Jack]:d}; Sjoerd: {0[Sjoerd]:d}; '</span>
 <span class="p">...</span>       <span class="s">'Dcab: {0[Dcab]:d}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="n">table</span><span class="p">))</span>
 <span class="n">Jack</span><span class="p">:</span> <span class="mi">4098</span><span class="p">;</span> <span class="n">Sjoerd</span><span class="p">:</span> <span class="mi">4127</span><span class="p">;</span> <span class="n">Dcab</span><span class="p">:</span> <span class="mi">8637678</span>
 </code></pre></div></div>
 
-<p>当然这样还要先写个<code class="language-plaintext highlighter-rouge">0</code>然后中括号<code class="language-plaintext highlighter-rouge">[]</code>不太方便，那么可以使用两个星号<code class="language-plaintext highlighter-rouge">**</code>来简化。如下：</p>
+<p>It is not convenient to write a <code class="language-plaintext highlighter-rouge">0</code> with the square brackets <code class="language-plaintext highlighter-rouge">[]</code>, so you can use two asterisks <code class="language-plaintext highlighter-rouge">**</code> to simplify it. As follows:</p>
 
 <div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&gt;&gt;&gt;</span> <span class="n">table</span> <span class="o">=</span> <span class="p">{</span><span class="s">'Sjoerd'</span><span class="p">:</span> <span class="mi">4127</span><span class="p">,</span> <span class="s">'Jack'</span><span class="p">:</span> <span class="mi">4098</span><span class="p">,</span> <span class="s">'Dcab'</span><span class="p">:</span> <span class="mi">8637678</span><span class="p">}</span>
 <span class="o">&gt;&gt;&gt;</span> <span class="k">print</span><span class="p">(</span><span class="s">'Jack: {Jack:d}; Sjoerd: {Sjoerd:d}; Dcab: {Dcab:d}'</span><span class="p">.</span><span class="nb">format</span><span class="p">(</span><span class="o">**</span><span class="n">table</span><span class="p">))</span>
 <span class="n">Jack</span><span class="p">:</span> <span class="mi">4098</span><span class="p">;</span> <span class="n">Sjoerd</span><span class="p">:</span> <span class="mi">4127</span><span class="p">;</span> <span class="n">Dcab</span><span class="p">:</span> <span class="mi">8637678</span>
 </code></pre></div></div>
 
-<p>更详细的介绍看这里：<a href="https://docs.python.org/3.8/library/string.html#formatstrings">https://docs.python.org/3.8/library/string.html#formatstrings</a></p>
+<p>More details: <a href="https://docs.python.org/3.8/library/string.html#formatstrings">https://docs.python.org/3.8/library/string.html#formatstrings</a></p>
 
-<p>本文参考官方文档：<a href="https://docs.python.org/3.8/tutorial/inputoutput.html">https://docs.python.org/3.8/tutorial/inputoutput.html</a></p>
+<p>Offical documents: <a href="https://docs.python.org/3.8/tutorial/inputoutput.html">https://docs.python.org/3.8/tutorial/inputoutput.html</a></p>
 
-<p>希望可以帮到有需要的人哦～</p>
+<p>I hope these will help someone in need~</p>
 
         </div>
         <!-- comment by utterances -->

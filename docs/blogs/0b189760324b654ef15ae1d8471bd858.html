@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>C语言中enum（枚举）详解</title>
+        <title>What is enum in C language detailly</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>C语言中enum（枚举）详解 | ZhongUncle’s Blog</title>
+<title>What is enum in C language detailly | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="C语言中enum（枚举）详解" />
+<meta property="og:title" content="What is enum in C language detailly" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="enum是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种常量，被称为 enumeration constant。enum提供了一种很方便的方法来将值和名称关联起来，是#define的一种替代方法。" />
-<meta property="og:description" content="enum是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种常量，被称为 enumeration constant。enum提供了一种很方便的方法来将值和名称关联起来，是#define的一种替代方法。" />
-<link rel="canonical" href="http://localhost:4000/blogs/7879b9fdd0a2d0c735f4efe6c071d270.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/7879b9fdd0a2d0c735f4efe6c071d270.html" />
+<meta name="description" content="ZhongUncle introduces what is the enum of C detailly, how to use it, when to use it and why to use it." />
+<meta property="og:description" content="ZhongUncle introduces what is the enum of C detailly, how to use it, when to use it and why to use it." />
+<link rel="canonical" href="http://localhost:4000/blogs/0b189760324b654ef15ae1d8471bd858.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/0b189760324b654ef15ae1d8471bd858.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-04-19T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="C语言中enum（枚举）详解" />
+<meta property="twitter:title" content="What is enum in C language detailly" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-19T00:00:00+08:00","datePublished":"2023-04-19T00:00:00+08:00","description":"enum是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种常量，被称为 enumeration constant。enum提供了一种很方便的方法来将值和名称关联起来，是#define的一种替代方法。","headline":"C语言中enum（枚举）详解","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/7879b9fdd0a2d0c735f4efe6c071d270.html"},"url":"http://localhost:4000/blogs/7879b9fdd0a2d0c735f4efe6c071d270.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-19T00:00:00+08:00","datePublished":"2023-04-19T00:00:00+08:00","description":"ZhongUncle introduces what is the enum of C detailly, how to use it, when to use it and why to use it.","headline":"What is enum in C language detailly","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/0b189760324b654ef15ae1d8471bd858.html"},"url":"http://localhost:4000/blogs/0b189760324b654ef15ae1d8471bd858.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,59 +98,61 @@
         </a>
     
 </div>
-            <h1>C语言中enum（枚举）详解</h1>
+            <h1>What is enum in C language detailly</h1>
             <div class="bloginfo">
-                <p class="info">2023-04-19 ｜ <a href="/c.html"> C</a> ｜ #Words: 1402 </p>
+                <p class="info">2023-04-19 ｜ <a href="/c.html"> C</a> ｜ #Words: 1005 </p>
             </div>
-            <!-- excerpt-start -->
-<p><code class="language-plaintext highlighter-rouge">enum</code>是 enumerate（列举，枚举）一词的缩写，是 C 语言中的一种<strong>常量</strong>，被称为 <strong>enumeration constant</strong>。<code class="language-plaintext highlighter-rouge">enum</code>提供了一种很方便的方法来将值和名称关联起来，是<code class="language-plaintext highlighter-rouge">#define</code>的一种替代方法。</p>
+            <p><code class="language-plaintext highlighter-rouge">enum</code> is abbreviation of enumerate. It is a type of <strong>constant</strong> in C language, called <strong>enumeration constant</strong>. <code class="language-plaintext highlighter-rouge">enum</code> provides a convenient way to associate values and names, and it is an alternative to <code class="language-plaintext highlighter-rouge">#define</code>.</p>
 
-<p><code class="language-plaintext highlighter-rouge">enum</code>可以看作是一种特殊的数组，是<strong>常量组成的列表</strong>，而且这个常量只能是整数型。</p>
+<p><code class="language-plaintext highlighter-rouge">enum</code> can be regarded as a special array, which is a list of constants, but this constant just be integer.</p>
 
-<p>所以如果是寥寥几个不相关、不连续的常量，直接定义几个常量就可以。但是如果是相关的或者连续的，使用<code class="language-plaintext highlighter-rouge">enum</code>效率更高。</p>
+<p>So if there are only a few irrelevant and discontinuous constants, just define some constants directly is fine. If it is related or continuous, it is more efficient to use <code class="language-plaintext highlighter-rouge">enum</code>.</p>
 
-<p>但是枚举与数组、元组不同的有 3点：</p>
+<p>But there are three differences between enumerations and arrays:</p>
 <ol>
-  <li>枚举并不是使用下标来定位元素值，而是使用关键字；</li>
-  <li>不同的<code class="language-plaintext highlighter-rouge">enum</code>中的值可以相同，但是名称必须不同；</li>
-  <li><code class="language-plaintext highlighter-rouge">enum</code>的默认值为<code class="language-plaintext highlighter-rouge">0, 1, 2...</code>，而数组是按照类型默认为其空值或者<code class="language-plaintext highlighter-rouge">0</code>。</li>
+  <li>Enumeration uses keywords to locate element values, rather than indexs;</li>
+  <li>The different <code class="language-plaintext highlighter-rouge">enum</code> can have the same value, but the names must be different;</li>
+  <li>The default value of <code class="language-plaintext highlighter-rouge">enum</code> is <code class="language-plaintext highlighter-rouge">0, 1, 2...</code>, and the default value of array is <code class="language-plaintext highlighter-rouge">NULL</code> or <code class="language-plaintext highlighter-rouge">0</code> according to the type.</li>
 </ol>
 
-<p>上面这段没看明白的话，可以看看下面的例子和代码就可以理解了。</p>
+<p>If you don’t make sense, let me show some samples.</p>
 
 <blockquote>
-  <p>严谨来说，这里不称作“关键字（keyword）”，而是“名称（name）”。因为在第一本广泛使用的 C 语言说明书《The C Programming Language》中，原文就是“name”一词。</p>
+  <p>In “The C Programming Language”, the original text is the word “name”, rather than “keyword”.</p>
 </blockquote>
 
-<p>下面是最常见的，也是在网上最常见的一种案例，以此为例开始详细介绍：</p>
+<p>This is the most common example on the Internet. Let’s take this as an example to start the detailed introduction:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="n">months</span> <span class="p">{</span><span class="n">Jan</span><span class="p">,</span> <span class="n">Feb</span><span class="p">,</span> <span class="n">Mar</span><span class="p">,</span> <span class="n">Apr</span><span class="p">,</span> <span class="n">May</span><span class="p">,</span> <span class="n">Jun</span><span class="p">,</span> <span class="n">Jul</span><span class="p">,</span> <span class="n">Aug</span><span class="p">,</span> <span class="n">Sep</span><span class="p">,</span> <span class="n">Oct</span><span class="p">,</span> <span class="n">Nov</span><span class="p">,</span> <span class="n">Dec</span><span class="p">};</span>
 </code></pre></div></div>
 
-<p>网上给出的使用方法如下（有点复杂，但是现实中，在这种情况下并不推荐这种方法，后面说简洁的）：</p>
+<p>The usage method given on the Internet is as follows (a bit complicated, so in reality, this method is not recommended, I will introduce a short method later):</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
 <span class="p">{</span>
-    <span class="k">enum</span> <span class="n">months</span> <span class="n">mon</span><span class="p">;</span>	<span class="cm">/* 声明month是months中的一个值，需要注意这里的mon是变量 */</span>
-    <span class="n">mon</span> <span class="o">=</span> <span class="n">Jan</span><span class="p">;</span>			<span class="cm">/* mon的值等于Jan表示的值 */</span>
-    <span class="n">printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">mon</span><span class="p">);</span>	<span class="cm">/* 输出mon的值 */</span>
+    <span class="k">enum</span> <span class="n">months</span> <span class="n">mon</span><span class="p">;</span>    <span class="cm">/* Declare month is a value in `months`. Notice `mon` is a variable */</span>
+    <span class="n">mon</span> <span class="o">=</span> <span class="n">Jan</span><span class="p">;</span>          <span class="cm">/* The value of `mon` is equal to `Jan` */</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">mon</span><span class="p">);</span> <span class="cm">/* Output the value of `mon` */</span>
     <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>这里输出的结果是<code class="language-plaintext highlighter-rouge">0</code>。是因为没有定义名称表示的值，所以就按照默认值<code class="language-plaintext highlighter-rouge">0, 1, 2...</code>，而<code class="language-plaintext highlighter-rouge">Jan</code>是第一个，也就是<code class="language-plaintext highlighter-rouge">0</code>。</p>
+<p>The output result here is <code class="language-plaintext highlighter-rouge">0</code>. Because the value represented by the name is not defined, the default value <code class="language-plaintext highlighter-rouge">0, 1, 2...</code> is used, and <code class="language-plaintext highlighter-rouge">Jan</code> is the first one, which is <code class="language-plaintext highlighter-rouge">0</code>.</p>
 
-<p>那么如果我们想这个枚举中的名称对应的值是其月份呢？
-你肯定会想，枚举嘛，那就一个个等于就好了。这样确实可以，但是这里的月份是连续的整数，所以不用一个个等于，只把第一个<code class="language-plaintext highlighter-rouge">Jan=1</code>即可，如下：</p>
+<p>So if we want the value corresponding to its month?</p>
+
+<p>You maybe think: It is an enumeration, so just equal them one by one. This is indeed, but the months here are consecutive integers, so you don’t need to equal them one by one, just set the first <code class="language-plaintext highlighter-rouge">Jan=1</code>, as follows:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="n">months</span> <span class="p">{</span><span class="n">Jan</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">Feb</span><span class="p">,</span> <span class="n">Mar</span><span class="p">,</span> <span class="n">Apr</span><span class="p">,</span> <span class="n">May</span><span class="p">,</span> <span class="n">Jun</span><span class="p">,</span> <span class="n">Jul</span><span class="p">,</span> <span class="n">Aug</span><span class="p">,</span> <span class="n">Sep</span><span class="p">,</span> <span class="n">Oct</span><span class="p">,</span> <span class="n">Nov</span><span class="p">,</span> <span class="n">Dec</span><span class="p">};</span>
 </code></pre></div></div>
 
-<p>这样不光输出<code class="language-plaintext highlighter-rouge">Sep</code>得到的是<code class="language-plaintext highlighter-rouge">1</code>，而且输出<code class="language-plaintext highlighter-rouge">Sep</code>得到的<code class="language-plaintext highlighter-rouge">9</code>，不用一个个等于那么麻烦。</p>
+<p>In this way, not only the output of <code class="language-plaintext highlighter-rouge">Sep</code> is <code class="language-plaintext highlighter-rouge">1</code>, but also the output of <code class="language-plaintext highlighter-rouge">Sep</code> is <code class="language-plaintext highlighter-rouge">9</code>, without the hassle of equalizing each one, and other correspond to its month.</p>
 
-<p>看到这里你可能会想，必须要弄一个<code class="language-plaintext highlighter-rouge">mon</code>来获取值嘛？因为通过变量来获取常量的值，在很多情况下就挺多此一举的。</p>
+<p>You may be thinking: It’s must create a variable <code class="language-plaintext highlighter-rouge">mon</code> to get the value?</p>
 
-<p>这里不光<code class="language-plaintext highlighter-rouge">mon</code>不是必须的，连<code class="language-plaintext highlighter-rouge">months</code>都不是必须的，因为<code class="language-plaintext highlighter-rouge">enum</code>其实是常量的集合，区分内容是通过常量的名称，而不是<code class="language-plaintext highlighter-rouge">enum</code>的名字。下面举个例子：</p>
+<p>No. Because in many cases, obtaining the value of a constant through a variable is unnecessary. Only if you need use constant as initial, you maybe use variable to obtain constant value.</p>
+
+<p>Not only <code class="language-plaintext highlighter-rouge">mon</code> is not necessary here, but even <code class="language-plaintext highlighter-rouge">months</code> is not necessary. Because <code class="language-plaintext highlighter-rouge">enum</code> is actually a collection of constants, and the content is distinguished by the name of the constant, not the name of <code class="language-plaintext highlighter-rouge">enum</code>. Here’s an example:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
 </span>
@@ -163,21 +165,22 @@
 	<span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
 <span class="p">}</span>
 </code></pre></div></div>
-<p>输出结果为：</p>
+
+<p>Output:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1, 1
 </code></pre></div></div>
 
-<p>那么什么时候使用第一种方法，什么时候使用第二种呢？</p>
+<p>So when to use the first method and when to use the second?</p>
 
-<p>文章最开头说过，<code class="language-plaintext highlighter-rouge">enum</code>是一种常量。一般人并不会让一个变量简简单单等于一个常量，然后再输出这个变量，就为输出常量的值，而是直接输出常量就行。</p>
+<p>As mentioned at the beginning of the article, <code class="language-plaintext highlighter-rouge">enum</code> is a constant. Most people don’t simply make a variable equal to a constant, then through outputing the variable to output the constant value. They just output the constant directly.</p>
 
-<p>所以绝大部分情况直接使用第二种即可，因为名称是不会重复的。第一种方法是为了一些特殊情况。比如说，如果你想函数返回值有 4 种情况（实际情况可能更多），每个情况表示的顺序的整数值为<code class="language-plaintext highlighter-rouge">0, 1, 2, 3</code>，如下：</p>
+<p>So in most cases, you can just use the second, because the names will not be repeated. The first method is for some special cases. For example, if you want the function return value to have 4 situations (the actual situation may be more), the integer value of the order represented by each situation is <code class="language-plaintext highlighter-rouge">0, 1, 2, 3</code>, as follows:</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">enum</span> <span class="n">state</span> <span class="p">{</span><span class="n">Standard</span><span class="p">,</span> <span class="n">Error</span><span class="p">,</span> <span class="n">Position_1</span><span class="p">,</span> <span class="n">Position_2</span><span class="p">}</span>
 </code></pre></div></div>
 
-<p>这时候代码可以写成（这里简化了很多，只是为了表示这种情况）：</p>
+<p>At this time the code can be written as (a lot simplified here just to represent this situation):</p>
 
 <div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">test</span><span class="p">()</span> <span class="p">{</span>
     <span class="k">enum</span> <span class="n">state</span> <span class="n">ret</span>
@@ -194,9 +197,9 @@
 <span class="p">}</span>
 </code></pre></div></div>
 
-<p>这样在某些情况下更方便。</p>
+<p>It’s much easier.</p>
 
-<p>希望能帮到有需要的人～</p>
+<p>I hope these will help someone in need~</p>
 
         </div>
         <!-- comment by utterances -->

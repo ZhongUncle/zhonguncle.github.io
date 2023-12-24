@@ -1,0 +1,445 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>APFS file system exploration</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>APFS file system exploration | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.1" />
+<meta property="og:title" content="APFS file system exploration" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="ZhongUncle introduces how APFS works and what the meaning of each APFS part in bytes. APFS is a file system of Apple." />
+<meta property="og:description" content="ZhongUncle introduces how APFS works and what the meaning of each APFS part in bytes. APFS is a file system of Apple." />
+<link rel="canonical" href="http://localhost:4000/blogs/53937ce484ce9fcae747fc78a53b7953.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/53937ce484ce9fcae747fc78a53b7953.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-08-14T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="APFS file system exploration" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-08-14T00:00:00+08:00","datePublished":"2023-08-14T00:00:00+08:00","description":"ZhongUncle introduces how APFS works and what the meaning of each APFS part in bytes. APFS is a file system of Apple.","headline":"APFS file system exploration","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/53937ce484ce9fcae747fc78a53b7953.html"},"url":"http://localhost:4000/blogs/53937ce484ce9fcae747fc78a53b7953.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>APFS file system exploration</h1>
+            <div class="bloginfo">
+                <p class="info">2023-08-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2112 </p>
+            </div>
+            <p>This article aims to provide a low-level explanation of APFS, the file system used by Apple devices. Because I noticed that there was a lack of documentation on how APFS works in details, so I do some research and share my findings.</p>
+
+<h2 id="tip">Tip</h2>
+<p>Don’t confuse partitions in APFS with the conception of partitions in Windows. In APFS, a Volume is shown in the Finder, but it is not a direct partitions of the hard disk. There is an intermediate layer called container, which can contain multiple volumes. This is different from the Windows partition concept, each partition is a separate disk space directly in Windows.</p>
+
+<h2 id="apfs-structure">APFS structure</h2>
+<p>The internal structure of APFS is as follows:</p>
+
+<p><img src="/assets/images/8c1c047800b0450ebdb6b1c9795f0677.png" alt="APFS structure" /></p>
+
+<p>The diagram above shows only one volume, and then describes each part of volume. The “objects” in “Storage for objects and file data” includes the storage disk what we see in Finder, which is also called as volume.</p>
+
+<p>The abbreviation of “GUID partition table” is GPT, which is well-known to many people on Windows (not the chatbot), and GPT partition is part of the EFI technology (EFI aka UEFI, invented by Intel).</p>
+
+<p>Each container of APFS is arranged in order on the hard disk, without any gaps, which is different from Windows’ GPT partition.</p>
+
+<p><img src="/assets/images/00314bd8c51c4bce976482d02460c70f.png" alt="The free space of APFS is shared among all volumes, so it is easy to expand" /></p>
+
+<p>This is also why on Windows you just can extend or adjust the size of the last partition, and not the previous (APFS’s free space is shared among the various volumes, so it’s easy to expand, as below). And why it takes a long time to create a new APFS partition on macOS (because it have to move the files from other partitions to the right place).</p>
+
+<p>How does the system know that this container exists on the hard disk? Sequential reading can know the first container, but what about the second and others?</p>
+
+<p>First of all, the system does not find the containers by sequential reading. This is the job of the GUID partition table at the beginning of the hard disk, which contains the start and end addresses of each partition. When needed, it just jumps to them, using a directory-like structure. As shown in the digram below (from the official standard <a href="https://uefi.org/specs/UEFI/2.10/05_GUID_Partition_Table_Format.html">《GUID Partition Table (GPT) Disk Layout》</a>):</p>
+
+<p><img src="/assets/images/faee30b2b1ce43ebb878cf971debbac1.png" alt="https://uefi.org/specs/UEFI/2.10/05_GUID_Partition_Table_Format.html" /></p>
+
+<p>You can see how partitions are divided and jump through the main partition table or the backup partition table.</p>
+
+<p>If you look at the hexadecimal of an APFS formatted hard drive, you can see the following situation (note that the “GPT Header” part starts from line <code class="language-plaintext highlighter-rouge">200</code>):</p>
+
+<p><img src="/assets/images/4fb95fe4da7f4da5abde04e356b4b3e5.png" alt="Each parts of APFS" /></p>
+
+<p>You can see the beginning of structure looks like other UEFI format device.</p>
+
+<h3 id="protective-mbr">Protective MBR</h3>
+<p>One difference between APFS and some other file systems using GPT partitions is that APFS has a Protective MBR section, regardless of whether they are boot disks or not.</p>
+
+<p>The Protective MBR must be the first logical block on a hard disk that uses GPT partitions. This partition makes the computer think that the hard disk is usable and has been used, so it won’t pop up a window to ask you whether to partition, format, etc. The EFI itself does not use this block.</p>
+
+<p>Protective MBR looks like:</p>
+
+<p><img src="/assets/images/2f223bf420de4a769ea16205900ef73c.png" alt="Protective MBR" /></p>
+
+<p>The meaning of each part as follows (the offset is from the beginning of this part and is also in hexadecimal):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Part</th>
+      <th>Offset (Byte)</th>
+      <th>Length (Byte)</th>
+      <th>content</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>BootCode</td>
+      <td>0</td>
+      <td>440</td>
+      <td>EFI will not use this part. The hexadecimal of <code class="language-plaintext highlighter-rouge">440</code> is <code class="language-plaintext highlighter-rouge">1b8</code>, so you can see that <code class="language-plaintext highlighter-rouge">1b8</code> and the previous part in the above picture are all <code class="language-plaintext highlighter-rouge">00</code></td>
+    </tr>
+    <tr>
+      <td>UniqueMB RDiskSignature</td>
+      <td>440</td>
+      <td>4</td>
+      <td>Not used, set to <code class="language-plaintext highlighter-rouge">0</code></td>
+    </tr>
+    <tr>
+      <td>Unknown</td>
+      <td>444</td>
+      <td>2</td>
+      <td>Not used, set to <code class="language-plaintext highlighter-rouge">0</code></td>
+    </tr>
+    <tr>
+      <td>PartitionRecord</td>
+      <td>446</td>
+      <td>16*4</td>
+      <td>An array of four MBR partition records. MBR can have up to 4 partitions.</td>
+    </tr>
+    <tr>
+      <td>Signature</td>
+      <td>510</td>
+      <td>2</td>
+      <td>is set to <code class="language-plaintext highlighter-rouge">0xAA55</code>, which is the <code class="language-plaintext highlighter-rouge">55 aa</code> at the end of the <code class="language-plaintext highlighter-rouge">1f0</code> line in the picture</td>
+    </tr>
+    <tr>
+      <td>Reserved</td>
+      <td>512</td>
+      <td>Logical block size - 512</td>
+      <td>Remaining reserved portion of the logical block, set to <code class="language-plaintext highlighter-rouge">0</code></td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If you have questions about the left index number, remember it is in hexadecimal. For example, the hexadecimal notation of the last <code class="language-plaintext highlighter-rouge">512</code> is <code class="language-plaintext highlighter-rouge">200</code>.</p>
+
+<h3 id="gpt-header">GPT Header</h3>
+<p>GPT Header is the core part of UEFI technology and GPT partition, which stores a lot of information. The various parts of GPT Header are as follows:</p>
+
+<p><img src="/assets/images/edd3264d7bbd468eab207b8a36803d7c.png" alt="Content of GPT" /></p>
+
+<p>The meaning of each part is as follows (the offset is from the beginning of this part and is also in hexadecimal):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Part</th>
+      <th>Offset (Byte)</th>
+      <th>Length (Byte)</th>
+      <th>content</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Signature</td>
+      <td>0</td>
+      <td>8</td>
+      <td>This part is the string “EFI PART” in ASCII format, encoded with 64 bits, which is <code class="language-plaintext highlighter-rouge">45 46 49 20 50 41 52 54</code> in the picture above</td>
+    </tr>
+    <tr>
+      <td>Revision</td>
+      <td>8</td>
+      <td>4</td>
+      <td>The number of revisions of GPT Header. This version is not equal to the UEFI specified version. <code class="language-plaintext highlighter-rouge">00 00 01 00</code> above means version 1.0</td>
+    </tr>
+    <tr>
+      <td>Header size</td>
+      <td>12</td>
+      <td>4</td>
+      <td>The size of the GPT Header, in bytes. This part must be greater than or equal to 92 and less than or equal to the logical block size. The above <code class="language-plaintext highlighter-rouge">5C 00 00 00</code> means 92 bytes, which is the minimum size. The above picture only has 60 bytes because the last few blank lines are omitted</td>
+    </tr>
+    <tr>
+      <td>Header’s CRC32</td>
+      <td>16</td>
+      <td>4</td>
+      <td>CRC32 checksum of the GPT Header structure. First set this value to 0, and then calculate the 32-bit CRC32 checksum of the GPT Header structure. The checksum here is <code class="language-plaintext highlighter-rouge">15 51 0f ff</code></td>
+    </tr>
+    <tr>
+      <td>Reserved</td>
+      <td>20</td>
+      <td>4</td>
+      <td>This part must be all 0</td>
+    </tr>
+    <tr>
+      <td>MyLBA</td>
+      <td>24</td>
+      <td>8</td>
+      <td>This LBA (logical block address) contains the data structure. When verifying the GPT, the LBA in the GUID Partition Table pointed to by the MyLBA entry will be checked. In the above picture, it is <code class="language-plaintext highlighter-rouge">01 00 00 00 00 00 00 00</code></td>
+    </tr>
+    <tr>
+      <td>AlternateLBA</td>
+      <td>32</td>
+      <td>8</td>
+      <td>The LBA address of the alternate GPT Header, in the above picture it is <code class="language-plaintext highlighter-rouge">ff ff bf 46 07 00 00 00</code></td>
+    </tr>
+    <tr>
+      <td>The first usable LBA</td>
+      <td>40</td>
+      <td>8</td>
+      <td>The first usable logical block of a partition described by GUID Partition Entry, in the above figure is <code class="language-plaintext highlighter-rouge">22 00 00 00 00 00 00 00</code></td>
+    </tr>
+    <tr>
+      <td>The last usable LBA</td>
+      <td>48</td>
+      <td>8</td>
+      <td>The last used logical block of a partition described by GUID Partition Entry, in the above picture is <code class="language-plaintext highlighter-rouge">de ff bf 46 07 00 00 00</code></td>
+    </tr>
+    <tr>
+      <td>Hard disk GUID</td>
+      <td>56</td>
+      <td>16</td>
+      <td>The GUID that identifies the hard disk, in the above picture is <code class="language-plaintext highlighter-rouge">84 ec 00 4a 8e 8c fd 47 8a 78 25 48 bf a4 90 99</code></td>
+    </tr>
+    <tr>
+      <td>Partition entry LBA</td>
+      <td>72</td>
+      <td>8</td>
+      <td>Start LBA of GUID partition entry array, in the above picture it is <code class="language-plaintext highlighter-rouge">02 00 00 00 00 00 00 00</code></td>
+    </tr>
+    <tr>
+      <td>Number of partition entries</td>
+      <td>80</td>
+      <td>4</td>
+      <td>The number of partition entries in the GUID partition entry array, in the above picture is <code class="language-plaintext highlighter-rouge">80 00 00 00</code>, which is 8</td>
+    </tr>
+    <tr>
+      <td>The size of of partition entry</td>
+      <td>84</td>
+      <td>4</td>
+      <td>The size of the GUID partition entry structure in the GUID partition entry array. This part should be set to the size of <code class="language-plaintext highlighter-rouge">128 x 2n</code>. <code class="language-plaintext highlighter-rouge">n</code> is an integer greater than or equal to <code class="language-plaintext highlighter-rouge">0</code>. This part Typically 128, 256, etc., but earlier versions allowed any multiple of <code class="language-plaintext highlighter-rouge">8</code>. <code class="language-plaintext highlighter-rouge">80 00 00 00</code> in the picture above is actually <code class="language-plaintext highlighter-rouge">80</code> in hexadecimal, which is 128 bytes</td>
+    </tr>
+    <tr>
+      <td>CRC32 of partition partition entry</td>
+      <td>88</td>
+      <td>4</td>
+      <td>CRC32 of GUID partition entry array</td>
+    </tr>
+    <tr>
+      <td>Reserved</td>
+      <td>92</td>
+      <td>All remaining</td>
+      <td>Reserved blocks, all 0</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="gpt-partition-entry-array">GPT Partition Entry Array</h3>
+<p>The GPT Partition Entry Array contains an array that stores GPT partition entries. I still explaining what each part is, here is the first entry in the GPT partition entry array:</p>
+
+<p><img src="/assets/images/960f0ac0ee3844c7bfe68fe4aae955bf.png" alt="GPT Partition Entry Array" /></p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Part</th>
+      <th>Offset (Byte)</th>
+      <th>Length (Byte)</th>
+      <th>content</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Partition Type GUID</td>
+      <td>0</td>
+      <td>16</td>
+      <td>A unique ID that defines the partition target and type. If the partition is not in use, this field is 0. In the picture above: <code class="language-plaintext highlighter-rouge">28 73 2a c1 1f f8 d2 11 ba 4b 00 a0 c9 3e c9 3b</code>. The meaning behind each bit in this part will be explained in detail later</td>
+    </tr>
+    <tr>
+      <td>Unique Partition GUID</td>
+      <td>16</td>
+      <td>16</td>
+      <td>A unique GUID for each partition entry. Each partition is created with such a unique GUID, and this GUID must also be assigned a value when the GPT partition entry is created. The allocation in the above picture is <code class="language-plaintext highlighter-rouge">f8 56 1c 99 8d 6f 9e 4f bb fa 01 ca 52 57 cc 05</code></td>
+    </tr>
+    <tr>
+      <td>Starting LBA</td>
+      <td>32</td>
+      <td>8</td>
+      <td>The starting LBA of the partition defined in this entry</td>
+    </tr>
+    <tr>
+      <td>Endpoint LBA</td>
+      <td>40</td>
+      <td>8</td>
+      <td>Partition endpoint LBA defined in this entry</td>
+    </tr>
+    <tr>
+      <td>Attributes</td>
+      <td>48</td>
+      <td>8</td>
+      <td>These attribute bits are all reserved by UEFI, so here they are all <code class="language-plaintext highlighter-rouge">00 00 00 00 00 00 00 00</code></td>
+    </tr>
+    <tr>
+      <td>Partition Name</td>
+      <td>56</td>
+      <td>72</td>
+      <td>An unterminated character containing a human-readable name. Since this is an EFI partition, what is shown is <code class="language-plaintext highlighter-rouge">EFI System Partition</code></td>
+    </tr>
+    <tr>
+      <td>Reserved</td>
+      <td>128</td>
+      <td>Previously set size ~ 128</td>
+      <td>This part must be 0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Depending on operating system and partition, the value of the partition type GUID is also different. For example, the GUID value of the EFI system partition above is <code class="language-plaintext highlighter-rouge">28 73 2a c1 1f f8 d2 11 ba 4b 00 a0 c9 3e c9 3b</code>. Sometimes you will see <code class="language-plaintext highlighter-rouge">C12A7328-F81F-11D2-BA4B-00A0C93EC93B</code> in other documents, where each <code class="language-plaintext highlighter-rouge">-</code> separates each part. The number above is little endian, you can calculate them correspondingly, they are same.</p>
+
+<p>The partition type GUID of the APFS partition is <code class="language-plaintext highlighter-rouge">ef 57 34 7c 00 00 aa 11 aa 11 00 30 65 43 ec ac</code>, or <code class="language-plaintext highlighter-rouge">7C3457EF-0000-11AA-AA11-00306543ECAC</code></p>
+
+<p>The meaning of each part in the above “Attributes” is as follows:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Bits</th>
+      <th>Name</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>0</td>
+      <td>Request Partition</td>
+      <td>If this bit is set, this partition must exist for the platform to run. Deleting or modifying the contents of this partition may result in the loss of platform functionality and the inability to start or run. Therefore, this partition should not be deleted or modified unless the operating system, software, or firmware recognizes the partition.</td>
+    </tr>
+    <tr>
+      <td>1</td>
+      <td>No block IO transfer protocol</td>
+      <td>If this bit is set, the firmware cannot generate the EFI_BLOCK_IO_PROTOCOL part for this partition. If this part is not set, no file system mapping will be created for this partition in UEFI</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Legacy BIOS Bootable</td>
+      <td>This is left to systems with legacy PC-AT BIOS firmware to implement notifications of certain restricted, special-purpose software running on a system bootable from a GPT partition</td>
+    </tr>
+    <tr>
+      <td>3~47</td>
+      <td> </td>
+      <td>Undefined, must be 0, reserved for future extensions to the UEFI specification</td>
+    </tr>
+    <tr>
+      <td>48~63</td>
+      <td> </td>
+      <td>Reserved for GUID specific purposes. The usage of these bits is set based on the partition type GUID. If any one of bits 0 to 47 is modified, these bits must be retained</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see that in each entry in the GPT partition entry array, the starting and ending points are marked, so jump and obtain through these parts.</p>
+
+<h2 id="references-and-further-reading">References and further reading</h2>
+
+<p>If you want to try to view the above content, you can follow this blog of mine: <a href="/blogs/8f6120697e7852d0aa7ac8c35eba2ca9.html">“How to check disk in hexadecimal by bytes in terminal on Mac or Linux”</a>.</p>
+
+<p>For implementation details of the APFS format, please refer to Apple’s document: <a href="https://developer.apple.com/support/downloads/Apple-File-System-Reference.pdf">“Apple File System Reference”</a>(“Apple File System” is the full name of APFS).</p>
+
+<p>The official UEFI document is: <a href="https://uefi.org/specs/UEFI/2.10/05_GUID_Partition_Table_Format.html">“GUID Partition Table (GPT) Disk Layout”</a>.</p>
+
+<p>“data recovery technology depth Secret, VisualFoxPro (Second Edition)” by Liu Wei.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

@@ -3,27 +3,27 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv='content-language' content='en'>
-        <title>在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试</title>
+        <title>Simple NN test implemented in Pytorch on laptop and Mac mini 2018</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试 | ZhongUncle’s Blog</title>
+<title>Simple NN test implemented in Pytorch on laptop and Mac mini 2018 | ZhongUncle’s Blog</title>
 <meta name="generator" content="Jekyll v4.3.1" />
-<meta property="og:title" content="在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试" />
+<meta property="og:title" content="Simple NN test implemented in Pytorch on laptop and Mac mini 2018" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。" />
-<meta property="og:description" content="测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。" />
-<link rel="canonical" href="http://localhost:4000/blogs/29166fc46f332434e0395207907c2168.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/29166fc46f332434e0395207907c2168.html" />
+<meta name="description" content="ZhongUncle records some performance of NN and know why bandwidth of gpu is important for Machine Learning." />
+<meta property="og:description" content="ZhongUncle records some performance of NN and know why bandwidth of gpu is important for Machine Learning." />
+<link rel="canonical" href="http://localhost:4000/blogs/b908557536529dcd7f173c6b1094da1b.html" />
+<meta property="og:url" content="http://localhost:4000/blogs/b908557536529dcd7f173c6b1094da1b.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2023-02-17T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试" />
+<meta property="twitter:title" content="Simple NN test implemented in Pytorch on laptop and Mac mini 2018" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-17T00:00:00+08:00","datePublished":"2023-02-17T00:00:00+08:00","description":"测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。","headline":"在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/29166fc46f332434e0395207907c2168.html"},"url":"http://localhost:4000/blogs/29166fc46f332434e0395207907c2168.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-02-17T00:00:00+08:00","datePublished":"2023-02-17T00:00:00+08:00","description":"ZhongUncle records some performance of NN and know why bandwidth of gpu is important for Machine Learning.","headline":"Simple NN test implemented in Pytorch on laptop and Mac mini 2018","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/b908557536529dcd7f173c6b1094da1b.html"},"url":"http://localhost:4000/blogs/b908557536529dcd7f173c6b1094da1b.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -98,14 +98,13 @@
         </a>
     
 </div>
-            <h1>在笔记本和 Mac mini 2018 上 Pytorch 实现的简单 NN 性能测试</h1>
+            <h1>Simple NN test implemented in Pytorch on laptop and Mac mini 2018</h1>
             <div class="bloginfo">
-                <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ #Words: 908 </p>
+                <p class="info">2023-02-17 ｜ <a href="/research.html"> Research</a> ｜ #Words: 570 </p>
             </div>
-            <!-- excerpt-start -->
-<p>测试了一下目前笔记本和 Mac mini 运行使用 Pytorch 构建的最简单的单层 NN （带有反向传播）的 10 次迭代，这样以后购买设备就知道需要注重哪些参数了，可惜没有。</p>
+            <p>I tested the current laptop and Mac mini running 10 iterations of the simplest single-layer NN (with backpropagation) built using Pytorch, so that I will know what parameters to pay attention to when purchasing equipment in the future, but unfortunately not.</p>
 
-<p>首先是各个设备的性能：</p>
+<p>The first is the performance of each device:</p>
 
 <table>
   <thead>
@@ -123,23 +122,23 @@
     </tr>
     <tr>
       <td>Cache</td>
-      <td>8 MB</td>
+      <td>8MB</td>
       <td>9MB</td>
     </tr>
     <tr>
-      <td>内存</td>
+      <td>Memory</td>
       <td>16GB DDR3 2133MHz</td>
       <td>32GB DDR4 2666MHz</td>
     </tr>
     <tr>
-      <td>最优 GPU</td>
+      <td>Best GPU</td>
       <td>MX250 4SM 384 CUDA Core 64-bit 2GB GDDR5</td>
       <td>Intel® UHD Graphics 630 1.10 GHz</td>
     </tr>
   </tbody>
 </table>
 
-<p>下面结果取最好/中间值，唯一可惜的是 iMac 5K 卖早了，不然可以测一下 mps 加速的结果。因为 Python 的 mps 加速只在苹果芯片和搭载了 AMD 显卡的设备上支持。</p>
+<p>The following results are the best or middle values (if float range is large). The only pity is that the iMac 5K was sold early, otherwise I can test the MPS acceleration results. Because Python’s MPS acceleration is only supported devices on Apple chips or equipped with AMD graphics cards.</p>
 
 <table>
   <thead>
@@ -158,14 +157,15 @@
   </tbody>
 </table>
 
-<p>最神奇的是 8500B 居然比 MX250 CUDA 加速之后的时间还短，当然这里很大概率是系统的问题，毕竟 Windows 性能表现确实不太行。</p>
+<p>The most amazing thing is 8500B actually takes less time than the MX250 CUDA acceleration. Of course, it is high probability due to system. After all, Windows performance is indeed not very good.</p>
 
-<p>此外，显存带宽也真的很重要（虽然大小也重要），MX250 带宽太小，毕竟就 64-bit 的 GDDR5（也就是48GB/s），加迭代和降低学习速度等操作之后，CUDA 计算速率都上不去。不过一般消费级显卡的显存带宽也够用，只是 MX250 定位是轻薄本用。
-这让我想到了我之前看别人做的测试 <a href="https://sebastianraschka.com/blog/2022/pytorch-m1-gpu.html">Running PyTorch on the M1 GPU</a>，其中有个数据是 RTX 3080 Laptop 要比 RTX 2080Ti 稍慢一些：</p>
+<p>In addition, memory bandwidth is really important (although size is also important). The bandwidth of MX250 is too small. The 64-bit GDDR5 bandwidth is 48GB/s. After increasing iteration and reducing learning speed, the CUDA calculation rate isn’t go up. The memory bandwidth of general consumer-grade graphics cards is sufficient, but the MX250 is positioned as a thin and light notebook.</p>
 
-<p><img alt="别人测试的图" src="/assets/images/vgg-benchmark-training.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p>This reminds me of the test I watched from other <a href="https://sebastianraschka.com/blog/2022/pytorch-m1-gpu.html">Running PyTorch on the M1 GPU</a>, one of the data is RTX 3080 Laptop Slightly slower than RTX 2080Ti:</p>
 
-<p>上图中各显卡参数和成绩如下：</p>
+<p><img alt="Pictures tested by others" src="/assets/images/vgg-benchmark-training.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>The specs and results of each graphics card in the above picture are as follows:</p>
 
 <table>
   <thead>
@@ -188,7 +188,7 @@
       <td>6144</td>
     </tr>
     <tr>
-      <td>显存接口</td>
+      <td>Graphic memory interface</td>
       <td>352-bit</td>
       <td>3072-bit</td>
       <td>352-bit</td>
@@ -196,7 +196,7 @@
       <td>256-bit</td>
     </tr>
     <tr>
-      <td>显存速率（Gbps）</td>
+      <td>Graphic memory rate (Gbps)</td>
       <td>11</td>
       <td>1.7</td>
       <td>14</td>
@@ -204,7 +204,7 @@
       <td>14</td>
     </tr>
     <tr>
-      <td>显存带宽（GB/s）</td>
+      <td>Graphic memory bandwidth (GB/s)</td>
       <td>484</td>
       <td>652.8</td>
       <td>616</td>
@@ -212,7 +212,7 @@
       <td>448</td>
     </tr>
     <tr>
-      <td>分钟/epoch</td>
+      <td>minutes/epoch</td>
       <td>7.65</td>
       <td>5.03</td>
       <td>5.75</td>
@@ -222,23 +222,19 @@
   </tbody>
 </table>
 
-<p>因为显存大小都为 10 GiB 左右，就不列出了，而且这里也没有超过显存大小。</p>
+<p>Because all GPU’s graphic memory is about 10 GiB, so I ignore it.</p>
 
 <p><img src="/assets/images/bc6ba17af8cdca3cccbe0a980fda184b.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
-<p>下图中“比例”部分关于“分钟/epoch”使用标准性能计算公式（如果你想质疑这个公式麻烦写论文去发 JACM）:</p>
+<p>It may not shows something, so I only keep “Cuda Cores”, “Graphic Memory Bandwidth” and “Performance”. Because other parts are related to “Graphic Memory Bandwidth”:</p>
 
-<p><img alt="标准性能计算公式" src="/assets/images/t27e187te8712.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p><img alt="something in data" src="/assets/images/2485e6c0d1e87391fac8337c7079b2e0.png" style="box-shadow: 0px 0px 0px 0px" /></p>
 
-<p>这样看可能不是很清楚，所以只保留“Cuda Cores”、“显存带宽”和“性能”来一张图，因为其他部分也都是与“显存带宽”相关的，所以就忽略掉：</p>
+<p>You can see clearly that the performance of the training model is closely related to the memory bandwidth and the number of CUDA.</p>
 
-<p><img alt="“Cuda Cores”、“显存带宽”、“性能”和运行结果的曲线图" src="/assets/images/2485e6c0d1e87391fac8337c7079b2e0.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+<p>Notice the memory bandwidth are directly related with performance, the number of Cuda is not necessarily. Because except for GTX 1080 Ti, others have Tensor Cores which designed to calculate tensors. Nowadays, the performance of Tensor Core is much higher and effective, but in design, the number of Tensor Cores is proportional to Cuda Cores.</p>
 
-<p>这样可以很清楚的看到，训练模型的性能和显存带宽、Cuda 数量的关系非常大。</p>
-
-<p>当然，这里的显存带宽和性能是直接相关的，而 Cuda 数量则不一定。因为上面除了 GTX 1080 Ti 之外，都含有专门用来计算张量的 Tensor Core，所以要看具体实现。现在看 Tensor Core 的性能比较多，不过一般 Tensor Core 数量与 Cuda Core 数量挂钩。</p>
-
-<p>当然如果你能直接找到相关 GPU 的浮点性能就更好了，这个更直接一些。研究这些是因为消费级 GPU 的浮点性能不是很好找。</p>
+<p>Of course, it’s better to know the floating point performance of GPU, which is more direct. I try to guess GPU because floating point performance on consumer GPUs is not that easy to find.</p>
 
         </div>
         <!-- comment by utterances -->
