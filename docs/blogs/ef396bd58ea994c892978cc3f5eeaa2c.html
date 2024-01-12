@@ -10,20 +10,20 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>Jump between Views in SwiftUI (How to jump to other page) | ZhongUncle’s Blog</title>
-<meta name="generator" content="Jekyll v4.3.1" />
+<meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="Jump between Views in SwiftUI (How to jump to other page)" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16." />
 <meta property="og:description" content="ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16." />
-<link rel="canonical" href="http://localhost:4000/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-07-17T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="Jump between Views in SwiftUI (How to jump to other page)" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-17T00:00:00+08:00","datePublished":"2022-07-17T00:00:00+08:00","description":"ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.","headline":"Jump between Views in SwiftUI (How to jump to other page)","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html"},"url":"http://localhost:4000/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-17T00:00:00+08:00","datePublished":"2022-07-17T00:00:00+08:00","description":"ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.","headline":"Jump between Views in SwiftUI (How to jump to other page)","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html"},"url":"https://zhonguncle.github.io/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -100,7 +100,7 @@
 </div>
             <h1>Jump between Views in SwiftUI (How to jump to other page)</h1>
             <div class="bloginfo">
-                <p class="info">2022-07-17 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 1393 </p>
+                <p class="info">2022-07-17 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 1392 </p>
             </div>
             <p>During the development process, we often jump between many pages. There are two methods in SwiftUI:</p>
 <ul>
@@ -136,7 +136,7 @@
     <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
         <span class="kt">NavigationView</span> <span class="p">{</span>
             <span class="kt">VStack</span> <span class="p">{</span>
-                <span class="kt">NavigationLink</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="kt">DetailView</span><span class="p">(),</span> <span class="nv">isActive</span><span class="p">:</span> <span class="err">$</span><span class="n">isShowingDetailView</span><span class="p">)</span> <span class="p">{</span> <span class="kt">EmptyView</span><span class="p">()</span> <span class="p">}</span>
+                <span class="kt">NavigationLink</span><span class="p">(</span><span class="nv">destination</span><span class="p">:</span> <span class="kt">DetailView</span><span class="p">(),</span> <span class="nv">isActive</span><span class="p">:</span> <span class="n">$isShowingDetailView</span><span class="p">)</span> <span class="p">{</span> <span class="kt">EmptyView</span><span class="p">()</span> <span class="p">}</span>
                 <span class="kt">Text</span><span class="p">(</span><span class="s">"ViewA"</span><span class="p">)</span>
                     <span class="o">.</span><span class="nf">padding</span><span class="p">()</span>
                 <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>

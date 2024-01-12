@@ -10,20 +10,20 @@
         <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
         <!-- Begin Jekyll SEO tag v2.8.0 -->
 <title>如何使用 Javascript 获取 URL 参数 | ZhongUncle’s Blog</title>
-<meta name="generator" content="Jekyll v4.3.1" />
+<meta name="generator" content="Jekyll v4.3.3" />
 <meta property="og:title" content="如何使用 Javascript 获取 URL 参数" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。 所以分为两步：" />
 <meta property="og:description" content="JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。 所以分为两步：" />
-<link rel="canonical" href="http://localhost:4000/blogs/e0b04c2b9a40506f58d11334ac6bed13.html" />
-<meta property="og:url" content="http://localhost:4000/blogs/e0b04c2b9a40506f58d11334ac6bed13.html" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/e0b04c2b9a40506f58d11334ac6bed13.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/e0b04c2b9a40506f58d11334ac6bed13.html" />
 <meta property="og:site_name" content="ZhongUncle’s Blog" />
 <meta property="og:type" content="article" />
 <meta property="article:published_time" content="2022-06-12T00:00:00+08:00" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="如何使用 Javascript 获取 URL 参数" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-12T00:00:00+08:00","datePublished":"2022-06-12T00:00:00+08:00","description":"JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。 所以分为两步：","headline":"如何使用 Javascript 获取 URL 参数","mainEntityOfPage":{"@type":"WebPage","@id":"http://localhost:4000/blogs/e0b04c2b9a40506f58d11334ac6bed13.html"},"url":"http://localhost:4000/blogs/e0b04c2b9a40506f58d11334ac6bed13.html"}</script>
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-12T00:00:00+08:00","datePublished":"2022-06-12T00:00:00+08:00","description":"JS 获取 URL 参数稍微有点麻烦，因为 JS 只能获取到 URL 的某一部分，但是不能再细分。如果想获取某一项参数，那么还需要使用一下字符串截取。 所以分为两步：","headline":"如何使用 Javascript 获取 URL 参数","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/e0b04c2b9a40506f58d11334ac6bed13.html"},"url":"https://zhonguncle.github.io/blogs/e0b04c2b9a40506f58d11334ac6bed13.html"}</script>
 <!-- End Jekyll SEO tag -->
 
         
@@ -127,9 +127,9 @@
 </span><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
 
 <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-<span class="kd">let</span> <span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span> <span class="cm">/* 创建一个 URL 对象 */</span>
+<span class="kd">let</span> <span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nc">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span> <span class="cm">/* 创建一个 URL 对象 */</span>
 <span class="kd">let</span> <span class="nx">para</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span> <span class="cm">/* 获取 URL 参数部分 */</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">para</span><span class="p">);</span> <span class="cm">/* 显示 a 的内容到屏幕上 */</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">para</span><span class="p">);</span> <span class="cm">/* 显示 a 的内容到屏幕上 */</span>
 <span class="o">&lt;</span><span class="sr">/script&gt;</span><span class="err"> 
 </span>
 <span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
@@ -159,14 +159,14 @@
 </span><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
 
 <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-<span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nc">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span>
 <span class="nx">para</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span> <span class="cm">/* 获取属性（“?”后面的分段） */</span>
-<span class="nx">para</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="nx">a</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">&amp;</span><span class="dl">"</span><span class="p">);</span>
+<span class="nx">para</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">a</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">&amp;</span><span class="dl">"</span><span class="p">);</span>
 <span class="cm">/* 分行显示第一个和第二个参数 */</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;br&gt;</span><span class="dl">'</span><span class="p">);</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;br&gt;</span><span class="dl">'</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
 <span class="o">&lt;</span><span class="sr">/script&gt;</span><span class="err"> 
 </span>
 <span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
@@ -188,13 +188,13 @@
 </span><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
 
 <span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
-<span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nx">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nc">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span>
 <span class="nx">para</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span> <span class="cm">/* 获取属性（“?”后面的分段） */</span>
-<span class="nx">para</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nx">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
-<span class="nx">a</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nx">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">&amp;</span><span class="dl">"</span><span class="p">);</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span> <span class="cm">/* 第一个参数的参数名 */</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;br&gt;</span><span class="dl">'</span><span class="p">);</span>
-<span class="nb">document</span><span class="p">.</span><span class="nx">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nx">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]);</span> <span class="cm">/* 第一个参数的参数名 */</span>
+<span class="nx">para</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">a</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">&amp;</span><span class="dl">"</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span> <span class="cm">/* 第一个参数的参数名 */</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;br&gt;</span><span class="dl">'</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]);</span> <span class="cm">/* 第一个参数的参数名 */</span>
 <span class="o">&lt;</span><span class="sr">/script&gt;</span><span class="err"> 
 </span>
 <span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
