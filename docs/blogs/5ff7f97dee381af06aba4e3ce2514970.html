@@ -1,0 +1,170 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to convert an array into a dictionary in Swift</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to convert an array into a dictionary in Swift | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to convert an array into a dictionary in Swift" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to convert an array into a dictionary in Swift (keywords are array elements, values are subscript numbers)" />
+<meta property="og:description" content="How to convert an array into a dictionary in Swift (keywords are array elements, values are subscript numbers)" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/5ff7f97dee381af06aba4e3ce2514970.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/5ff7f97dee381af06aba4e3ce2514970.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-04-22T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to convert an array into a dictionary in Swift" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-04-22T00:00:00+08:00","datePublished":"2023-04-22T00:00:00+08:00","description":"How to convert an array into a dictionary in Swift (keywords are array elements, values are subscript numbers)","headline":"How to convert an array into a dictionary in Swift","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/5ff7f97dee381af06aba4e3ce2514970.html"},"url":"https://zhonguncle.github.io/blogs/5ff7f97dee381af06aba4e3ce2514970.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to convert an array into a dictionary in Swift</h1>
+            <div class="bloginfo">
+                <p class="info">2023-04-22 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 570 </p>
+            </div>
+            <p>Sometimes you need to convert array subscripts and elements into a dictionary. For example, if you use array elements to search for subscripts, if you use a function to search, you have to perform a loop search and acquisition every time, which requires a lot of computing performance and memory. At this time, convert the original array into a dictionary, keyword For array elements, it would be more convenient if the value is a subscript serial number, so that the serial number can be easily found through the value of the element, and there is no need to perform a loop search every time.</p>
+
+<p>To convert an array into a dictionary, you need to obtain each element of the array and its corresponding subscript number. Of course, this function can also be achieved using a For loop, because the subscript serial number is obtained by using <code class="language-plaintext highlighter-rouge">i</code> in the For loop through <code class="language-plaintext highlighter-rouge">i=0</code> and <code class="language-plaintext highlighter-rouge">i += 1</code>. However, Swift does not have a C-style For loop. The For-In loop used by Swift cannot directly obtain the element subscript number. You need to use Swift’s string enumeration function <code class="language-plaintext highlighter-rouge">String.enumerate()</code>, or use a While loop. It can also be done.</p>
+
+<p>The two methods are introduced below. The arrays used are as follows:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">str</span> <span class="o">=</span> <span class="p">[</span><span class="s">"a"</span><span class="p">,</span> <span class="s">"b"</span><span class="p">,</span> <span class="s">"c"</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>How to use a For-In loop:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//Declare to initialize a blank dictionary, the keywords are strings and the values are integers.</span>
+<span class="k">var</span> <span class="nv">dist</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]()</span>
+
+<span class="c1">// str.enumerated() can obtain the index and value of str at the same time. The names of these two values ​​can be defined by yourself. For the sake of explanation, they are written as index and value here.</span>
+<span class="k">for</span> <span class="p">(</span><span class="n">index</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span> <span class="k">in</span> <span class="n">str</span><span class="o">.</span><span class="nf">enumerated</span><span class="p">()</span> <span class="p">{</span>
+     <span class="n">dist</span><span class="p">[</span><span class="n">value</span><span class="p">]</span> <span class="o">=</span> <span class="n">index</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>How to use While Loop:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//Declare to initialize a blank dictionary, the keywords are strings and the values are integers.</span>
+<span class="k">var</span> <span class="nv">dist</span> <span class="o">=</span> <span class="p">[</span><span class="kt">String</span><span class="p">:</span> <span class="kt">Int</span><span class="p">]()</span>
+
+<span class="k">var</span> <span class="nv">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="p">(</span><span class="n">i</span> <span class="o">&lt;</span> <span class="n">str</span><span class="o">.</span><span class="n">count</span><span class="p">)</span> <span class="p">{</span>
+     <span class="n">dist</span><span class="p">[</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]]</span> <span class="o">=</span> <span class="n">i</span>
+     <span class="n">i</span> <span class="o">+=</span> <span class="mi">1</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The output of both is:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="p">[</span><span class="s">"c"</span><span class="p">:</span> <span class="mi">2</span><span class="p">,</span> <span class="s">"b"</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="s">"a"</span><span class="p">:</span> <span class="mi">0</span><span class="p">]</span>
+</code></pre></div></div>
+
+<p>In this way, we can easily get the serial number of a certain element, such as getting the serial number of the character <code class="language-plaintext highlighter-rouge">c</code>:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//The exclamation point is used here because this value does not necessarily exist in the dictionary, or in the original array. If it is directly equal, the value obtained is the optional value 'Optional' type. Use the exclamation mark to force it to be there. Of course, you can use hello'? 'To add what value to return if not</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">dist</span><span class="p">[</span><span class="s">"c"</span><span class="p">]</span><span class="o">!</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2
+</code></pre></div></div>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

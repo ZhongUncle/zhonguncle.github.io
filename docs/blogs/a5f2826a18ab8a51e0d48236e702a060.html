@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to get query of URLs in PHP</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to get query of URLs in PHP | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to get query of URLs in PHP" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to get query of URLs in PHP" />
+<meta property="og:description" content="How to get query of URLs in PHP" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/a5f2826a18ab8a51e0d48236e702a060.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/a5f2826a18ab8a51e0d48236e702a060.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-07-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to get query of URLs in PHP" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-10T00:00:00+08:00","datePublished":"2022-07-10T00:00:00+08:00","description":"How to get query of URLs in PHP","headline":"How to get query of URLs in PHP","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/a5f2826a18ab8a51e0d48236e702a060.html"},"url":"https://zhonguncle.github.io/blogs/a5f2826a18ab8a51e0d48236e702a060.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to get query of URLs in PHP</h1>
+            <div class="bloginfo">
+                <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ #Words: 232 </p>
+            </div>
+            <p>PHP, like Python, provides the function <code class="language-plaintext highlighter-rouge">parse_url(string $url, int $component = -1)</code>, which is very convenient.</p>
+
+<p>This function takes two parameters:</p>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">url</code>: This parameter is the URL to be parsed (in string format).</li>
+  <li><code class="language-plaintext highlighter-rouge">component</code>: Use <code class="language-plaintext highlighter-rouge">PHP_URL_SCHEME</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_HOST</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_PORT</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_USER</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_PASS</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_PATH</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_QUERY</code>, <code class="language-plaintext highlighter-rouge">PHP_URL_FRAGMENT</code> to specify the output URL part (except <code class="language-plaintext highlighter-rouge">PHP_URL_PORT</code> is int type, others are output as string type).</li>
+  <li>If there is no <code class="language-plaintext highlighter-rouge">component</code>, this parameter defaults to <code class="language-plaintext highlighter-rouge">-1</code>, and an array will be output.</li>
+</ol>
+
+<p>Give some examples to help understanding. Assume the URL is <code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc&amp;id=12</code>. code show as below:</p>
+
+<div class="language-php highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">&lt;?php</span>
+<span class="nv">$url</span><span class="o">=</span><span class="s2">"https://www.example.com/?keyword=abc&amp;id=12"</span><span class="p">;</span>
+
+<span class="c1">//Display the formatted array</span>
+<span class="nb">var_dump</span><span class="p">(</span><span class="nb">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">));</span>
+<span class="c1">//Output the content corresponding to 'query' of the formatted array</span>
+<span class="k">echo</span> <span class="nb">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">)[</span><span class="s1">'query'</span><span class="p">];</span>
+	
+<span class="c1">//Newline</span>
+<span class="k">echo</span> <span class="s1">'&lt;br&gt;'</span><span class="p">;</span>
+	
+<span class="c1">//The content specified here is the host part.</span>
+<span class="k">echo</span> <span class="nb">parse_url</span><span class="p">(</span><span class="nv">$url</span><span class="p">,</span><span class="kc">PHP_URL_HOST</span><span class="p">);</span>
+<span class="cp">?&gt;</span>
+</code></pre></div></div>
+
+<p>The output content is as follows:</p>
+
+<div class="language-html highlighter-rouge"><div class="highlight"><pre class="highlight"><code>array(4) {
+   ["scheme"]=&gt;
+   string(5) "https"
+   ["host"]=&gt;
+   string(15) "www.example.com"
+   ["path"]=&gt;
+   string(1) "/"
+   ["query"]=&gt;
+   string(17) "keyword=abc<span class="err">&amp;</span>id=12"
+}
+keyword=abc<span class="err">&amp;</span>id=12
+www.example.com
+</code></pre></div></div>
+
+<p>​I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

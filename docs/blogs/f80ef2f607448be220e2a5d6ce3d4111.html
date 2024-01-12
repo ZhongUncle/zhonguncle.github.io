@@ -1,0 +1,228 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="BDMV is the format used by Blu-ray discs. This format cannot be played using playback software, and a hard disk player, which is a specialized device, must be used." />
+<meta property="og:description" content="BDMV is the format used by Blu-ray discs. This format cannot be played using playback software, and a hard disk player, which is a specialized device, must be used." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/f80ef2f607448be220e2a5d6ce3d4111.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/f80ef2f607448be220e2a5d6ce3d4111.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-06-23T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-06-23T00:00:00+08:00","datePublished":"2023-06-23T00:00:00+08:00","description":"BDMV is the format used by Blu-ray discs. This format cannot be played using playback software, and a hard disk player, which is a specialized device, must be used.","headline":"How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/f80ef2f607448be220e2a5d6ce3d4111.html"},"url":"https://zhonguncle.github.io/blogs/f80ef2f607448be220e2a5d6ce3d4111.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg</h1>
+            <div class="bloginfo">
+                <p class="info">2023-06-23 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1431 </p>
+            </div>
+            <p>BDMV is the format used by Blu-ray discs. This format cannot be played using playback software, and a hard disk player, which is a specialized device, must be used. But the most classic ffmpeg can convert it to other formats and maintain the same bit rate and definition, so that it can be viewed easily.</p>
+
+<p>This article uses macOS for demonstration, but will introduce some methods and operations on other platforms.</p>
+
+<p>Generally, the BDMV download format is an ISO. After loading and opening, the content is roughly as follows:</p>
+
+<p><img alt="ISO content" src="/assets/images/68dbc2251de54fbaaa5a17e6302646d6.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>If you are using a terminal, then (if the ISO you downloaded is not called “BDROM” after loading, it needs to be modified):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">## macOS</span>
+<span class="nv">$ </span><span class="nb">cd</span> /Volumes/BDROM/
+
+<span class="c">## Linux</span>
+<span class="nv">$ </span><span class="nb">cd</span> /dev/BDROM/
+
+<span class="c">## WSL</span>
+<span class="nv">$ </span><span class="nb">cd</span> /mnt/BDROM/
+
+<span class="c">## Windows(PowerShell)</span>
+<span class="nv">$ </span>cdBDROM:<span class="se">\</span>
+</code></pre></div></div>
+
+<p>If you have watched a DVD or Blu-ray disc, you will know that when the disc is played, it does not start playing directly after inserting it, but there will be a selection interface, as well as extras, sound effects, advertisements and other content (but in the past few years, I watched pirated copies Some DVDs start playing directly), and if it is a TV series, there will also be a selection interface for each episode. So at this time we need to find the <code class="language-plaintext highlighter-rouge">m2ts</code> file of the movie to convert. For TV series, there will be multiple <code class="language-plaintext highlighter-rouge">m2ts</code> files. If you need highlights and other content, please follow the method below to convert it.</p>
+
+<p>The BDMV in the picture above is actually a package. You can view it by right-clicking and selecting “Show Package Contents”, as follows:</p>
+
+<p><img alt="" src="/assets/images/5291bfbe370f413787c483a63dcc6031.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p><img alt="" src="/assets/images/313b64d2994a4acdb1458395849e8f52.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>Then go into the “STREAM” folder.</p>
+
+<p>The above operations are as follows in the terminal, which are the same on different platforms:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c">## macOS</span>
+<span class="c">## Linux</span>
+<span class="c">## WSL</span>
+<span class="c">## Windows(PowerShell)</span>
+<span class="nv">$ </span><span class="nb">cd </span>BDMV/STREAM/
+</code></pre></div></div>
+
+<p>Then the content is displayed as follows:</p>
+
+<p><img alt="" src="/assets/images/8a7e5a4344ac4c95bf60b9e904f3a2ed.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>Generally speaking, the first one is the <code class="language-plaintext highlighter-rouge">m2ts</code> file we need, which can be seen by looking at the file size. Usually it is <code class="language-plaintext highlighter-rouge">00000.m2ts</code>, but it may also be <code class="language-plaintext highlighter-rouge">00001.m2ts</code>, such as the picture above.</p>
+
+<p><strong>It needs to be emphasized here that if you are a macOS user, please do not directly check these files with spaces, because if the <code class="language-plaintext highlighter-rouge">m2ts</code> of the movie is directly viewed as a noisy video, it will be easily startled at night or when it is quiet</strong>. It is recommended to look at the file size. as follows:</p>
+
+<p><img alt="" src="/assets/images/71607883d3ac4a52a7726d29837e0721.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>You can see that the first one is the largest and takes up most of the space.</p>
+
+<p>If it is a TV series, there will be multiple files of similar size, so it is best to use <code class="language-plaintext highlighter-rouge">ffprobe</code> to look at this file:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Input #0, mpegts, from '/Volumes/BDROM/BDMV/STREAM/00001.m2ts':
+   Duration: 01:59:09.15, start: 1.996000, bitrate: 42645 kb/s
+   Program 1
+   Stream #0:0[0x1011]: Video: h264 (High) (HDMV / 0x564D4448), yuv420p(progressive), 1920x1080 [SAR 1:1 DAR 16:9], 23.98 fps, 23.98 tbr, 90k tbn
+   Stream #0:1[0x1100]: Audio: pcm_bluray (HDMV / 0x564D4448), 48000 Hz, stereo, s32 (24 bit), 2304 kb/s
+   Stream #0:2[0x1101]: Audio: dts (DTS-HD MA) ([134][0][0][0] / 0x0086), 48000 Hz, 5.1(side), s32p (24 bit)
+   Stream #0:3[0x1102]: Audio: dts (DTS) ([130][0][0][0] / 0x0082), 48000 Hz, 5.1(side), fltp, 768 kb/s
+   Stream #0:4[0x1103]: Audio: dts (DTS) ([130][0][0][0] / 0x0082), 48000 Hz, 5.1(side), fltp, 768 kb/s
+   Stream #0:5[0x1104]: Audio: ac3 (AC-3 / 0x332D4341), 48000 Hz, 5.1(side), fltp, 448 kb/s
+   Stream #0:6[0x1105]: Audio: ac3 (AC-3 / 0x332D4341), 48000 Hz, 5.1(side), fltp, 448 kb/s
+   Stream #0:7[0x1106]: Audio: ac3 (AC-3 / 0x332D4341), 48000 Hz, 5.1(side), fltp, 448 kb/s
+   Stream #0:8[0x1107]: Audio: ac3 (AC-3 / 0x332D4341), 48000 Hz, 5.1(side), fltp, 448 kb/s
+   Stream #0:9[0x1108]: Audio: ac3 (AC-3 / 0x332D4341), 48000 Hz, 5.1(side), fltp, 448 kb/s
+   Stream #0:10[0x1200]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:11[0x1201]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:12[0x1202]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:13[0x1203]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:14[0x1204]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:15[0x1205]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:16[0x1206]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+   Stream #0:17[0x1207]: Subtitle: hdmv_pgs_subtitle ([144][0][0][0] / 0x0090)
+</code></pre></div></div>
+
+<p>You can see the duration, average bit rate and other information of the movie. The most important thing is the various video streams, audio streams, and subtitle file information included. This article only needs to know what encoding the audio file is, and then select it, otherwise it will cause problems when initializing the stream. From the above, you can see that it is in the <code class="language-plaintext highlighter-rouge">flac</code> format (Blu-ray movies are generally in this format). If you want to package a finished product in a specific language and subtitles, you need to use this information, which I won’t go into details in this article.</p>
+
+<p>Once you know where the location is, you can perform the conversion. The following command will also include all audio tracks and subtitles of the source file and generate an <code class="language-plaintext highlighter-rouge">output.mkv</code> file in the current directory (not in the ISO):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>## macOS
+$ ffmpeg -i /Volumes/BDROM/BDMV/STREAM/00001.m2ts -map 0 -c copy -c:a flac output.mkv
+</code></pre></div></div>
+
+<p>Users on other platforms should modify the file path according to the previous introduction. Users using Windows CMD should also manually convert <code class="language-plaintext highlighter-rouge">/</code> into <code class="language-plaintext highlighter-rouge">\</code>. PowerShell users can automatically convert it by pressing the Tab key at the end (in fact, PowerShell does not need to be converted). Additionally, the path to the output file can be modified as needed.</p>
+
+<p>The options of the above ffmpeg command mean:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-i /Volumes/BDROM/BDMV/STREAM/00001.m2ts</code> means the input file is <code class="language-plaintext highlighter-rouge">/Volumes/BDROM/BDMV/STREAM/00001.m2ts</code>;</li>
+  <li><code class="language-plaintext highlighter-rouge">-map 0</code> selects all streams of the input file. If you want to select all audio streams, then use <code class="language-plaintext highlighter-rouge">-map 0:a</code>. If you want to perform special settings and operations, then please check the introduction of the official document: <a href="https://trac.ffmpeg.org/wiki/Map">Selecting streams with the -map option</a>.</li>
+  <li><code class="language-plaintext highlighter-rouge">-c copy</code> will copy all the information of the original file, such as the bit rate, so as to ensure that the bit rate and other information of the generated file and the source file are the same, that is, to ensure the clarity, but this operation may cause the video to twitch. Case. Some videos play normally under VLC, but the built-in player twitches. This is due to an encoder problem. Just modify the encoder and transcode again, but this will be much slower. Fortunately, the situation occurred. not much.</li>
+  <li><code class="language-plaintext highlighter-rouge">-c:a flac</code> indicates that the audio encoder is <code class="language-plaintext highlighter-rouge">flac</code>. Not setting this option will cause problems when initializing the stream.</li>
+  <li><code class="language-plaintext highlighter-rouge">output.mkv</code> indicates that the output file name is <code class="language-plaintext highlighter-rouge">output</code> and the format is MKV.</li>
+</ul>
+
+<p>The output format is MKV, because MKV is actually a video container format that can contain multiple media files, such as subtitles and audio tracks, and many players can be found on your computer. Although the MP4 format can also store multi-track subtitles and audio, it is difficult. This is why most of the Blu-ray files you downconvert are also MKV files. MKV is mainly used to store Blu-ray or DVD movies.</p>
+
+<p>If you need MP4 files, I don’t recommend converting them directly to MP4. If space permits, it is more convenient to convert them to MKV first and then to MP4. The speed of converting MKV to MP4 is also very fast, basically 100x upwards. No matter what kind of conversion process, if you want to convert to MP4 files, it is recommended to select the required soft subtitles and audio tracks, or even simpler, just delete <code class="language-plaintext highlighter-rouge">-map 0</code> in the above command, and then the first audio tracks and soft subtitles to MP4 files.</p>
+
+<p>Although the bit rate of Blu-ray files is very high, 1080P has 40000-60000 kb/s (general streaming media 1080P is 5000-8000), if it is 4K, it will be higher, but the conversion speed is quite fast, and modern CPUs should Can achieve 5-30x or even higher speed. Moreover, the utilization rate and memory usage are not high, and it can be transcoded in the background.</p>
+
+<p>​I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

@@ -1,0 +1,213 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to get images from the system album in SwiftUI</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to get images from the system album in SwiftUI | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to get images from the system album in SwiftUI" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="I will tell you how to get images or photos from the system album in SwiftUI. SwiftUI cannot obtain the system album content by itself, so it has to rely on UIKit." />
+<meta property="og:description" content="I will tell you how to get images or photos from the system album in SwiftUI. SwiftUI cannot obtain the system album content by itself, so it has to rely on UIKit." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/731bd7b367cbd4b4246dfa4b06b41ff9.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/731bd7b367cbd4b4246dfa4b06b41ff9.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2021-12-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to get images from the system album in SwiftUI" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2021-12-10T00:00:00+08:00","datePublished":"2021-12-10T00:00:00+08:00","description":"I will tell you how to get images or photos from the system album in SwiftUI. SwiftUI cannot obtain the system album content by itself, so it has to rely on UIKit.","headline":"How to get images from the system album in SwiftUI","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/731bd7b367cbd4b4246dfa4b06b41ff9.html"},"url":"https://zhonguncle.github.io/blogs/731bd7b367cbd4b4246dfa4b06b41ff9.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to get images from the system album in SwiftUI</h1>
+            <div class="bloginfo">
+                <p class="info">2021-12-10 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 608 </p>
+            </div>
+            <p>SwiftUI cannot obtain the system album content by itself, so it has to rely on UIKit. The header file is as follows:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">import</span> <span class="kt">SwiftUI</span>
+<span class="n">importUIKit</span>
+</code></pre></div></div>
+
+<p>First we create an ImagePicker structure for us to obtain the system album content:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ImagePicker</span><span class="p">:</span> <span class="kt">UIViewControllerRepresentable</span> <span class="p">{</span>
+     <span class="kd">@Environment</span><span class="p">(\</span><span class="o">.</span><span class="n">presentationMode</span><span class="p">)</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">presentationMode</span>
+     <span class="k">let</span> <span class="nv">sourceType</span><span class="p">:</span> <span class="kt">UIImagePickerController</span><span class="o">.</span><span class="kt">SourceType</span>
+     <span class="k">let</span> <span class="nv">onImagePicked</span><span class="p">:</span> <span class="p">(</span><span class="kt">UIImage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+ 
+     <span class="kd">final</span> <span class="kd">class</span> <span class="kt">Coordinator</span><span class="p">:</span> <span class="kt">NSObject</span><span class="p">,</span> <span class="kt">UINavigationControllerDelegate</span><span class="p">,</span> <span class="kt">UIImagePickerControllerDelegate</span> <span class="p">{</span>
+ 
+         <span class="kd">@Binding</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">presentationMode</span><span class="p">:</span> <span class="kt">PresentationMode</span>
+         <span class="kd">private</span> <span class="k">let</span> <span class="nv">sourceType</span><span class="p">:</span> <span class="kt">UIImagePickerController</span><span class="o">.</span><span class="kt">SourceType</span>
+         <span class="kd">private</span> <span class="k">let</span> <span class="nv">onImagePicked</span><span class="p">:</span> <span class="p">(</span><span class="kt">UIImage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span>
+ 
+         <span class="nf">init</span><span class="p">(</span><span class="nv">presentationMode</span><span class="p">:</span> <span class="kt">Binding</span><span class="o">&lt;</span><span class="kt">PresentationMode</span><span class="o">&gt;</span><span class="p">,</span>
+              <span class="nv">sourceType</span><span class="p">:</span> <span class="kt">UIImagePickerController</span><span class="o">.</span><span class="kt">SourceType</span><span class="p">,</span>
+              <span class="nv">onImagePicked</span><span class="p">:</span> <span class="kd">@escaping</span> <span class="p">(</span><span class="kt">UIImage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">Void</span><span class="p">)</span> <span class="p">{</span>
+             <span class="n">_presentationMode</span> <span class="o">=</span> <span class="n">presentationMode</span>
+             <span class="k">self</span><span class="o">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">sourceType</span>
+             <span class="k">self</span><span class="o">.</span><span class="n">onImagePicked</span> <span class="o">=</span> <span class="n">onImagePicked</span>
+         <span class="p">}</span>
+ 
+         <span class="kd">func</span> <span class="nf">imagePickerController</span><span class="p">(</span><span class="n">_</span> <span class="nv">picker</span><span class="p">:</span> <span class="kt">UIImagePickerController</span><span class="p">,</span> <span class="n">didFinishPickingMediaWithInfo</span> <span class="nv">info</span><span class="p">:</span> <span class="p">[</span><span class="kt">UIImagePickerController</span><span class="o">.</span><span class="kt">InfoKey</span> <span class="p">:</span> <span class="kt">Any</span><span class="p">])</span> <span class="p">{</span>
+             <span class="k">let</span> <span class="nv">uiImage</span> <span class="o">=</span> <span class="n">info</span><span class="p">[</span><span class="kt">UIImagePickerController</span><span class="o">.</span><span class="kt">InfoKey</span><span class="o">.</span><span class="n">originalImage</span><span class="p">]</span> <span class="k">as!</span> <span class="kt">UIImage</span>
+             <span class="nf">onImagePicked</span><span class="p">(</span><span class="n">uiImage</span><span class="p">)</span>
+             <span class="n">presentationMode</span><span class="o">.</span><span class="nf">dismiss</span><span class="p">()</span>
+         <span class="p">}</span>
+ 
+         <span class="kd">func</span> <span class="nf">imagePickerControllerDidCancel</span><span class="p">(</span><span class="n">_</span> <span class="nv">picker</span><span class="p">:</span> <span class="kt">UIImagePickerController</span><span class="p">)</span> <span class="p">{</span>
+             <span class="n">presentationMode</span><span class="o">.</span><span class="nf">dismiss</span><span class="p">()</span>
+         <span class="p">}</span>
+ 
+     <span class="p">}</span>
+ 
+     <span class="kd">func</span> <span class="nf">makeCoordinator</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="kt">Coordinator</span> <span class="p">{</span>
+         <span class="k">return</span> <span class="kt">Coordinator</span><span class="p">(</span><span class="nv">presentationMode</span><span class="p">:</span> <span class="n">presentationMode</span><span class="p">,</span>
+                            <span class="nv">sourceType</span><span class="p">:</span> <span class="n">sourceType</span><span class="p">,</span>
+                            <span class="nv">onImagePicked</span><span class="p">:</span> <span class="n">onImagePicked</span><span class="p">)</span>
+     <span class="p">}</span>
+ 
+     <span class="kd">func</span> <span class="nf">makeUIViewController</span><span class="p">(</span><span class="nv">context</span><span class="p">:</span> <span class="kt">UIViewControllerRepresentableContext</span><span class="o">&lt;</span><span class="kt">ImagePicker</span><span class="o">&gt;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UIImagePickerController</span> <span class="p">{</span>
+         <span class="k">let</span> <span class="nv">picker</span> <span class="o">=</span> <span class="kt">UIImagePickerController</span><span class="p">()</span>
+         <span class="n">picker</span><span class="o">.</span><span class="n">sourceType</span> <span class="o">=</span> <span class="n">sourceType</span>
+         <span class="n">picker</span><span class="o">.</span><span class="n">delegate</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="n">coordinator</span>
+         <span class="k">return</span> <span class="n">picker</span>
+     <span class="p">}</span>
+ 
+     <span class="kd">func</span> <span class="nf">updateUIViewController</span><span class="p">(</span><span class="n">_</span> <span class="nv">uiViewController</span><span class="p">:</span> <span class="kt">UIImagePickerController</span><span class="p">,</span>
+                                 <span class="nv">context</span><span class="p">:</span> <span class="kt">UIViewControllerRepresentableContext</span><span class="o">&lt;</span><span class="kt">ImagePicker</span><span class="o">&gt;</span><span class="p">)</span> <span class="p">{</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+
+</code></pre></div></div>
+
+<p>Then we can easily get the photos from the system album:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">ContentView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">showImagePicker</span> <span class="o">=</span> <span class="kc">false</span>
+     <span class="c1">//The image here is used to place the photos that will be obtained later.</span>
+     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">image</span><span class="p">:</span> <span class="kt">UIImage</span> <span class="o">=</span> <span class="kt">UIImage</span><span class="p">()</span>
+     <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+         <span class="kt">List</span><span class="p">{</span>
+             <span class="kt">Button</span><span class="p">(</span><span class="nv">action</span><span class="p">:</span> <span class="p">{</span>
+                 <span class="n">showImagePicker</span> <span class="o">=</span> <span class="kc">true</span>
+             <span class="p">},</span> <span class="nv">label</span><span class="p">:</span> <span class="p">{</span>
+                 <span class="kt">Text</span><span class="p">(</span><span class="s">"Select Image"</span><span class="p">)</span>
+             <span class="p">})</span>
+            
+             <span class="kt">Image</span><span class="p">(</span><span class="nv">uiImage</span><span class="p">:</span> <span class="n">image</span><span class="p">)</span>
+                 <span class="o">.</span><span class="nf">resizable</span><span class="p">()</span>
+                 <span class="o">.</span><span class="nf">aspectRatio</span><span class="p">(</span><span class="nv">contentMode</span><span class="p">:</span> <span class="o">.</span><span class="n">fit</span><span class="p">)</span>
+         <span class="p">}</span>
+         <span class="o">.</span><span class="nf">sheet</span><span class="p">(</span><span class="nv">isPresented</span><span class="p">:</span> <span class="n">$showImagePicker</span><span class="p">,</span>
+                <span class="nv">content</span><span class="p">:</span> <span class="p">{</span>
+             <span class="kt">ImagePicker</span><span class="p">(</span><span class="nv">sourceType</span><span class="p">:</span> <span class="o">.</span><span class="n">photoLibrary</span><span class="p">)</span> <span class="p">{</span> <span class="n">image</span> <span class="k">in</span>
+                 <span class="k">self</span><span class="o">.</span><span class="n">image</span> <span class="o">=</span> <span class="n">image</span>
+             <span class="p">}</span>
+         <span class="p">})</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>However, this can only obtain one photo at a time, but we can still obtain it.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

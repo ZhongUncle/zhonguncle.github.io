@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Why happened error helper_cuda.h No such file or directory</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Why happened error helper_cuda.h No such file or directory | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Why happened error helper_cuda.h No such file or directory" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What should I do if the helper_cuda.h No such file or directory error occurs when using nvcc (the same solution is used for other xxx.h" />
+<meta property="og:description" content="What should I do if the helper_cuda.h No such file or directory error occurs when using nvcc (the same solution is used for other xxx.h" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/0c156d3603999ef59817976d8cd5cfc2.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/0c156d3603999ef59817976d8cd5cfc2.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-03T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Why happened error helper_cuda.h No such file or directory" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-05-03T00:00:00+08:00","datePublished":"2023-05-03T00:00:00+08:00","description":"What should I do if the helper_cuda.h No such file or directory error occurs when using nvcc (the same solution is used for other xxx.h","headline":"Why happened error helper_cuda.h No such file or directory","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0c156d3603999ef59817976d8cd5cfc2.html"},"url":"https://zhonguncle.github.io/blogs/0c156d3603999ef59817976d8cd5cfc2.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Why happened error helper_cuda.h No such file or directory</h1>
+            <div class="bloginfo">
+                <p class="info">2023-05-03 ｜ <a href="/c.html"> C</a> ｜ #Words: 492 </p>
+            </div>
+            <p>When using <code class="language-plaintext highlighter-rouge">nvcc</code> in the command line today, an error <code class="language-plaintext highlighter-rouge">"helper_cuda.h": No such file or directory</code> appeared. This error message means: During compilation, the <code class="language-plaintext highlighter-rouge">helper_cuda.h</code> header file cannot be found (if other <code class="language-plaintext highlighter-rouge">xxx.h</code> cannot be found, the following explanations and solutions are also common).</p>
+
+<p>The reason for this problem is that most compilers have only one way to find a header file: find the header file in the directory set in the environment variable. If there is no such header file in the directory stored in the environment variable, it will not be found. This environment variable has not even been created or set, and it is even less likely to be found. This problem is one of the common problems no matter which compiler is used.
+<code class="language-plaintext highlighter-rouge">nvcc</code> is the latter. I did not find any information about environment variables in the documentation and help files, and copying the header file to the directory of the <code class="language-plaintext highlighter-rouge">.cu</code> source code file does not work (but <code class="language-plaintext highlighter-rouge">.hpp</code> seems to work). **The official meaning is to add options to the compilation command and use the path as a parameter to point out or search for the header file. ** Personally, I feel that this method is much better for small programs or short-term projects, because it will not mess up the environment variables, and you can easily customize the compilation settings without causing confusion. But long-term projects are a bit troublesome, but there are solutions. At worst, you can set an environment variable yourself as a parameter of the compiled search option. You can also modify this environment variable every time.</p>
+
+<p>The solution is to let the compiler find these header files. Here we assume that there are header files on the machine. If there are really no header files on the machine, then go to the code source to search carefully and ask the author.</p>
+
+<p>The header file of <code class="language-plaintext highlighter-rouge">nvcc</code> is usually placed in a folder named <code class="language-plaintext highlighter-rouge">Common</code> (it may be <code class="language-plaintext highlighter-rouge">common</code> in lowercase). This folder is where the library files are stored, as follows:</p>
+
+<p><img src="/assets/images/ac93311725a04368a8b929f49480f618.png" alt="Common" /></p>
+
+<p>You can see that these are the header files you are looking for. Next, just let <code class="language-plaintext highlighter-rouge">nvcc</code> find them. As mentioned above, <code class="language-plaintext highlighter-rouge">nvcc</code> needs to use the <code class="language-plaintext highlighter-rouge">-I parameter</code> to specify a header file or search a specific directory. The method is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code># Search for header files and other library files in the specified directory, as follows
+nvcc.exe -I directory source code file path
+</code></pre></div></div>
+
+<p>For example, in the above figure, the directory is <code class="language-plaintext highlighter-rouge">E:\testcuda\cuda-samples-master\Common\</code>, the source code file path is <code class="language-plaintext highlighter-rouge">.\bandwidthTest.cu</code>, and the command is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvcc.exe -I E:\testcuda\cuda-samples-master\Common\ .\bandwidthTest.cu
+</code></pre></div></div>
+
+<p>This will compile normally.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

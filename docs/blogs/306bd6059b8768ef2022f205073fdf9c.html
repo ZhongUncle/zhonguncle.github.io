@@ -1,0 +1,226 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to get query of URLs in Javascript</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to get query of URLs in Javascript | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to get query of URLs in Javascript" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to get query of URLs in Javascript" />
+<meta property="og:description" content="How to get query of URLs in Javascript" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/306bd6059b8768ef2022f205073fdf9c.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/306bd6059b8768ef2022f205073fdf9c.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-12T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to get query of URLs in Javascript" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-12T00:00:00+08:00","datePublished":"2022-06-12T00:00:00+08:00","description":"How to get query of URLs in Javascript","headline":"How to get query of URLs in Javascript","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/306bd6059b8768ef2022f205073fdf9c.html"},"url":"https://zhonguncle.github.io/blogs/306bd6059b8768ef2022f205073fdf9c.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to get query of URLs in Javascript</h1>
+            <div class="bloginfo">
+                <p class="info">2022-06-12 ｜ <a href="/web.html"> Web</a> ｜ #Words: 735 </p>
+            </div>
+            <p>It is a little troublesome to get URL parameters with JS, because JS can only get a certain part of the URL, but it cannot be subdivided. If you want to get a certain parameter, you also need to use string interception.
+So it’s divided into two steps:</p>
+
+<ol>
+  <li>Get the parameter part of the URL</li>
+  <li>Intercept a certain parameter (even broken down to parameter name and parameter value)</li>
+</ol>
+
+<p>First assume that the URL is <code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc&amp;id=12</code>.</p>
+
+<h2 id="js-gets-the-parameter-part-of-the-url">JS gets the parameter part of the URL</h2>
+<p>First you need to use <code class="language-plaintext highlighter-rouge">new URL()</code> to create a URL object, and then use <code class="language-plaintext highlighter-rouge">.search</code> to get the URL parameter part.</p>
+
+<p>code show as below:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!</span><span class="nx">DOCTYPE</span> <span class="nx">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">meta</span> <span class="nx">charset</span><span class="o">=</span><span class="dl">"</span><span class="s2">utf-8</span><span class="dl">"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">title</span><span class="o">&gt;</span><span class="nx">Test</span><span class="o">&lt;</span><span class="sr">/title</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/head</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+<span class="kd">let</span> <span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nc">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span> <span class="cm">/* Create a URL object */</span>
+<span class="kd">let</span> <span class="nx">para</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span> <span class="cm">/* Get the URL parameter part */</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">para</span><span class="p">);</span> <span class="cm">/* Display the content of a on the screen */</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>
+<span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/html</span><span class="err">&gt;
+</span></code></pre></div></div>
+
+<p>Displayed as follows:</p>
+
+<p><img src="/assets/images/0044d57e65b14e10ba29f60caf87b9f3.png" alt="“?keyword=abc&amp;id=12”" /></p>
+
+<p>If you want to know more about URLs in Javascript, you can check out this article, which I think is pretty good: <a href="https://javascript.info/url">https://javascript.info/url</a></p>
+
+<p>Ok, the next step is to intercept each part.</p>
+
+<h2 id="intercept-url-parameters">Intercept URL parameters</h2>
+<p>Multiple URL parameters are separated by the <code class="language-plaintext highlighter-rouge">&amp;</code> symbol, so you can use JS’s <code class="language-plaintext highlighter-rouge">split()</code> to separate them. <code class="language-plaintext highlighter-rouge">split()</code> will put the separated contents into an array.
+But before using <code class="language-plaintext highlighter-rouge">split()</code>, you need to remove the question mark <code class="language-plaintext highlighter-rouge">?</code> at the beginning of the parameter part, otherwise the first separated one will have this question mark <code class="language-plaintext highlighter-rouge">?</code>. Use <code class="language-plaintext highlighter-rouge">.substring(1)</code> to ignore the first character <code class="language-plaintext highlighter-rouge">&amp;</code> at the beginning.</p>
+
+<p>code show as below:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!</span><span class="nx">DOCTYPE</span> <span class="nx">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">meta</span> <span class="nx">charset</span><span class="o">=</span><span class="dl">"</span><span class="s2">utf-8</span><span class="dl">"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">title</span><span class="o">&gt;</span><span class="nx">Test</span><span class="o">&lt;</span><span class="sr">/title</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/head</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+<span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nc">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">para</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span> <span class="cm">/* Get attributes (segment after "?") */</span>
+<span class="nx">para</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">a</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">&amp;</span><span class="dl">"</span><span class="p">);</span>
+<span class="cm">/* Display the first and second parameters in separate lines */</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;br&gt;</span><span class="dl">'</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>
+<span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/html</span><span class="err">&gt;
+</span></code></pre></div></div>
+
+<p>Displayed as follows:</p>
+
+<p><img src="/assets/images/7e86c5a0eab145b498598915b8b1a662.png" alt="&quot;keyword=abc&quot; and &quot;id=12&quot;" /></p>
+
+<p>At this time, you can go one step further to obtain a certain parameter name or value. The code is as follows:</p>
+
+<div class="language-javascript highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">&lt;!</span><span class="nx">DOCTYPE</span> <span class="nx">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">html</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">head</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">meta</span> <span class="nx">charset</span><span class="o">=</span><span class="dl">"</span><span class="s2">utf-8</span><span class="dl">"</span><span class="o">&gt;</span>
+<span class="o">&lt;</span><span class="nx">title</span><span class="o">&gt;</span><span class="nx">Test</span><span class="o">&lt;</span><span class="sr">/title</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/head</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="nx">body</span><span class="o">&gt;</span>
+
+<span class="o">&lt;</span><span class="nx">script</span><span class="o">&gt;</span>
+<span class="nx">url</span><span class="o">=</span><span class="k">new</span> <span class="nc">URL</span><span class="p">(</span><span class="dl">'</span><span class="s1">https://www.example.com/?keyword=abc&amp;id=12</span><span class="dl">'</span><span class="p">);</span>
+<span class="nx">para</span> <span class="o">=</span> <span class="nx">url</span><span class="p">.</span><span class="nx">search</span><span class="p">;</span> <span class="cm">/* Get attributes (segment after "?") */</span>
+<span class="nx">para</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">substring</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="nx">a</span><span class="o">=</span><span class="nx">para</span><span class="p">.</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">&amp;</span><span class="dl">"</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)[</span><span class="mi">0</span><span class="p">]);</span> <span class="cm">/* Parameter name of the first parameter */</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="dl">'</span><span class="s1">&lt;br&gt;</span><span class="dl">'</span><span class="p">);</span>
+<span class="nb">document</span><span class="p">.</span><span class="nf">write</span><span class="p">(</span><span class="nx">a</span><span class="p">[</span><span class="mi">0</span><span class="p">].</span><span class="nf">split</span><span class="p">(</span><span class="dl">"</span><span class="s2">=</span><span class="dl">"</span><span class="p">)[</span><span class="mi">1</span><span class="p">]);</span> <span class="cm">/* Parameter name of the first parameter */</span>
+<span class="o">&lt;</span><span class="sr">/script</span><span class="err">&gt;
+</span>
+<span class="o">&lt;</span><span class="sr">/body</span><span class="err">&gt;
+</span><span class="o">&lt;</span><span class="sr">/html</span><span class="err">&gt;
+</span></code></pre></div></div>
+
+<p>Displayed as follows:</p>
+
+<p><img src="/assets/images/3bded303a9d2416f802406db7fa3f49b.png" alt="&quot;keyword&quot;&quot;abc&quot;" /></p>
+
+<p>​I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

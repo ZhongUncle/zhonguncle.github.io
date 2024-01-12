@@ -1,0 +1,218 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to use Core Image filter (CIFilter) to process photos in SwiftUI</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to use Core Image filter (CIFilter) to process photos in SwiftUI | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to use Core Image filter (CIFilter) to process photos in SwiftUI" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API." />
+<meta property="og:description" content="Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/a2af816aa35ceed62118846c01a3177f.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/a2af816aa35ceed62118846c01a3177f.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-02-22T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to use Core Image filter (CIFilter) to process photos in SwiftUI" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-02-22T00:00:00+08:00","datePublished":"2022-02-22T00:00:00+08:00","description":"Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API.","headline":"How to use Core Image filter (CIFilter) to process photos in SwiftUI","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/a2af816aa35ceed62118846c01a3177f.html"},"url":"https://zhonguncle.github.io/blogs/a2af816aa35ceed62118846c01a3177f.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to use Core Image filter (CIFilter) to process photos in SwiftUI</h1>
+            <div class="bloginfo">
+                <p class="info">2022-02-22 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 959 </p>
+            </div>
+            <p>Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API. Some of the filters can also process videos or even real-time videos. For details on each filter, see: [Core Image Filter Reference] (https://developer.apple.com/library/archive/documentation/GraphicsImaging/Reference/CoreImageFilterReference/index.html#//apple_ref/doc/filter/ci/CIColorClamp)</p>
+
+<p>The first is how to read this web page, that is to say what information this web page provides, which is very helpful for us when using it. Take the screenshot below as an example to explain how to see it.</p>
+
+<p><img src="/assets/images/b760cad550984160a1702ba628f4d912.jpg" alt="Official website introduction corresponding serial number" /></p>
+
+<p>Introduced according to each part:</p>
+
+<ol>
+  <li>Filter name. In general, it is the same as the local name in part 3.</li>
+  <li>Introduction to filter function. Here it is “Blurring an image using a box convolution kernel”.</li>
+  <li>This is the local display name, which is the name we need to use when calling the filter in the code.</li>
+  <li>Parameters and parameter introduction. This is some information we need to tell the code when calling the filter. For example, the inputImage here is the input image. Almost every filter will have this parameter. The inputRadius here is the degree of blur of the filter. If we don’t make adjustments, the default value is 10.00. The parameters of different filters are different, so you need to check them when using them. When using it, the name needs to be deformed, and kCI- and -Key need to be added. This will be explained in detail later when using it.</li>
+  <li>This part is the category to which the filter belongs. When looking at the web page, you can find that Apple divides it into multiple categories. We can find similar ones by looking at the categories here. But we will find that some major categories here are no longer there. It may be that Apple has deleted and adjusted some filters and major categories, but the ones under each filter have not been adjusted.</li>
+  <li>Effects of using filters. Most filters will have this section to show the effects of use.</li>
+  <li>Systems that can use these filters. Since these APIs are very early, they can be used by current devices.</li>
+</ol>
+
+<p>Apple divides it into 17 major categories, as follows:</p>
+
+<ul>
+  <li>CICategoryBlur (blur)</li>
+  <li>CICategoryColorAdjustment (color adjustment)</li>
+  <li>CICategoryColorEffect (color effects)</li>
+  <li>CICategoryCompositeOperation (composite operation)</li>
+  <li>CICategoryDistortionEffect (deformation effect)</li>
+  <li>CICategoryGenerator (generates, for example, barcode QR codes)</li>
+  <li>CICategoryGeometryAdjustment (geometry adjustment)</li>
+  <li>CICategoryGradient (gradient)</li>
+  <li>CICategoryHalftoneEffect (grid effect)</li>
+  <li>CICategoryReduction (simplify pictures)</li>
+  <li>CICategorySharpen (sharpen pictures)</li>
+  <li>CICategoryStylize (stylized pictures, that is, miscellaneous)</li>
+  <li>CICategoryTileEffect (tile effect)</li>
+  <li>CICategoryTransition (transition, gradient)</li>
+</ul>
+
+<p>You can find what you need according to your needs.</p>
+
+<p>Next, let’s talk about how to use these officially provided filters (filters or processing methods) in SwiftUI.
+First we need to create a function to call the filter API, let’s call the <code class="language-plaintext highlighter-rouge">CIBoxBlur</code> just given as an example. The header file is <code class="language-plaintext highlighter-rouge">import SwiftUI</code>. I’ve commented almost every line of code to make sure everyone understands it well:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">func</span> <span class="nf">blurFilter</span><span class="p">(</span><span class="nv">inputImage</span><span class="p">:</span> <span class="kt">UIImage</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kt">UIImage</span> <span class="p">{</span>
+     <span class="c1">//Create a CIContext() to place the processed content</span>
+     <span class="k">let</span> <span class="nv">context</span> <span class="o">=</span> <span class="kt">CIContext</span><span class="p">()</span>
+     <span class="c1">//Convert the input UIImage into CIImage</span>
+     <span class="k">let</span> <span class="nv">inputCIImage</span> <span class="o">=</span> <span class="kt">CIImage</span><span class="p">(</span><span class="nv">image</span><span class="p">:</span> <span class="n">inputImage</span><span class="p">)</span><span class="o">!</span>
+    
+     <span class="c1">//Create a filter for processing images (Filter)</span>
+     <span class="k">let</span> <span class="nv">filter</span> <span class="o">=</span> <span class="kt">CIFilter</span><span class="p">(</span><span class="nv">name</span><span class="p">:</span> <span class="s">"CIBoxBlur"</span><span class="p">)</span><span class="o">!</span>
+     <span class="c1">//When setting the value of this setValue, the following forKey parameter follows the transformation of the parameter name given in the document. For example, the official website here gives inputRadius, and kCI- and -Key are the parameters that should be filled in.</span>
+     <span class="c1">//Set the fuzziness here——You don’t need to write this, it will be as default</span>
+     <span class="n">filter</span><span class="o">.</span><span class="nf">setValue</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="n">kCIInputRadiusKey</span><span class="p">)</span>
+     <span class="c1">//Set input image</span>
+     <span class="n">filter</span><span class="o">.</span><span class="nf">setValue</span><span class="p">(</span><span class="n">inputCIImage</span><span class="p">,</span> <span class="nv">forKey</span><span class="p">:</span> <span class="n">kCIInputImageKey</span><span class="p">)</span>
+
+     <span class="c1">// Get the filtered image and place it in the CIContext() set at the beginning</span>
+     <span class="k">let</span> <span class="nv">result</span> <span class="o">=</span> <span class="n">filter</span><span class="o">.</span><span class="n">outputImage</span><span class="o">!</span>
+     <span class="k">let</span> <span class="nv">cgImage</span> <span class="o">=</span> <span class="n">context</span><span class="o">.</span><span class="nf">createCGImage</span><span class="p">(</span><span class="n">result</span><span class="p">,</span> <span class="nv">from</span><span class="p">:</span> <span class="n">result</span><span class="o">.</span><span class="n">extent</span><span class="p">)</span>
+    
+     <span class="c1">//Return the processed image</span>
+     <span class="k">return</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">cgImage</span><span class="p">:</span> <span class="n">cgImage</span><span class="o">!</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>At this time we can use this filter very simply, as follows:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">//Set the input image</span>
+<span class="k">let</span> <span class="nv">image</span><span class="p">:</span> <span class="kt">UIImage</span> <span class="o">=</span> <span class="kt">UIImage</span><span class="p">(</span><span class="nv">named</span><span class="p">:</span> <span class="s">"test"</span><span class="p">)</span><span class="o">!</span>
+
+<span class="c1">//Get the output image</span>
+<span class="k">let</span> <span class="nv">outputImage</span> <span class="o">=</span> <span class="nf">blurFilter</span><span class="p">(</span><span class="nv">inputImage</span><span class="p">:</span> <span class="n">image</span><span class="p">)</span>
+
+<span class="kd">struct</span> <span class="kt">FilterView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+     <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+         <span class="kt">Image</span><span class="p">(</span><span class="nv">uiImage</span><span class="p">:</span> <span class="n">outputImage</span><span class="p">)</span>
+             <span class="o">.</span><span class="nf">resizable</span><span class="p">()</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We can see the processed image displayed on the screen! Let’s deal with the previous screenshot.</p>
+
+<p><img src="/assets/images/12a8a4dd2e3c445abaf86ffd2375d5de.png" alt="Processed picture" /></p>
+
+<p>The effect is not bad!</p>
+
+<p>Since these APIs are very old, there will be some pitfalls when used with SwiftUI. I searched for a long time but couldn’t find a solution. I only found the solution after doing my own research.
+But even though it is a very old API, some effects are also outdated, so I think this is useless. They can be nested to create more effects.</p>
+
+<p>To get the photos in the system album, please see: <a href="/blogs/731bd7b367cbd4b4246dfa4b06b41ff9.html">“How to get images from the system album in SwiftUI”</a>.</p>
+
+<p>To call the system camera to take pictures, please see: <a href="/blogs/ae6c78563d0a29e901cf1248a5454740.html">“How to call the camera in SwiftUI”</a>.</p>
+
+<p>This way we can call the system camera.</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

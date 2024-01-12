@@ -1,0 +1,168 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to record TikTok's live stream on macOS</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to record TikTok’s live stream on macOS | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to record TikTok’s live stream on macOS" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to record TikTok’s live stream on macOS, it means how to obtain TikTok’s push source URL." />
+<meta property="og:description" content="How to record TikTok’s live stream on macOS, it means how to obtain TikTok’s push source URL." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/6afb5dbb8450cd39165bc0fcde6f7ca2.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/6afb5dbb8450cd39165bc0fcde6f7ca2.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-05-31T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to record TikTok’s live stream on macOS" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-05-31T00:00:00+08:00","datePublished":"2023-05-31T00:00:00+08:00","description":"How to record TikTok’s live stream on macOS, it means how to obtain TikTok’s push source URL.","headline":"How to record TikTok’s live stream on macOS","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/6afb5dbb8450cd39165bc0fcde6f7ca2.html"},"url":"https://zhonguncle.github.io/blogs/6afb5dbb8450cd39165bc0fcde6f7ca2.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to record TikTok's live stream on macOS</h1>
+            <div class="bloginfo">
+                <p class="info">2023-05-31 ｜ <a href="/research.html"> Research</a> ｜ #Words: 675 </p>
+            </div>
+            <p>Recently, I saw some live broadcasts on Douyin that were really interesting, and I wanted to record them. So I studied how to record these live broadcasts. There are two methods: recording the screen and downloading from the push source.</p>
+
+<p>The former is of course the simplest, but there are several problems if you use screen recording:</p>
+<ol>
+  <li>The bitrate of the screen recording is generally much higher than the actual bitrate of the live broadcast, which results in the final recording file being a bit large, but the image quality is average (in this case, transcoding will cause serious image quality loss, which is much higher than the actual bitrate of the live broadcast). The loss of image quality after transcoding of high-definition and high-bitrate videos is much greater)</li>
+  <li>Only one person can be recorded at a time, so it is inconvenient if there are several people.</li>
+</ol>
+
+<p>So the latter is much better than screen recording in terms of convenience and storage. The most critical step in downloading from the push source is: how to obtain the push source.</p>
+
+<p>Since this article is a general introduction to downloading, rather than an introduction to writing scripts for batch downloading (I will write a separate article later and list it here), I will only introduce the steps.</p>
+
+<p>Obtaining the push source is actually very simple. On macOS, downloading videos from the push source only requires a Safari.</p>
+
+<p>First open Safari, go to “Settings” - “Advanced”, check “Show the “Develop” menu in the menu bar”, as follows:</p>
+
+<p>&lt;img alt=”In “Settings” - “Advanced”, check “Show Develop menu in menu bar”” src=”/assets/images/dc26346f66957a977f05c991774c20f8.png” style=”box-shadow: 0px 0px 0px 0px”&gt;</p>
+
+<p>Then open the live broadcast room you want to record, right-click on a blank area of the webpage, click “View Elements”, and then you can see the source code, elements and other content of the webpage, as follows:</p>
+
+<p><img src="/assets/images/8d402f52a20275733073b3b5aace021a.png" alt="Open the Douyin live broadcast room you want to record, right-click a blank area of the web page, and click &quot;View Elements&quot;" /></p>
+
+<p><img alt="Then you can see the source code, elements and other content of the web page" src="/assets/images/4ca31da3b10bf46583c159d83fcb2751.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>At this time, select the “Network” section, and then search for “flv” in the upper right corner, because Douyin’s live streaming uses the flv format. At this time the display is as follows:</p>
+
+<p>&lt;img alt=”Select the “Network” section and search for “flv” in the upper right corner” src=”/assets/images/a4ad3b528ef3c756847542890aeda1a0.png” style=”box-shadow: 0px 0px 0px 0px”&gt;</p>
+
+<p>Then copy the link of this file and enter it in the search bar, which will directly trigger the download. You can see that the download speed here is the bit rate of the push stream, which means the live broadcast is being recorded:</p>
+
+<p><img src="/assets/images/7390953c62a4449f8447c10e686f4aa9.png" alt="Copy the link of this file and enter it in the search bar, it will directly trigger the download. You can see that the download speed here is the bit rate of the push stream, which means the live broadcast is being recorded" /></p>
+
+<p>So how to terminate the recording? Of course, stop downloading. If the live broadcast is closed, it will become an FLV file. However, if the download is manually paused, the downloaded file will still have the <code class="language-plaintext highlighter-rouge">.download</code> suffix and cannot be viewed directly with the player.</p>
+
+<p><img src="/assets/images/f89dd961606b56312b075d96729479a8.png" alt="The downloaded file at this time still has the `.download` suffix" /></p>
+
+<p>At this time, you need to right-click, select “Show Package Contents”, and then see a flv file. At this time, you can use a supported player such as VLC to view it.</p>
+
+<p>&lt;img alt=”You need to right-click at this time and select “Show Package Contents”” src=”/assets/images/13bff9b7b0b2b324522e934afd0aa077.png” style=”box-shadow: 0px 0px 0px 0px”&gt;</p>
+
+<p><img alt="See a flv file" src="/assets/images/8524f7bfe823c93c90f38945b3c07cc1.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>But here you will find that there is no way to drag the progress bar, otherwise it will return to the beginning or end playback. So it’s better to transcode it. It’s pretty fast if you use hardware acceleration.</p>
+
+<p>​I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

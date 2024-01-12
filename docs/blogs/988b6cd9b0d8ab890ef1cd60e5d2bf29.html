@@ -1,0 +1,185 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>What are argc and argv of arguments of function main in C?</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What are argc and argv of arguments of function main in C? | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="What are argc and argv of arguments of function main in C?" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="What are argc and argv of arguments of function main in C? It is a key for C program." />
+<meta property="og:description" content="What are argc and argv of arguments of function main in C? It is a key for C program." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/988b6cd9b0d8ab890ef1cd60e5d2bf29.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/988b6cd9b0d8ab890ef1cd60e5d2bf29.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-06-17T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What are argc and argv of arguments of function main in C?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-06-17T00:00:00+08:00","datePublished":"2022-06-17T00:00:00+08:00","description":"What are argc and argv of arguments of function main in C? It is a key for C program.","headline":"What are argc and argv of arguments of function main in C?","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/988b6cd9b0d8ab890ef1cd60e5d2bf29.html"},"url":"https://zhonguncle.github.io/blogs/988b6cd9b0d8ab890ef1cd60e5d2bf29.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>What are argc and argv of arguments of function main in C?</h1>
+            <div class="bloginfo">
+                <p class="info">2022-06-17 ｜ <a href="/c.html"> C</a> ｜ #Words: 1113 </p>
+            </div>
+            <p>Create a new macOS platform Command Line Tool in Xcode and use C language. You will find that main takes two parameters: <code class="language-plaintext highlighter-rouge">argc</code> and <code class="language-plaintext highlighter-rouge">argv</code>. as follows:</p>
+
+<p><img src="/assets/images/b1c22d7bcb28418fbe83e1642563315b.png" alt="Two parameters of main: argc and argv" /></p>
+
+<p><code class="language-plaintext highlighter-rouge">argc</code> is the number of command line parameters invoked by the program, used to count the number of parameters. This will cause you to have a misunderstanding, which is detailed in the <code class="language-plaintext highlighter-rouge">argv[]</code> section below. **It should be noted that although some programs support combined programs such as <code class="language-plaintext highlighter-rouge">-abcd</code>, C will consider them as one and need to be changed manually. **</p>
+
+<p><code class="language-plaintext highlighter-rouge">argv</code> needs to be explained in detail here. The previous writing was too concise. Some people did not understand the comments. There are some underlying logic that need to be explained.</p>
+
+<p>The previously written version is:</p>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">argv</code> is a pointer to a string array. The array contains parameters. Each string is a parameter, and the last element is <code class="language-plaintext highlighter-rouge">0</code>. However, it is generally customary to use multi-level pointers to operate strings.</p>
+</blockquote>
+
+<p>Now it seems that it is indeed too concise, and many people are not clear about arrays and pointers. Let’s explain it in detail below, and finally reflect on it.</p>
+
+<p><code class="language-plaintext highlighter-rouge">char *argv[]</code> means that <code class="language-plaintext highlighter-rouge">argv[]</code> is an array that stores the address of character type elements, because C has the concept of string: each character is stored in a char array, and the last element is <code class="language-plaintext highlighter-rouge">\0 </code>indicates the end of the string. <code class="language-plaintext highlighter-rouge">printf(%s)</code> is the output string. And generally use the <code class="language-plaintext highlighter-rouge">argv</code> pointer to access and process the contents of the <code class="language-plaintext highlighter-rouge">argv[]</code> array.
+In C language, an array is a pointer plus an offset. So <code class="language-plaintext highlighter-rouge">argv</code> is a pointer to a pointer array <code class="language-plaintext highlighter-rouge">argv[]</code>. It can be used directly without definition.
+The pointers stored in the <code class="language-plaintext highlighter-rouge">argv[]</code> array point to various parts of the input command (caller, options, parameters). The command entered in the Shell is split by judging spaces, then the header address of the string is put into the <code class="language-plaintext highlighter-rouge">argv[]</code> array, and finally a <code class="language-plaintext highlighter-rouge">0</code> is placed, indicating a null pointer.
+For example, if the Shell input is <code class="language-plaintext highlighter-rouge">echo hello, world!</code>, then there are 4 pointers stored in the <code class="language-plaintext highlighter-rouge">argv[]</code> array:</p>
+<ol>
+  <li>A pointer whose value is the header address of <code class="language-plaintext highlighter-rouge">echo\0</code>;</li>
+  <li>A pointer whose value is the header address of <code class="language-plaintext highlighter-rouge">hello,\0</code>;</li>
+  <li>A pointer whose value is the header address of <code class="language-plaintext highlighter-rouge">world!\0</code>;</li>
+  <li>Null pointer <code class="language-plaintext highlighter-rouge">0</code>.</li>
+</ol>
+
+<p>It is easy to judge if there are parameters directly after the calling program like this, just start the second one in the array.
+But many programs need to judge situations, that is, options. How should developers judge options and parameters?
+It is generally customary to use multi-level pointers to operate strings. The predecessors were very smart and took advantage of this to invent “UNIX-style” commands, such as <code class="language-plaintext highlighter-rouge">ls -s .</code>. In this command, a dash <code class="language-plaintext highlighter-rouge">-</code> is added in front of the option, so that the two can be distinguished.
+According to the UNIX code convention, directly skip the first one, and then determine whether the first character of the string pointed to by the pointer is <code class="language-plaintext highlighter-rouge">-</code>. If so, then enter a <code class="language-plaintext highlighter-rouge">switch</code> judgment and use <code class="language-plaintext highlighter-rouge">case</code> to list multiple What code should be executed if this is supported. For example, you can determine options and process parameters as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="n">c</span><span class="p">;</span>
+<span class="k">while</span> <span class="p">(</span><span class="o">--</span><span class="n">argc</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="o">*++</span><span class="n">argv</span><span class="p">)[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="sc">'-'</span> <span class="p">{</span>
+	<span class="k">while</span> <span class="p">(</span><span class="n">c</span> <span class="o">=</span> <span class="o">*++</span><span class="n">argv</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="p">{</span>
+		<span class="k">switch</span><span class="p">(</span><span class="n">c</span><span class="p">){</span>
+			<span class="k">case</span> <span class="sc">'x'</span><span class="p">:</span>
+			<span class="p">...</span>
+			<span class="k">break</span><span class="p">;</span>
+			<span class="k">case</span> <span class="sc">'n'</span><span class="p">:</span>
+			<span class="p">...</span>
+			<span class="k">break</span><span class="p">;</span>
+			<span class="nl">default:</span>
+			<span class="n">printf</span><span class="p">(</span><span class="s">"xxx: illegal opyion %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+			<span class="p">...</span>
+			<span class="k">break</span><span class="p">;</span>
+		<span class="p">}</span>
+	<span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Finally, think about why some people couldn’t understand your previous version, sentence by sentence. The original screenshot is as follows:</p>
+
+<p><img src="/assets/images/05465551a1e74341af3978cc7a0946d5.png" alt="Original content of this article" /></p>
+
+<p><strong>“<code class="language-plaintext highlighter-rouge">argv</code> is a pointer to a string array that contains the parameters”: **“argv” to many people is the array itself. But generally, if you say “argv” alone, you are referring to the pointer to the array. If it refers to an array, it needs to be represented by “array argv”, “argv array”, or “<code class="language-plaintext highlighter-rouge">argv[]</code>”. Because as mentioned before, arrays are implemented using pointers. Moreover, I added a code style to the original text. If it is in the code, <code class="language-plaintext highlighter-rouge">argv</code> is directly expressed as a pointer. And in general code, arrays are used directly through pointers. But after I also asked my friends, I realized that many people don’t know this, and I still need to explain this kind of thing in detail in the future.
+**“Each string is a parameter, and the last element is <code class="language-plaintext highlighter-rouge">0</code>”:</strong> The problem with this sentence is that there is a bit of ambiguity, and too many things are omitted (you can see it from the explanation above). What I mean is “When the program runs, it will automatically split the string obtained from the input into multiple strings, and then store these strings in the argv array. The last element in the array is stored as a null pointer <code class="language-plaintext highlighter-rouge">0</code>”. The reason for the ambiguity is the use of subordinate clauses. Using subordinate clauses in Chinese does cause this problem, so be careful in the future.
+<strong>“However, it is generally customary to use multi-level pointers to operate strings”:</strong> This belongs to me and is only used as a note. If someone has not read some source code, they will not be able to understand what is being said. The psychological estimate is “you Who knows this? mp4”. Therefore, I will explain it in detail in the future and keep it as a record. Otherwise, if I remember what happened now, I won’t be able to understand it in a year or two.</p>
+
+<p>I hope that these problems will not appear again in the blog in the future, and I would like to apologize to those who opened this blog before and did not get the solution.</p>
+
+<p>​I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

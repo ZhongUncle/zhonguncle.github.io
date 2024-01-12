@@ -1,0 +1,158 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>What are the query of URL? How to parse and obtain them?</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>What are the query of URL? How to parse and obtain them? | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="What are the query of URL? How to parse and obtain them?" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="This article is to introduce the common parameter parts in URLs and how to use common Python, JavaScript, and PHP to parse and obtain parameters.”" />
+<meta property="og:description" content="This article is to introduce the common parameter parts in URLs and how to use common Python, JavaScript, and PHP to parse and obtain parameters.”" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/4960acb8624248a0f818c31c8e3d6447.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/4960acb8624248a0f818c31c8e3d6447.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-07-10T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="What are the query of URL? How to parse and obtain them?" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-07-10T00:00:00+08:00","datePublished":"2022-07-10T00:00:00+08:00","description":"This article is to introduce the common parameter parts in URLs and how to use common Python, JavaScript, and PHP to parse and obtain parameters.”","headline":"What are the query of URL? How to parse and obtain them?","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/4960acb8624248a0f818c31c8e3d6447.html"},"url":"https://zhonguncle.github.io/blogs/4960acb8624248a0f818c31c8e3d6447.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>What are the query of URL? How to parse and obtain them?</h1>
+            <div class="bloginfo">
+                <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ #Words: 460 </p>
+            </div>
+            <p>This article is to introduce the common parameter parts in URLs and how to use common Python, JavaScript, and PHP to parse and obtain parameters. (You can click on the table of contents on the left to jump directly to the part you want to see)</p>
+
+<h2 id="what-are-url-parameters">What are URL parameters?</h2>
+<p>When visiting a website, you may see a <code class="language-plaintext highlighter-rouge">?id=1</code> or other parts in the format similar to <code class="language-plaintext highlighter-rouge">?xxx=xxx</code> in the URL. what is this?</p>
+
+<p>This part is called query (meaning question mark, very vivid) by definition, and is also called URL access parameter (URL parameter) or directly called URL parameter. Taking <code class="language-plaintext highlighter-rouge">?id=1</code> as an example, <code class="language-plaintext highlighter-rouge">?</code> indicates the beginning of the parameter, <code class="language-plaintext highlighter-rouge">id</code> is the parameter name, and <code class="language-plaintext highlighter-rouge">=1</code> indicates that the value of the parameter is <code class="language-plaintext highlighter-rouge">1</code>. If there are multiple parameters, use <code class="language-plaintext highlighter-rouge">&amp;</code> to separate the parameters.</p>
+
+<h2 id="purpose-and-advantages-of-url-parameters">Purpose and advantages of URL parameters</h2>
+<p>In terms of use, the most straightforward and broad term is: you can pass information through the URL by using URL parameters.
+Specifically, it can implement search queries, filters and other functions.</p>
+
+<p>For example: Suppose the user enters <code class="language-plaintext highlighter-rouge">abc</code> in the input box and presses Enter, an address of <code class="language-plaintext highlighter-rouge">https://www.example.com/?keyword=abc</code> will be returned. When the user visits, the server will retrieve relevant content through the server search function through the URL parameter <code class="language-plaintext highlighter-rouge">keyword</code> here, and then return it to the user’s computer, so that the user can see the relevant information.
+There are also some websites that use the parameter <code class="language-plaintext highlighter-rouge">id</code> to manage their own interface. By getting the URL parameters and then retrieving them in the database, it is much more convenient.</p>
+
+<p>The advantages are convenience and speed.
+If URL parameters are not used, it will be extremely troublesome to manage some websites or implement some functions.</p>
+
+<h2 id="how-to-parse-url-parameters">How to parse URL parameters</h2>
+<p>Next, we will introduce the methods of parsing and obtaining URL parameters in different languages.</p>
+
+<p>In order not to make the article too long, I have written them into separate blogs.</p>
+
+<p>###Python
+Python is probably the easiest way. For space reasons, please refer to <a href="/blogs/6cea52b72dd2b0d5ddbc163b7ee2cb59.html">How Python parses and obtains URL parameters and uses</a></p>
+
+<h3 id="javascript">JavaScript</h3>
+<p>JavaScript is a little more cumbersome. For space reasons, please refer to <a href="/blogs/306bd6059b8768ef2022f205073fdf9c.html">How to get query of URLs in Javascript</a></p>
+
+<h3 id="php">PHP</h3>
+<p>The PHP and Python methods are similar and simple. Due to space limitations, please refer to <a href="/blogs/a5f2826a18ab8a51e0d48236e702a060.html">How to get query of URLs in PHP</a></p>
+
+<h3 id="swift">Swift</h3>
+<p>Some people also use Swift and are listed here. Due to space limitations, please refer to <a href="/blogs/d4f89b69a701100ce7f8f8aca2abd3d4.html">How Swift parses URLs</a></p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

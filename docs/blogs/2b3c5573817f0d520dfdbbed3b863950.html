@@ -1,0 +1,199 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to delay execution or scheduled automatic operations in SwiftUI</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to delay execution or scheduled automatic operations in SwiftUI | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to delay execution or scheduled automatic operations in SwiftUI" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to delay execution of operations or scheduled automatic execution of operations (using timer Timer and asynchronous DispatchQueue.main.asyncAfter)." />
+<meta property="og:description" content="How to delay execution of operations or scheduled automatic execution of operations (using timer Timer and asynchronous DispatchQueue.main.asyncAfter)." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/2b3c5573817f0d520dfdbbed3b863950.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/2b3c5573817f0d520dfdbbed3b863950.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2022-03-14T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to delay execution or scheduled automatic operations in SwiftUI" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2022-03-14T00:00:00+08:00","datePublished":"2022-03-14T00:00:00+08:00","description":"How to delay execution of operations or scheduled automatic execution of operations (using timer Timer and asynchronous DispatchQueue.main.asyncAfter).","headline":"How to delay execution or scheduled automatic operations in SwiftUI","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/2b3c5573817f0d520dfdbbed3b863950.html"},"url":"https://zhonguncle.github.io/blogs/2b3c5573817f0d520dfdbbed3b863950.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to delay execution or scheduled automatic operations in SwiftUI</h1>
+            <div class="bloginfo">
+                <p class="info">2022-03-14 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 1005 </p>
+            </div>
+            <p>In the process of developing software, we not only need to perform operations when the user clicks, but sometimes we also need to automatically perform some operations at regular intervals. For example, the most common opening screen advertisement countdown is closed, as well as some animation effects. There are generally two ways to implement these: one is to use a timer, and the other is to use asynchronous operations.</p>
+
+<h2 id="advantages-and-disadvantages">Advantages and Disadvantages</h2>
+<ul>
+  <li>Timer controls how often a function is called, which means that the advantage of Timer is that it can run automatically until it is destroyed. The disadvantage is that the time interval is fixed and difficult to adjust (in theory, a variable can be used to control the interval, but it may be more troublesome). Generally, if you need to implement the timer function, choose this.</li>
+  <li>Asynchronous operation controls how long to wait before calling this call. In other words, the advantage of asynchronous is that you can control the length of this interval. The disadvantage is that it is inconvenient to run all the time. Generally, you need to wait for a period of time to run before using this, such as loading materials, network resources, etc.; or to achieve some strange effects.</li>
+</ul>
+
+<h2 id="how-to-use-timer-timer">How to use timer Timer</h2>
+<p>First we need to create a new Timer and use the following method to create it. The last <code class="language-plaintext highlighter-rouge">.autoconnect()</code> is used to automatically start the connection timer. We can also use <code class="language-plaintext highlighter-rouge">.connect()</code> to manually activate the connection.</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">let</span> <span class="nv">timer</span> <span class="o">=</span> <span class="kt">Timer</span><span class="o">.</span><span class="nf">publish</span><span class="p">(</span><span class="nv">every</span><span class="p">:</span> <span class="mi">3</span><span class="p">,</span> <span class="nv">on</span><span class="p">:</span> <span class="o">.</span><span class="n">main</span><span class="p">,</span> <span class="nv">in</span><span class="p">:</span> <span class="o">.</span><span class="n">common</span><span class="p">)</span><span class="o">.</span><span class="nf">autoconnect</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Here are some parameters:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">every:</code>: This parameter is used to control how often the Timer is updated, in seconds. The <code class="language-plaintext highlighter-rouge">3</code> here means 3 seconds.</li>
+  <li><code class="language-plaintext highlighter-rouge">on:</code>: This indicates when to activate this Timer. The <code class="language-plaintext highlighter-rouge">.main</code> here means that it will be activated when the main thread is running (that is, it will be activated when the app starts running). There is also <code class="language-plaintext highlighter-rouge">.current</code> which means it is activated when the current thread is running (that is, it means it is activated when the current view interface is displayed). It is best not to activate a timer on one thread on another thread, as this may lead to erroneous results.</li>
+  <li><code class="language-plaintext highlighter-rouge">in:</code>: This is the loop mode of Timer. There are <code class="language-plaintext highlighter-rouge">.common</code>, <code class="language-plaintext highlighter-rouge">.default</code> and <code class="language-plaintext highlighter-rouge">.tracking</code>. <code class="language-plaintext highlighter-rouge">.common</code> contains a pseudo-mode for one or more other run loop modes. When using this mode to add an object to a run loop, the run loop monitors the object when running in any of the common modes. For more information about adding a run loop mode to the common mode set, see <a href="https://developer.apple.com/documentation/corefoundation/1542137-cfrunloopaddcommonmode">CFRunMode</a>. <code class="language-plaintext highlighter-rouge">.default</code> is set to the mode for processing input sources other than the connection object, which is the most commonly used run loop mode. <code class="language-plaintext highlighter-rouge">.tracking</code> Mode set when tracking in a control, you can use this mode to add a timer that fires during tracking.</li>
+</ul>
+
+<p>It should be noted that if you are developing on macOS, there will be two more modes: <code class="language-plaintext highlighter-rouge">.eventTracking</code> and <code class="language-plaintext highlighter-rouge">.modalPanel</code>. <code class="language-plaintext highlighter-rouge">.eventTracking</code> is the mode set when tracking events modally, such as a mouse drag loop. <code class="language-plaintext highlighter-rouge">.modalPanel</code> is the mode set when waiting for input from a modal panel (such as saving or opening a panel).</p>
+
+<p>Then close and disconnect the Timer as follows:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">self</span><span class="o">.</span><span class="n">timer</span><span class="o">.</span><span class="n">upstream</span><span class="o">.</span><span class="nf">connect</span><span class="p">()</span><span class="o">.</span><span class="nf">cancel</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Timer looks complicated, but you don’t need to think too much about using it. Next, let’s talk about how to use Timer after creating it.</p>
+
+<p>In SwiftUI, we can let the view perform some operations when some data changes by using <code class="language-plaintext highlighter-rouge">.onReceive()</code>. The specific method is as follows:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">.</span><span class="nf">onReceive</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span> <span class="p">{</span> <span class="n">_</span> <span class="k">in</span>
+<span class="nf">print</span><span class="p">(</span><span class="s">"Timer active, add 1 second"</span><span class="p">)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Then write a simple timer interface that counts down from 5 and loops again after the countdown:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kd">struct</span> <span class="kt">TimerView</span><span class="p">:</span> <span class="kt">View</span> <span class="p">{</span>
+     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">timer</span> <span class="o">=</span> <span class="kt">Timer</span><span class="o">.</span><span class="nf">publish</span><span class="p">(</span><span class="nv">every</span><span class="p">:</span> <span class="mi">1</span><span class="p">,</span> <span class="nv">on</span><span class="p">:</span> <span class="o">.</span><span class="n">main</span><span class="p">,</span> <span class="nv">in</span><span class="p">:</span> <span class="o">.</span><span class="n">common</span><span class="p">)</span><span class="o">.</span><span class="nf">autoconnect</span><span class="p">()</span>
+     <span class="kd">@State</span> <span class="kd">private</span> <span class="k">var</span> <span class="nv">countNum</span> <span class="o">=</span> <span class="mi">5</span>
+     <span class="k">var</span> <span class="nv">body</span><span class="p">:</span> <span class="kd">some</span> <span class="kt">View</span> <span class="p">{</span>
+         <span class="kt">Text</span><span class="p">(</span><span class="s">"</span><span class="se">\(</span><span class="n">countNum</span><span class="se">)</span><span class="s">"</span><span class="p">)</span>
+             <span class="o">.</span><span class="nf">onReceive</span><span class="p">(</span><span class="n">timer</span><span class="p">)</span> <span class="p">{</span> <span class="n">input</span> <span class="k">in</span>
+                 <span class="k">if</span> <span class="n">countNum</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">{</span>
+                     <span class="n">countNum</span> <span class="o">-=</span> <span class="mi">1</span>
+                 <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="n">countNum</span> <span class="o">==</span> <span class="mi">0</span><span class="p">{</span>
+                     <span class="n">countNum</span> <span class="o">=</span> <span class="mi">5</span>
+                 <span class="p">}</span>
+             <span class="p">}</span>
+     <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="asynchronous-operation-dispatchqueue">Asynchronous operation DispatchQueue</h2>
+<p>Next, let’s talk about the asynchronous operation <code class="language-plaintext highlighter-rouge">DispatchQueue</code>. This is also very commonly used, especially when you need to load data or do effects or animations. It is very easy to use.</p>
+
+<p>How to use it:</p>
+
+<div class="language-swift highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">DispatchQueue</span><span class="o">.</span><span class="n">main</span><span class="o">.</span><span class="nf">asyncAfter</span><span class="p">(</span><span class="nv">deadline</span><span class="p">:</span> <span class="o">.</span><span class="nf">now</span><span class="p">()</span> <span class="o">+</span> <span class="o">.</span><span class="nf">seconds</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span> <span class="nv">execute</span><span class="p">:</span> <span class="p">{</span>
+     <span class="nf">print</span><span class="p">(</span><span class="s">"The wait is over!"</span><span class="p">)</span>
+<span class="p">})</span>
+</code></pre></div></div>
+
+<p>Introduce the parameters:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">deadline:</code>: When to perform the operation, <code class="language-plaintext highlighter-rouge">.now() + .seconds(1)</code> here means waiting for 1 second starting from the current time.</li>
+  <li><code class="language-plaintext highlighter-rouge">execute:</code>: What operation needs to be performed.</li>
+</ul>
+
+<p>This is relatively simple, so I won’t introduce it in too much detail.</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

@@ -1,0 +1,252 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Mount and unmount external hard drive on Mac by diskutil in Terminal</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>Mount and unmount external hard drive on Mac by diskutil in Terminal | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="Mount and unmount external hard drive on Mac by diskutil in Terminal" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Recently, when I used macOS to mount an external hard drive, I couldn’t mount it using mount. Many didn’t explain the various situations in detail" />
+<meta property="og:description" content="Recently, when I used macOS to mount an external hard drive, I couldn’t mount it using mount. Many didn’t explain the various situations in detail" />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/0bb3d453c4139ba72a988cb4cb36d4bb.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/0bb3d453c4139ba72a988cb4cb36d4bb.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-05T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="Mount and unmount external hard drive on Mac by diskutil in Terminal" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-07-05T00:00:00+08:00","datePublished":"2023-07-05T00:00:00+08:00","description":"Recently, when I used macOS to mount an external hard drive, I couldn’t mount it using mount. Many didn’t explain the various situations in detail","headline":"Mount and unmount external hard drive on Mac by diskutil in Terminal","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/0bb3d453c4139ba72a988cb4cb36d4bb.html"},"url":"https://zhonguncle.github.io/blogs/0bb3d453c4139ba72a988cb4cb36d4bb.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Mount and unmount external hard drive on Mac by diskutil in Terminal</h1>
+            <div class="bloginfo">
+                <p class="info">2023-07-05 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 1284 </p>
+            </div>
+            <p>Recently, when I used macOS to mount an external hard drive, I couldn’t mount it using <code class="language-plaintext highlighter-rouge">mount</code>. Many articles didn’t explain the various situations in detail, so I wrote a blog to record it.</p>
+
+<h2 id="how-to-mount-and-unmount-the-hard-disk-or-partition">How to mount and unmount the hard disk (or partition)</h2>
+<p><code class="language-plaintext highlighter-rouge">mount</code> and <code class="language-plaintext highlighter-rouge">umount</code> cannot be used on macOS. If used, unknown special files or no permissions will be displayed, as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mount /dev/disk3s2
+mount: /dev/disk3s2: unknown special file or file system.
+$ umount /dev/disk3s2
+umount: unmount(/Volumes/backup): Operation not permitted
+</code></pre></div></div>
+
+<p>If you add <code class="language-plaintext highlighter-rouge">sudo</code> to <code class="language-plaintext highlighter-rouge">umount</code>, <code class="language-plaintext highlighter-rouge">Resource busy</code> will be displayed, prompting you to use <code class="language-plaintext highlighter-rouge">diskutil unmount</code>, as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo umount /dev/disk3s2
+Password:
+umount(/Volumes/backup): Resource busy -- try 'diskutil unmount'
+</code></pre></div></div>
+
+<p>In some cases, if you use <code class="language-plaintext highlighter-rouge">diskutil mount /dev/disk3s2</code> as usual, you will find that it can be mounted successfully, as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diskutil mount /dev/disk3s2
+Volume backup on /dev/disk3s2 mounted
+</code></pre></div></div>
+
+<p>Uninstallation using <code class="language-plaintext highlighter-rouge">diskutil unmount /dev/disk3s2</code> will also be successful, as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diskutil unmount /dev/disk3s2
+Volume backup on disk3s2 unmounted
+</code></pre></div></div>
+
+<p><strong>As a reminder, you don’t need to write the path here. You can also write <code class="language-plaintext highlighter-rouge">diskutil unmount disk3s2</code> directly. If you know the hard disk or volume name, you can directly use the name to load or unload, as follows</strong>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo diskutil mount backup
+Volume backup on backup mounted
+</code></pre></div></div>
+
+<blockquote>
+  <p>It should be noted that “partition” in macOS is not the same concept as partition in Windows.</p>
+</blockquote>
+
+<p>But if you want to load or unmount all volumes in a partition, you must use <code class="language-plaintext highlighter-rouge">mountDisk</code> and <code class="language-plaintext highlighter-rouge">unmountDisk</code>, otherwise the following content will be displayed:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ diskutil unmount disk2
+disk2 was already unmounted or it has a partitioning scheme so use "diskutil unmountDisk" instead
+</code></pre></div></div>
+
+<p><strong>Note that although there is <code class="language-plaintext highlighter-rouge">Disk</code> in this option, it operates on “a partition”, not “a hard disk”</strong>. Because it is loaded based on the table in a certain hard disk partition.</p>
+
+<h2 id="how-to-obtain-the-hard-disk-path-and-hard-disk-volume-name">How to obtain the hard disk path and hard disk volume name</h2>
+<p>You can get information about the connected hard drive through “System Information” and “Disk Utility”, but this is too troublesome.</p>
+
+<p>You can use `diskutil list to view all hard drives that have been connected to the Mac, as follows (only the first external hard drive is retained):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/dev/disk2 (external, physical):
+    #: TYPE NAME SIZE IDENTIFIER
+    0: GUID_partition_scheme *1.0 TB disk2
+    1: EFI EFI 209.7 MB disk2s1
+    2: Apple_APFS Container disk3 1000.0 GB disk2s2
+
+/dev/disk3 (synthesized):
+    #: TYPE NAME SIZE IDENTIFIER
+    0: APFS Container Scheme - +1000.0 GB disk3
+                                  Physical Store disk2s2
+    1: APFS Volume backup 323.2 GB disk3s2
+</code></pre></div></div>
+
+<p>At this time, you can get the names of the locations of each partition and file.</p>
+
+<p>**If you just want to know how to load and unload, then just read this. The following is to solve some questions of curious babies and record some APFS knowledge, such as what is the underlying operation of mounting an APFS partition. **</p>
+<h2 id="expand-knowledge">Expand knowledge</h2>
+<h3 id="what-is-the-difference-between-the-above-two-parts">What is the difference between the above two parts?</h3>
+<p>As you can see in the above content, a hard disk actually generates two parts: <code class="language-plaintext highlighter-rouge">/dev/disk2 (external, physical)</code> and <code class="language-plaintext highlighter-rouge">/dev/disk3 (synthesized)</code>. What’s the difference between the two?</p>
+<h3 id="devdisk2-external-physical-part"><code class="language-plaintext highlighter-rouge">/dev/disk2 (external, physical)</code> part</h3>
+<p>This part represents the physical part of the hard drive. That is, this part of “Disk Utility”:</p>
+
+<p><img alt="" src="/assets/images/20f728fdde0d49a88b3c3f8ff263d62c.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>Stored in <code class="language-plaintext highlighter-rouge">/dev/disk2</code> is the boot file of the hard disk, which is the hard disk node instance (device node entry), which also includes the hard disk identifier (disk identifier) of each part. The <code class="language-plaintext highlighter-rouge">TYPE</code> of <code class="language-plaintext highlighter-rouge">disk2</code> is also written as <code class="language-plaintext highlighter-rouge">GUID_partition_scheme</code> (GUID partition scheme).</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">disk2s2</code> part is the container part you see in “Disk Utility” (if you are an eagle-eyed reader, you will find that this part is called <code class="language-plaintext highlighter-rouge">container disk3</code>, and the “device” part is also “disk3”. The next chapter will explain why this is so) :</p>
+
+<p><img alt="" src="/assets/images/e3a335ba12114c6db8f97114962416da.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>If you try to load the container <code class="language-plaintext highlighter-rouge">disk2s2</code> the following message will be displayed:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo diskutil mount disk2s2
+Volume on disk2s2 failed to mount because it appears to be
+an APFS Physical Store (or is the APFS Container already mounted?)
+Note that for this mount operation, Disk Arbitration reports that
+the operation is not supported (kDAReturnUnsupported)
+</code></pre></div></div>
+
+<p>But you can load the EFI part if you need it:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo diskutil mount disk2s1
+Volume EFI on disk2s1 mounted
+</code></pre></div></div>
+<h3 id="devdisk3-synthesized-section"><code class="language-plaintext highlighter-rouge">/dev/disk3 (synthesized)</code> section</h3>
+<p>This part is the volume part of the container above.</p>
+
+<p><code class="language-plaintext highlighter-rouge">/dev/disk3</code> is the “APFS Container Scheme” (APFS container scheme), which contains various information about the volume. This is why the volume can be loaded directly through the <code class="language-plaintext highlighter-rouge">backup</code> in the <code class="language-plaintext highlighter-rouge">NAME</code> part instead of having to use a device. path.</p>
+
+<p><code class="language-plaintext highlighter-rouge">/dev/disk3s2</code> is the APFS volume contained in the container. If you load the <code class="language-plaintext highlighter-rouge">/dev/disk3s2</code> part, you can access the <code class="language-plaintext highlighter-rouge">NAME</code> in the loading location (the default is <code class="language-plaintext highlighter-rouge">/Volumes/</code>). file to access the hard disk contents in APFS format (all devices in Unix are files).</p>
+
+<p>This is what you see in Disk Utility (this is my Time Machine drive):</p>
+
+<p><img alt="" src="/assets/images/73afac4d8fb34f9fb4dea633bd8b4fb2.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>If there is only one volume in the hard disk, then this volume is usually <code class="language-plaintext highlighter-rouge">diskXs2</code> in <code class="language-plaintext highlighter-rouge">/dev</code>.</p>
+
+<p>By default, the generated volumes are in the <code class="language-plaintext highlighter-rouge">/Volumes/</code> directory and can be accessed here (equivalent to <code class="language-plaintext highlighter-rouge">/mnt</code> in Linux):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls /Volumes/
+16TB Macintosh HD backup
+</code></pre></div></div>
+<h3 id="why-is-the-container-displayed-as-container-disk3-in-the-second-picture-what-is-the-physical-store-diskxsx-part">Why is the container displayed as <code class="language-plaintext highlighter-rouge">container disk3</code> in the second picture (what is the “Physical Store diskXsX” part)</h3>
+<p>Sharp-eyed students may notice that in the second picture, the container part is called <code class="language-plaintext highlighter-rouge">container disk3</code>, and the “device” part is also “disk3”, not <code class="language-plaintext highlighter-rouge">disk2s2</code>, but the “physical storage area” is <code class="language-plaintext highlighter-rouge">disk2s2</code>.</p>
+
+<p><strong>This is because in APFS a partition contains a separate container (the container is responsible for space management and garbage protection). A container or partition can contain multiple volumes. This is different from some other file systems. Most of the partitions of other file systems are directly the file system layer (File System Layer)</strong>. The following is the hierarchy of hard disks with multiple partitions on the hard disk in “Disk Utility”:</p>
+
+<p><img src="/assets/images/c2767ee7453e4752bd9f554fea2050d6.png" alt="Please add image description" /></p>
+
+<p>The following figure shows the space division of the APFS partition on the hard disk, and the right side is the space division inside the container:</p>
+
+<p><img src="/assets/images/8c1c047800b0450ebdb6b1c9795f0677.png" alt="APFS general structure" /></p>
+
+<p>In other words, the “Apple File System container” part is the general name of the right part in the above picture, and the space on the hard disk is also the sum of the right part. There is no separate part called “Apple File System container”. This is why the container’s physical storage area is <code class="language-plaintext highlighter-rouge">disk2s2</code> (which is the third part of the hard disk), but further operations are required inside the container to allocate it into <code class="language-plaintext highlighter-rouge">disk3</code> as it is further differentiated internally.</p>
+
+<p>​I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>

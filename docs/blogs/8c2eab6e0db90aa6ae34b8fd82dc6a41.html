@@ -1,0 +1,214 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>How to install Go Tour tutorial in local</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to install Go Tour tutorial in local | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to install Go Tour tutorial in local" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to install Go Tour tutorial in local, and what to do if the other language versions cannot be installed." />
+<meta property="og:description" content="How to install Go Tour tutorial in local, and what to do if the other language versions cannot be installed." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/8c2eab6e0db90aa6ae34b8fd82dc6a41.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/8c2eab6e0db90aa6ae34b8fd82dc6a41.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2023-07-12T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to install Go Tour tutorial in local" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2023-07-12T00:00:00+08:00","datePublished":"2023-07-12T00:00:00+08:00","description":"How to install Go Tour tutorial in local, and what to do if the other language versions cannot be installed.","headline":"How to install Go Tour tutorial in local","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/8c2eab6e0db90aa6ae34b8fd82dc6a41.html"},"url":"https://zhonguncle.github.io/blogs/8c2eab6e0db90aa6ae34b8fd82dc6a41.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Microsoft Clarity -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ix8xlal10a");
+        </script>
+
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-SS87H0FDV7"></script>
+        <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        gtag('config', 'G-SS87H0FDV7');
+        </script>
+
+        
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to install Go Tour tutorial in local</h1>
+            <div class="bloginfo">
+                <p class="info">2023-07-12 ｜ <a href="/go.html"> Go</a> ｜ #Words: 1020 </p>
+            </div>
+            <p>Go officially has an online tutorial <a href="https://go.dev/tour/welcome/1">A Tour of Go</a>, where you can learn Go programming online, and it has a Chinese version. The original English page is as follows:</p>
+
+<p><img alt="" src="/assets/images/212b3a345e1f45e49401f3ee5d1b27c1.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>Surprisingly, Go provides an offline version (available in various languages). After downloading and installing, you can compile and run locally to view the results. You do not need to connect to the Internet to use a remote server, which improves efficiency and performance (details on this will be discussed separately later). There is a section on comparison).</p>
+<h2 id="preparations-before-installing-the-offline-version">Preparations before installing the offline version</h2>
+<p>Before installing the offline version, you first need to install Go locally, since compilation is done locally. Secondly, you need to prepare a workspace to store the downloaded modules and source code, as well as the compiled binary execution file.</p>
+
+<h3 id="install-go">Install Go</h3>
+<p>Not much to say about installing Go. You can install it directly using the software package management tool. Download it from the official website (<a href="https://go.dev/dl/">https://go.dev/dl/</a>) and install it using the GUI. Installation of the device is also very easy.</p>
+
+<h3 id="set-up-workspace-worksapce">Set up workspace (worksapce)</h3>
+<p>The focus is on preparation of the work space. Go generally has a workspace (not required now, but was required in the early days), which is essentially a directory, so that various packages, modules, source codes, and compiled binary executable files can be well managed. Go uses the environment variable <code class="language-plaintext highlighter-rouge">GOPATH</code> to find the workspace.</p>
+
+<p>The structure of the workspace is generally as follows:</p>
+
+<p><img alt="" src="/assets/images/03e672a1bab746818a6536c9b5b896dc.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>There are generally three directories:</p>
+<ul>
+  <li>bin: stores the built binary execution file;</li>
+  <li>pkg: stores some modules and packages;</li>
+  <li>src: stores Go source code.</li>
+</ul>
+
+<p>So create this directory and three of them wherever you want:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ mkdir workspace
+$ cd workspace
+$ mkdir bin pkg src
+</code></pre></div></div>
+
+<p>Then add the following command to your Shell configuration file (such as <code class="language-plaintext highlighter-rouge">.bashrc</code>, <code class="language-plaintext highlighter-rouge">.bash_profile</code> or <code class="language-plaintext highlighter-rouge">.zshenv</code>) to set the environment variable <code class="language-plaintext highlighter-rouge">GOPATH</code> (the following address needs to be modified according to your own situation):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>export GOPATH=~/Desktop/go
+</code></pre></div></div>
+
+<p>Then restart the terminal or use the <code class="language-plaintext highlighter-rouge">source configuration file</code> to update the environment variables.</p>
+
+<h2 id="kind-tips">Kind tips</h2>
+<p>Before installing the offline version, please note: try to install the original English version, and then use the browser to translate it. The update frequency of other language versions is less than ideal, which may cause some problems.</p>
+
+<p>For example, if you go to the Chinese version of the source code (<a href="https://github.com/Go-zh/tour">https://github.com/Go-zh/tour</a>), it says that the installation method is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go get -u github.com/Go-zh/tour
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">go get</code> has been deprecated. The error message will prompt to use <code class="language-plaintext highlighter-rouge">go install</code>. The English version has been updated. The correct installation method for the Chinese version is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go install github.com/Go-zh/tour@latest
+</code></pre></div></div>
+
+<p>Moreover, the Chinese version has not been updated for a long time, so there may be some problems when using it. If your English is not very good, it is recommended to use the English version and the computer translation of the browser is enough.</p>
+
+<p>If you have installed the Chinese version and found that it cannot run, and then install the English original version, it will prompt that something is already installed. At this time, you need to manually delete the <code class="language-plaintext highlighter-rouge">tour</code> executable file in the <code class="language-plaintext highlighter-rouge">bin</code> directory, and then use <code class="language-plaintext highlighter-rouge">go clean -modcache</code> to clean it up. The module is cached and can be installed at this time. Of course, if your directories are originally empty, you can delete them and reinstall them.</p>
+
+<h2 id="install-offline-version">Install offline version</h2>
+<p>If you set up your <code class="language-plaintext highlighter-rouge">GOPATH</code> and workspace as described before, then the next step is simple. Enter in the terminal (don’t worry about the current working directory, because it will be automatically installed in the <code class="language-plaintext highlighter-rouge">GOPATH</code> directory):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ go install golang.org/x/website/tour@latest
+</code></pre></div></div>
+
+<p>The last <code class="language-plaintext highlighter-rouge">@latest</code> means to install the latest version. If you want to install a specific version, just change <code class="language-plaintext highlighter-rouge">latest</code> to the version number.</p>
+
+<p>If you encounter an error such as “Request Refused”, make sure there is no error in the entered address and try again after a while. Sometimes network problems can also cause the request to be rejected. If that still doesn’t work, you can try changing DNS or other methods.</p>
+
+<h2 id="use-offline-version">Use offline version</h2>
+<p>After completing the installation, enter the <code class="language-plaintext highlighter-rouge">bin</code> directory in the workspace and you will see an executable file named <code class="language-plaintext highlighter-rouge">tour</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ cd $GOPATH/bin
+$ls
+tour
+</code></pre></div></div>
+
+<p>Run the executable file to run A Tour of Go locally, and the web page will automatically open in the default browser <a href="http://127.0.0.1:3999/ basics/1">http://127.0.0.1:3999/basics/1</a>, as follows:</p>
+
+<p><img alt="" src="/assets/images/eeed26c7c3f04d1f8da2d45014d18242.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<p>The running speed is similar to the local running speed of <code class="language-plaintext highlighter-rouge">go run</code>, except that it may be slightly slower the first time.</p>
+<h2 id="performance-difference-between-online-version-and-offline-version">Performance difference between online version and offline version</h2>
+<p>If the Internet speed is good, there is almost no big difference between the two when using them.</p>
+
+<p>For example, if you use quick sort to sort 35 integers and output them, the speed of the two is almost the same (offline version on the left, online version on the right):</p>
+
+<p><img src="/assets/images/49e5f7e074a84364ab9e7340bd2d01da.gif" alt="Please add image description" /></p>
+
+<p>Although both the local version and the online version have CPU usage time and memory size limits, the local version is much more relaxed than the online version.</p>
+
+<p>For example, when expanding the array to 2000 integers, the offline version takes about 36 seconds to complete. The online version will display <code class="language-plaintext highlighter-rouge">timeout running program</code> in about 6 seconds, while the local use of <code class="language-plaintext highlighter-rouge">go run</code> takes about 35 seconds (use The compiled executable program runs in about 31 seconds).</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
