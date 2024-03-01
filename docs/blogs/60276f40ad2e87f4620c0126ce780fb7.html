@@ -1,0 +1,293 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        <!-- Begin Jekyll SEO tag v2.8.0 -->
+<title>How to clone system to a smaller disk/SD card on Raspberry Pi | ZhongUncle’s Blog</title>
+<meta name="generator" content="Jekyll v4.3.3" />
+<meta property="og:title" content="How to clone system to a smaller disk/SD card on Raspberry Pi" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="How to clone system to a smaller hard drive or SD card on Raspberry Pi, including partition, set up and repair boot files." />
+<meta property="og:description" content="How to clone system to a smaller hard drive or SD card on Raspberry Pi, including partition, set up and repair boot files." />
+<link rel="canonical" href="https://zhonguncle.github.io/blogs/60276f40ad2e87f4620c0126ce780fb7.html" />
+<meta property="og:url" content="https://zhonguncle.github.io/blogs/60276f40ad2e87f4620c0126ce780fb7.html" />
+<meta property="og:site_name" content="ZhongUncle’s Blog" />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2024-03-02T00:00:00+08:00" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title" content="How to clone system to a smaller disk/SD card on Raspberry Pi" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"BlogPosting","dateModified":"2024-03-02T00:00:00+08:00","datePublished":"2024-03-02T00:00:00+08:00","description":"How to clone system to a smaller hard drive or SD card on Raspberry Pi, including partition, set up and repair boot files.","headline":"How to clone system to a smaller disk/SD card on Raspberry Pi","mainEntityOfPage":{"@type":"WebPage","@id":"https://zhonguncle.github.io/blogs/60276f40ad2e87f4620c0126ce780fb7.html"},"url":"https://zhonguncle.github.io/blogs/60276f40ad2e87f4620c0126ce780fb7.html"}</script>
+<!-- End Jekyll SEO tag -->
+
+        
+        <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+        <script>
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i+"?ref=bwt";
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ky7zebz4nm");
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            主页
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/plan9.html" class="headerItem">
+            Plan 9
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>How to clone system to a smaller disk/SD card on Raspberry Pi</h1>
+            <div class="bloginfo">
+                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2588 </p>
+            </div>
+            <p>Recently, an old solid-state drive is free. Although the writing speed is not fast, it is enough to meet the Gigabit network, so I want to replace the solid-state drive currently used for the Raspberry Pi. Due to new system need to set somethings, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current drive (512GB), so some common methods of copying hard drives cannot be used.</p>
+
+<p>This article only requires the use of Raspberry Pi, but I use SSH to access the Raspberry Pi, so the screenshots will be in macOS style.</p>
+
+<p><strong>After writing the article, I did it again and confirmed that there was no problem, but I still recommend readers to back up important files first, just in case.</strong></p>
+
+<h2 id="why-not-use-dd-or-sd-card-copier">Why not use <code class="language-plaintext highlighter-rouge">dd</code> or SD card copier</h2>
+<p>This article will not use the CLI program <code class="language-plaintext highlighter-rouge">dd</code> or the GUI application SD card copier.</p>
+
+<p>Do not use <code class="language-plaintext highlighter-rouge">dd</code> because when these programs copy, they copy the entire disk, which will cause the write to definitely fail (the target disk is smaller than the destination disk). And the speed is very slow. Even if we try to reduce the number of controllers that the transmission passes through and improve the transmission interface, writing from solid state to solid state is only 30~45MB/s (15~20MB/s without any optimization).</p>
+
+<p>But SD card copier does not have this problem. I don’t want to plug in HDMI cable to back of monitor, and it’s not suitable for daily backup and other operations, so I want to study how to use the CLI. <strong>If you can use desktop mode, it is recommended to use the SD card copier application directly</strong>. Moreover, this method is much faster, and the speed can be stable at 50~70MB/s.</p>
+
+<h2 id="principle">Principle</h2>
+<p>The method in this article is the same as the principle of SD card copier: first divide the target hard disk into two areas, the boot area (named <code class="language-plaintext highlighter-rouge">bootfs</code>, format Windows_FAT_32) and the usage area (also called the root area named <code class="language-plaintext highlighter-rouge">rootfs</code> , the format is Linux), and then use <code class="language-plaintext highlighter-rouge">rsync</code> to copy, which is much faster.</p>
+
+<p>If you use lsblk -f on the Raspberry Pi (this is just for demonstration, a more detailed tool will be introduced later) to view the structure and file system of the hard disk, you can see:</p>
+
+<p><img src="/assets/images/ecee33f3cf6a4b3fa0abe9abfe78a02f.png" alt="Structure of hard disk file system" /></p>
+
+<blockquote>
+  <p>If you are curious about why the Raspberry Pi’s boot partition <code class="language-plaintext highlighter-rouge">bootfs</code> does not use the ext4 file system, this is because the minimum requirement is 16 GiB, but the boot area is a bit outrageous. In addition, using FAT32, a file system that can be read on Windows, Linux, and macOS, is also convenient for changing some settings (the Raspberry Pi can modify some configurations, such as HDMI levels, by modifying the files in the boot area <code class="language-plaintext highlighter-rouge">bootfs</code> wait).</p>
+</blockquote>
+
+<p>Due to startup requirements, we need partitions to exist on the hard disk in the order of “boot area - usage area”. So we need to format the startup area first, and then format the remaining part into the use area.</p>
+
+<h2 id="step-1-partition-and-create-a-new-file-system">Step 1: Partition and create a new file system</h2>
+<p>First connect the two disks to the Raspberry Pi. Remember to format the target hard disk into a file system that Linux can recognize (on a Mac, you can use Disk Utility to format it as exFAT, or use Raspberry Pi Imager to format it as FAT32).</p>
+
+<p>Next, use the <code class="language-plaintext highlighter-rouge">parted</code> tool to partition, not because it can be interactively operated, but mainly because it can display more detailed partition information, and it is more convenient to set some parameters.</p>
+
+<p>First use the <code class="language-plaintext highlighter-rouge">sudo parted -l</code> command to obtain the currently connected hard disk information:</p>
+
+<p><img src="/assets/images/d4fef5475d5046ed9c46dc222cf6d5f9.png" alt="Hard disk information printed by sudo parted -l" /></p>
+
+<p>The first part is the system disk, where we can see the size, starting address, ending address, file system and other information of each partition. The second part is our target hard drive.</p>
+
+<p>Then we use the following command to generate a similar partition structure on the target hard disk:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo parted /dev/sdb --script 'mklabel msdos mkpart primary fat32 4194.5kB 541MB mkpart primary ext4 541MB 120GB print quit'
+</code></pre></div></div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">/dev/sdb</code> is the device name of the target disk. Do not use <code class="language-plaintext highlighter-rouge">/dev/sdb1</code>, which is the name of an existing partition.</li>
+  <li>Using <code class="language-plaintext highlighter-rouge">--script</code> will not enter interactive mode, so one command can complete the operation. It should be noted that this option is not officially used, but if you follow the above content and do not use this option and directly follow the following commands, the entire hard disk partition will be destroyed (there will be a prompt).</li>
+  <li><code class="language-plaintext highlighter-rouge">mklabel msdos</code> sets the partition mode to MBR format. <code class="language-plaintext highlighter-rouge">gpt</code> is not used here because the system is <code class="language-plaintext highlighter-rouge">msdos</code> (you can see this information from the <code class="language-plaintext highlighter-rouge">Partition Table</code> in the picture above).</li>
+  <li><code class="language-plaintext highlighter-rouge">mkpart primary fat32 4194.5kB 541MB </code>This part is the command to divide the boot area. <code class="language-plaintext highlighter-rouge">primary</code> means an independent partition (or called “primary partition”, which corresponds to “extended partition”). Use the <code class="language-plaintext highlighter-rouge">fat32</code> file system, and use <code class="language-plaintext highlighter-rouge">4194.5kB</code> as the starting address, because the Raspberry Pi starts from block 8192, but the value displayed by <code class="language-plaintext highlighter-rouge">parted</code> is incorrect, as shown in <code class="language-plaintext highlighter-rouge">sudo fdisk -l</code> The content shall prevail. The termination address is the same as the termination address of the system disk.</li>
+  <li><code class="language-plaintext highlighter-rouge">mkpart primary ext4 541MB 120GB</code> This part is the command to divide the root area. Using the <code class="language-plaintext highlighter-rouge">ext4</code> file system, the starting address is the ending address of the boot area, but the ending address is the size of the hard disk, which is the same as shown in the original picture. The termination address is the same.</li>
+  <li><code class="language-plaintext highlighter-rouge">print</code> will print out partition information.</li>
+  <li><code class="language-plaintext highlighter-rouge">exit</code> will exit <code class="language-plaintext highlighter-rouge">parted</code>.</li>
+</ul>
+
+<blockquote>
+  <p>It should be noted that this command cannot be split into two, because using <code class="language-plaintext highlighter-rouge">mkpart</code> after exiting will erase the original partition, so that one partition will be generated in the end.</p>
+</blockquote>
+
+<p>Displayed as follows:</p>
+
+<p><img src="/assets/images/21a91be015f5481faed8c6ee3d47af74.png" alt="Only one partition" /></p>
+
+<p>At this time, the work has not been completed. We need to manually create the <code class="language-plaintext highlighter-rouge">FAT32</code> and <code class="language-plaintext highlighter-rouge">ext4</code> file systems for the two partitions, as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mkfs.vfat -F 32 /dev/sdb1
+sudo mkfs.ext4 -L rootfs /dev/sdb2
+</code></pre></div></div>
+
+<p>If you don’t do this step, some weird problems will occur. The previous partition information correctly shows that we have created a partition for <code class="language-plaintext highlighter-rouge">ext4</code>, numbered <code class="language-plaintext highlighter-rouge">2</code>. But if you check it with <code class="language-plaintext highlighter-rouge">sudo parted -l</code>, you will find the following situation. In the <code class="language-plaintext highlighter-rouge">File system</code> column, the second partition does not have any information:</p>
+
+<p><img src="/assets/images/860376eeca0a4556be735cfa33fc7935.png" alt="No information for the second partition" /></p>
+
+<p>At this time, when loading this partition, the following error message will be prompted:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ sudo mount /dev/sdb2 /mnt/rootfs/
+mount: /mnt/rootfs: wrong fs type, bad option, bad superblock on /dev/sdb2, missing codepage or helper program, or other error.
+        dmesg(1) may have more information after failed mount system call.
+mount: (hint) your fstab has been modified, but systemd still uses
+        the old version; use 'systemctl daemon-reload' to reload.
+</code></pre></div></div>
+
+<p>So create it manually.</p>
+
+<h2 id="part-2-copy-using-rsync">Part 2: Copy using <code class="language-plaintext highlighter-rouge">rsync</code></h2>
+
+<p>Before using <code class="language-plaintext highlighter-rouge">rsync</code> to copy, the two partitions need to be loaded.</p>
+
+<p>First, create a new directory under the <code class="language-plaintext highlighter-rouge">/mnt/</code> directory to mount the root partition:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mkdir /mnt/rootfs
+</code></pre></div></div>
+
+<p>Then mount the root partition:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount /dev/sdb2 /mnt/rootfs/
+</code></pre></div></div>
+
+<p>So where to copy (synchronize) to? Do you still remember the content in the first picture of the article? The directories corresponding to the two partitions on the system disk are displayed: <code class="language-plaintext highlighter-rouge">/boot/firmware</code> (boot partition) and <code class="language-plaintext highlighter-rouge">/</code> (root partition).</p>
+
+<p>First is the boot partition:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rsync -axHAWXS --numeric-ids --info=progress2 --exclude={"/mnt/","/boot/firmware/"} /* /mnt/rootfs
+</code></pre></div></div>
+
+<p>The options here mean the following:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">a</code> is the archive mode, which will read the directory recursively without destroying symbolic links, permissions and other information.</li>
+  <li><code class="language-plaintext highlighter-rouge">x</code> means that file system boundaries will not be crossed.</li>
+  <li><code class="language-plaintext highlighter-rouge">H</code> preserves hard links.</li>
+  <li><code class="language-plaintext highlighter-rouge">A</code> preserves ACLs (Access Control Lists).</li>
+  <li><code class="language-plaintext highlighter-rouge">W</code> disables the incremental algorithm used by network transfers. Since these are all local paths, the speed can be increased.</li>
+  <li><code class="language-plaintext highlighter-rouge">S</code> can handle sparse files efficiently so that they take up less space after transfer. (Without this, all source files may be 8GB, but the total destination files may be 10GB)</li>
+  <li><code class="language-plaintext highlighter-rouge">numeric-ids</code> uses numeric IDs instead of mappings.</li>
+  <li><code class="language-plaintext highlighter-rouge">info=progress2</code> will display the transfer progress and information, and the progress and information of the entire transfer, rather than the statistical information of each file.</li>
+  <li>There are several directories that do not need to be copied because they are duplicates, so use <code class="language-plaintext highlighter-rouge">--exclude=</code> to exclude them. In many articles about system cloning, other directories <code class="language-plaintext highlighter-rouge">/dev</code>, <code class="language-plaintext highlighter-rouge">/sys</code>, <code class="language-plaintext highlighter-rouge">/proc</code> are listed that can be ignored, but after I spent two hours rescuing, I can confirm that directories like <code class="language-plaintext highlighter-rouge">/dev</code> , <code class="language-plaintext highlighter-rouge">/sys</code>, <code class="language-plaintext highlighter-rouge">/proc</code> cannot be ignored (if I write a blog about how to rescue, I will list the link here)</li>
+</ul>
+
+<p>Here is an explanation of the two excluded directories.</p>
+<ul>
+  <li>The first <code class="language-plaintext highlighter-rouge">/mnt/</code> is to avoid repeated copying, because this is the destination of the copy. Otherwise it will be copied twice or more.</li>
+  <li>The last <code class="language-plaintext highlighter-rouge">/boot/firmware/</code> is because this part is the startup content, we will copy it separately later (copying it together may skip this part).</li>
+</ul>
+
+<p>A bunch of errors will be prompted when copying some files in the <code class="language-plaintext highlighter-rouge">/sys/</code> directory. Don’t worry about these errors, because they cannot be read (show no permission) or are virtual files. For details, please read this post: <a href="https://unix.stackexchange.com/questions/73569/why-does-rsync-fail -to-copy-files-from-sys-in-linux/73610#73610">Why does rsync fail to copy files from /sys in Linux? - Unix &amp; Linux stackexchange</a></p>
+
+<p>Since some directories were excluded earlier, they need to be created manually here:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mkdir /mnt/rootfs/mnt /mnt/rootfs/boot/firmware
+</code></pre></div></div>
+
+<p>Then you can mount the boot partition:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount /dev/sdb1 /mnt/rootfs/boot/firmware/
+</code></pre></div></div>
+
+<p>Then copy the boot partition. Most of the options here are the same as those in the boot partition:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo rsync -axHAWXS --numeric-ids --info=progress2 /boot/firmware/* /mnt/rootfs/boot/firmware/
+</code></pre></div></div>
+
+<p>If you are more careful, you will find that the original red soft link file has now turned blue:</p>
+
+<p><img src="/assets/images/06b906ea989c4dd7ae207f51878acc96.png" alt="red symbolic linked files to blue" /></p>
+
+<p>You can rely on this phenomenon to determine whether the copy is successful. But not all files can be judged in this way. For example, some soft link files in <code class="language-plaintext highlighter-rouge">/proc/</code> may need to be automatically updated and generated later to turn red.</p>
+
+<h2 id="step-3-repair-etcfstab-and-bootcmdlinetxt">Step 3: Repair <code class="language-plaintext highlighter-rouge">/etc/fstab</code> and <code class="language-plaintext highlighter-rouge">/boot/cmdline.txt</code></h2>
+<p>The <code class="language-plaintext highlighter-rouge">/etc/fstab</code> file lists all disk partitions that are automatically mounted at startup. Since we copied it directly, the UUID does not match, so it needs to be modified manually.</p>
+
+<p>Use <code class="language-plaintext highlighter-rouge">sudo fdisk -l</code> to see the identifier of the hard disk in the <code class="language-plaintext highlighter-rouge">Disk identifier</code> section, which we will need later:</p>
+
+<p><img src="/assets/images/7e2c4862fbc34f0b9cae562a560de638.png" alt="Disk identifier" /></p>
+
+<p>You can see the UUIDs of the two partitions <code class="language-plaintext highlighter-rouge">/dev/sdb1</code> and <code class="language-plaintext highlighter-rouge">/dev/sdb2</code>. Modify the corresponding file based on this content. <strong>It should be noted that the modified file is <code class="language-plaintext highlighter-rouge">/mnt/rootfs/etc/fstab</code> (the path may be different)</strong>, not <code class="language-plaintext highlighter-rouge">/etc/fstab in the system disk </code>.</p>
+
+<p>Just change the two <code class="language-plaintext highlighter-rouge">PARTUUID=</code> in <code class="language-plaintext highlighter-rouge">/mnt/rootfs/etc/fstab</code> to the corresponding content, as follows (the picture below is unmodified, it stands to reason that only the last number of the two UUIDs is different):</p>
+
+<p><img src="/assets/images/7ec8188eb2514545bf35eb6d78b06cf0.png" alt="UUID" /></p>
+
+<p>Then modify the corresponding part in <code class="language-plaintext highlighter-rouge">/mnt/rootfs/boot/cmdline.txt</code> (this is a soft link, the actual file is in <code class="language-plaintext highlighter-rouge">firmware</code>) (the highlighted part in the figure below):</p>
+
+<p><img src="/assets/images/a8e3418c8df54904b44058cfb6075220.png" alt="Modify UUID part" /></p>
+
+<p>At this point everything is done. We can shut down the computer, unplug the original hard drive and try to start it up (be sure to unplug the old one, otherwise the old boot partition may be used to start the new one. I encountered this during the experiment, and then rescued the hard drive again) .</p>
+
+<p>You can see that it can be used directly, with almost no difference. Use <code class="language-plaintext highlighter-rouge">sudo fdisk -l</code> to view the hard disk and you can see that the current <code class="language-plaintext highlighter-rouge">/dev/sda</code> is this hard disk.</p>
+
+<p><img src="/assets/images/ff7b1ac173404e26a799beca04c596a5.png" alt="/dev/sda is now a new hard drive" /></p>
+
+<p>Hope it can help those in need~</p>
+
+<h2 id="references-or-further-reading">References or further reading</h2>
+<p>Although I spent a lot of time and energy experimenting and trying this article, I would also like to thank many people for writing blogs and articles that provided me with ideas and solutions.</p>
+
+<p><a href="https://unix.stackexchange.com/questions/44095/how-can-i-change-the-volume-name-of- a-fat32-filesystem">How can I change the volume name of a FAT32 filesystem? - Unix &amp; Linux stackexchange</a>: This post introduces how to change the partition name for FAT32.</p>
+
+<p><a href="https://phoenixnap.com/kb/linux-format-disk">How to Format Disk Partitions in Linux - Dejan Tucakov</a>: From this article I learned that some command line partitioning tools do not create file systems , and then I discovered that <code class="language-plaintext highlighter-rouge">parted</code> was too.</p>
+
+<p><a href="https://www.baeldung.com/linux/rsync-clone-file-system-hierarchy">Clone File System Hierarchy to Another Disk With Rsync - Francesco Galgani</a>: This article describes how to use <code class="language-plaintext highlighter-rouge">rsync</code> to clone a disk , it also solved a lot of <code class="language-plaintext highlighter-rouge">rsync</code> copy problems for me, and also provided inspiration for me to adjust the startup boot. The article is mainly about Linux systems on popular devices, so it only mentions <code class="language-plaintext highlighter-rouge">/etc/fstab</code>, and the boot is through GRUB. The Raspberry Pi’s own system is booted through the <code class="language-plaintext highlighter-rouge">config.txt</code> and <code class="language-plaintext highlighter-rouge">cmdline.txt</code> files. If you want to try GRUB to boot the Raspberry Pi, you can check out this post <a href="https://forums.raspberrypi.com/viewtopic.php?t=306511">GRUB on RPi 4 - Raspberry Pi Forums</a> (I don’t have it) attempt, no guarantee is made as to the actual meaning of the content).</p>
+
+<p><a href="https://www.raspberrypi.com/documentation/computers/config_txt.html#autoboot-txt">The config.txt file - Raspberry Pi Documentation</a>: This is the official document of <code class="language-plaintext highlighter-rouge">config.txt</code>, although it is not used in this article to <code class="language-plaintext highlighter-rouge">config.txt</code>, but this document introduces the general startup process of Raspberry Pi. I also found <code class="language-plaintext highlighter-rouge">cmdline.txt</code> from it to complete the final repair work.</p>
+
+<p><a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-4-and-raspberry-pi-5- boot-flow">Raspberry Pi 4 and Raspberry Pi 5 Boot Flow - Raspberry Pi Documentation</a>: This part of the document introduces the detailed startup process, which can be viewed as extended reading.</p>
+
+<p><a href="https://jamesachambers.com/raspberry-pi-4-bootloader-firmware-updating-recovery-guide/">Raspberry Pi 4/400 Bootloader Firmware Update/Recovery Guide - James A. Chambers</a>: This blog introduces How to Repair and Update Launcher Firmware on Raspberry Pi 4/400. Because two hard drives are sometimes accidentally connected to the Raspberry Pi for startup at the same time, it may cause problems with the launcher firmware. You can read this article to repair the firmware.</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
