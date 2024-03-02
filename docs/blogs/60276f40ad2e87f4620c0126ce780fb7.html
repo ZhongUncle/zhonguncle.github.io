@@ -87,13 +87,22 @@
 </div>
             <h1>How to clone system to smaller disk/SD card on Raspberry Pi</h1>
             <div class="bloginfo">
-                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2588 </p>
+                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2701 </p>
             </div>
             <p>Recently, an old solid-state drive is free. Although the writing speed is not fast, it is enough to meet the Gigabit network, so I want to replace the solid-state drive currently used for the Raspberry Pi. Due to new system need to set somethings, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current drive (512GB), so some common methods of copying hard drives cannot be used.</p>
 
 <p>This article only requires the use of Raspberry Pi, but I use SSH to access the Raspberry Pi, so the screenshots will be in macOS style.</p>
 
 <p><strong>After writing the article, I did it again and confirmed that there was no problem, but I still recommend readers to back up important files first, just in case.</strong></p>
+
+<h2 id="notice">Notice</h2>
+<p>Due to verifying this process repeatedly, so I re-format and re-sync to disk. and I encountered a problem: Since formatting does not clear all existing files, <code class="language-plaintext highlighter-rouge">rysnc</code> may be not synchronizing correctly or partitions’ setting is not set correctly, so the boot flow will be broken.</p>
+
+<p>To avoid this problem, there are two ways:</p>
+<ul>
+  <li>you can just overwrite the first 5GB partition of disk with “0” (use <code class="language-plaintext highlighter-rouge">dd</code>) , it will cover the boot partition and some directories of system, so its size due to your installation and settings.</li>
+  <li>Completely erase the entire disk. It will takes more time, but it can ensure no problems.</li>
+</ul>
 
 <h2 id="why-not-use-dd-or-sd-card-copier">Why not use <code class="language-plaintext highlighter-rouge">dd</code> or SD card copier</h2>
 <p>This article will not use the CLI program <code class="language-plaintext highlighter-rouge">dd</code> or the GUI application SD card copier.</p>
