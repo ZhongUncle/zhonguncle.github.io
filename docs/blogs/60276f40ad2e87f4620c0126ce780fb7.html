@@ -87,13 +87,15 @@
 </div>
             <h1>How to clone system to smaller disk/SD card on Raspberry Pi</h1>
             <div class="bloginfo">
-                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2701 </p>
+                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2720 </p>
             </div>
             <p>Recently, an old solid-state drive is free. Although the writing speed is not fast, it is enough to meet the Gigabit network, so I want to replace the solid-state drive currently used for the Raspberry Pi. Due to new system need to set somethings, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current drive (512GB), so some common methods of copying hard drives cannot be used.</p>
 
 <p>This article only requires the use of Raspberry Pi, but I use SSH to access the Raspberry Pi, so the screenshots will be in macOS style.</p>
 
 <p><strong>After writing the article, I did it again and confirmed that there was no problem, but I still recommend readers to back up important files first, just in case.</strong></p>
+
+<p>This blog is long and the operation is also cumbersome, so I make a script for use: <a href="https://github.com/ZhongUncle/clone_rasp_disk">https://github.com/ZhongUncle/clone_rasp_disk</a></p>
 
 <h2 id="notice">Notice</h2>
 <p>Due to verifying this process repeatedly, so I re-format and re-sync to disk. and I encountered a problem: Since formatting does not clear all existing files, <code class="language-plaintext highlighter-rouge">rysnc</code> may be not synchronizing correctly or partitions’ setting is not set correctly, so the boot flow will be broken.</p>
