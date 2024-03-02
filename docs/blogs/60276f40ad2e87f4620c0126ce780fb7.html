@@ -87,13 +87,13 @@
 </div>
             <h1>How to clone system to smaller disk/SD card on Raspberry Pi</h1>
             <div class="bloginfo">
-                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2720 </p>
+                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2702 </p>
             </div>
-            <p>Recently, an old solid-state drive is free. Although the writing speed is not fast, it is enough to meet the Gigabit network, so I want to replace the solid-state drive currently used for the Raspberry Pi. Due to new system need to set somethings, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current drive (512GB), so some common methods of copying hard drives cannot be used.</p>
+            <p>Recently, one of old solid-state drive is free. Although the writing speed is not fast, but enough for Gigabit network, so I want to replace the current disk of Raspberry Pi. Due to new system need setting, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current disk (512GB), some common methods of copying hard drives cannot be used here.</p>
 
-<p>This article only requires the use of Raspberry Pi, but I use SSH to access the Raspberry Pi, so the screenshots will be in macOS style.</p>
+<p>This blog only requires the use of Raspberry Pi, rather than in another Linux device. But I use SSH to access the Raspberry Pi, so the screenshots will be in macOS style.</p>
 
-<p><strong>After writing the article, I did it again and confirmed that there was no problem, but I still recommend readers to back up important files first, just in case.</strong></p>
+<p><strong>After writing blog, I confirmed the flow again and again, but I still recommend readers to back up important files.</strong></p>
 
 <p>This blog is long and the operation is also cumbersome, so I make a script for use: <a href="https://github.com/ZhongUncle/clone_rasp_disk">https://github.com/ZhongUncle/clone_rasp_disk</a></p>
 
@@ -106,15 +106,15 @@
   <li>Completely erase the entire disk. It will takes more time, but it can ensure no problems.</li>
 </ul>
 
-<h2 id="why-not-use-dd-or-sd-card-copier">Why not use <code class="language-plaintext highlighter-rouge">dd</code> or SD card copier</h2>
-<p>This article will not use the CLI program <code class="language-plaintext highlighter-rouge">dd</code> or the GUI application SD card copier.</p>
+<h2 id="why-i-dont-use-dd-or-sd-card-copier">Why I don’t use <code class="language-plaintext highlighter-rouge">dd</code> or SD card copier</h2>
+<p>This blog will not use the CLI program <code class="language-plaintext highlighter-rouge">dd</code> or the GUI application SD card copier.</p>
 
-<p>Do not use <code class="language-plaintext highlighter-rouge">dd</code> because when these programs copy, they copy the entire disk, which will cause the write to definitely fail (the target disk is smaller than the destination disk). And the speed is very slow. Even if we try to reduce the number of controllers that the transmission passes through and improve the transmission interface, writing from solid state to solid state is only 30~45MB/s (15~20MB/s without any optimization).</p>
+<p>When using <code class="language-plaintext highlighter-rouge">dd</code> to copy, it will copys the entire disk, which will cause the write to definitely fail (target disk is smaller than destination disk). And the speed is very slow. Even if we try to reduce the number of controllers passed and use better interface socket, writing from solid state to solid state is only 30~45MB/s (15~20MB/s without any optimization).</p>
 
-<p>But SD card copier does not have this problem. I don’t want to plug in HDMI cable to back of monitor, and it’s not suitable for daily backup and other operations, so I want to study how to use the CLI. <strong>If you can use desktop mode, it is recommended to use the SD card copier application directly</strong>. Moreover, this method is much faster, and the speed can be stable at 50~70MB/s.</p>
+<p>But SD card copier does not have this problem. But I don’t want to plug in HDMI cable to back socket of monitor, and it’s not suitable for daily backup and other operations, so I want to know how to use the CLI. <strong>If you can use desktop mode, it is recommended to use the SD card copier application directly</strong>. This method is much faster, and the speed can be stable at 50~70MB/s.</p>
 
 <h2 id="principle">Principle</h2>
-<p>The method in this article is the same as the principle of SD card copier: first divide the target hard disk into two areas, the boot area (named <code class="language-plaintext highlighter-rouge">bootfs</code>, format Windows_FAT_32) and the usage area (also called the root area named <code class="language-plaintext highlighter-rouge">rootfs</code> , the format is Linux), and then use <code class="language-plaintext highlighter-rouge">rsync</code> to copy, which is much faster.</p>
+<p>The method in this blog is the same as the principle of SD card copier: divide the target hard disk into two areas, the boot area (named <code class="language-plaintext highlighter-rouge">bootfs</code>, format Windows_FAT_32) and the usage area (also called the root area named <code class="language-plaintext highlighter-rouge">rootfs</code> , the format is Linux), and then use <code class="language-plaintext highlighter-rouge">rsync</code> to copy, which is much faster.</p>
 
 <p>If you use lsblk -f on the Raspberry Pi (this is just for demonstration, a more detailed tool will be introduced later) to view the structure and file system of the hard disk, you can see:</p>
 
@@ -195,7 +195,7 @@ mount: (hint) your fstab has been modified, but systemd still uses
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo mount /dev/sdb2 /mnt/rootfs/
 </code></pre></div></div>
 
-<p>So where to copy (synchronize) to? Do you still remember the content in the first picture of the article? The directories corresponding to the two partitions on the system disk are displayed: <code class="language-plaintext highlighter-rouge">/boot/firmware</code> (boot partition) and <code class="language-plaintext highlighter-rouge">/</code> (root partition).</p>
+<p>So where to copy (synchronize) to? Do you still remember the content in the first picture of the blog? The directories corresponding to the two partitions on the system disk are displayed: <code class="language-plaintext highlighter-rouge">/boot/firmware</code> (boot partition) and <code class="language-plaintext highlighter-rouge">/</code> (root partition).</p>
 
 <p>First is the boot partition:</p>
 
@@ -212,7 +212,7 @@ mount: (hint) your fstab has been modified, but systemd still uses
   <li><code class="language-plaintext highlighter-rouge">S</code> can handle sparse files efficiently so that they take up less space after transfer. (Without this, all source files may be 8GB, but the total destination files may be 10GB)</li>
   <li><code class="language-plaintext highlighter-rouge">numeric-ids</code> uses numeric IDs instead of mappings.</li>
   <li><code class="language-plaintext highlighter-rouge">info=progress2</code> will display the transfer progress and information, and the progress and information of the entire transfer, rather than the statistical information of each file.</li>
-  <li>There are several directories that do not need to be copied because they are duplicates, so use <code class="language-plaintext highlighter-rouge">--exclude=</code> to exclude them. In many articles about system cloning, other directories <code class="language-plaintext highlighter-rouge">/dev</code>, <code class="language-plaintext highlighter-rouge">/sys</code>, <code class="language-plaintext highlighter-rouge">/proc</code> are listed that can be ignored, but after I spent two hours rescuing, I can confirm that directories like <code class="language-plaintext highlighter-rouge">/dev</code> , <code class="language-plaintext highlighter-rouge">/sys</code>, <code class="language-plaintext highlighter-rouge">/proc</code> cannot be ignored (if I write a blog about how to rescue, I will list the link here)</li>
+  <li>There are several directories that do not need to be copied because they are duplicates, so use <code class="language-plaintext highlighter-rouge">--exclude=</code> to exclude them. In many blogs about system cloning, other directories <code class="language-plaintext highlighter-rouge">/dev</code>, <code class="language-plaintext highlighter-rouge">/sys</code>, <code class="language-plaintext highlighter-rouge">/proc</code> are listed that can be ignored, but after I spent two hours rescuing, I can confirm that directories like <code class="language-plaintext highlighter-rouge">/dev</code> , <code class="language-plaintext highlighter-rouge">/sys</code>, <code class="language-plaintext highlighter-rouge">/proc</code> cannot be ignored (if I write a blog about how to rescue, I will list the link here)</li>
 </ul>
 
 <p>Here is an explanation of the two excluded directories.</p>
@@ -270,19 +270,19 @@ mount: (hint) your fstab has been modified, but systemd still uses
 <p>Hope it can help those in need~</p>
 
 <h2 id="references-or-further-reading">References or further reading</h2>
-<p>Although I spent a lot of time and energy experimenting and trying this article, I would also like to thank many people for writing blogs and articles that provided me with ideas and solutions.</p>
+<p>Although I spent a lot of time and energy experimenting and trying this blog, I would also like to thank many people for writing blogs and blogs that provided me with ideas and solutions.</p>
 
 <p><a href="https://unix.stackexchange.com/questions/44095/how-can-i-change-the-volume-name-of- a-fat32-filesystem">How can I change the volume name of a FAT32 filesystem? - Unix &amp; Linux stackexchange</a>: This post introduces how to change the partition name for FAT32.</p>
 
-<p><a href="https://phoenixnap.com/kb/linux-format-disk">How to Format Disk Partitions in Linux - Dejan Tucakov</a>: From this article I learned that some command line partitioning tools do not create file systems , and then I discovered that <code class="language-plaintext highlighter-rouge">parted</code> was too.</p>
+<p><a href="https://phoenixnap.com/kb/linux-format-disk">How to Format Disk Partitions in Linux - Dejan Tucakov</a>: From this blog I learned that some command line partitioning tools do not create file systems , and then I discovered that <code class="language-plaintext highlighter-rouge">parted</code> was too.</p>
 
-<p><a href="https://www.baeldung.com/linux/rsync-clone-file-system-hierarchy">Clone File System Hierarchy to Another Disk With Rsync - Francesco Galgani</a>: This article describes how to use <code class="language-plaintext highlighter-rouge">rsync</code> to clone a disk , it also solved a lot of <code class="language-plaintext highlighter-rouge">rsync</code> copy problems for me, and also provided inspiration for me to adjust the startup boot. The article is mainly about Linux systems on popular devices, so it only mentions <code class="language-plaintext highlighter-rouge">/etc/fstab</code>, and the boot is through GRUB. The Raspberry Pi’s own system is booted through the <code class="language-plaintext highlighter-rouge">config.txt</code> and <code class="language-plaintext highlighter-rouge">cmdline.txt</code> files. If you want to try GRUB to boot the Raspberry Pi, you can check out this post <a href="https://forums.raspberrypi.com/viewtopic.php?t=306511">GRUB on RPi 4 - Raspberry Pi Forums</a> (I don’t have it) attempt, no guarantee is made as to the actual meaning of the content).</p>
+<p><a href="https://www.baeldung.com/linux/rsync-clone-file-system-hierarchy">Clone File System Hierarchy to Another Disk With Rsync - Francesco Galgani</a>: This blog describes how to use <code class="language-plaintext highlighter-rouge">rsync</code> to clone a disk , it also solved a lot of <code class="language-plaintext highlighter-rouge">rsync</code> copy problems for me, and also provided inspiration for me to adjust the startup boot. The blog is mainly about Linux systems on popular devices, so it only mentions <code class="language-plaintext highlighter-rouge">/etc/fstab</code>, and the boot is through GRUB. The Raspberry Pi’s own system is booted through the <code class="language-plaintext highlighter-rouge">config.txt</code> and <code class="language-plaintext highlighter-rouge">cmdline.txt</code> files. If you want to try GRUB to boot the Raspberry Pi, you can check out this post <a href="https://forums.raspberrypi.com/viewtopic.php?t=306511">GRUB on RPi 4 - Raspberry Pi Forums</a> (I don’t have it) attempt, no guarantee is made as to the actual meaning of the content).</p>
 
-<p><a href="https://www.raspberrypi.com/documentation/computers/config_txt.html#autoboot-txt">The config.txt file - Raspberry Pi Documentation</a>: This is the official document of <code class="language-plaintext highlighter-rouge">config.txt</code>, although it is not used in this article to <code class="language-plaintext highlighter-rouge">config.txt</code>, but this document introduces the general startup process of Raspberry Pi. I also found <code class="language-plaintext highlighter-rouge">cmdline.txt</code> from it to complete the final repair work.</p>
+<p><a href="https://www.raspberrypi.com/documentation/computers/config_txt.html#autoboot-txt">The config.txt file - Raspberry Pi Documentation</a>: This is the official document of <code class="language-plaintext highlighter-rouge">config.txt</code>, although it is not used in this blog to <code class="language-plaintext highlighter-rouge">config.txt</code>, but this document introduces the general startup process of Raspberry Pi. I also found <code class="language-plaintext highlighter-rouge">cmdline.txt</code> from it to complete the final repair work.</p>
 
 <p><a href="https://www.raspberrypi.com/documentation/computers/raspberry-pi.html#raspberry-pi-4-and-raspberry-pi-5- boot-flow">Raspberry Pi 4 and Raspberry Pi 5 Boot Flow - Raspberry Pi Documentation</a>: This part of the document introduces the detailed startup process, which can be viewed as extended reading.</p>
 
-<p><a href="https://jamesachambers.com/raspberry-pi-4-bootloader-firmware-updating-recovery-guide/">Raspberry Pi 4/400 Bootloader Firmware Update/Recovery Guide - James A. Chambers</a>: This blog introduces How to Repair and Update Launcher Firmware on Raspberry Pi 4/400. Because two hard drives are sometimes accidentally connected to the Raspberry Pi for startup at the same time, it may cause problems with the launcher firmware. You can read this article to repair the firmware.</p>
+<p><a href="https://jamesachambers.com/raspberry-pi-4-bootloader-firmware-updating-recovery-guide/">Raspberry Pi 4/400 Bootloader Firmware Update/Recovery Guide - James A. Chambers</a>: This blog introduces How to Repair and Update Launcher Firmware on Raspberry Pi 4/400. Because two hard drives are sometimes accidentally connected to the Raspberry Pi for startup at the same time, it may cause problems with the launcher firmware. You can read this blog to repair the firmware.</p>
 
         </div>
         <!-- comment by utterances -->
