@@ -74,7 +74,7 @@
 </div>
             <h1>How to clone Raspberry Pi system disk to smaller disk/SD card</h1>
             <div class="bloginfo">
-                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2702 </p>
+                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2707 </p>
             </div>
             <p>Recently, one of old solid-state drive is free. Although the writing speed is not fast, but enough for Gigabit network, so I want to replace the current disk of Raspberry Pi. Due to new system need setting, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current disk (512GB), some common methods of copying hard drives cannot be used here.</p>
 
@@ -126,7 +126,7 @@
 
 <p>Then we use the following command to generate a similar partition structure on the target hard disk:</p>
 
-<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo parted /dev/sdb --script 'mklabel msdos mkpart primary fat32 4194.5kB 541MB mkpart primary ext4 541MB 120GB print quit'
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>sudo parted /dev/sdb --script 'mklabel msdos mkpart primary fat32 4194.5kB 541MB mkpart primary ext4 541MB 100% print quit'
 </code></pre></div></div>
 
 <ul>
@@ -134,7 +134,7 @@
   <li>Using <code class="language-plaintext highlighter-rouge">--script</code> will not enter interactive mode, so one command can complete the operation. It should be noted that this option is not officially used, but if you follow the above content and do not use this option and directly follow the following commands, the entire hard disk partition will be destroyed (there will be a prompt).</li>
   <li><code class="language-plaintext highlighter-rouge">mklabel msdos</code> sets the partition mode to MBR format. <code class="language-plaintext highlighter-rouge">gpt</code> is not used here because the system is <code class="language-plaintext highlighter-rouge">msdos</code> (you can see this information from the <code class="language-plaintext highlighter-rouge">Partition Table</code> in the picture above).</li>
   <li><code class="language-plaintext highlighter-rouge">mkpart primary fat32 4194.5kB 541MB </code>This part is the command to divide the boot area. <code class="language-plaintext highlighter-rouge">primary</code> means an independent partition (or called “primary partition”, which corresponds to “extended partition”). Use the <code class="language-plaintext highlighter-rouge">fat32</code> file system, and use <code class="language-plaintext highlighter-rouge">4194.5kB</code> as the starting address, because the Raspberry Pi starts from block 8192, but the value displayed by <code class="language-plaintext highlighter-rouge">parted</code> is incorrect, as shown in <code class="language-plaintext highlighter-rouge">sudo fdisk -l</code> The content shall prevail. The termination address is the same as the termination address of the system disk.</li>
-  <li><code class="language-plaintext highlighter-rouge">mkpart primary ext4 541MB 120GB</code> This part is the command to divide the root area. Using the <code class="language-plaintext highlighter-rouge">ext4</code> file system, the starting address is the ending address of the boot area, but the ending address is the size of the hard disk, which is the same as shown in the original picture. The termination address is the same.</li>
+  <li><code class="language-plaintext highlighter-rouge">mkpart primary ext4 541MB 100%</code> This part is the command to divide the root area. Using the <code class="language-plaintext highlighter-rouge">ext4</code> file system, the starting address is the ending address of the boot area. And we can use <code class="language-plaintext highlighter-rouge">100%</code> to mean the termination address is the size of the hard disk, which is the same as <code class="language-plaintext highlighter-rouge">120GB</code> shown in the original picture.</li>
   <li><code class="language-plaintext highlighter-rouge">print</code> will print out partition information.</li>
   <li><code class="language-plaintext highlighter-rouge">exit</code> will exit <code class="language-plaintext highlighter-rouge">parted</code>.</li>
 </ul>
