@@ -4,6 +4,7 @@ category: Web
 date: 2022-06-09
 title: How Python parses and obtains URL parameters and uses
 excerpt: "ZhongUncle will introduce how to parse and obtains the URL parameters in Python, and how to use them"
+originurl: 
 ---
 The steps for Python to parse and obtain URL parameters are as follows.
 

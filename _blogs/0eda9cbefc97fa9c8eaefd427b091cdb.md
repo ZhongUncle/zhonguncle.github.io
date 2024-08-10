@@ -3,7 +3,8 @@ layout: article
 category: Assembly
 date: 2022-08-13
 title: macOS Assembly Guide
-excerpt: "This is a guide for assembly language on macOS. ZhongUncle explains why learning assembly language is useful and beneficial."
+excerpt: "Assembly is the “magic” of computers. You can be a fine “warrior” who only uses high-level languages, but if you “enchant” your “weapon” with assembly, your combat effectiveness will increase greatly (of course, there are also risks of “playing with fire and burning yourself”)."
+originurl: "https://blog.csdn.net/qq_33919450/article/details/124178519"
 ---
 Since most of the resources, methods and tools for learning assembly are based for Windows. So here I will introduce some materials and tools for macOS
 

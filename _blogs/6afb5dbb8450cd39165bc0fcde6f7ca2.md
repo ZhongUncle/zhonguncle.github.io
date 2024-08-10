@@ -4,6 +4,7 @@ category: Research
 date: 2023-05-31
 title: How to record TikTok's live stream on macOS
 excerpt: "How to record TikTok's live stream on macOS, it means how to obtain TikTok’s push source URL."
+originurl: 
 ---
 Recently, I saw some live broadcasts on Douyin that were really interesting, and I wanted to record them. So I studied how to record these live broadcasts. There are two methods: recording the screen and downloading from the push source.
 

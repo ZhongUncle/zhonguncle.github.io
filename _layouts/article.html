@@ -27,7 +27,7 @@
             {% include navigation.html %}
             <h1>{{ page.title }}</h1>
             <div class="bloginfo">
-                <p class="info">{{ page.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ page.category | downcase }}.html"> {{ page.category }}</a> ｜ #Words: {{ content | number_of_words: "auto" }} </p>
+                <p class="info">{{ page.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ page.category | downcase }}.html"> {{ page.category }}</a> ｜ #Words: {{ content | number_of_words: "auto" }} ｜ <a href="{{ page.originurl }}"> 中文原版 </a></p>
             </div>
             {{ content }}
         </div>

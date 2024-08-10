@@ -4,6 +4,7 @@ category: Go
 date: 2023-07-12
 title: How to install Go Tour tutorial in local
 excerpt: "How to install Go Tour tutorial in local, and what to do if the other language versions cannot be installed."
+originurl: 
 ---
 Go officially has an online tutorial [A Tour of Go](https://go.dev/tour/welcome/1), where you can learn Go programming online, and it has a Chinese version. The original English page is as follows:
 
