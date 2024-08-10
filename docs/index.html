@@ -97,13 +97,6 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/8e8b0e450e6d5457740a6379c3b723b6.html">How directly use scripts in Linux terminal</a></h2>
-        <p class="info">2023-10-20 ｜ <a href="/unix.html"> UNIX</a> ｜ 315 字</p>
-        
-        <p>ZhongUncle will introduce How to directly use scripts in Linux by configuring all bin directories included in the $PATH variable.</p>
-    </li>
-    
-    <li>
         <h2><a class="blog" href="/blogs/2a5e3991b4968e941a82aa12b3e2a9fa.html">Use Raspberry Pi Pico, DHT11, SSD1306 OLED to make thermo-hygrometer</a></h2>
         <p class="info">2023-08-28 ｜ <a href="/mcu.html"> MCU</a> ｜ 8378 字</p>
         
@@ -128,7 +121,7 @@
         <h2><a class="blog" href="/blogs/80f935655ed9d7c2a3fca26cad424c71.html">Guide of developing Tang Nano FPGA on Mac</a></h2>
         <p class="info">2023-08-19 ｜ <a href="/mcu.html"> MCU</a> ｜ 2172 字</p>
         
-        <p>This blog is a guide for developing Tang Nano FPGA on Mac using terminal and VS Code. And tell you how to build environment.</p>
+        <p>Recently I received a Tang nano 9K FPGA development board as gift, so I wanted to take this opportunity to study FPGA. The official document recommand to use GOWIN IDE to develop GOWIN FPGA, but you need to apply for a license and submit a lot of information. Since it was a gift, So it is not convenient. In addition, IDE is actually not very suitable for learning and putting into production, because IDE hides many details. So I want to find other workflows, just like using any text editor and Clang/LLVM to compile C/C++ programs.</p>
     </li>
     
     <li>
@@ -170,21 +163,21 @@
         <h2><a class="blog" href="/blogs/9a4950017c15c6a4e9f0e1e6f9e1b927.html">Why hard drive lost much performance via USB?</a></h2>
         <p class="info">2023-07-19 ｜ <a href="/research.html"> Research</a> ｜ 2150 字</p>
         
-        <p>Why disk in USB will lose much performance? Really due to speed of USB limitation? No, the IOPS of USB is key.</p>
+        <p>In hard disk performance, IOPS is a very important parameter. In terms of speed, this is the most important parameter to pay attention to, rather than the sequential read and write performance or random read and write performance that many people measure.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/8c2eab6e0db90aa6ae34b8fd82dc6a41.html">How to install Go Tour tutorial in local</a></h2>
         <p class="info">2023-07-12 ｜ <a href="/go.html"> Go</a> ｜ 1020 字</p>
         
-        <p>How to install Go Tour tutorial in local, and what to do if the other language versions cannot be installed.</p>
+        <p>Surprisingly, Go provides an offline version (available in various languages). After downloading and installing, you can compile and run locally to view the results. You do not need to connect to the Internet to use a remote server, which improves efficiency and performance (details on this will be discussed separately later). There is a section on comparison.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/8f6120697e7852d0aa7ac8c35eba2ca9.html">How to check disk in hexadecimal by bytes in terminal on Mac or Linux</a></h2>
         <p class="info">2023-07-05 ｜ <a href="/unix.html"> UNIX</a> ｜ 546 字</p>
         
-        <p>ZhongUncle introduce how to view disk in hexadecimal by bytes on Mac or Linux, use dd and hexdump to implement winhex functions in Terminal or Console CLI.</p>
+        <p>Before start to introduce, something be emphasized: This method does not guarantee to view all hard disks. Some hard disks will display Resource busy due to some reasons, such as Time Machine and built-in hard disks.</p>
     </li>
     
     <li>
@@ -231,23 +224,16 @@
     
     <li>
         <h2><a class="blog" href="/blogs/6afb5dbb8450cd39165bc0fcde6f7ca2.html">How to record TikTok's live stream on macOS</a></h2>
-        <p class="info">2023-05-31 ｜ <a href="/research.html"> Research</a> ｜ 675 字</p>
+        <p class="info">2023-05-31 ｜ <a href="/research.html"> Research</a> ｜ 677 字</p>
         
-        <p>How to record TikTok's live stream on macOS, it means how to obtain TikTok’s push source URL.</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/59a03173ec1a5fae2ec513ef01eba386.html">「Updating」The syntax style of Apple's as assembler</a></h2>
-        <p class="info">2023-05-19 ｜ <a href="/assembly.html"> Assembly</a> ｜ 484 字</p>
-        
-        <p>The syntax of assembly has two kinds in usual: AT&T and Intel. Apple use AT&T syntax, MASM and Intel assembler use Intel syntax.</p>
+        <p>Recently, I saw some live broadcasts on Douyin that were really interesting, and I wanted to record them. So I studied how to record these live broadcasts. There are two methods: recording the screen and downloading from the push source.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/3b862852d2a3dc67a9c754b13c1878dd.html">Verify the central limit theorem using C++</a></h2>
         <p class="info">2023-05-16 ｜ <a href="/c.html"> C</a> ｜ 2545 字</p>
         
-        <p>ZhongUncle introduces how to use C++ to verify CLT, meaning sum of independent random variables following normal distribution when number is large enough.</p>
+        <p>I just want to try to see whether is the case. I think the central limit theorem (CLT) and normal distribution are a very magical part of probability theory. I will use dice points as discrete events to calculate the probability of the sum of points. First, Implementing the program to simulate a uniformly distribute. Second, adjusting the probability of non-uniform distribution.</p>
     </li>
     
     <li>
@@ -268,14 +254,14 @@
         <h2><a class="blog" href="/blogs/7d827ede89321c4ec7ca9e62d4d58c43.html">What is Typedef in C? How to use? What are the conveniences?</a></h2>
         <p class="info">2023-04-26 ｜ <a href="/c.html"> C</a> ｜ 1293 字</p>
         
-        <p>Typedef is a special feature in the C language, which is used to create new type names. You also can know from the name “type def(ine)”.</p>
+        <p>typedef is a special feature in the C language, which is used to create new type names. You also can know from the name type def(ine). typedef is similar to alias program in Unix, which adds another name to an object. typedef also makes multiple names actually correspond to same objext, but the object of typedef operation is a data type. It is to give a nickname to the data type. This nickname usually has the first letter capitalized and is used to indicate that it is not an underlying data type.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/5ff7f97dee381af06aba4e3ce2514970.html">How to convert an array into a dictionary in Swift</a></h2>
         <p class="info">2023-04-22 ｜ <a href="/swift.html"> Swift</a> ｜ 570 字</p>
         
-        <p>How to convert an array into a dictionary in Swift (keywords are array elements, values are subscript numbers)</p>
+        <p>Sometimes you need to convert array subscripts and elements into a dictionary. For example, if you use array elements to search for subscripts, if you use a function to search, you have to perform a loop search and acquisition every time, which requires a lot of computing performance and memory. At this time, convert the original array into a dictionary, keyword For array elements, it would be more convenient if the value is a subscript serial number, so that the serial number can be easily found through the value of the element, and there is no need to perform a loop search every time.</p>
     </li>
     
     <li>
@@ -324,7 +310,7 @@
         <h2><a class="blog" href="/blogs/7b42d5aab753cd38106a5d3778fe2c3c.html">Sony A7R in 2023</a></h2>
         <p class="info">2023-02-09 ｜ <a href="/research.html"> Research</a> ｜ 755 字</p>
         
-        <p>I test A7R in many conditions, A7R work nice in 2023, and I know what camera I need.</p>
+        <p>I recently borrowed an A7R. This is my first time using a professional camera (not a card camera), and it is full frame tensor. So I spent some time to learn how to use it and how it works under various settings.</p>
     </li>
     
     <li>
@@ -352,7 +338,7 @@
         <h2><a class="blog" href="/blogs/27e35a1a60b4f124aefe9b134a8545a7.html">Introduction to Tree Selection Sorting</a></h2>
         <p class="info">2022-12-06 ｜ <a href="/research.html"> Research</a> ｜ 797 字</p>
         
-        <p>Why heap sorting use tree but called “heap”, because already have tree sorting, heap sorting is a update of tree sorting.</p>
+        <p>Maybe you like me have a question: Why heap sorting using a binary tree, but it is called heap sorting, rather than tree sorting? Because the predecessor of heap sort is called Tree Selection Sorting, it also uses a tree structure, but is slightly simpler. Finally we will talk about why invent heap sorting to replace tree sorting.</p>
     </li>
     
     <li>
@@ -360,20 +346,6 @@
         <p class="info">2022-11-24 ｜ <a href="/swift.html"> Swift</a> ｜ 608 字</p>
         
         <p>From iOS 16, Apple start to deprecate NavigationView ZhongUncle introduces how to use new NavigationStack and NavigationSplitView how it works and similar things</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/76cc2df1309fab57adb3429785b2d3c9.html">How to get the screen size (bounds and nativeBounds) in Swift/SwiftUI</a></h2>
-        <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 346 字</p>
-        
-        <p>ZhongUncle introduce how to get the screen size using bounds and nativeBounds in Swift/SwiftUI</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/61e1734bb3ddb9aa2873dbcca4cc8a49.html">The height of UIScreen.main.bounds occurs change (not right value)</a></h2>
-        <p class="info">2022-11-07 ｜ <a href="/swift.html"> Swift</a> ｜ 497 字</p>
-        
-        <p>Recently Apple changes UIScreen.main.bounds to wrong values, so I wrote this blog as addition (the original blog has also been modified).</p>
     </li>
     
     <li>
@@ -387,21 +359,21 @@
         <h2><a class="blog" href="/blogs/8e9be9247ebfa34a1046a9c06e461032.html">How to use R language to draw charts and graphs (line, curves, etc.)</a></h2>
         <p class="info">2022-10-10 ｜ <a href="/research.html"> Research</a> ｜ 1857 字</p>
         
-        <p>You must have used or been told to use R if you are related in data analysis. So I describe how to use R language to draw charts and graphs(like line, curves)</p>
+        <p>If you are studying or engaged in data analysis-related, you must have used or been told to use R language. But with so many languages for data analysis, why use R? Because R can output very nice charts for publication. It may not be necessary for blogs, but it is necessary for publications such as papers and books. After all, the charts in most publications are not in color or flashy.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/16a9a15ed4a778c817fc7580b380b7b9.html">Origin, Code, Performance and Differences of QuickSort algorithms(qsort)</a></h2>
         <p class="info">2022-10-04 ｜ <a href="/research.html"> Research</a> ｜ 2899 字</p>
         
-        <p>When learning quick sort, I found many quick sort methods are different. I was very curious why.</p>
+        <p>When I was learning quicksort algorithm, I found there are many style of code. I was very curious why. So I went to read Introduction to Algorithms to search for answer. Finally I found the reason be related to the development history of quicksort.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/3dd0380afabd13daf74de2e2c377874b.html">How to use the built-in native charts (Charts) in SwiftUI</a></h2>
         <p class="info">2022-09-23 ｜ <a href="/swift.html"> Swift</a> ｜ 3101 字</p>
         
-        <p>At WWDC2022, Apple provided the chart-related package `Charts` for SwiftUI, so you don’t have to work hard to implement the chart function yourself. </p>
+        <p>At WWDC2022, Apple provided the chart-related package `Charts` for SwiftUI, so you don’t have to work hard to implement the chart function yourself. The amount of code suddenly changed from four to five hundred lines to a dozen or even a few lines (I still remember that I almost vomited blood trying to write the chart function). So I want to study the built-in chart function carefully, so as to facilitate future development and use</p>
     </li>
     
     <li>
@@ -415,14 +387,14 @@
         <h2><a class="blog" href="/blogs/7f2bfec8a9dba87f478cb2895fb693c0.html">Differences between index storage and hash storage in detail</a></h2>
         <p class="info">2022-09-03 ｜ <a href="/research.html"> Research</a> ｜ 456 字</p>
         
-        <p>ZhongUncle will explain the differences between index storage and hash in details. Index storage and hash are easily make confusion.</p>
+        <p>There are two kinds storage structures in data structures that are easily confused, namely index storage structure* and hash storage structure (hash storage structure) You can find corresponding keyword according to address. It can be understood as a yellow pages. You can find someone's phone number based on name. So index storage is also called direct addressing</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/479b437c4850312450cfb21e278ec05d.html">How to install and use Nginx and PHP7 on Ubuntu server</a></h2>
         <p class="info">2022-08-14 ｜ <a href="/web.html"> Web</a> ｜ 1228 字</p>
         
-        <p>ZhongUncle introduce how to install and use Nginx and PHP7 on Ubuntu server, and some possible troublels and solutions.</p>
+        <p>Recently I need to study PHP, but I found PHP unlikes scripting languages like Python and JavaScript can be viewed directly in local, PHP needs run on the server. This requires setting up an environment to learn. Although many websites that also provide already built websites, but I think I should learn how to prepare when I learn how to use PHP. Otherwise, when I still don't know how to start by myself. It would be extremely embarrassing.</p>
     </li>
     
     <li>
@@ -450,7 +422,7 @@
         <h2><a class="blog" href="/blogs/096b0a6f079768ecbf051361faebb334.html">What is format of man page in Linux and macOS? How to write a man page</a></h2>
         <p class="info">2022-07-27 ｜ <a href="/unix.html"> UNIX</a> ｜ 576 字</p>
         
-        <p>Manpage is a main part of Unix, ZhongUncle will introduce how to find and create a man page.</p>
+        <p>In Linux and macOS, we often need to use `man xxx` to view the introduction and usage of a program, system call, etc. This interface is called `manual page`, but sometimes it is simply called `manpage`.</p>
     </li>
     
     <li>
@@ -506,7 +478,7 @@
         <h2><a class="blog" href="/blogs/306bd6059b8768ef2022f205073fdf9c.html">How to get query of URLs in Javascript</a></h2>
         <p class="info">2022-06-12 ｜ <a href="/web.html"> Web</a> ｜ 735 字</p>
         
-        <p>How to get query of URLs in Javascript</p>
+        <p>It is a little troublesome to get URL parameters with JS, because JS can only get a certain part of the URL, but it cannot be subdivided. If you want to get a certain parameter, you also need to use string interception. So it’s divided into two steps:</p>
     </li>
     
     <li>
@@ -517,17 +489,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/97fbc1d92a2d77ff33c502660feeddd1.html">try...except...finally statement in Python</a></h2>
-        <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 119 字</p>
-        
-        <p>try...except...finally statement is used to handle errors and return information.</p>
-    </li>
-    
-    <li>
         <h2><a class="blog" href="/blogs/43dfeec87e0b91c4a2f389db8a7c7920.html">How output data in Python</a></h2>
         <p class="info">2022-06-03 ｜ <a href="/web.html"> Web</a> ｜ 1565 字</p>
         
-        <p>ZhongUncle will introduce how output data directly or with some format, like string with delimiter or split by separator.</p>
+        <p>There are two types of output data formats: formatted output and direct output. For example, the `f` of `printf` function in C language means formatted. Different data types can be printed through conversions such as `%d`. Python also has two types.</p>
     </li>
     
     <li>
@@ -535,13 +500,6 @@
         <p class="info">2022-05-12 ｜ <a href="/unix.html"> UNIX</a> ｜ 69 字</p>
         
         <p>How to access files in Windows with WSL</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/045fa379a8cd9921e75ce86a360345a3.html">How to solve System Data too large on Mac?</a></h2>
-        <p class="info">2022-05-06 ｜ <a href="/unix.html"> UNIX</a> ｜ 269 字</p>
-        
-        <p>ZhongUncle noticed that the “System Data” on their Mac occupied over 100 GB and wanted to clean it up.</p>
     </li>
     
     <li>
@@ -559,13 +517,6 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/490b23a8279941495f9bc398f6034228.html">How to get data from Date type in SwiftUI</a></h2>
-        <p class="info">2022-03-04 ｜ <a href="/swift.html"> Swift</a> ｜ 188 字</p>
-        
-        <p>How to get data from Date type in SwiftUI, like hour, minute, etc.</p>
-    </li>
-    
-    <li>
         <h2><a class="blog" href="/blogs/a2af816aa35ceed62118846c01a3177f.html">How to use Core Image filter (CIFilter) to process photos in SwiftUI</a></h2>
         <p class="info">2022-02-22 ｜ <a href="/swift.html"> Swift</a> ｜ 959 字</p>
         
@@ -576,14 +527,14 @@
         <h2><a class="blog" href="/blogs/4c17a96936428770a50a3140cfee0392.html">How to Handle Push Notifications in SwiftUI</a></h2>
         <p class="info">2022-02-21 ｜ <a href="/swift.html"> Swift</a> ｜ 1081 字</p>
         
-        <p>ZhongUncle introduces two ways to push notifications in SwiftUI from ZhongUncle, because no many people talk about how to do in SwiftUI.</p>
+        <p>There are many situations need developers to push notifications, but not many people talk about push notifications in SwiftUI. Here is some relevant content, So I write this blog. On the one hand, I can refer to it in future, on the other hand, I also want to help people in need.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/15a1501df7ebd6e227e8da6e713514b3.html">SQLite command line usage</a></h2>
         <p class="info">2022-02-13 ｜ <a href="/research.html"> Research</a> ｜ 1425 字</p>
         
-        <p>I plan to use the open source SQLite as database for saving money and CLI for personal habits. So I record how to use sqlite using command line.</p>
+        <p>Recently, I plan to use the open source and free SQLite as a database to save money. And due to personal habits, I prefer the command line, so I record how to use SQLite in command line.</p>
     </li>
     
     <li>
@@ -591,13 +542,6 @@
         <p class="info">2022-02-11 ｜ <a href="/swift.html"> Swift</a> ｜ 1390 字</p>
         
         <p>Obtaining JSON from the website API and displaying the text is a very common usage scenario in development.</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/69db0f8766f0ac03250d663892586d8a.html">VideoPlayer in SwiftUI without back button or other functions</a></h2>
-        <p class="info">2022-01-28 ｜ <a href="/swift.html"> Swift</a> ｜ 407 字</p>
-        
-        <p>When I use the VideoPlayer View in SwiftUI, I notice no “X” back button and or other functions in iPod Touch, etc.</p>
     </li>
     
     <li>
