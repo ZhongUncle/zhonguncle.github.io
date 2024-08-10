@@ -3,14 +3,14 @@ layout: article
 category: Go
 date: 2023-07-12
 title: How to install Go Tour tutorial in local
-excerpt: "How to install Go Tour tutorial in local, and what to do if the other language versions cannot be installed."
-originurl: 
+excerpt: "Surprisingly, Go provides an offline version (available in various languages). After downloading and installing, you can compile and run locally to view the results. You do not need to connect to the Internet to use a remote server, which improves efficiency and performance (details on this will be discussed separately later). There is a section on comparison."
+originurl: "https://blog.csdn.net/qq_33919450/article/details/131681397"
 ---
 Go officially has an online tutorial [A Tour of Go](https://go.dev/tour/welcome/1), where you can learn Go programming online, and it has a Chinese version. The original English page is as follows:
 
 <img alt="" src="/assets/images/212b3a345e1f45e49401f3ee5d1b27c1.png" style="box-shadow: 0px 0px 0px 0px">
 
-Surprisingly, Go provides an offline version (available in various languages). After downloading and installing, you can compile and run locally to view the results. You do not need to connect to the Internet to use a remote server, which improves efficiency and performance (details on this will be discussed separately later). There is a section on comparison).
+Surprisingly, Go provides an offline version (available in various languages). After downloading and installing, you can compile and run locally to view the results. You do not need to connect to the Internet to use a remote server, which improves efficiency and performance (details on this will be discussed separately later). There is a section on comparison.
 ## Preparations before installing the offline version
 Before installing the offline version, you first need to install Go locally, since compilation is done locally. Secondly, you need to prepare a workspace to store the downloaded modules and source code, as well as the compiled binary execution file.
 

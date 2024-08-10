@@ -3,8 +3,8 @@ layout: article
 category: Research
 date: 2023-05-31
 title: How to record TikTok's live stream on macOS
-excerpt: "How to record TikTok's live stream on macOS, it means how to obtain TikTok’s push source URL."
-originurl: 
+excerpt: "Recently, I saw some live broadcasts on Douyin that were really interesting, and I wanted to record them. So I studied how to record these live broadcasts. There are two methods: recording the screen and downloading from the push source."
+originurl: "/index.html"
 ---
 Recently, I saw some live broadcasts on Douyin that were really interesting, and I wanted to record them. So I studied how to record these live broadcasts. There are two methods: recording the screen and downloading from the push source.
 
@@ -20,7 +20,7 @@ Obtaining the push source is actually very simple. On macOS, downloading videos 
 
 First open Safari, go to "Settings" - "Advanced", check "Show the "Develop" menu in the menu bar", as follows:
 
-<img alt="In "Settings" - "Advanced", check "Show Develop menu in menu bar"" src="/assets/images/dc26346f66957a977f05c991774c20f8.png" style="box-shadow: 0px 0px 0px 0px">
+<img alt="In Settings - Advanced, check Show Develop menu in menu bar" src="/assets/images/dc26346f66957a977f05c991774c20f8.png" style="box-shadow: 0px 0px 0px 0px">
 
 Then open the live broadcast room you want to record, right-click on a blank area of the webpage, click "View Elements", and then you can see the source code, elements and other content of the webpage, as follows:
 
@@ -30,7 +30,7 @@ Then open the live broadcast room you want to record, right-click on a blank are
 
 At this time, select the "Network" section, and then search for "flv" in the upper right corner, because Douyin's live streaming uses the flv format. At this time the display is as follows:
 
-<img alt="Select the "Network" section and search for "flv" in the upper right corner" src="/assets/images/a4ad3b528ef3c756847542890aeda1a0.png" style="box-shadow: 0px 0px 0px 0px">
+<img alt="Select the Network section and search for flv in the upper right corner" src="/assets/images/a4ad3b528ef3c756847542890aeda1a0.png" style="box-shadow: 0px 0px 0px 0px">
 
 Then copy the link of this file and enter it in the search bar, which will directly trigger the download. You can see that the download speed here is the bit rate of the push stream, which means the live broadcast is being recorded:
 
