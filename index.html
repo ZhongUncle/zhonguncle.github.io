@@ -6,13 +6,13 @@ title: ZhongUncle's blogs
 <p>Welcome to my blogs' site. If you like, please give a Star in  <a href="https://github.com/ZhongUncle/zhonguncle.github.io">ZhongUncle/zhonguncle.github.io - GitHub</a></p>
 <p>This site is mainly backup my CSDN blogs in Chinese, but also has some notes.</p>
 
-<h1>最新</h1>
+<h1>Least</h1>
 
 <ul>
     {% for blog in site.blogs reversed %}
     <li>
         <h2><a class="blog" href="{{ blog.url }}">{{ blog.title }}</a></h2>
-        <p class="info">{{ blog.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ blog.category | downcase }}.html"> {{ blog.category }}</a> ｜ {{ blog.content | number_of_words: "auto" }} 字</p>
+        <p class="info">{{ blog.date | date: "%Y-%m-%d" }} ｜ <a href="/{{ blog.category | downcase }}.html"> {{ blog.category }}</a> ｜ #Words: {{ blog.content | number_of_words: "auto" }}</p>
         
         <p>{{ blog.excerpt }}</p>
     </li>
