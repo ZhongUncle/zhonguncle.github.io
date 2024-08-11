@@ -1,4 +1,4 @@
-- name: 主页
+- name: Home
   link: /index.html
 - name: Swift
   link: /swift.html
