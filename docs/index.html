@@ -114,7 +114,7 @@
         <h2><a class="blog" href="/blogs/a05d93c02a242879e59e6c7e1455dd8d.html">Modify the default SDA and SCL pins of I2C of Raspi Pico using C/C++</a></h2>
         <p class="info">2023-08-26 ｜ <a href="/mcu.html"> MCU</a> ｜ 254 字</p>
         
-        <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled.</p>
+        <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled. It means, even if you modify the pin, but not in `I2C0`, it still doesn't work. There are two ways to modify the SDA and SCL default pins of I2C correctly, and also there is a not recommended method (but still a useful method).</p>
     </li>
     
     <li>
@@ -128,21 +128,21 @@
         <h2><a class="blog" href="/blogs/589dba6103e6828777f8c9d196585565.html">How to reset Raspberry Pi Pico (reset peripheral device failed)</a></h2>
         <p class="info">2023-08-15 ｜ <a href="/mcu.html"> MCU</a> ｜ 429 字</p>
         
-        <p>Sometimes you need to reset the Raspberry Pi Pico. Common method sometimes does not work, so need a program to reset.</p>
+        <p>Sometimes you need to reset the Raspberry Pi Pico. One way is to press and hold the BOOTSEL button on the Pico and re-plug USB; another way is connecting the RUN and GND pins with a button, and then press this button and BOOTSEL at the same time button. This puts you into USB mode.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/53937ce484ce9fcae747fc78a53b7953.html">APFS file system exploration</a></h2>
         <p class="info">2023-08-14 ｜ <a href="/research.html"> Research</a> ｜ 2112 字</p>
         
-        <p>ZhongUncle introduces how APFS works and what the meaning of each APFS part in bytes. APFS is a file system of Apple.</p>
+        <p>This article aims to provide a low-level explanation of APFS, the file system used by Apple devices. Because I noticed that there was a lack of documentation on how APFS works in details, so I do some research and share my findings.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/f01da69a1a597e99b5f444accda37cf5.html">How to use Go to get URL parses, and problems when using it</a></h2>
         <p class="info">2023-08-13 ｜ <a href="/go.html"> Go</a> ｜ 476 字</p>
         
-        <p>ZhongUncle introduces how to use Go to get URL parses, and some problems when using it.</p>
+        <p>Using Go to get URL parses is easy, but Go has strict package manage. So recommend you use `goimports` tools or shortcut key Command + S to auto complete the package. Because now use `net/url` or `net/http`, but in future maybe change.</p>
     </li>
     
     <li>
@@ -156,7 +156,7 @@
         <h2><a class="blog" href="/blogs/ad8e86abe0c5cfe760fe5a008701913e.html">How to use the Mac Terminal to develop Raspberry Pi Pico using C/C++</a></h2>
         <p class="info">2023-08-09 ｜ <a href="/mcu.html"> MCU</a> ｜ 2524 字</p>
         
-        <p>The official tutorial is outdated. If you follow the official tutorial to configure it on Mac now, you will encounter a lot of problems.</p>
+        <p>The reason for writing this blog is that the official tutorial is outdated. If you follow the official tutorial to configure on Mac now, you will encounter a lot of problems. I dropped into almost pits. Therefore, I record the complete process, as well as the causes and handling methods of various errors. And if I change to new Mac and encounter the same problem in the future, I read this blog to remind how to deal with it.</p>
     </li>
     
     <li>
@@ -191,35 +191,28 @@
         <h2><a class="blog" href="/blogs/f80ef2f607448be220e2a5d6ce3d4111.html">How to convert BDMV (m2ts) to MKV, MP4 and other formats by ffmpeg</a></h2>
         <p class="info">2023-06-23 ｜ <a href="/research.html"> Research</a> ｜ 1431 字</p>
         
-        <p>BDMV is the format used by Blu-ray discs. This format cannot be played using playback software, and a hard disk player, which is a specialized device, must be used.</p>
+        <p>BDMV is the format used by Blu-ray discs. This format cannot be played using playback software, and a hard disk player, which is a specialized device, must be used. But the most classic ffmpeg can convert it to other formats and maintain the same bit rate and definition, so that it can be viewed easily.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/e8e6f473c10544642cf2d190731f8eb8.html">How to convert number from some base to other base in Swift</a></h2>
         <p class="info">2023-06-12 ｜ <a href="/swift.html"> Swift</a> ｜ 323 字</p>
         
-        <p>ZhongUncle introduce how to convert number from some base to other base in Swift(for example, decimal to hexadecimal, octal to binary)</p>
+        <p>Finally I found the `String` type has a particularly magical method, like: String(a, radix: 16, uppercase: true)</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/4693280e7d152780ee5ed9d12d080386.html">What is the differences between gcc and Clang/LLVM?</a></h2>
         <p class="info">2023-06-10 ｜ <a href="/research.html"> Research</a> ｜ 2404 字</p>
         
-        <p>I was not very clear about difference between GNU GCC and Clang. It affected implementation and learning somethings, so I so some research.</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/1280c5e381bc0e8f62fbc07f96d1ac0d.html">The difference between executable programs and scripts</a></h2>
-        <p class="info">2023-06-10 ｜ <a href="/research.html"> Research</a> ｜ 832 字</p>
-        
-        <p>ZhongUncle will introduce the difference between executable programs and scripts, to explain it, also need to know what is compiler and interpreter.</p>
+        <p>Recently, I found I was not very clear about the difference between GNU GCC and Clang. It affected implementation and learning somethings, so I spent free time in some days to research it carefully.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/c14da178a37d0ea2c5363e04df841a7f.html">Use gcc to learn C compilation process</a></h2>
         <p class="info">2023-06-08 ｜ <a href="/c.html"> C</a> ｜ 3210 字</p>
         
-        <p>I learn C compilation process using gcc and flags/options, and actucally I learn more about compiler and other things.</p>
+        <p>Recently, I suddenly discovered something when I was learning about clang/llvm: `gcc` is a collection of tools that includes or calls all tools that convert source code into executable program, not just a simple compiler. This helped me gain a deeper understanding of compilers, so I wrote this article as a record.</p>
     </li>
     
     <li>
@@ -268,7 +261,7 @@
         <h2><a class="blog" href="/blogs/e4e444b22fa5036aee629f81e9f5b669.html">How to install and use Plan 9 on Mac VM Fusion</a></h2>
         <p class="info">2023-04-21 ｜ <a href="/plan 9.html"> Plan 9</a> ｜ 2545 字</p>
         
-        <p>This blog will tell you how to install and use Plan 9 on Mac VM Fusion step by step.</p>
+        <p>I encountered many problems when using VM Fusion to install Plan 9 on Mac. The official documents and some foreign blogs from the past two years were not clear, and even misleading (some situations have changed). So I am writing this article to help others who also encounter the same problem.</p>
     </li>
     
     <li>
@@ -289,7 +282,7 @@
         <h2><a class="blog" href="/blogs/c8e8ab7950fb9b47c736e665efaa666f.html">How to measure running time of function in Swift/SwiftUI</a></h2>
         <p class="info">2023-04-02 ｜ <a href="/swift.html"> Swift</a> ｜ 973 字</p>
         
-        <p>Xcode Test cannot meet our need, so we need to write the testing function mannully. The main of testing function is measure time.</p>
+        <p>Sometimes, Xcode Test cannot meet our need, so we need to write the testing function mannully. The main of testing function is measure time of code. Whether it is testing a CPU/GPU-intensive program or a read-write-intensive program, it is necessary to obtain the running time of the program or function to calculate performance.</p>
     </li>
     
     <li>
@@ -317,21 +310,21 @@
         <h2><a class="blog" href="/blogs/1067904058e8c8e9d2e2fadf88655e72.html">Why GIF is static image rather than video?</a></h2>
         <p class="info">2023-02-03 ｜ <a href="/research.html"> Research</a> ｜ 4222 字</p>
         
-        <p>ZhongUncle introduce GIF file format and its history. It explains how GIF files are composed of different parts.</p>
+        <p>When I was organizing my disk, I have a question: What is GIFs classified as? Static image files or video files?Because if you put it in a video, GIF is classified as a static image usually and is composed of images; if you put it in an image, it shows animations. Then I have new problem: Why GIFs shows animations, but be classified as static images?</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/e6665dfc5d48a9d949fecc0b6c5cbcfa.html">How to use Java like script (How to run single Java file like script)</a></h2>
         <p class="info">2023-01-10 ｜ <a href="/web.html"> Web</a> ｜ 400 字</p>
         
-        <p>How to use Java like script on Unix-like systems without using the .java suffix.</p>
+        <p>Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/a29262f4929f0675d51accd5d3dd57c6.html">How to install the Java development environment on macOS Terminal</a></h2>
         <p class="info">2023-01-10 ｜ <a href="/research.html"> Research</a> ｜ 512 字</p>
         
-        <p>Java downloaded from the official website does not have javac or an error The operation couldn’t be completed).</p>
+        <p>Recently, I need to learn Java. Due to personal habits, I just want to use the terminal for development instead of using an IDE. But I never expected that I would be tricked by the official website once, and the downloaded Java could not be developed normally. So I wrote this article to explain how to configure it. It's very simple, just find the right official website.</p>
     </li>
     
     <li>
@@ -345,14 +338,14 @@
         <h2><a class="blog" href="/blogs/c22c5e9a56f043258e7be58704a259ac.html">New Navigation mode in SwiftUI from iOS 16</a></h2>
         <p class="info">2022-11-24 ｜ <a href="/swift.html"> Swift</a> ｜ 608 字</p>
         
-        <p>From iOS 16, Apple start to deprecate NavigationView ZhongUncle introduces how to use new NavigationStack and NavigationSplitView how it works and similar things</p>
+        <p>From iOS 16, Apple start to deprecate the original `NavigationView` and will gradually phase it out completely in the future. Apple start to use `NavigationStack` and `NavigationSplitView`. </p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/ec740071304f54f9a488261c5d203685.html">How to grant different permissions of Safari Extension</a></h2>
         <p class="info">2022-10-25 ｜ <a href="/swift.html"> Swift</a> ｜ 823 字</p>
         
-        <p>ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds.</p>
+        <p>ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds.The permissions of Safari Extension extensions are roughly divided into the following aspects:</p>
     </li>
     
     <li>
@@ -398,7 +391,7 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/da5bd1f639e9b57c04a61f0eaa75518b.html">How to product new version UI animation after iOS 15 using SwiftUI</a></h2>
+        <h2><a class="blog" href="/blogs/da5bd1f639e9b57c04a61f0eaa75518b.html">How to product new UI animation after iOS 15 using SwiftUI</a></h2>
         <p class="info">2022-08-13 ｜ <a href="/swift.html"> Swift</a> ｜ 1375 字</p>
         
         <p>Starting from iOS 15.0, Apple has abandoned the previous.animation(Animation?) and recommends developers to use .animation(Animation?, value: Equatable) or withAnimation instead.Personally, I feel that although I may not be used to it after the revision, the possibilities and freedom of development are greater.But before talking about the difference between the two, we need to understand UI animation. You can skip this part if you understand it.What is animation.Animation is a process of attribute changes such as various displacements, color changes, size changes, etc.Specific to SwiftUI's View, it is their .offset, .foregroundC</p>
@@ -408,7 +401,7 @@
         <h2><a class="blog" href="/blogs/6548d5f3f9473c9af2e20308a7a69b33.html">How to generate assembly code using Clang</a></h2>
         <p class="info">2022-08-13 ｜ <a href="/assembly.html"> Assembly</a> ｜ 160 字</p>
         
-        <p>This blog explains how to generate assembly code using Clang, a compiler for C and other languages.</p>
+        <p>Sometimes for learning or debuging, I need to view the assembly code of the program. This is very convenient in many GUI IDEs. For example, in Xcode, just click Product-Perform Action-Assemble File Name, as follows</p>
     </li>
     
     <li>
@@ -429,7 +422,7 @@
         <h2><a class="blog" href="/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html">Jump between Views in SwiftUI (How to jump to other page)</a></h2>
         <p class="info">2022-07-17 ｜ <a href="/swift.html"> Swift</a> ｜ 1392 字</p>
         
-        <p>ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.</p>
+        <p>ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.Since it jumps page by page, so it is not suitable for jumping between some pages</p>
     </li>
     
     <li>
@@ -443,14 +436,14 @@
         <h2><a class="blog" href="/blogs/a5f2826a18ab8a51e0d48236e702a060.html">How to get query of URLs in PHP</a></h2>
         <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ 232 字</p>
         
-        <p>How to get query of URLs in PHP</p>
+        <p>PHP, like Python, provides the function `parse_url(string $url, int $component = -1)`, which is very convenient.</p>
     </li>
     
     <li>
         <h2><a class="blog" href="/blogs/4960acb8624248a0f818c31c8e3d6447.html">What are the query of URL? How to parse and obtain them?</a></h2>
         <p class="info">2022-07-10 ｜ <a href="/web.html"> Web</a> ｜ 460 字</p>
         
-        <p>This article is to introduce the common parameter parts in URLs and how to use common Python, JavaScript, and PHP to parse and obtain parameters."</p>
+        <p>This article is to introduce the common parameter parts in URLs and how to use common Python, JavaScript, and PHP to parse and obtain parameters. (You can click on the table of contents on the left to jump directly to the part you want to see)</p>
     </li>
     
     <li>
@@ -461,17 +454,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/988b6cd9b0d8ab890ef1cd60e5d2bf29.html">What are argc and argv of arguments of function main in C?</a></h2>
-        <p class="info">2022-06-17 ｜ <a href="/c.html"> C</a> ｜ 1113 字</p>
-        
-        <p>What are argc and argv of arguments of function main in C? It is a key for C program.</p>
-    </li>
-    
-    <li>
         <h2><a class="blog" href="/blogs/ab31419837e92019d03e585d6aabe5f0.html">Why Type-C in difference protocols is in difference speed</a></h2>
         <p class="info">2022-06-16 ｜ <a href="/research.html"> Research</a> ｜ 2578 字</p>
         
-        <p>I will tell you Why does the Type-C interface have different bandwidths under different protocols from pin definitions, protocols, etc.</p>
+        <p>Do you wonder why Type-C in difference protocols is in difference speed? I will tell you why the Type-C have different bandwidths under different protocols from pin definitions, protocols, etc.</p>
     </li>
     
     <li>
@@ -496,10 +482,10 @@
     </li>
     
     <li>
-        <h2><a class="blog" href="/blogs/5644480678be0c6672255dafa4025443.html">How to access files in Windows with WSL</a></h2>
+        <h2><a class="blog" href="/blogs/5644480678be0c6672255dafa4025443.html">How to access Windows files in WSL</a></h2>
         <p class="info">2022-05-12 ｜ <a href="/unix.html"> UNIX</a> ｜ 69 字</p>
         
-        <p>How to access files in Windows with WSL</p>
+        <p>First enter WSL, then enter the root directory `/`, and use `ls` to see a directory named `mnt` (mnt is the abbreviation of mount).</p>
     </li>
     
     <li>
@@ -520,7 +506,7 @@
         <h2><a class="blog" href="/blogs/a2af816aa35ceed62118846c01a3177f.html">How to use Core Image filter (CIFilter) to process photos in SwiftUI</a></h2>
         <p class="info">2022-02-22 ｜ <a href="/swift.html"> Swift</a> ｜ 959 字</p>
         
-        <p>Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API. </p>
+        <p>Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API. The first is how to read this web page, that is to say what information this web page provides, which is very helpful for us when using it. Take the screenshot below as an example to explain how to see it.</p>
     </li>
     
     <li>
@@ -555,7 +541,7 @@
         <h2><a class="blog" href="/blogs/931b83d9bcb9f86d823587658797407c.html">How to modify the size of SF Symbol in SwiftUI</a></h2>
         <p class="info">2022-01-11 ｜ <a href="/swift.html"> Swift</a> ｜ 234 字</p>
         
-        <p>ZhongUncle will introduce how to modify the size of SF Symbol in SwiftUI.</p>
+        <p>Apple provides many symbols to developers, which improves developer efficiency and unifies the usage of many symbols to avoid misunderstandings. These synbols are called as SF symbols. Apple provides an App for developers to find these symbols, also called SF Symbol, which can be found on the Apple Developer website</p>
     </li>
     
     <li>
@@ -577,13 +563,6 @@
         <p class="info">2021-04-03 ｜ <a href="/swift.html"> Swift</a> ｜ 420 字</p>
         
         <p>ZhongUncle introduces how to obtain information of device, system and battery in Swift.</p>
-    </li>
-    
-    <li>
-        <h2><a class="blog" href="/blogs/f32b85e5b021d374c9c429e2a0f7eff9.html">How to define custom colors in SwiftUI</a></h2>
-        <p class="info">2021-03-14 ｜ <a href="/swift.html"> Swift</a> ｜ 873 字</p>
-        
-        <p>How to define custom colors in SwiftUI by UIColor and Color Set include dark model dark mode.</p>
     </li>
     
 </ul>

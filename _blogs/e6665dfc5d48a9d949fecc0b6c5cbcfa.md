@@ -3,7 +3,8 @@ layout: article
 category: Web
 date: 2023-01-10
 title: How to use Java like script (How to run single Java file like script)
-excerpt: "How to use Java like script on Unix-like systems without using the .java suffix."
+excerpt: "Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine."
+originurl: "https://blog.csdn.net/qq_33919450/article/details/128634215"
 ---
 Java supports running a single Java code file like a script on Unix like systems. But at the bottom, it unlikes the real scripts, it still needs to be compiled. You can run it as script under Linux, macOS, WSL and cannot be used under Windows PowerShell or CommandLine.
 

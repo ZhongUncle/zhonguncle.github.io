@@ -115,10 +115,8 @@
                 <h2><a class="blog" href="/blogs/e8e6f473c10544642cf2d190731f8eb8.html">How to convert number from some base to other base in Swift</a></h2>
                 <p class="info">2023-06-12 ｜ #Words: 323 </p>
                 
-                <p>ZhongUncle introduce how to convert number from some base to other base in Swift(for example, decimal to hexadecimal, octal to binary)</p>
+                <p>Finally I found the `String` type has a particularly magical method, like: String(a, radix: 16, uppercase: true)</p>
             </li>
-        
-    
         
     
         
@@ -155,7 +153,7 @@
                 <h2><a class="blog" href="/blogs/c8e8ab7950fb9b47c736e665efaa666f.html">How to measure running time of function in Swift/SwiftUI</a></h2>
                 <p class="info">2023-04-02 ｜ #Words: 973 </p>
                 
-                <p>Xcode Test cannot meet our need, so we need to write the testing function mannully. The main of testing function is measure time.</p>
+                <p>Sometimes, Xcode Test cannot meet our need, so we need to write the testing function mannully. The main of testing function is measure time of code. Whether it is testing a CPU/GPU-intensive program or a read-write-intensive program, it is necessary to obtain the running time of the program or function to calculate performance.</p>
             </li>
         
     
@@ -178,7 +176,7 @@
                 <h2><a class="blog" href="/blogs/c22c5e9a56f043258e7be58704a259ac.html">New Navigation mode in SwiftUI from iOS 16</a></h2>
                 <p class="info">2022-11-24 ｜ #Words: 608 </p>
                 
-                <p>From iOS 16, Apple start to deprecate NavigationView ZhongUncle introduces how to use new NavigationStack and NavigationSplitView how it works and similar things</p>
+                <p>From iOS 16, Apple start to deprecate the original `NavigationView` and will gradually phase it out completely in the future. Apple start to use `NavigationStack` and `NavigationSplitView`. </p>
             </li>
         
     
@@ -187,7 +185,7 @@
                 <h2><a class="blog" href="/blogs/ec740071304f54f9a488261c5d203685.html">How to grant different permissions of Safari Extension</a></h2>
                 <p class="info">2022-10-25 ｜ #Words: 823 </p>
                 
-                <p>ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds.</p>
+                <p>ZhongUncle will introduce how to grant different permissions of Safari Extension, like types, domains, kinds.The permissions of Safari Extension extensions are roughly divided into the following aspects:</p>
             </li>
         
     
@@ -212,7 +210,7 @@
     
         
             <li>
-                <h2><a class="blog" href="/blogs/da5bd1f639e9b57c04a61f0eaa75518b.html">How to product new version UI animation after iOS 15 using SwiftUI</a></h2>
+                <h2><a class="blog" href="/blogs/da5bd1f639e9b57c04a61f0eaa75518b.html">How to product new UI animation after iOS 15 using SwiftUI</a></h2>
                 <p class="info">2022-08-13 ｜ #Words: 1375 </p>
                 
                 <p>Starting from iOS 15.0, Apple has abandoned the previous.animation(Animation?) and recommends developers to use .animation(Animation?, value: Equatable) or withAnimation instead.Personally, I feel that although I may not be used to it after the revision, the possibilities and freedom of development are greater.But before talking about the difference between the two, we need to understand UI animation. You can skip this part if you understand it.What is animation.Animation is a process of attribute changes such as various displacements, color changes, size changes, etc.Specific to SwiftUI's View, it is their .offset, .foregroundC</p>
@@ -230,7 +228,7 @@
                 <h2><a class="blog" href="/blogs/ef396bd58ea994c892978cc3f5eeaa2c.html">Jump between Views in SwiftUI (How to jump to other page)</a></h2>
                 <p class="info">2022-07-17 ｜ #Words: 1392 </p>
                 
-                <p>ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.</p>
+                <p>ZhongUncle introduces how to jump to other pages and views in SwiftUI. I shows two methods and new method after iOS 16.Since it jumps page by page, so it is not suitable for jumping between some pages</p>
             </li>
         
     
@@ -247,8 +245,6 @@
                 
                 <p>ZhongUncle introduces how to use Swift to parses URLs.</p>
             </li>
-        
-    
         
     
         
@@ -284,7 +280,7 @@
                 <h2><a class="blog" href="/blogs/a2af816aa35ceed62118846c01a3177f.html">How to use Core Image filter (CIFilter) to process photos in SwiftUI</a></h2>
                 <p class="info">2022-02-22 ｜ #Words: 959 </p>
                 
-                <p>Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API. </p>
+                <p>Apple provides 14 major categories, a total of 174 image processing methods and some common filters in the Core Image API. The first is how to read this web page, that is to say what information this web page provides, which is very helpful for us when using it. Take the screenshot below as an example to explain how to see it.</p>
             </li>
         
     
@@ -322,7 +318,7 @@
                 <h2><a class="blog" href="/blogs/931b83d9bcb9f86d823587658797407c.html">How to modify the size of SF Symbol in SwiftUI</a></h2>
                 <p class="info">2022-01-11 ｜ #Words: 234 </p>
                 
-                <p>ZhongUncle will introduce how to modify the size of SF Symbol in SwiftUI.</p>
+                <p>Apple provides many symbols to developers, which improves developer efficiency and unifies the usage of many symbols to avoid misunderstandings. These synbols are called as SF symbols. Apple provides an App for developers to find these symbols, also called SF Symbol, which can be found on the Apple Developer website</p>
             </li>
         
     
@@ -350,15 +346,6 @@
                 <p class="info">2021-04-03 ｜ #Words: 420 </p>
                 
                 <p>ZhongUncle introduces how to obtain information of device, system and battery in Swift.</p>
-            </li>
-        
-    
-        
-            <li>
-                <h2><a class="blog" href="/blogs/f32b85e5b021d374c9c429e2a0f7eff9.html">How to define custom colors in SwiftUI</a></h2>
-                <p class="info">2021-03-14 ｜ #Words: 873 </p>
-                
-                <p>How to define custom colors in SwiftUI by UIColor and Color Set include dark model dark mode.</p>
             </li>
         
     

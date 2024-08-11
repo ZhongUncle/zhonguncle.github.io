@@ -105,7 +105,7 @@
                 <h2><a class="blog" href="/blogs/a05d93c02a242879e59e6c7e1455dd8d.html">Modify the default SDA and SCL pins of I2C of Raspi Pico using C/C++</a></h2>
                 <p class="info">2023-08-26 ｜ #Words: 254 </p>
                 
-                <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled.</p>
+                <p>Pico has two I2C, namely two sets of SDA and SCL. You can see this from the names in the pin diagram. By default, only the first I2C (`I2C0`) is enabled. It means, even if you modify the pin, but not in `I2C0`, it still doesn't work. There are two ways to modify the SDA and SCL default pins of I2C correctly, and also there is a not recommended method (but still a useful method).</p>
             </li>
         
     
@@ -123,7 +123,7 @@
                 <h2><a class="blog" href="/blogs/589dba6103e6828777f8c9d196585565.html">How to reset Raspberry Pi Pico (reset peripheral device failed)</a></h2>
                 <p class="info">2023-08-15 ｜ #Words: 429 </p>
                 
-                <p>Sometimes you need to reset the Raspberry Pi Pico. Common method sometimes does not work, so need a program to reset.</p>
+                <p>Sometimes you need to reset the Raspberry Pi Pico. One way is to press and hold the BOOTSEL button on the Pico and re-plug USB; another way is connecting the RUN and GND pins with a button, and then press this button and BOOTSEL at the same time button. This puts you into USB mode.</p>
             </li>
         
     
@@ -145,14 +145,8 @@
                 <h2><a class="blog" href="/blogs/ad8e86abe0c5cfe760fe5a008701913e.html">How to use the Mac Terminal to develop Raspberry Pi Pico using C/C++</a></h2>
                 <p class="info">2023-08-09 ｜ #Words: 2524 </p>
                 
-                <p>The official tutorial is outdated. If you follow the official tutorial to configure it on Mac now, you will encounter a lot of problems.</p>
+                <p>The reason for writing this blog is that the official tutorial is outdated. If you follow the official tutorial to configure on Mac now, you will encounter a lot of problems. I dropped into almost pits. Therefore, I record the complete process, as well as the causes and handling methods of various errors. And if I change to new Mac and encounter the same problem in the future, I read this blog to remind how to deal with it.</p>
             </li>
-        
-    
-        
-    
-        
-    
         
     
         

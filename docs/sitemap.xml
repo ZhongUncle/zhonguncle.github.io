@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sitemaps.org/schemas/sitemap/0.9 http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd" xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 <url>
-<loc>http://localhost:4000/blogs/f32b85e5b021d374c9c429e2a0f7eff9.html</loc>
-<lastmod>2021-03-14T00:00:00+08:00</lastmod>
-</url>
-<url>
 <loc>http://localhost:4000/blogs/555c18584a5f515e39f5defa584749b6.html</loc>
 <lastmod>2021-04-03T00:00:00+08:00</lastmod>
 </url>
@@ -67,10 +63,6 @@
 <url>
 <loc>http://localhost:4000/blogs/ab31419837e92019d03e585d6aabe5f0.html</loc>
 <lastmod>2022-06-16T00:00:00+08:00</lastmod>
-</url>
-<url>
-<loc>http://localhost:4000/blogs/988b6cd9b0d8ab890ef1cd60e5d2bf29.html</loc>
-<lastmod>2022-06-17T00:00:00+08:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/blogs/d4f89b69a701100ce7f8f8aca2abd3d4.html</loc>
@@ -211,10 +203,6 @@
 <url>
 <loc>http://localhost:4000/blogs/c14da178a37d0ea2c5363e04df841a7f.html</loc>
 <lastmod>2023-06-08T00:00:00+08:00</lastmod>
-</url>
-<url>
-<loc>http://localhost:4000/blogs/1280c5e381bc0e8f62fbc07f96d1ac0d.html</loc>
-<lastmod>2023-06-10T00:00:00+08:00</lastmod>
 </url>
 <url>
 <loc>http://localhost:4000/blogs/4693280e7d152780ee5ed9d12d080386.html</loc>
