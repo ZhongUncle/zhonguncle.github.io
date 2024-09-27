@@ -71,7 +71,7 @@
 </div>
             <h1>How to clone Raspberry Pi system disk to smaller disk/SD card</h1>
             <div class="bloginfo">
-                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2707 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/136404094"> 中文原版 </a></p>
+                <p class="info">2024-03-02 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2726 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/136404094"> 中文原版 </a></p>
             </div>
             <p>Recently, one of old solid-state drive is free. Although the writing speed is not fast, but enough for Gigabit network, so I want to replace the current disk of Raspberry Pi. Due to new system need setting, so I don’t plan to reinstall the system. In addition, this old disk is 120GB, which is smaller than the current disk (512GB), some common methods of copying hard drives cannot be used here.</p>
 
@@ -79,7 +79,7 @@
 
 <p><strong>After writing blog, I confirmed the flow again and again, but I still recommend readers to back up important files.</strong></p>
 
-<p>This blog is long and the operation is also cumbersome, so I make a script for use: <a href="https://github.com/ZhongUncle/clone_rasp_disk">https://github.com/ZhongUncle/clone_rasp_disk</a></p>
+<p>This blog is long and the operation is also cumbersome, so I make a tool for use: <a href="https://github.com/ZhongUncle/clone_rasp_disk">https://github.com/ZhongUncle/clone_rasp_disk</a>, I will update many features not mentioned here. <strong>If you think it useful, please give me a star!</strong></p>
 
 <h2 id="notice">Notice</h2>
 <p>Due to verifying this process repeatedly, so I re-format and re-sync to disk. and I encountered a problem: Since formatting does not clear all existing files, <code class="language-plaintext highlighter-rouge">rysnc</code> may be not synchronizing correctly or partitions’ setting is not set correctly, so the boot flow will be broken.</p>
@@ -97,8 +97,8 @@
 
 <p>But SD card copier does not have this problem. But I don’t want to plug in HDMI cable to back socket of monitor, and it’s not suitable for daily backup and other operations, so I want to know how to use the CLI. <strong>If you can use desktop mode, it is recommended to use the SD card copier application directly</strong>. This method is much faster, and the speed can be stable at 50~70MB/s.</p>
 
-<h2 id="principle">Principle</h2>
-<p>The method in this blog is the same as the principle of SD card copier: divide the target hard disk into two areas, the boot area (named <code class="language-plaintext highlighter-rouge">bootfs</code>, format Windows_FAT_32) and the usage area (also called the root area named <code class="language-plaintext highlighter-rouge">rootfs</code> , the format is Linux), and then use <code class="language-plaintext highlighter-rouge">rsync</code> to copy, which is much faster.</p>
+<h2 id="workflow">Workflow</h2>
+<p>The method in this blog is the same as the workflow principle of SD card copier: divide the target hard disk into two areas, the boot area (named <code class="language-plaintext highlighter-rouge">bootfs</code>, format Windows_FAT_32) and the usage area (also called the root area named <code class="language-plaintext highlighter-rouge">rootfs</code> , the format is Linux), and then use <code class="language-plaintext highlighter-rouge">rsync</code> to copy, which is much faster.</p>
 
 <p>If you use lsblk -f on the Raspberry Pi (this is just for demonstration, a more detailed tool will be introduced later) to view the structure and file system of the hard disk, you can see:</p>
 

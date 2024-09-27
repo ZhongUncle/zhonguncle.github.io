@@ -1,7 +1,9 @@
 #!/bin/bash
-#
+#把照片的本地url转换成绝对url
+#../blogs/..转换成/blogs/....
 
-for i in *.html; do
+cd
+for i in *.md; do
     # 这些点是因为Mac的grep正则表达式与Linux的不太一样
     grep -o /blogs/..................................... $i > urls.txt
     while read URL; do
