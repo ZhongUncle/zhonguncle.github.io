@@ -1,0 +1,293 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>String Matching Algorithm (1/3) Naive and Rabin-Karp</title>
+        <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name='description' content='String matching algorithms have always been my weak spot, and I happened to have a need for them recently, so I took the opportunity to catch up. String matching algorithms primarily involve identifying a substring (pattern, which is sometimes translated as pattern in other contexts, hence sometimes called pattern matching) within a larger body of text, such as finding a word in a text editor or a specific sequence in a DNA strand.'>
+        
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        
+        
+        <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ky7zebz4nm");
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>String Matching Algorithm (1/3) Naive and Rabin-Karp</h1>
+            <div class="bloginfo">
+                <p class="info">2024-07-12 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 1906 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/140387879"> 中文原版 </a></p>
+            </div>
+            <p>String matching algorithms have always been my weak spot, and I happened to have a need for them recently, so I took the opportunity to catch up.</p>
+
+<p>String matching algorithms primarily involve identifying a substring (pattern, which is sometimes translated as “pattern” in other contexts, hence sometimes called “pattern matching”) within a larger body of text, such as finding a word in a text editor or a specific sequence in a DNA strand.</p>
+
+<p>Structurally, many string matching algorithms consist of two parts: <strong>preprocessing and matching</strong>.</p>
+
+<blockquote>
+  <p>There is no preprocess in naive matching algorithm.</p>
+</blockquote>
+
+<p>Below are the four matching algorithms listed in “Introduction to Algorithms”, and I’ll start by learning these four. There are certainly more algorithms, but it’s easy to get overwhelmed if you try to learn too much at once.</p>
+
+<p><img alt="naive,Rabin-Karp,Finite Automaton Algorithm,KMP" src="/assets/images/8a8b200a27fc54375cf58d18d3fe045d.png" style="box-shadow: 0px 0px 0px 0px" /></p>
+
+<blockquote>
+  <p>∑ in the table above represents a set, as the Rabin-Karp algorithm uses equivalence classes from number theory: for example, 1 and 3 yield the same result for mod 2 operation, so 1 and 3 are in the same equivalence class under mod 2.</p>
+</blockquote>
+
+<p>Preprocessing is done to speed up the matching process. For instance, although the worst-case time for the Rabin-Karp algorithm is the same as the naive matching, in practice, Rabin-Karp is usually much faster.</p>
+
+<h2 id="naive-string-matching-algorithm">Naive String Matching Algorithm</h2>
+<p>This approach is straightforward, checking each character one by one. When a character matches the first character of the substring we’re looking for, we proceed to compare the subsequent characters.</p>
+
+<p>Here’s the C code:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">naiveMatch</span><span class="p">(</span><span class="kt">char</span> <span class="n">str</span><span class="p">[],</span> <span class="kt">char</span> <span class="n">partern</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lenstr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">lenpart</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">s</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span><span class="n">s</span><span class="o">&lt;=</span><span class="p">(</span><span class="n">lenstr</span><span class="o">-</span><span class="n">lenpart</span><span class="p">);</span><span class="n">s</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">s</span><span class="p">]</span><span class="o">==</span><span class="n">partern</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">1</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">lenpart</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="n">i</span><span class="p">]</span><span class="o">!=</span><span class="n">partern</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">{</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">i</span> <span class="o">==</span> <span class="n">lenpart</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="n">printf</span><span class="p">(</span><span class="s">"%d: %c, %d: %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="p">(</span><span class="n">s</span><span class="o">+</span><span class="n">i</span><span class="p">),</span> <span class="n">str</span><span class="p">[</span><span class="n">s</span><span class="o">+</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">,</span> <span class="n">partern</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+                    <span class="k">return</span> <span class="n">s</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="c1">// No match found, return -1</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// This weird string comes from the initial KMP paper</span>
+    <span class="kt">char</span> <span class="n">str</span><span class="p">[]</span><span class="o">=</span><span class="s">"babcbabcabcaabcabcabcabcacabc"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">partern</span><span class="p">[]</span><span class="o">=</span><span class="s">"abcabcacab"</span><span class="p">;</span>
+    <span class="c1">// Note that C strings have a termination character, so the length should be reduced by 1</span>
+    <span class="kt">int</span> <span class="n">lenstr</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">lenpart</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">partern</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    
+    <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">naiveMatch</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">partern</span><span class="p">,</span> <span class="n">lenstr</span><span class="p">,</span> <span class="n">lenpart</span><span class="p">);</span>
+    <span class="c1">// It can also be modified to "start matching from the xth character", and remember to add 1 to s in this case</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"From %d matching.</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The output is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>27: b, 9: b
+From 18 matching.
+</code></pre></div></div>
+
+<h2 id="rabin-karp-algorithm">Rabin-Karp Algorithm</h2>
+<p>The Rabin-Karp algorithm is a bit more complex. If you’re not interested, you can skip it. However, from an interesting perspective, this algorithm is quite intriguing.</p>
+
+<p>It not only uses equivalence classes from number theory but also requires knowledge of some polynomial algorithms; selecting a modulus (i.e., modulo operation) needs to consider machine word length and other issues, which requires developers to have considerable mathematical and computer knowledge.</p>
+
+<p>Of course, this algorithm has its advantages: it’s excellent when you need to match multiple contents, and its efficiency is even higher when combined with Bloom Filter.</p>
+
+<h3 id="algorithm-logic">Algorithm Logic</h3>
+<p>The logic of the Rabin-Karp algorithm is:</p>
+<ol>
+  <li>Convert the substring to be matched into a number (i.e., an equivalence class, or a hash value);</li>
+  <li>Then convert each substring of the string (with the same length as the substring to be matched) into numbers.</li>
+  <li>Compare these numbers; parts with the same number might be the same.</li>
+  <li>Compare the characters of parts with the same number to prevent false matches (the algorithm can result in different strings producing the same outcome).</li>
+</ol>
+
+<blockquote>
+  <p>For example, 1 and 3 yield the same result for <code class="language-plaintext highlighter-rouge">mod 2</code> operation, both being 1, so 1 and 3 are in the same equivalence class under mod 2.
+Of course, equivalence classes are a concept from “Introduction to Algorithms”; you can also understand it as a kind of hash function. This is the concept of hashing, although some hash functions have additional operations to handle collisions, which won’t be discussed here.</p>
+</blockquote>
+
+<h3 id="obtaining-equivalence-classes-hash-values">Obtaining Equivalence Classes (Hash Values)</h3>
+<p>First, some preprocessing is done to obtain equivalence classes (hash values).</p>
+
+<p>The method to obtain equivalence classes is as follows:</p>
+<ol>
+  <li>Represent characters with numbers, such as using 1～26 to represent the 26 English letters, or using ASCII codes, or even UTF-8, Unicode, etc.</li>
+  <li>Then use Horner’s rule to generate the value of this string (you can also use other algorithms, just be aware that simple addition is too prone to repetition).</li>
+</ol>
+
+<p>Here, we use 0～25 to represent the 26 English letters to represent characters because we only use English letters. At this time, ∑ = {0,2,3,4,5,6,7,8,…,25,25}.</p>
+
+<p>When choosing a modulus, select a prime number to reduce the number of false matches (the book provides some related analysis; you can check it out if interested). The smallest prime number not less than 26 is 29.</p>
+
+<blockquote>
+  <p>“Introduction to Algorithms” uses 1～10 to represent corresponding numbers, then 13 as the modulus.</p>
+</blockquote>
+
+<p>Then, when using Horner’s rule to generate the string’s value, use the following algorithm (m is the length of the matching string):</p>
+
+<p><img alt="naive,Rabin-Karp,Finite Automaton Algorithm,KMP" src="/assets/images/56a1f4374382960efbf2e29f2ac5351a.png" style="box-shadow: 0px 0px 0px 0px" width="400px" /></p>
+
+<p>That is, <code class="language-plaintext highlighter-rouge">s[0]x26+s[1]</code> is the value of two characters, and so on, finally taking the result modulo 29.</p>
+
+<p>However, whether to take the modulo at the end or not is actually optional; it just narrows down the result range. Otherwise, sometimes it might exceed the length of a single instruction, which would reduce computational speed.</p>
+
+<p>The generation algorithm is as follows:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">lenpart</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+	<span class="n">ph</span> <span class="o">=</span> <span class="mi">26</span> <span class="o">*</span> <span class="n">ph</span> <span class="o">+</span> <span class="p">(</span><span class="n">partern</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="sc">'a'</span><span class="p">);</span>
+<span class="p">}</span>
+<span class="n">ph</span> <span class="o">=</span> <span class="n">ph</span> <span class="o">%</span> <span class="mi">29</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>This way, the string <code class="language-plaintext highlighter-rouge">ccd</code> results in a value of <code class="language-plaintext highlighter-rouge">1743</code>.</p>
+<h3 id="finding-equivalence-classes-with-matching-values">Finding Equivalence Classes with Matching Values</h3>
+<p>Now we come to the actual matching phase.</p>
+
+<p>However, this is a simple search algorithm, where you can directly compare one by one, which has no technical difficulty.</p>
+
+<h3 id="determining-if-its-a-false-match">Determining if It’s a False Match</h3>
+<p>This is the naive string matching algorithm mentioned earlier, only with significantly reduced workload, as any mismatch at the corresponding index can lead to a false dismissal.</p>
+
+<h3 id="complete-code">Complete Code</h3>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">RabinKarp</span><span class="p">(</span><span class="kt">char</span> <span class="n">str</span><span class="p">[],</span> <span class="kt">char</span> <span class="n">partern</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lenstr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">lenpart</span><span class="p">,</span> <span class="kt">int</span> <span class="n">d</span><span class="p">,</span> <span class="kt">int</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+    <span class="cm">/* Preprocessing phase */</span>
+    <span class="kt">int</span> <span class="n">ph</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">sh</span><span class="p">[</span><span class="n">lenstr</span> <span class="o">-</span> <span class="n">lenpart</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+    
+    <span class="c1">// Set each element of sh[] to 0, to avoid non-zero initial values</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="n">lenstr</span> <span class="o">-</span> <span class="n">lenpart</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">sh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Generate the value of the matching string</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">lenpart</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ph</span> <span class="o">=</span> <span class="mi">26</span> <span class="o">*</span> <span class="n">ph</span> <span class="o">+</span> <span class="p">(</span><span class="n">partern</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">-</span><span class="sc">'a'</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">ph</span> <span class="o">=</span> <span class="n">ph</span> <span class="o">%</span> <span class="mi">29</span><span class="p">;</span>
+    
+    <span class="c1">// Generate the value of substrings</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;=</span><span class="p">(</span><span class="n">lenstr</span><span class="o">-</span><span class="n">lenpart</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">lenpart</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">sh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">26</span> <span class="o">*</span> <span class="n">sh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">-</span><span class="sc">'a'</span><span class="p">);</span>
+        <span class="p">}</span>
+        <span class="n">sh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">sh</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">%</span> <span class="mi">29</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="cm">/* Matching phase */</span>
+    <span class="c1">// Check for matching values</span>
+    <span class="c1">// (This returns the first match found; if you want to match multiple values, you can use a linked list or array to store the indices and then compare them)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;=</span><span class="p">(</span><span class="n">lenstr</span><span class="o">-</span><span class="n">lenpart</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Check for false matches</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">ph</span><span class="o">==</span><span class="n">sh</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">{</span>
+            <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">lenpart</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">]</span><span class="o">!=</span><span class="n">partern</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+                    <span class="k">break</span><span class="p">;</span>
+                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span> <span class="p">(</span><span class="n">j</span><span class="o">==</span><span class="n">lenpart</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">return</span> <span class="n">i</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">str</span><span class="p">[]</span><span class="o">=</span><span class="s">"babcbabcabcaabcabcabcabcacabc"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">partern</span><span class="p">[]</span><span class="o">=</span><span class="s">"abcabcacab"</span><span class="p">;</span>
+    <span class="c1">//C string has a end symbol.</span>
+    <span class="kt">int</span> <span class="n">lenstr</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">lenpart</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">partern</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    
+    <span class="kt">int</span> <span class="n">s</span> <span class="o">=</span> <span class="n">RabinKarp</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">partern</span><span class="p">,</span> <span class="n">lenstr</span><span class="p">,</span> <span class="n">lenpart</span><span class="p">,</span><span class="mi">10</span> <span class="p">,</span> <span class="mi">13</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"From %d matching.</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The next blog is about the finite automaton string matching algorithm.</p>
+
+<p>The links to the other two blog posts are as follows:</p>
+
+<p>「String Matching Algorithm 2/3」Finite Automaton String Matching Algorithm - ZhongUncle’s CSDN
+「String Matching Algorithm 3/3」KMP (Knuth–Morris–Pratt) String Matching Algorithm - ZhongUncle’s CSDN</p>
+
+<p>I hope these will help someone in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
