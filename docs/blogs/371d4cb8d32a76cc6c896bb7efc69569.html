@@ -71,7 +71,7 @@
 </div>
             <h1>High-precision time measurement function similar to clock_gettime(CLOCK_MONOTONIC) on Windows</h1>
             <div class="bloginfo">
-                <p class="info">2024-04-15 ｜ <a href="/c.html"> C</a> ｜ #Words: 1042 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/137643993"> 中文原版 </a></p>
+                <p class="info">2024-04-15 ｜ <a href="/c.html"> C</a> ｜ #Words: 1038 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/137643993"> 中文原版 </a></p>
             </div>
             <blockquote>
   <p>Write on April 11, 2024
@@ -142,7 +142,7 @@ Generally, C/C++ compilers have built-in functions <code class="language-plainte
 
 <p>It is important to use different <code class="language-plaintext highlighter-rouge">%.xf</code> for different units. The precision mentioned above is only 100 nanoseconds. If you use <code class="language-plaintext highlighter-rouge">1000000000</code>, with nanoseconds as the unit, you will find that the rightmost two digits of the integer are always <code class="language-plaintext highlighter-rouge">0</code>, as follows:</p>
 
-<p><img src="https://img-blog.csdnimg.cn/direct/25c52ad13a254b5aa7d5a7e61358f6cb.png =x350" alt="Please add image description" /></p>
+<p><img src="/assets/images/9b2b3615282b556b4d6784dfe7db56f8.png" alt="result" /></p>
 
 <p>So when printing microseconds, use <code class="language-plaintext highlighter-rouge">%.1f</code>, and when printing nanoseconds, use <code class="language-plaintext highlighter-rouge">%.f</code> or <code class="language-plaintext highlighter-rouge">%.0f</code>. Any more digits will exceed the precision range (of course, there may be alignment needs, so it depends on yourself, this is just a suggestion).</p>
 
