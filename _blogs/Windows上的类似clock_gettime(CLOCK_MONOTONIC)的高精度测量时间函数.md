@@ -1,80 +1,86 @@
-﻿>2024年4月11更新
->感谢评论提醒，我之前写[《如何在C/C++中测量一个函数或者功能的运行时间（串行和并行，以及三种方法的实际情况对比）》](https://blog.csdn.net/qq_33919450/article/details/134653349)的时候只实验了 Linux 和 Mac 这种类 Unix 系统，没考虑到 Windows。
+---
+layout: article
+category: C
+date: 2024-04-15
+title: High-precision time measurement function similar to clock_gettime(CLOCK_MONOTONIC) on Windows
+excerpt: ""
+originurl: "https://blog.csdn.net/qq_33919450/article/details/137643993"
+---
+>Write on April 11, 2024
+>Thanks for the comments. When I wrote [How to measure the running time of a function or function in C/C++ (serial and parallel, and the actual comparison of three methods)](https://blog.csdn.net/qq_33919450/article/details/134653349), I only experimented with Unix-like systems such as Linux and Mac, and did not consider Windows.
 
-本文只考虑第一方（微软）的时间测量功能，有一些第三方高精度测量时间的库这里不讨论。
+This article only considers the time measurement function of the first party (Microsoft). Some third-party libraries for high-precision time measurement are not discussed here.
 
-Windows 中高精度测量时间间隔最佳方法是 QPC（QueryPerformanceCounter，查询性能计数器）。
+The best method for high-precision time interval measurement in Windows is QPC (QueryPerformanceCounter).
 
-QPC 不依赖于外部时间参考，是一个差动时钟（Difference Clocks），而不是一般我们常说的绝对时间（例如“2020/3/18 14:29:59”，有时也被很形象地称为墙上时间）类似`clock()`。并且 QPC 并不会受标准时间、系统时间的影响，类似`clock_gettime()`中的`CLOCK_MONOTONIC`。
+QPC does not rely on an external time reference. It is a differential clock, not the absolute time we usually say (such as "2020/3/18 14:29:59", sometimes also vividly called wall time) similar to `clock()`. And QPC is not affected by standard time or system time, similar to `CLOCK_MONOTONIC` in `clock_gettime()`.
 
->QPC 使用硬件计数器来计算时间。
->一般在 x86 架构设备上， QPC 来测量时间是通过访问处理器的的 TSC（时间戳计数器）来实现的，不过某些设备的 BIOS 可能不能正确设置 CPU 特性，比如设置成可变 TSC，那这个就会受其他一些因素的影响了。或者拥有多个处理器的设备，因为这样就有两个 TSC 来源了，他们俩不一定一样。如果出现这种情况，那么 Windows 会使用平台计数器或者主板上其他的计时器，而不是 TSC。这样的话成本会高 0.8～1.0 微秒。
->虽然主要是使用 TSC 实现的，但是微软官方不建议使用使用 RDTSC/RDTSCP（后者多一个指定 CPU）来直接获取 TSC 信息，因为这样软件程序的兼容性会大大降低（比如说程序运行在可变 TSC 或者没有 TSC 的设备系统上，代码可能无法运行或者误差较大）。
->一般 C/C++ 编译器是有内置函数`__builtin_ia32_rdtsc()`或`__builtin_ia32_rdtscp()`，所以你可以直接使用`uint64_t rdtsc = rdtsc();`这句代码来获取计数器的计数，然后做差，类似`clock()`的使用方法，不过你还要计算一下 TSC 频率来获取准确时间。
->**TSC 只是其中之一，Windows 8 及之后版本的 Windows 会使用多个硬件计数器来检测误差，并尽量补偿。**
+>QPC uses hardware counters to calculate time.
+>Generally on x86 architecture devices, QPC measures time by accessing the processor's TSC (time stamp counter), but the BIOS of some devices may not set the CPU characteristics correctly, such as setting it to variable TSC, which will be affected by other factors. Or devices with multiple processors, because there are two TSC sources, and they may not be the same. If this happens, Windows will use the platform counter or other timers on the motherboard instead of TSC. In this case, the cost will be 0.8 to 1.0 microseconds higher.
+>Although it is mainly implemented using TSC, Microsoft officially does not recommend using RDTSC/RDTSCP (the latter has one more specified CPU) to directly obtain TSC information, because this will greatly reduce the compatibility of software programs (for example, if the program runs on a device system with variable TSC or no TSC, the code may not run or the error may be large).
+>Generally, C/C++ compilers have built-in functions `__builtin_ia32_rdtsc()` or `__builtin_ia32_rdtscp()`, so you can directly use the code `uint64_t rdtsc = rdtsc();` to get the counter count, and then do the difference, similar to the use of `clock()`, but you also need to calculate the TSC frequency to get the accurate time.
+>**TSC is just one of them. Windows 8 and later versions of Windows will use multiple hardware counters to detect errors and try to compensate. **
 
-但是 QPC 精度比`clock_gettime()`方法低两个数量级，只能达到 100 纳秒，做不到`clock_gettime()`的 1 纳秒精度，不过大多情况都足够使用了。
+However, the accuracy of QPC is two orders of magnitude lower than that of the `clock_gettime()` method, which can only reach 100 nanoseconds, and cannot achieve the 1 nanosecond accuracy of `clock_gettime()`, but it is sufficient for most cases.
 
-下面是 QPC 的一个例子（第一行是为说明需要导入哪个库）：
+Here is an example of QPC (the first line is to show which library needs to be imported):
 
 ```c
 #include <windows.h>
 
 int main()
 {
-    LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
-    LARGE_INTEGER Frequency;
+LARGE_INTEGER StartingTime, EndingTime, ElapsedMicroseconds;
+LARGE_INTEGER Frequency;
 
-    QueryPerformanceFrequency(&Frequency);
-    QueryPerformanceCounter(&StartingTime);
-	
-    ...需要被测量的代码
+QueryPerformanceFrequency(&Frequency);
+QueryPerformanceCounter(&StartingTime);
 
-    QueryPerformanceCounter(&EndingTime);
-    printf(" %.1f us", 1000000*((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart);   
+...code to be measured
+
+QueryPerformanceCounter(&EndingTime);
+printf(" %.1f us", 1000000*((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart);
 }
 ```
 
-`LARGE_INTEGER`是 Windows 上的一个 union，它的内容如下：
+`LARGE_INTEGER` is a union on Windows, and its contents are as follows:
 
 ```c
 typedef union _LARGE_INTEGER {
-  struct {
-    DWORD LowPart;
-    LONG  HighPart;
-  } DUMMYSTRUCTNAME;
-  struct {
-    DWORD LowPart;
-    LONG  HighPart;
-  } u;
-  LONGLONG QuadPart;
+struct {
+DWORD LowPart;
+LONG HighPart;
+} DUMMYSTRUCTNAME;
+struct {
+DWORD LowPart;
+LONG HighPart;
+} u;
+LONGLONG QuadPart;
 } LARGE_INTEGER;
 ```
 
-它是 Windows 上用来存放 64 位整数的一个数据类型。如果编译器内置了对 64 位整数的支持，请使用 QuadPart 成员来存储 64 位整数。否则，请使用 LowPart 和 HighPart 成员来存储 64 位整数。可以看到上面例子中是使用`QuadPart`成员变量来读取一个 64 位的整数。
+It is a data type used to store 64-bit integers on Windows. If the compiler has built-in support for 64-bit integers, use the QuadPart member to store 64-bit integers. Otherwise, use the LowPart and HighPart members to store 64-bit integers. You can see that in the above example, the `QuadPart` member variable is used to read a 64-bit integer.
 
->如果你对 union 不熟悉，请看我的另外一篇博客：[C——Union是什么？Union和Struct这么像，区别在哪？为什么还要创造出union呢？需要在哪里使用呢？](https://blog.csdn.net/qq_33919450/article/details/130613405)
+>If you are not familiar with union, please read my other blog: [C——What is Union? Union and Struct are so similar, what is the difference? Why create union? Where do you need to use it? ](https://blog.csdn.net/qq_33919450/article/details/130613405)
 
-`QueryPerformanceFrequency`是获取计数器频率。前文也提到过， QPC 是通过 TSC 之类的硬件计数器实现的，所以需要知道晶振的频率，通过`计数/频率`来计算出时间。
+`QueryPerformanceFrequency` is used to obtain the counter frequency. As mentioned earlier, QPC is implemented through hardware counters such as TSC, so it is necessary to know the frequency of the crystal oscillator and calculate the time through `count/frequency`.
 
-`QueryPerformanceCounter`用来获取当前计数值。
+`QueryPerformanceCounter` is used to obtain the current count value.
 
-`printf(" %.1f us", 1000000*((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart);`就是用来打印计算出的时间。`((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart`就是`计数/频率`这个公式了。前面的`1000000`用来转换单位，表示微秒。如果你要计算毫秒就是`1000`，纳秒就是`1000000000`。
+`printf(" %.1f us", 1000000*((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart);` is used to print the calculated time. `((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart` is the formula of `count/frequency`. The previous `1000000` is used to convert units, indicating microseconds. If you want to calculate milliseconds, it is `1000`, and nanoseconds is `1000000000`.
 
-需要注意针对不同单位使用不同的`%.xf`。前面提到的精度只有 100 纳秒，如果你使用`1000000000`，以纳秒为单位，会发现整数最右边两位永远是`0`，如下：
+It is important to use different `%.xf` for different units. The precision mentioned above is only 100 nanoseconds. If you use `1000000000`, with nanoseconds as the unit, you will find that the rightmost two digits of the integer are always `0`, as follows:
 
-![请添加图片描述](https://img-blog.csdnimg.cn/direct/25c52ad13a254b5aa7d5a7e61358f6cb.png =x350)
+![Please add image description](https://img-blog.csdnimg.cn/direct/25c52ad13a254b5aa7d5a7e61358f6cb.png =x350)
 
-所以打印微秒时使用`%.1f`，纳秒时使用`%.f`或`%.0f`即可。再多的位数就超出精度范围了（当然或许会有对齐等情况的需要，所以还是看自己，这只是一个建议）。
+So when printing microseconds, use `%.1f`, and when printing nanoseconds, use `%.f` or `%.0f`. Any more digits will exceed the precision range (of course, there may be alignment needs, so it depends on yourself, this is just a suggestion).
 
-希望能帮到有需要的人～
+I hope this helps those in need~
 
-## 参考资料/扩展阅读
+## References/Extended Reading
 
-[Acquiring high-resolution time stamps - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps)：这篇是微软官方关于获取高精度时间的文章，如果你想了解一些关于 Windows 如何获取时间的底层和其他知识可以看看。我觉得最值得看的就是关于误差的那部分[Resolution, Precision, Accuracy, and Stability](https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps#resolution-precision-accuracy-and-stability)，介绍了通过硬件计数器获取时间的时候会造成误差的一些原因，是一个不错的扩展。
+[Acquiring high-resolution time stamps - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps): This is an official Microsoft article about acquiring high-precision time. If you want to learn about the underlying and other knowledge about how Windows acquires time, you can take a look. I think the most worthwhile part is the part about errors [Resolution, Precision, Accuracy, and Stability](https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps#resolution-precision-accuracy-and-stability), which introduces some reasons for errors when acquiring time through hardware counters. It is a good extension.
 
-[Time - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/sysinfo/time)：介绍 Windows 上各种时间的专栏。
+[Time - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/sysinfo/time): A column introducing various times on Windows.
 
-[LARGE_INTEGER union (winnt.h) - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-large_integer-r1)：`LARGE_INTEGER`的介绍。
-
-
+[LARGE_INTEGER union (winnt.h) - Microsoft Learn](https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-large_integer-r1): Introduction to `LARGE_INTEGER`.

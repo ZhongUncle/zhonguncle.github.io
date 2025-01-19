@@ -1,0 +1,176 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>High-precision time measurement function similar to clock_gettime(CLOCK_MONOTONIC) on Windows</title>
+        <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name='description' content=''>
+        
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        
+        
+        <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ky7zebz4nm");
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>High-precision time measurement function similar to clock_gettime(CLOCK_MONOTONIC) on Windows</h1>
+            <div class="bloginfo">
+                <p class="info">2024-04-15 ｜ <a href="/c.html"> C</a> ｜ #Words: 1042 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/137643993"> 中文原版 </a></p>
+            </div>
+            <blockquote>
+  <p>Write on April 11, 2024
+Thanks for the comments. When I wrote <a href="https://blog.csdn.net/qq_33919450/article/details/134653349">How to measure the running time of a function or function in C/C++ (serial and parallel, and the actual comparison of three methods)</a>, I only experimented with Unix-like systems such as Linux and Mac, and did not consider Windows.</p>
+</blockquote>
+
+<p>This article only considers the time measurement function of the first party (Microsoft). Some third-party libraries for high-precision time measurement are not discussed here.</p>
+
+<p>The best method for high-precision time interval measurement in Windows is QPC (QueryPerformanceCounter).</p>
+
+<p>QPC does not rely on an external time reference. It is a differential clock, not the absolute time we usually say (such as “2020/3/18 14:29:59”, sometimes also vividly called wall time) similar to <code class="language-plaintext highlighter-rouge">clock()</code>. And QPC is not affected by standard time or system time, similar to <code class="language-plaintext highlighter-rouge">CLOCK_MONOTONIC</code> in <code class="language-plaintext highlighter-rouge">clock_gettime()</code>.</p>
+
+<blockquote>
+  <p>QPC uses hardware counters to calculate time.
+Generally on x86 architecture devices, QPC measures time by accessing the processor’s TSC (time stamp counter), but the BIOS of some devices may not set the CPU characteristics correctly, such as setting it to variable TSC, which will be affected by other factors. Or devices with multiple processors, because there are two TSC sources, and they may not be the same. If this happens, Windows will use the platform counter or other timers on the motherboard instead of TSC. In this case, the cost will be 0.8 to 1.0 microseconds higher.
+Although it is mainly implemented using TSC, Microsoft officially does not recommend using RDTSC/RDTSCP (the latter has one more specified CPU) to directly obtain TSC information, because this will greatly reduce the compatibility of software programs (for example, if the program runs on a device system with variable TSC or no TSC, the code may not run or the error may be large).
+Generally, C/C++ compilers have built-in functions <code class="language-plaintext highlighter-rouge">__builtin_ia32_rdtsc()</code> or <code class="language-plaintext highlighter-rouge">__builtin_ia32_rdtscp()</code>, so you can directly use the code <code class="language-plaintext highlighter-rouge">uint64_t rdtsc = rdtsc();</code> to get the counter count, and then do the difference, similar to the use of <code class="language-plaintext highlighter-rouge">clock()</code>, but you also need to calculate the TSC frequency to get the accurate time.
+**TSC is just one of them. Windows 8 and later versions of Windows will use multiple hardware counters to detect errors and try to compensate. **</p>
+</blockquote>
+
+<p>However, the accuracy of QPC is two orders of magnitude lower than that of the <code class="language-plaintext highlighter-rouge">clock_gettime()</code> method, which can only reach 100 nanoseconds, and cannot achieve the 1 nanosecond accuracy of <code class="language-plaintext highlighter-rouge">clock_gettime()</code>, but it is sufficient for most cases.</p>
+
+<p>Here is an example of QPC (the first line is to show which library needs to be imported):</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;windows.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="n">LARGE_INTEGER</span> <span class="n">StartingTime</span><span class="p">,</span> <span class="n">EndingTime</span><span class="p">,</span> <span class="n">ElapsedMicroseconds</span><span class="p">;</span>
+<span class="n">LARGE_INTEGER</span> <span class="n">Frequency</span><span class="p">;</span>
+
+<span class="n">QueryPerformanceFrequency</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Frequency</span><span class="p">);</span>
+<span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">StartingTime</span><span class="p">);</span>
+
+<span class="p">...</span><span class="n">code</span> <span class="n">to</span> <span class="n">be</span> <span class="n">measured</span>
+
+<span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">EndingTime</span><span class="p">);</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">" %.1f us"</span><span class="p">,</span> <span class="mi">1000000</span><span class="o">*</span><span class="p">((</span><span class="kt">double</span><span class="p">)</span><span class="n">EndingTime</span><span class="p">.</span><span class="n">QuadPart</span> <span class="o">-</span> <span class="n">StartingTime</span><span class="p">.</span><span class="n">QuadPart</span><span class="p">)</span><span class="o">/</span> <span class="n">Frequency</span><span class="p">.</span><span class="n">QuadPart</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p><code class="language-plaintext highlighter-rouge">LARGE_INTEGER</code> is a union on Windows, and its contents are as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">union</span> <span class="n">_LARGE_INTEGER</span> <span class="p">{</span>
+<span class="k">struct</span> <span class="p">{</span>
+<span class="n">DWORD</span> <span class="n">LowPart</span><span class="p">;</span>
+<span class="n">LONG</span> <span class="n">HighPart</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">DUMMYSTRUCTNAME</span><span class="p">;</span>
+<span class="k">struct</span> <span class="p">{</span>
+<span class="n">DWORD</span> <span class="n">LowPart</span><span class="p">;</span>
+<span class="n">LONG</span> <span class="n">HighPart</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+<span class="n">LONGLONG</span> <span class="n">QuadPart</span><span class="p">;</span>
+<span class="p">}</span> <span class="n">LARGE_INTEGER</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>It is a data type used to store 64-bit integers on Windows. If the compiler has built-in support for 64-bit integers, use the QuadPart member to store 64-bit integers. Otherwise, use the LowPart and HighPart members to store 64-bit integers. You can see that in the above example, the <code class="language-plaintext highlighter-rouge">QuadPart</code> member variable is used to read a 64-bit integer.</p>
+
+<blockquote>
+  <p>If you are not familiar with union, please read my other blog: <a href="https://blog.csdn.net/qq_33919450/article/details/130613405">C——What is Union? Union and Struct are so similar, what is the difference? Why create union? Where do you need to use it? </a></p>
+</blockquote>
+
+<p><code class="language-plaintext highlighter-rouge">QueryPerformanceFrequency</code> is used to obtain the counter frequency. As mentioned earlier, QPC is implemented through hardware counters such as TSC, so it is necessary to know the frequency of the crystal oscillator and calculate the time through <code class="language-plaintext highlighter-rouge">count/frequency</code>.</p>
+
+<p><code class="language-plaintext highlighter-rouge">QueryPerformanceCounter</code> is used to obtain the current count value.</p>
+
+<p><code class="language-plaintext highlighter-rouge">printf(" %.1f us", 1000000*((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart);</code> is used to print the calculated time. <code class="language-plaintext highlighter-rouge">((double)EndingTime.QuadPart - StartingTime.QuadPart)/ Frequency.QuadPart</code> is the formula of <code class="language-plaintext highlighter-rouge">count/frequency</code>. The previous <code class="language-plaintext highlighter-rouge">1000000</code> is used to convert units, indicating microseconds. If you want to calculate milliseconds, it is <code class="language-plaintext highlighter-rouge">1000</code>, and nanoseconds is <code class="language-plaintext highlighter-rouge">1000000000</code>.</p>
+
+<p>It is important to use different <code class="language-plaintext highlighter-rouge">%.xf</code> for different units. The precision mentioned above is only 100 nanoseconds. If you use <code class="language-plaintext highlighter-rouge">1000000000</code>, with nanoseconds as the unit, you will find that the rightmost two digits of the integer are always <code class="language-plaintext highlighter-rouge">0</code>, as follows:</p>
+
+<p><img src="https://img-blog.csdnimg.cn/direct/25c52ad13a254b5aa7d5a7e61358f6cb.png =x350" alt="Please add image description" /></p>
+
+<p>So when printing microseconds, use <code class="language-plaintext highlighter-rouge">%.1f</code>, and when printing nanoseconds, use <code class="language-plaintext highlighter-rouge">%.f</code> or <code class="language-plaintext highlighter-rouge">%.0f</code>. Any more digits will exceed the precision range (of course, there may be alignment needs, so it depends on yourself, this is just a suggestion).</p>
+
+<p>I hope this helps those in need~</p>
+
+<h2 id="referencesextended-reading">References/Extended Reading</h2>
+
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps">Acquiring high-resolution time stamps - Microsoft Learn</a>: This is an official Microsoft article about acquiring high-precision time. If you want to learn about the underlying and other knowledge about how Windows acquires time, you can take a look. I think the most worthwhile part is the part about errors <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps#resolution-precision-accuracy-and-stability">Resolution, Precision, Accuracy, and Stability</a>, which introduces some reasons for errors when acquiring time through hardware counters. It is a good extension.</p>
+
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/time">Time - Microsoft Learn</a>: A column introducing various times on Windows.</p>
+
+<p><a href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-large_integer-r1">LARGE_INTEGER union (winnt.h) - Microsoft Learn</a>: Introduction to <code class="language-plaintext highlighter-rouge">LARGE_INTEGER</code>.</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
