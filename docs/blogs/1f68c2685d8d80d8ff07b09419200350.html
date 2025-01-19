@@ -1,0 +1,300 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>Dell T5810, 2680 v4, RTX 2080Ti 22GB and 3060 12GB in 2025</title>
+        <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name='description' content='This article is mainly my notes to prevent you from having to re-study solutions to problems that you have solved in the future. However, since it has been almost 20 days since I started writing this article, I can't remember many details for the time being, so I may make some updates in the future.'>
+        
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        
+        
+        <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ky7zebz4nm");
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>Dell T5810, 2680 v4, RTX 2080Ti 22GB and 3060 12GB in 2025</h1>
+            <div class="bloginfo">
+                <p class="info">2023-04-19 ｜ <a href="/c.html"> C</a> ｜ #Words: 3359 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/144730757"> 中文原版 </a></p>
+            </div>
+            <p>This article is mainly my notes to prevent you from having to re-study solutions to problems that you have solved in the future. However, since it has been almost 20 days since I started writing this article, I can’t remember many details for the time being, so I may make some updates in the future.</p>
+
+<p>Most of the devices I have are not very powerful in graphics cards, because I have not been involved in graphics card programming or deep learning before, so most of the devices are strong in CPU and weak in GPU. But now I plan to learn it well, so I need a new device. However, the budget is not high, so I chose the following configuration (the following are all actual payment prices):</p>
+<blockquote>
+  <p>Because the 2080ti I bought has a whistling sound, I can’t stand it, so I returned it and replaced it with a 3060 12GB with average performance but not noisy, which is enough for beginners in machine learning.</p>
+</blockquote>
+
+<p><img src="/assets/images/ba831fdfa54f46dc8f1a375519f40b75.png" alt="price of Dell T5810, 2680 v4, RTX 2080Ti 22GB and 3060 12GB in 2025" /></p>
+
+<blockquote>
+  <p>Note: You must buy one from a city near your home, especially if you want to start learning faster. On the one hand, the shipping cost is much more expensive, and if there is a problem, it can be solved quickly. The one I bought was not in Jiangsu, Zhejiang, or Shanghai, and it took two or three days on the road. As a result, I found that the power supply was sent to 425w. I originally bought a 685w one, but later I found that there was an 825w one (the 2080ti store recommended 750w+), so I asked the store to send me a higher one directly and make up the difference.</p>
+</blockquote>
+
+<blockquote>
+  <p>Since I have a lot of hard drives, I didn’t buy a new one. But you need to pay attention to remember to buy an adapter card if you use an m2 hard drive. T5810 does not have a related interface. It’s about 10 yuan on Xianyu.
+Remember to check the settings in the BIOS when you get it. Sometimes the RAID mode is turned on. If you need it, turn it on. If you don’t need it, it’s better to turn it off. Otherwise, the hard disk may be difficult to handle later, such as it will be unusable after being unplugged with power on.</p>
+</blockquote>
+
+<blockquote>
+  <p>In addition, the T5810 does not have a wireless network card and Bluetooth. I found one that can be used in both Win and Linux. After choosing, I still chose the AX210, which is more stable and not much more expensive.</p>
+</blockquote>
+
+<blockquote>
+  <p>If you want to play games, you can spend an extra 100 to buy a 2667 v4 or 2690 v4, which has a slightly higher main frequency. I plan to upgrade later because the prices of these two models have increased a bit recently. The 2680 v4 I bought has an actual maximum frequency of only 2.88GHz most of the time, and it often does not reach the 3.30GHz on the parameter table. This causes frame drops and lags at the beginning of many games (even with 2080ti). For some games, the frame rates of 4k and 2k on 3060 12G may be similar, such as the recently released Where Winds Meet.</p>
+</blockquote>
+
+<h1 id="performance-test">Performance test</h1>
+<p>First, I tested the performance of the CPU. After all, the new power supply has not arrived yet, and I dare not plug in the graphics card.</p>
+
+<h2 id="cpu">CPU</h2>
+<p>The CPU-Z test results are as follows:</p>
+
+<p><img src="/assets/images/f9ab1757113a47f9aed522e8d1d571de.jpg" alt="Please add image description" /></p>
+
+<p>You can see that it is similar to the 9900K multi-core, but the single-core performance is quite different. But what can you do with 50 yuan? If you buy the latest equipment except the graphics card, you can only buy a 5600x motherboard U. And ECC memory is cheaper.</p>
+
+<p>After initial use, there is really no difference between it and the recent CPU. There is only a lag when you just start the game or switch to a large scene. There is no difference after loading. However, sometimes single-core games still don’t work, as I said before.</p>
+
+<p>When OBS 1080P 30 frames 40Mbps bitrate medium quality mode soft encoding, the CPU usage is only 5% to 10%.</p>
+
+<p>However, one advantage of this CPU is that its floating-point performance is actually very good, and it is very cheap, because floating-point performance is only related to the floating-point instruction set, frequency, and number of cores (but some generations and models have different numbers of parallel channels, which is rare, but it does exist), and has little to do with IPC. The floating-point performance of the theoretical base frequency of 2680 v4 is 537.6 GFLOPS, which is equivalent to the theoretical performance of 13500 or 12800H. I currently only use dual channels because I was not sure if it could be used at the time. If quad channels are used, the bandwidth is similar to that of DDR5 4800MHz dual channels. Why do I mention this? Because when I first used Ollama 3B, I didn’t notice that it was running on the CPU. I noticed it later. I have to say that this rate is not unacceptable. If you want to go further, you can buy 2698 v4 (704 GFLOPS), which is about the floating point performance level of 12700K.</p>
+<blockquote>
+  <p>Personally, I don’t recommend 2699 v4 (774.4 GFLOPS) or 2699A v4 (844.8 GFLOPS), although the floating point performance of these two can reach the level of 13700K or 14600K. But the price is 920, which is too bad for the price-performance ratio (the price-performance ratio of 2698 v4 is not high either). Although it is much better than 2680 v4, it is not cost-effective for beginners.</p>
+</blockquote>
+
+<p><img src="/assets/images/6827c40612dd4f72bee96766c07d3f7c.jpg" alt="llama 3.2 3B in 2680 v4" /></p>
+
+<p><img src="/assets/images/c7f7b279f0d046f8b8cf7fd577e42ca9.gif" alt="llama 3.2 3B in 2680 v4 speed" /></p>
+
+<p>This speed is still very good for some simple tasks.</p>
+
+<h2 id="graphics-card">Graphics card</h2>
+<p>Note that Dell T5810 and T5820 cases can accommodate very long graphics cards, but not very tall ones, otherwise the side cover cannot be closed. For example, the 3060 I bought is relatively tall, so I can only put it like this, but this way the heat dissipation is good, and the front fan is directly unplugged, and it is very very quiet under full load:</p>
+
+<p><img src="/assets/images/ac31acb9e1364e3e90cd1159ae47ed01.jpg" alt="Please add image description" /></p>
+
+<h3 id="2080ti-22gb">2080TI 22GB</h3>
+<p>The performance of 2080Ti 22GB is very good. Due to the very bumpy accessories, I did not test it properly until the day I returned it, and only tested some games.</p>
+
+<p><img src="/assets/images/4968d3e6e7964b799d90a27fbec1a1bf.jpg" alt="2080Ti 22GB front" /></p>
+
+<p><img src="/assets/images/a8c307c9429e4c31bf440266b3af29f6.jpg" alt="2080Ti 22GB back" /></p>
+
+<p><img src="/assets/images/a4bfd50f4c524975b5dc5fffa59487c4.jpg" alt="2080Ti 22GB power slots" /></p>
+
+<p>Most games can run stably at 4k60 frames. And after pulling the voltage, it can reach a full load of less than 200w. In this way, the CPU + GPU can reach about 300W when fully loaded.</p>
+
+<p>The 4k full-height test of Tomb Raider 10 is as follows:</p>
+
+<p><img src="/assets/images/bfc53d8e7d5146fbaae0226b2d8e0efc.png" alt="The performance of Tomb Raider 10 on 2080TI 22GB" /></p>
+
+<p>The 4k performance of Genshin Impact (MiHoYo’s games will use the highest frequency, so the power consumption is extremely high):</p>
+
+<p><img src="/assets/images/5eab804adfe5448b935127ece2d53308.jpg" alt="Genshin Impact 4K in 2080ti 22g" /></p>
+
+<p>Open Genshin Impact and Honkai: Star Rail at the same time (I lowered the voltage and overclocked it here, so it is no longer 200W ):</p>
+
+<p><img src="/assets/images/da295a6fa9e74c92a8e17de4423a7933.jpg" alt="run Genshin Impact and Honkai: Star Rail at the same time" /></p>
+
+<p>Large video memory is really cool. Resident Evil 3 can directly use up the texture (8 GB). (No pictures here)</p>
+
+<p>3DMark test is as follows:</p>
+
+<p><img src="/assets/images/26481613be0f440b9bbc467ef50f6130.jpg" alt="pressure test in 2080ti 22g" /></p>
+
+<p><img src="/assets/images/7bb8b96fda15409c9fd64423187d4dc4.jpg" alt="Time Spy Extreme in 2080ti 22g" /></p>
+
+<p>Unfortunately, this turbo fan has a sharp whistle, which tortured my nerves and made me feel uncomfortable. It took several days to recover. So it’s annoying, and I don’t want to spend more money and energy. 2080TI 22GB is second only to 3090 and 4090 in machine learning (only looking at consumer-grade graphics cards), and the cost performance is very high. If you want to buy it, it is recommended to go directly to the three-fan one (2800).</p>
+
+<h2 id="3060-12gb">3060 12GB</h2>
+<p>After returning my 2080TI 22GB, I found a 3060 12GB under warranty on Xianyu for only 1500, because a brand new one on JD.com costs 1900, and it’s a very ordinary one.</p>
+
+<p><img src="/assets/images/ac5c5995cab34e6e8d7b0f792505c10b.png" alt="3060 12g" /></p>
+
+<blockquote>
+  <p>If your goal is machine learning and does not involve parallel programming, then you can consider Intel A770 16GB or B580 12GB. I still want to learn CUDA programming, so I chose Nvidia’s card. I saw someone on Youtube training GPT2 at two-thirds the speed of 3090, and the cost performance is also very good. And there are rumors that there is a 24g version. If it is really available and the price is right, it can perfectly replace 2080TI 22GB, after all, it has official warranty. If you learn well later and want to replace the equipment, this is also an option, after all, Nvidia’s 50 series large video memory is also very expensive.</p>
+</blockquote>
+
+<p><img src="/assets/images/a4d429c726e24f0e8a54e4606bdf0644.png" alt="rumor of B580 24g" /></p>
+
+<h3 id="game">Game</h3>
+<p>It is undoubted that the gaming performance of 3060 12GB is not as good as 2080ti. Coupled with the low-frequency CPU, many games are actually not fun to play. It is useless to adjust the low-definition quality. It is just a problem of low frequency.</p>
+
+<p>Where Winds Meet is relatively smooth in Qinghe area, but it is not good in Kaifeng. The funniest thing is that the frame rate of 2k and 4k is the same (yes, the example I mentioned earlier is Where Winds Meet). It may be that the new game is not optimized yet. I remember that the initial version did not have this problem. Wait for the subsequent update.</p>
+
+<h3 id="encoding">Encoding</h3>
+<p>For more information about encoding, please refer to another blog: <a href="https://blog.csdn.net/qq_33919450/article/details/145127397">《How to use cuda hardware decoding, encoding, and transcoding acceleration for ffmpeg on Ubuntu - ZhongUncle’s CSDN》</a>.</p>
+
+<p>FFMPEG hardware accelerated transcoding, 6000k bitrate, 30 frames, the speed is about 16 times, which is really fast.</p>
+
+<p>When playing Where Winds Meet, using OBS to record the screen (nvenc encoding), the quality of 8000k bitrate is similar to that of soft encoding. When using 40Mbps encoding, it is a little worse than soft encoding, but not much. I will open a separate blog about this part. I used NVIDIA GPUs such as MX250 before, and the encoding speed and quality are much worse than QSV, so I was not familiar with it before, and it just happened to be familiar with it. Here are some screenshots:</p>
+<blockquote>
+  <p>The hardware encoder has a supported bitrate range. Too high or too low will cause significant image quality loss or encoding problems. I set it according to my personal habits, not according to Nvidia’s recommendations.</p>
+</blockquote>
+
+<p>A scene with densely packed objects like wheat fields is very suitable for observing bitrate loss (you can also check it with a colorful picture, which is more obvious). As shown below, you can see that although the wheat ears are no longer visible, they are not blurry when viewed from a distance (the following picture has been compressed twice, but it is enough to see that the loss is acceptable):</p>
+
+<p><img src="/assets/images/97e626abe7a541b5a91aac800ce1f76e.png" alt="Where Winds Meet in 3060 12g" /></p>
+
+<p><img src="/assets/images/12045740638b4b08a226629a04da5f41.png" alt="Where Winds Meet details" /></p>
+
+<p><img src="/assets/images/87442ae6ec504b34ac3e4bceb4deca73.png" alt="Where Winds Meet details" /></p>
+
+<h3 id="ml">ML</h3>
+<p>In terms of machine learning, this card is very suitable for beginners.</p>
+
+<p>The actual half-precision floating point performance is 27.8 TFlops:</p>
+
+<p><img src="/assets/images/11c7afdde8da4992b2bfa54a46e482e8.png" alt="3060 12GB FP16 27.8 TFlops" /></p>
+
+<p>For Ollama, please refer to my blog <a href="https://blog.csdn.net/qq_33919450/article/details/145069806">《How to let ollama run the model on the GPU on Linux - ZhongUncle’s CSDN》</a>.</p>
+
+<p>As for Whisper, I haven’t finished writing the blog yet, and I will post it here when I finish it.</p>
+
+<p>Regarding fine-tuning the model, I fine-tuned Llama3.2 1B in 2 epochs in about 52 minutes:</p>
+
+<p><img src="/assets/images/7c3b623f936a4bca9d4cb76be336ceb5.png" alt="fine-tuned Llama3.2 1B" /></p>
+
+<p><img src="/assets/images/4ddcb83bd7524a68a2a0c718f7918d38.png" alt="fine-tuned Llama3.2 1B Nvidia-SMI" /></p>
+
+<p>I didn’t run 3B because I’m not very proficient yet. When I ran 3B, OOM (Out of Memory) occurred. In fact, you can see that running 1B above is 10GB. I will talk about it later when I learn it. The code here is definitely problematic.</p>
+
+<h1 id="dell-t5810">Dell T5810</h1>
+<p>I originally wanted to buy Dell T5820, but after looking around, I found that Dell T5810 is more cost-effective. However, since Dell T5810 is a device from early 2015, when AMD was still selling buildings to save itself, and Nvidia had just released 980Ti, T5810 uses the first generation 14nm CPU, the same as the 5th generation Core (yes, the first generation 14nm with a particularly short life cycle between the 4th and 6th generations). , so there are many designs on the device that are different from the current ones, such as Wi-Fi and Bluetooth are not installed by default, and there is no M.2 interface. If you need the number and type of interfaces, then you can look at T5820, which has more interfaces.</p>
+
+<h2 id="cpu-1">CPU</h2>
+<p>For CPU, you need to see if the BIOS supports v4, because T5810 can use v3 and v4 processors, but the earliest BIOS does not support v4. Regarding this, you can actually look at the sets sold by the store. If it is v4, it is generally supported.</p>
+
+<h2 id="memory">Memory</h2>
+<p>T5810 only supports 2400MHz memory, which is not high today, but with four channels, the frequency can be used as 4800MHz dual channel.</p>
+
+<p>Moreover, DDR4 ECC 2400MHz memory is cheaper than ordinary memory, but you should pay attention to one thing: <strong>buy 2RX4 or 4RX4, because the two cannot be mixed</strong>. For example, I bought two 16GB 2RX4s now, so if I want to expand the capacity in the future, I must also buy 2RX4s.</p>
+<blockquote>
+  <p>The large capacity of 2RX4 will have a higher frequency, but T5810 only supports 2400MHz at most. If you use a high frequency, you will waste some money, so if you want to buy large capacity memory, it is more cost-effective to buy 4RX4.</p>
+</blockquote>
+
+<p><img src="/assets/images/44f644f9fd654deca2dedb2fcfe5b546.jpg" alt="two 2RX4 16GB ECC memory" /></p>
+
+<p>It has 8 slots, even if it is a 16GB single stick, the maximum can be 128GB, which is enough even for dual graphics cards (because the dual graphics cards supported are limited, you will understand what I mean in the next section, the maximum is 48GB video memory, and generally the memory is twice the video memory. It is better). Of course, if you need a large capacity of memory, you can use a 64GB single stick, which can have a total of 512GB.</p>
+
+<p>The memory slots are as follows. The insertion method is to insert the white one first, and then the black one when it is full. This point is not written in the document, I asked the store.</p>
+
+<p><img src="/assets/images/e4de95f2401f45daa267e267ae8a0493.png" alt="CPU slot and memory slots of T5810" /></p>
+
+<h2 id="graphics-card-power-supply-cable">Graphics card power supply cable</h2>
+<p>The graphics card power supply cable of T5810 is 8Pin to dual 6Pin, but there are too few 6Pin graphics cards now, so you need to buy a single 8Pin to single or dual 8Pin.</p>
+
+<p>Why do you need to convert a single power supply? Because the graphics card interface of the power supply board is not the common one now, but the one on the graphics card. In other words, the power supply line of this thing is the same at both ends:</p>
+
+<p><img src="/assets/images/9561c84479f1467d8c0d32447c8263f5.jpg" alt="power slots for GPU" /></p>
+
+<p>The left side of the picture below is the built-in one, and the right side is the connector used by the current universal power supply:</p>
+
+<p><img src="/assets/images/4399812c02b14b5eb14bdcbf6220d804.jpg" alt="The difference of slots" /></p>
+
+<h2 id="interface">Interface</h2>
+<p>The T5810 motherboard information is as follows:</p>
+
+<p><img src="/assets/images/8bfd59fdebf845718756b1bac835d7a8.jpg" alt="The T5810 motherboard information" /></p>
+
+<p>There are two slots for graphics cards (two with “blue ear” buckles). I inserted the graphics card into the “3” slot in the above picture because the power supply line is relatively short.</p>
+<blockquote>
+  <p>Although the slot also says that the maximum is 225W, 350W for a single card is no problem, but it is a bit uncertain for dual cards. Because it used to be a 6-pin connector, it is 225W. The power cord generally depends on whether the connector can withstand it. Generally, a single wire can withstand 1500W, and you can calculate it yourself for 8Pin. I asked the master when I went to the factory to buy the wire. This master used to make computer wires in Xujiahui, Shanghai. I specifically asked if the one-to-two conversion could withstand it, and the master told me a lot of the above.</p>
+</blockquote>
+
+<blockquote>
+  <p>So although there are two slots, if you want to install two 3090s, a total of 700W, at least dual 8-pin, then you need to convert 1 to 4, leaving aside the 75W provided by PCIe, that is, one 8-pin has to carry 550W, which is very dangerous. Although the T5810 has a maximum power supply of 1300W.
+However, according to the design, it should be possible to install two 225W, but you have to find a single 8-pin graphics card. The Tesla P100 has a relatively high cost performance, but there are also many Tesla cards with a single 8-pin, but the price is very high. The newer single 8-pin graphics card is the 4070 Super (also need to find a manufacturer to make it), and this card is exactly 220W. However, this card does not support NVLink either. This is just a record for future reference.</p>
+</blockquote>
+
+<p>I put the M.2 to PCIe adapter in slot 6. I bought a single-disk adapter card. According to the document, it supports splitting, so this slot can buy a two-disk adapter card at most. But I bought a single adapter card for cheap. It’s only 10 yuan on Xianyu, and it’s free shipping. I may still need to use a hard drive to cool it later. The laptop is only 42 degrees, but it’s 50 degrees when it’s hanging here (dual system, I installed Ubuntu for it, but the temperature on Windows is 50, and I don’t use anything).</p>
+
+<p>The network card is placed in slot 4. Although there is only one PCIe 2.0 channel, the bandwidth is 500 MB/s, which is equivalent to 4 Gigabit, which is enough for Internet access.</p>
+
+<h2 id="wi-fi-and-bluetooth">Wi-Fi and Bluetooth</h2>
+<p>I wanted to buy the Realtek RTL8852BE at first, because it was only 43, which was very cheap, but after looking around for a long time, I found that there were many problems. After searching for a long time, I found that the AX210 actually had 88, so I just bought it. And it is a transfer type, so you can upgrade the network card yourself later:</p>
+
+<p>If you are using Linux, you can just plug it in and use it, but if you are using Windows, you need to download the driver from Intel’s official website in advance: <a href="https://www.intel.com/content/www/us/en/products/sku/204836/intel-wifi-6e-ax210-gig/downloads.html">Intel® Wi-Fi 6E AX210 Latest Drivers &amp; Software</a>. Please note that Wi-Fi and Bluetooth are two drivers, both of which need to be downloaded.</p>
+
+<h2 id="hard-disk">Hard disk</h2>
+<p>I used an M.2 to PCIe hard disk and a SATA hard disk, both of which are solid state. I originally wanted to install a 10TB mechanical hard drive, but after installing it, it was so strange to use, there were many problems, and it often got stuck, so I gave up and used the built-in pure solid state + DAS.</p>
+
+<h2 id="installing-the-system">Installing the system</h2>
+<p>I haven’t installed a dual system for a long time, and Windows gave me a pit: Windows will not display the hard drive name, only “Disk 0” and “Disk 1”, and my hard drives are all 1TB, and I can’t tell them apart. So I suggest installing Windows first, then unplug the hard drive, then plug in another hard drive, and then install Ubuntu.</p>
+
+<p>I hope it can help those in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
