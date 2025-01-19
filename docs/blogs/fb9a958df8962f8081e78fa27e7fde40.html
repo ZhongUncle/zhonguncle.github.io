@@ -1,0 +1,128 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv='content-language' content='en'>
+        <title>What is complement graphs, isomorphic graphs, and self-complement graphs?</title>
+        <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name='description' content='Many online articles lack clear explanations of complement graphs, isomorphic graphs, and self-complement graphs. Isomorphic graphs have the same points and edges but different positions, with the same degree sequence. Complement graphs share the same vertex set, with edges in one being those not in the other, forming a complete graph when combined. '>
+        
+        <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+        
+        
+        <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+        <script type="text/javascript">
+            (function(c,l,a,r,i,t,y){
+                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
+                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
+                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
+            })(window, document, "clarity", "script", "ky7zebz4nm");
+        </script>
+    </head>
+    <body>
+        <div class="stackedit__html">
+            <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+            <h1>What is complement graphs, isomorphic graphs, and self-complement graphs?</h1>
+            <div class="bloginfo">
+                <p class="info">2024-10-10 ｜ <a href="/research.html"> Research</a> ｜ #Words: 539 ｜ <a href="https://blog.csdn.net/qq_33919450/article/details/142819511"> 中文原版 </a></p>
+            </div>
+            <p>Many articles on the Internet do not explain the complement graph, isomorphic graph, and self-complement graph in a very clear way, so I will write a short note to record it.</p>
+
+<h2 id="isomorphic-graph">Isomorphic graph</h2>
+<p>The mathematical definition of an isomorphic graph is: given two graphs <code class="language-plaintext highlighter-rouge">G=(V,E)</code> and <code class="language-plaintext highlighter-rouge">G'=(V',E')</code>, if there exists a bijective function <code class="language-plaintext highlighter-rouge">f:V-&gt;V'</code> such that for any vertex <code class="language-plaintext highlighter-rouge">u,v∈V</code>, <code class="language-plaintext highlighter-rouge">(u,v)∈E</code> if and only if <code class="language-plaintext highlighter-rouge">(f(u),f(v))∈E'</code>, then <code class="language-plaintext highlighter-rouge">G</code> and <code class="language-plaintext highlighter-rouge">G'</code> are isomorphic graphs.</p>
+
+<p>The mathematical definition looks complicated, but in short, the two graphs have <strong>the same points and edges, but the positions of the points are different</strong>. Here is an explanation of what “the same points and edges are the same”: <strong>the degree of a point does not change, and the points at both ends of an edge do not change</strong>. These point numbers, edge numbers, and degree sequences are also called <strong>graph properties</strong>. <strong>Isomorphic graphs are graphs that have the same properties</strong>.</p>
+
+<p>Take a look at the following very common isomorphic graph. You can see that both graphs have 5 points and 5 edges. The degree of each point is 2. Only the position has changed, and the properties of the graph have not changed. So another explanation for isomorphic graphs is that if you can move the points, the graph is isomorphic.</p>
+
+<p><img alt="complement graphs" src="/assets/images/ef4dc257186a4a4a95980379a0560a2b.png" style="box-shadow: 0px 0px 0px 0px" width="400px" /></p>
+
+<p>Then take a look at the following graph. You can find that the properties of the graph have changed, because although the number of edges and points remains unchanged, the degree has changed. For example, the degree of <code class="language-plaintext highlighter-rouge">e</code> in the left graph is 3, and the degree of <code class="language-plaintext highlighter-rouge">e</code> in the right graph is 1, which is not isomorphic.</p>
+
+<p><img alt="not complement graphs" src="/assets/images/7afb773c6c5741cab9ea5157e76ef0d0.png" style="box-shadow: 0px 0px 0px 0px" width="400px" /></p>
+
+<h2 id="complement-graph">Complement graph</h2>
+<p>The mathematical definition of a complement graph is: for a given graph <code class="language-plaintext highlighter-rouge">G=(V,E)</code>, its complement graph <code class="language-plaintext highlighter-rouge">G'=(V,E')</code> is a graph with the same vertex set <code class="language-plaintext highlighter-rouge">V</code>, where <code class="language-plaintext highlighter-rouge">E'</code> is the set of all possible edges in <code class="language-plaintext highlighter-rouge">V</code> that do not appear in <code class="language-plaintext highlighter-rouge">E</code>. In other words, the edges in <code class="language-plaintext highlighter-rouge">G'</code> are the edges that do not exist in <code class="language-plaintext highlighter-rouge">G</code>.</p>
+
+<p>What does it mean? It means that two simple graphs, when put together, are a complete graph, such as the graph mentioned above:</p>
+
+<p><img alt="isomorphic graphs" src="/assets/images/ef4dc257186a4a4a95980379a0560a2b.png" style="box-shadow: 0px 0px 0px 0px" width="400px" /></p>
+
+<p>They are a complete graph when put together. Such two graphs are complementary graphs.</p>
+
+<h2 id="self-complementary-graphs">Self-complementary graphs</h2>
+<p>Self-complementary graphs are two graphs that are not only complementary, but also isomorphic.</p>
+
+<p>Still using this example, these two graphs are not only isomorphic, but also complementary, so they are self-complementary graphs.</p>
+
+<p><img alt="self-complement graphs" src="/assets/images/ef4dc257186a4a4a95980379a0560a2b.png" style="box-shadow: 0px 0px 0px 0px" width="400px" /></p>
+
+<p>Sometimes the question will only give one graph and ask whether it is a self-complementary graph. The solution to this problem is to complete the picture first, and then see if the drawn part is isomorphic to the original part.</p>
+
+<p>I hope this can help those in need~</p>
+
+        </div>
+        <!-- comment by utterances -->
+        <script src="https://utteranc.es/client.js"
+        repo="ZhongUncle/zhonguncle.github.io"
+        issue-term="url"
+        theme="github-light"
+        crossorigin="anonymous"
+        async>
+        </script>
+        <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+    </body>
+</html>
