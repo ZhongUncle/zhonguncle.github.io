@@ -1,0 +1,428 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Dell T5810 Workstation Build for Machine Learning & Gaming: A Budget-Friendly Guide</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This is mostly a personal note to avoid re-researching solutions to problems I’ve already solved. However, since it took me about 20 days to write this article from start to finish, I can’t remember many details—so I may update it in the future.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Dell T5810 Workstation Build for Machine Learning & Gaming: A Budget-Friendly Guide</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 3274 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/144730757"> 中文原版 </a></p>
+        </div>
+        <p>This is mostly a personal note to avoid re-researching solutions to problems I’ve already solved. However, since it took me about 20 days to write this article from start to finish, I can’t remember many details—so I may update it in the future.</p>
+
+<p>Most of my current devices have weak GPUs, as I never dabbled in GPU programming or deep learning before. As a result, they’re mostly CPU-heavy and GPU-light. But now I plan to study this field seriously, so I needed a new device. With a limited budget, I chose the following configuration (all prices are final paid amounts):</p>
+
+<blockquote>
+  <p>Since the 2080Ti I bought had coil whine that was really unbearable, I returned it and replaced it with a quieter 3060 12GB with moderate performance. It’s more than sufficient for beginners learning machine learning.<br /></p>
+</blockquote>
+
+<p>Before(You can But two 2080Ti 22GB and use NVLink):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th style="text-align: right">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T5810 Barebone (825W)</td>
+      <td style="text-align: right">630</td>
+    </tr>
+    <tr>
+      <td>E5 2680v4</td>
+      <td style="text-align: right">58</td>
+    </tr>
+    <tr>
+      <td>32GB</td>
+      <td style="text-align: right">168</td>
+    </tr>
+    <tr>
+      <td>RTX 2080 Ti 22GB</td>
+      <td style="text-align: right">2400</td>
+    </tr>
+    <tr>
+      <td>AX210</td>
+      <td style="text-align: right">88</td>
+    </tr>
+    <tr>
+      <td>Total</td>
+      <td style="text-align: right">3344</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>After:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Component</th>
+      <th style="text-align: right">Price</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>T5810 Barebone (825W)</td>
+      <td style="text-align: right">630</td>
+    </tr>
+    <tr>
+      <td>E5 2680v4</td>
+      <td style="text-align: right">58</td>
+    </tr>
+    <tr>
+      <td>32GB</td>
+      <td style="text-align: right">168</td>
+    </tr>
+    <tr>
+      <td>RTX 3060 12GB</td>
+      <td style="text-align: right">1500</td>
+    </tr>
+    <tr>
+      <td>AX210</td>
+      <td style="text-align: right">88</td>
+    </tr>
+    <tr>
+      <td>Total</td>
+      <td style="text-align: right">2444</td>
+    </tr>
+  </tbody>
+</table>
+
+<blockquote>
+  <p>Important note: Always buy from a seller in a nearby city, especially if you want to start learning quickly. For one thing, shipping costs are much higher for distant sellers; for another, you can resolve issues much faster. I bought and it took 2-3 days to arrive. When it did, I found the power supply was 425W instead of the 685W I ordered. Later, I discovered they had an 825W option (the seller recommended 750W+ for the 2080Ti), so I asked them to send the higher-wattage one directly and paid the price difference.<br />
+Since I already have several hard drives, I didn’t buy new ones. But note that if you use an M.2 SSD, you’ll need to buy an adapter card— the T5810 doesn’t have native M.2 slots. They cost around 10 yuan on Xianyu (a Chinese second-hand platform).<br />
+After receiving the workstation, check the BIOS settings. Sometimes RAID mode is enabled by default. Keep it on if you need it, but disable it otherwise— otherwise, you may encounter issues with the hard drive later (e.g., it may stop working if you unplug it while powered on).<br />
+Additionally, the T5810 doesn’t come with a Wi-Fi card or Bluetooth. I looked for one compatible with both Windows and Linux and settled on the AX210—it’s more stable and not much more expensive. <br />
+If you want to play games, spend an extra 100 yuan to get a 2667 v4 or 2690 v4 CPU, which have slightly higher clock speeds. I plan to upgrade later since these two models have recently increased in price. The 2680 v4 I bought only reaches a maximum actual frequency of 2.88GHz most of the time, rarely hitting the rated 3.30GHz. This causes frame drops and stutters when starting many games (even with the 2080Ti). For some games, the 3060 12G delivers similar frame rates at 4K and 2K— such as the recently released “Yan Yun Shi Liu Sheng” (Sixteen Tones of Yan Yun).<br /></p>
+</blockquote>
+
+<h1 id="performance-testing">Performance Testing</h1>
+<p>First, I tested the CPU performance since the new power supply hadn’t arrived yet, and I didn’t dare plug in the GPU.</p>
+
+<h2 id="cpu">CPU</h2>
+<p>CPU-Z test results:</p>
+
+<div style="text-align: center;">
+  <img alt="CPU-Z test results for Intel Xeon 2680 v4" src="/assets/images/f9ab1757113a47f9aed522e8d1d571de.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>As you can see, its multi-core performance is similar to the i9-9900K, but single-core performance is significantly worse. However, you can’t ask for much for $50. For the price of the CPU and motherboard (excluding the GPU), you could only buy an AMD Ryzen 5 5600X bundle with a motherboard if you chose newer hardware. Additionally, ECC RAM is cheaper.</p>
+
+<p>In daily use, it doesn’t feel much different from recent CPUs. There’s only a brief stutter when starting games or switching large scenes, but no issues after loading. However, games that are single-core intensive still struggle, as I mentioned earlier.</p>
+
+<p>When using OBS for 1080P 30fps recording at 40Mbps with medium-quality software encoding, CPU usage is only 5%~10%.</p>
+
+<p>A major advantage of this CPU is its excellent floating-point performance, especially considering its low price. Floating-point performance depends only on the floating-point instruction set, clock speed, and core count (though some generations/models have different parallel channel counts, which is rare but exists)— not IPC (Instructions Per Cycle) or other factors. The theoretical base-frequency floating-point performance of the 2680 v4 is 537.6 GFLOPS, which is comparable to the Intel Core i5-13500 or i7-12800H. Currently, I’m only using dual-channel RAM because I wasn’t sure if quad-channel would work. With quad-channel, the bandwidth is similar to dual-channel DDR5 4800MHz. Why mention this? Because I initially used Ollama with a 3B model without realizing it was running on the CPU— and the speed was surprisingly acceptable. If you want better performance, you can get the 2698 v4 (704 GFLOPS), which is on par with the Core i7-12700K’s floating-point performance.</p>
+
+<blockquote>
+  <p>I don’t recommend the 2699 v4 (774.4 GFLOPS) or 2699A v4 (844.8 GFLOPS), even though their floating-point performance matches the Core i7-13700K or i5-14600K. At 920 yuan, they offer poor value for money (the 2698 v4 is also not very cost-effective). While they provide significant improvements over the 2680 v4, they’re not worth it for beginners.<br /></p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="Ollama 3B model running speed on CPU" src="/assets/images/6827c40612dd4f72bee96766c07d3f7c.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="Demonstration of Ollama running on CPU" src="/assets/images/c7f7b279f0d046f8b8cf7fd577e42ca9.gif" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>This speed is more than sufficient for simple tasks.</p>
+
+<h2 id="gpu">GPU</h2>
+<p>Note that the Dell T5810 and T5820 cases can fit very long GPUs but not very tall ones— otherwise, the side panel won’t close. For example, the 3060 I bought is quite tall, so I had to place it like this. However, this setup offers good heat dissipation. I even unplugged the front fan, and the system remains extremely quiet under full load:</p>
+
+<div style="text-align: center;">
+  <img alt="3060 12GB installed in Dell T5810 (vertical placement)" src="/assets/images/ac31acb9e1364e3e90cd1159ae47ed01.jpg" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<h3 id="2080ti-22gb">2080Ti 22GB</h3>
+<p>The 2080Ti 22GB delivers excellent performance. However, due to repeated issues with accessories, I never got to properly test it before returning it— only testing a few games.</p>
+
+<div style="text-align: center;">
+  <img alt="2080Ti 22GB GPU" src="/assets/images/4968d3e6e7964b799d90a27fbec1a1bf.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="Game performance test 1 with 2080Ti 22GB" src="/assets/images/a8c307c9429e4c31bf440266b3af29f6.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="Game performance test 2 with 2080Ti 22GB" src="/assets/images/a4bfd50f4c524975b5dc5fffa59487c4.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>Most games run stably at 4K 60fps. After undervolting, it consumes less than 200W under full load. This allows the CPU + GPU to draw around 300W total.</p>
+
+<p>Test results for “Tomb Raider 10” at 4K maximum settings:</p>
+
+<div style="text-align: center;">
+  <img alt="Tomb Raider 10 performance at 4K max settings with 2080Ti 22GB" src="/assets/images/bfc53d8e7d5146fbaae0226b2d8e0efc.png" style="box-shadow: 0px 0px 0px 0px; width: 75%;" />
+</div>
+
+<p>Performance in “Genshin Impact” at 4K (miHoYo games run at maximum frequency, so power consumption is very high):</p>
+
+<div style="text-align: center;">
+  <img alt="Genshin Impact performance at 4K with 2080Ti 22GB" src="/assets/images/5eab804adfe5448b935127ece2d53308.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Running both “Genshin Impact” and “Honkai: Star Rail” simultaneously (I undervolted and overclocked the GPU here, so power consumption exceeded 200W):</p>
+
+<div style="text-align: center;">
+  <img alt="Dual-game performance (Genshin Impact + Honkai: Star Rail) with 2080Ti 22GB" src="/assets/images/da295a6fa9e74c92a8e17de4423a7933.jpg" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>The large VRAM is really nice— I could max out the textures (8GB) in “Resident Evil 3”. (No screenshot here.)</p>
+
+<p>3DMark test results:</p>
+
+<div style="text-align: center;">
+  <img alt="3DMark test result 1 for 2080Ti 22GB" src="/assets/images/26481613be0f440b9bbc467ef50f6130.jpg" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+  <img alt="3DMark test result 2 for 2080Ti 22GB" src="/assets/images/7bb8b96fda15409c9fd64423187d4dc4.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Unfortunately, the blower fan produced a sharp coil whine that gave me a headache— it took me several days to recover. I was so annoyed that I didn’t want to spend more money or effort on it. The 2080Ti 22GB is second only to the 3090 and 4090 (among consumer GPUs) for machine learning and offers excellent value. If you plan to buy one, I recommend getting the triple-fan version (around 2800 yuan).</p>
+
+<h3 id="3060-12gb">3060 12GB</h3>
+<p>After returning the 2080Ti 22GB, I found a used 3060 12GB with remaining warranty on Xianyu for only 1500 yuan— brand-new models cost around 1900 yuan on JD.com and other platforms, and they’re usually basic versions.</p>
+
+<div style="text-align: center;">
+  <img alt="3060 12GB GPU" src="/assets/images/ac5c5995cab34e6e8d7b0f792505c10b.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<blockquote>
+  <p>If your goal is machine learning (not parallel programming), consider the Intel A770 16GB or B580 12GB. I still want to learn CUDA programming, so I chose an Nvidia card. I saw a YouTube video showing that the B580 12GB trains GPT-2 at 2/3 the speed of the 3090, offering great value for money. There are also rumors of a 24GB version. If it’s released at a reasonable price, it would be a perfect replacement for the 2080Ti 22GB— especially since it comes with official warranty. If I progress well and decide to upgrade later, this will be a top contender, as Nvidia’s 50-series GPUs with large VRAM are very expensive.<br /></p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="Intel Arc B580 12GB vs Nvidia 3090 training speed comparison" src="/assets/images/a4d429c726e24f0e8a54e4606bdf0644.png" style="box-shadow: 0px 0px 0px 0px; width: 65%;" />
+</div>
+
+<h4 id="gaming">Gaming</h4>
+<p>Unsurprisingly, the 3060 12GB’s gaming performance is inferior to the 2080Ti. Combined with the CPU’s low clock speed, many games don’t run smoothly— adjusting graphics settings doesn’t help much, as the issue lies with the low frequency.</p>
+
+<p>“Yan Yun Shi Liu Sheng” runs smoothly in the Qinghe area but struggles in Kaifeng. The funniest part is that frame rates are similar at 2K and 4K (this is the example I mentioned earlier). This is likely due to poor optimization in the new game— I remember this wasn’t an issue in the initial version, so I’ll wait for updates.</p>
+
+<h4 id="encoding">Encoding</h4>
+<p>For details on encoding, see my other blog: <a href="https://blog.csdn.net/qq_33919450/article/details/145127397">《How to Use CUDA Hardware Decoding, Encoding, and Transcoding Acceleration with FFmpeg on Ubuntu - ZhongUncle’s CSDN》</a>.</p>
+
+<p>FFmpeg hardware-accelerated transcoding at 6000K bitrate and 30fps reaches around 16x speed— really fast.</p>
+
+<p>When playing “Yan Yun Shi Liu Sheng”, recording with OBS using NVENC encoding at 8000K bitrate produces similar quality to software encoding. At 40Mbps, the quality is slightly worse but still acceptable. I’ll write a separate blog about this. Previously, I used an Nvidia MX250 GPU, whose encoding speed and quality were much worse than QSV, so I wasn’t familiar with NVENC. This was a good opportunity to learn. Here are some quick screenshots:</p>
+
+<blockquote>
+  <p>Hardware encoders have a supported bitrate range— excessively high or low bitrates will result in significant quality loss or encoding issues. I set the bitrate based on personal habits, not Nvidia’s recommendations.<br /></p>
+</blockquote>
+
+<p>Scenes with dense objects (like wheat fields) are ideal for checking bitrate loss (you can also use colorful scenes for more obvious results). As shown below, while individual wheat ears are indistinguishable, the overall image isn’t blurry from a distance (the images below are re-compressed but still show acceptable loss):</p>
+
+<div style="text-align: center;">
+  <img alt="NVENC encoding quality test (wheat field scene) at 40Mbps" src="/assets/images/97e626abe7a541b5a91aac800ce1f76e.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="NVENC encoding quality comparison (close-up)" src="/assets/images/12045740638b4b08a226629a04da5f41.png" style="box-shadow: 0px 0px 0px 0px; width: 45%;" />
+  <img alt="Software encoding quality comparison (close-up)" src="/assets/images/87442ae6ec504b34ac3e4bceb4deca73.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<h4 id="machine-learning">Machine Learning</h4>
+<p>This card is perfect for beginners in machine learning.</p>
+
+<p>Its actual half-precision floating-point performance tested at 27.8 TFlops:</p>
+
+<div style="text-align: center;">
+  <img alt="3060 12GB half-precision floating-point performance test" src="/assets/images/11c7afdde8da4992b2bfa54a46e482e8.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>For details on running Ollama, see my blog: <a href="https://blog.csdn.net/qq_33919450/article/details/145069806">《How to Run Ollama Models on GPU in Linux - ZhongUncle’s CSDN》</a>.</p>
+
+<p>I haven’t finished writing the blog about Whisper yet— I’ll link it here once it’s done.</p>
+
+<p>Regarding model fine-tuning: fine-tuning Llama3.2 1B took about 52 minutes for 2 epochs:</p>
+
+<div style="text-align: center;">
+  <img alt="Llama3.2 1B fine-tuning epoch 1 completion" src="/assets/images/7c3b623f936a4bca9d4cb76be336ceb5.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="Llama3.2 1B fine-tuning total time" src="/assets/images/4ddcb83bd7524a68a2a0c718f7918d38.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>I didn’t run the 3B model because I’m not very familiar with the process— it resulted in an OOM (Out of Memory) error. As you can see from the screenshot above, the 1B model already uses 10GB of VRAM. I’ll explore this further once I gain more experience— the code here definitely has issues.</p>
+
+<h1 id="dell-t5810-details">Dell T5810 Details</h1>
+<p>I originally wanted to buy the Dell T5820 but found the T5810 more cost-effective. However, since the T5810 was released in early 2015 (when AMD was struggling financially and Nvidia had just launched the 980Ti), it uses first-generation 14nm CPUs (same as the 5th-gen Core series— the short-lived 14nm generation between the 4th and 6th gen). As a result, its design differs from modern workstations— for example, no built-in Wi-Fi/Bluetooth or M.2 slots. If you need more ports and slot options, consider the T5820, which is more versatile.</p>
+
+<h2 id="cpu-compatibility">CPU Compatibility</h2>
+<p>The T5810 supports both v3 and v4 Xeon CPUs, but older BIOS versions don’t support v4. To confirm compatibility, check the seller’s bundle— if they’re selling a v4 CPU, the BIOS should support it.</p>
+
+<h2 id="ram">RAM</h2>
+<p>The T5810 only supports 2400MHz RAM. While this is low by today’s standards, it supports quad-channel, which provides similar bandwidth to dual-channel DDR5 4800MHz.</p>
+
+<p>Additionally, DDR4 ECC 2400MHz RAM is cheaper than non-ECC RAM. However, note the following: <strong>Do not mix 2RX4 and 4RX4 RAM modules</strong>. For example, if I currently have two 16GB 2RX4 modules, any future upgrades must also use 2RX4 modules.</p>
+
+<blockquote>
+  <p>2RX4 modules offer higher frequencies for large capacities, but since the T5810 only supports up to 2400MHz, high-frequency modules would be a waste of money. For large-capacity RAM, 4RX4 modules are more cost-effective.<br /></p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="Dell T5810 RAM slots" src="/assets/images/44f644f9fd654deca2dedb2fcfe5b546.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>It has 8 RAM slots— even with 16GB modules, you can install up to 128GB, which is sufficient even for dual-GPU setups (since the T5810 has limited dual-GPU support— more on this in the next section. The maximum recommended RAM is twice the VRAM capacity, and even dual 3090s only have 48GB of combined VRAM). For extreme memory needs, 64GB modules are available, allowing up to 512GB of total RAM.</p>
+
+<p>RAM installation order: Insert modules into the white slots first, then the black slots once the white ones are full. This isn’t documented— I had to ask the seller.</p>
+
+<div style="text-align: center;">
+  <img alt="Dell T5810 motherboard slot diagram" src="/assets/images/e4de95f2401f45daa267e267ae8a0493.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<h2 id="gpu-power-cables">GPU Power Cables</h2>
+<p>The T5810’s GPU power cable is an 8Pin-to-dual-6Pin adapter. However, most modern GPUs no longer use 6Pin connectors, so you’ll need to buy an 8Pin-to-single or dual-8Pin adapter.</p>
+
+<p>Why do you need an adapter even for single-8Pin GPUs? Because the power supply’s GPU connector is the same as the one on the GPU itself— in other words, both ends of the cable are identical:</p>
+
+<div style="text-align: center;">
+  <img alt="Dell T5810 original GPU power cable (8Pin-to-dual-6Pin)" src="/assets/images/9561c84479f1467d8c0d32447c8263f5.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>In the image below: Left = T5810’s original connector; Right = standard connector used by modern power supplies:</p>
+
+<div style="text-align: center;">
+  <img alt="T5810 GPU power connector vs standard connector" src="/assets/images/4399812c02b14b5eb14bdcbf6220d804.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<h2 id="expansion-slots">Expansion Slots</h2>
+<p>T5810 motherboard details:</p>
+
+<div style="text-align: center;">
+  <img alt="Dell T5810 motherboard specifications" src="/assets/images/8bfd59fdebf845718756b1bac835d7a8.jpg" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>There are two slots for GPUs (the ones with blue retention clips). I installed my GPU in slot “3” (as labeled in the image) because the power cable is short.</p>
+
+<blockquote>
+  <p>While the slot is rated for a maximum of 225W, a single 350W GPU works fine— dual GPUs are risky. The original 6Pin connectors were designed for 225W total. Power cables typically use wires that can handle 1500W each— calculate the capacity for 8Pin connectors yourself. I asked an experienced technician at a cable factory (who previously worked in Shanghai’s Xujiahui area) about this. When I asked if a 1-to-2 adapter could handle the load, he explained the above details.<br />
+So even though there are two slots, installing two 3090s (700W total) with dual 8Pin connectors would require a 1-to-4 adapter. Excluding the 75W provided by the PCIe slot, each 8Pin connector would need to handle 550W— this is very risky, even though the T5810 supports up to 1300W power supplies.<br />
+According to the design, two 225W GPUs should work, but you’ll need to find single-8Pin models. The most cost-effective option is the Tesla P100, but many Tesla cards with single 8Pin connectors are expensive. A newer single-8Pin GPU is the 4070 Super (available from some manufacturers), which has a TDP of 220W. However, this card doesn’t support NVLink. This is just a note for future reference.<br /></p>
+</blockquote>
+
+<p>I installed the M.2-to-PCIe adapter in slot “6”. According to the documentation, this slot supports bifurcation, so you can use a 1-to-2 adapter for multiple M.2 SSDs. However, I opted for a cheaper single-slot adapter (only 10 yuan on Xianyu, with free shipping). I may need to add a heatsink for the SSD later— it runs at 50°C idle (with dual systems, I installed Ubuntu, but Windows shows 50°C even when idle).</p>
+
+<p>The Wi-Fi card is installed in slot “4”. While it only uses one PCIe 2.0 lane, the bandwidth (500 MB/s, equivalent to 4 Gbps) is more than sufficient for internet use.</p>
+
+<h2 id="wi-fi--bluetooth">Wi-Fi &amp; Bluetooth</h2>
+<p>I initially wanted to buy the Realtek RTL8852BE (only 43 yuan, very cheap) but found many reports of compatibility issues. After researching, I found an AX210 adapter for 88 yuan— I went with it since it’s more stable and supports future upgrades:</p>
+
+<div style="text-align: center;">
+  <img alt="Intel AX210 Wi-Fi + Bluetooth adapter" src="/assets/images/32edacc6441d4c6ba76524a467d79947.jpg" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>For Linux users: It works plug-and-play. For Windows users: Download the drivers in advance from Intel’s official website: <a href="https://www.intel.com/content/www/us/en/products/sku/204836/intel-wifi-6e-ax210-gig/downloads.html">Intel® Wi-Fi 6E AX210 Latest Drivers &amp; Software</a>. Note that Wi-Fi and Bluetooth require separate drivers— install both.</p>
+
+<h2 id="hard-drives">Hard Drives</h2>
+<p>I’m using one M.2 SSD (via PCIe adapter) and one SATA SSD— both solid-state. I originally tried installing a 10TB HDD, but it caused strange issues and frequent disconnections. I eventually gave up and switched to an all-SSD setup with external DAS (Direct-Attached Storage).</p>
+
+<h2 id="dual-boot-installation">Dual-Boot Installation</h2>
+<p>I hadn’t installed a dual-boot system in a long time and ran into a problem with Windows: It doesn’t display hard drive names, only “Disk 0” and “Disk 1”. Since both my drives are 1TB, I couldn’t tell them apart. My recommendation: Install Windows first, then unplug the Windows drive, plug in the other drive, and install Ubuntu.</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
