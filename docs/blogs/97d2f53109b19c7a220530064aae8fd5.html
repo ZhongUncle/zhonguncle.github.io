@@ -1,0 +1,204 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>What Does the "@" Symbol Do in Python? Explaining Its Two Key Uses in D2L Code</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Recently, while going through D2L (Dive into Deep Learning) code, I frequently noticed the "@" symbol appearing at the very top of classes or functions. Although Chapter 2 explains the comment `#@save` (indicating the following function is pre-defined in the package and can be used directly without redefinition), it does not explain the usage of the "@" symbol itself.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>What Does the "@" Symbol Do in Python? Explaining Its Two Key Uses in D2L Code</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-22 ｜ <a href="/research.html"> Research</a> ｜ #Words: 720 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145294350"> 中文原版 </a></p>
+        </div>
+        <p>Recently, while going through D2L (Dive into Deep Learning) code, I frequently noticed the “@” symbol appearing at the very top of classes or functions. Although Chapter 2 explains the comment <code class="language-plaintext highlighter-rouge">#@save</code> (indicating the following function is pre-defined in the package and can be used directly without redefinition), it does not explain the usage of the “@” symbol itself.</p>
+
+<div style="text-align: center;">
+  <img alt="D2L code snippet showing @ symbol before a function" src="/assets/images/7ce9fade3d8a41118ce8051a0755e8bd.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>After researching, I found that “@” has two main meanings in Python:</p>
+<ol>
+  <li>Matrix multiplication</li>
+  <li>Decorators for classes and functions</li>
+</ol>
+
+<h2 id="1-matrix-multiplication">1. Matrix Multiplication</h2>
+<p>In some textbooks, matrix multiplication is calculated using the <code class="language-plaintext highlighter-rouge">matmul</code> method (e.g., PyTorch’s <code class="language-plaintext highlighter-rouge">torch.matmul</code>). However, you can directly use “@” to represent matrix multiplication, as shown in this example:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">torch</span>
+<span class="kn">from</span> <span class="n">torch.utils</span> <span class="kn">import</span> <span class="n">benchmark</span>
+<span class="n">typ</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="n">float16</span>
+<span class="n">n</span> <span class="o">=</span> <span class="mi">1024</span><span class="o">*</span><span class="mi">16</span>
+<span class="n">a</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">).</span><span class="nf">type</span><span class="p">(</span><span class="n">typ</span><span class="p">).</span><span class="nf">cuda</span><span class="p">()</span>
+<span class="n">b</span> <span class="o">=</span> <span class="n">torch</span><span class="p">.</span><span class="nf">randn</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="n">n</span><span class="p">).</span><span class="nf">type</span><span class="p">(</span><span class="n">typ</span><span class="p">).</span><span class="nf">cuda</span><span class="p">()</span>
+<span class="n">t</span> <span class="o">=</span> <span class="n">benchmark</span><span class="p">.</span><span class="nc">Timer </span><span class="p">(</span>
+    <span class="n">stmt</span><span class="o">=</span><span class="sh">'</span><span class="s">a @ b</span><span class="sh">'</span><span class="p">,</span> <span class="c1"># The "@" here means matrix multiplication
+</span>    <span class="nb">globals</span><span class="o">=</span><span class="p">{</span><span class="sh">'</span><span class="s">a</span><span class="sh">'</span><span class="p">:</span><span class="n">a</span><span class="p">,</span><span class="sh">'</span><span class="s">b</span><span class="sh">'</span><span class="p">:</span><span class="n">b</span><span class="p">}</span>
+<span class="p">)</span>
+<span class="n">x</span><span class="o">=</span><span class="n">t</span><span class="p">.</span><span class="nf">timeit</span><span class="p">(</span><span class="mi">50</span><span class="p">)</span>
+<span class="mi">2</span><span class="o">*</span><span class="n">n</span><span class="o">**</span><span class="mi">3</span><span class="o">/</span><span class="n">x</span><span class="p">.</span><span class="n">median</span><span class="o">/</span><span class="mf">1e12</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>Note: This usage is not exclusive to PyTorch—you’ll find it defined in the official Python documentation as well.<br /></p>
+</blockquote>
+
+<blockquote>
+  <p>As an aside, I came across this code in <a href="https://www.bilibili.com/opus/693787692502089749">one of Li Mu’s posts</a>. For reference, the RTX 3060 scores around 28 on this benchmark—you can use it to test your GPU’s FP16 (half-precision floating-point) performance.<br /></p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="FP16 performance benchmark result for RTX 3060" src="/assets/images/2d82753f65764f28be3247b811c02bab.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<h2 id="2-decorators-for-classes-and-functions">2. Decorators for Classes and Functions</h2>
+<p>A decorator is a form of syntactic sugar (designed to reduce code redundancy). It means the class/function below the “@” symbol is passed as an argument to the function following the “@”.</p>
+
+<p>For example, the official Python documentation provides this example—these two function definitions are equivalent:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="bp">...</span>
+<span class="n">f</span> <span class="o">=</span> <span class="nf">staticmethod</span><span class="p">(</span><span class="n">f</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nd">@staticmethod</span>
+<span class="k">def</span> <span class="nf">f</span><span class="p">(</span><span class="n">arg</span><span class="p">):</span>
+    <span class="bp">...</span>
+</code></pre></div></div>
+
+<p>As you can see, <code class="language-plaintext highlighter-rouge">f</code> is the argument to <code class="language-plaintext highlighter-rouge">staticmethod</code>.</p>
+
+<p>Now let’s return to the code snippet from the start:</p>
+
+<div style="text-align: center;">
+  <img alt="D2L code snippet with @d2l.add_to_class decorator" src="/assets/images/7ce9fade3d8a41118ce8051a0755e8bd.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>First, <code class="language-plaintext highlighter-rouge">LinearRegression</code> is a pre-defined class (not shown in the snippet). Second, <code class="language-plaintext highlighter-rouge">d2l.add_to_class(LinearRegression)</code> means the following function is added to the <code class="language-plaintext highlighter-rouge">LinearRegression</code> class as one of its methods.</p>
+
+<p>If this example is still confusing, take a look at these screenshots:</p>
+
+<div style="text-align: center;">
+  <img alt="Code showing LinearRegression class instantiation" src="/assets/images/7abbe3ddde2c41a6a3784ea4608158d6.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="Code showing get_w_b() method available after decorator usage" src="/assets/images/4814c4e00a0f4edc9e75797c81de0810.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>You can see that <code class="language-plaintext highlighter-rouge">model</code> (an instance of the <code class="language-plaintext highlighter-rouge">LinearRegression</code> class) gains access to the newly added <code class="language-plaintext highlighter-rouge">get_w_b()</code> method after the decorator is applied.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><a href="https://stackoverflow.com/a/46027116">What does the “at” (@) symbol do in Python? - Stack Overflow</a>: This answer (not the top-voted one) is exceptionally comprehensive and high-quality—no need to read other responses. It was also the starting point for my research.</li>
+  <li><a href="https://docs.python.org/3/glossary.html#term-decorator">decorator - Glossary - Python</a>: A brief introduction to decorators in the official Python documentation—this is the only standalone section dedicated to decorators; all other mentions are mixed with other topics, as shown below:</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="Python official documentation snippet about decorators" src="/assets/images/727ad7e4dad44a6fb57d657a241d2415.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
