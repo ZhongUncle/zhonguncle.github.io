@@ -94,7 +94,7 @@
 </div>
         <h1>FFmpeg CUDA Hardware-Accelerated Transcoding on Ubuntu</h1>
         <div class="bloginfo">
-            <p class="info">2025-01-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1506 ｜ <a
+            <p class="info">2025-01-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1484 ｜ <a
                     href="https://blog.csdn.net/qq_33919450/article/details/145127397"> 中文原版 </a></p>
         </div>
         <p>This article uses an Ubuntu environment. The version of FFmpeg installed directly via APT on Ubuntu supports CUDA acceleration. This demonstration uses this pre-installed version—your experience may vary if you compile FFmpeg yourself or install it from other sources.</p>
@@ -131,7 +131,7 @@
 </ul>
 
 <div style="text-align: center;">
-  <img alt="980 Ti supported encoding formats" src="/assets/images/2a2ad233a3344aed8981b4eb4496c15d.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+  <img alt="980 Ti supported encoding formats" src="/assets/images/2a2ad233a3344aed8981b4eb4496c15d.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
 </div>
 
 <ul>
@@ -139,7 +139,7 @@
 </ul>
 
 <div style="text-align: center;">
-  <img alt="1080 Ti supported encoding formats (additional 3 formats vs 980 Ti)" src="/assets/images/28e8a38a707a4e31b94e0f7d60630ba5.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+  <img alt="1080 Ti supported encoding formats (additional 3 formats vs 980 Ti)" src="/assets/images/28e8a38a707a4e31b94e0f7d60630ba5.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
 </div>
 
 <p>Important note: While video codecs are often bundled with GPUs, they are separate from CUDA or rasterization units. For example, high-performance GPUs like the Tesla A100 do not support hardware encoding/decoding because they lack dedicated codec chips (though not all data center GPUs are this way—e.g., the V100 and P100 include them).</p>
@@ -180,14 +180,14 @@
 <p>With these settings, the transcoding speed reaches 16x—much faster than integrated GPU acceleration. The GPU utilization during transcoding is shown below:</p>
 
 <div style="text-align: center;">
-  <img alt="GPU utilization during 16x transcoding (3060)" src="/assets/images/92a0b7b7afeb4e759b8cd98c5f904f16.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+  <img alt="GPU utilization during 16x transcoding (3060)" src="/assets/images/92a0b7b7afeb4e759b8cd98c5f904f16.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
 </div>
 
 <h2 id="what-happens-if-you-omit-the-hardware-decoder">What Happens If You Omit the Hardware Decoder?</h2>
 <p>As mentioned earlier, FFmpeg requires explicit hardware decoder specification. If you omit it, FFmpeg will use CPU-based software decoding—resulting in high CPU usage but similar transcoding speed (sometimes slightly faster):</p>
 
 <div style="text-align: center;">
-  <img alt="CPU utilization with software decoding (no hardware decoder specified)" src="/assets/images/b6136b8225484b7ab7fd846737725641.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="CPU utilization with software decoding (no hardware decoder specified)" src="/assets/images/b6136b8225484b7ab7fd846737725641.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
 </div>
 
 <p>Software decoding has its use cases: When repairing corrupted video encodings, software decoders are more likely to correctly handle damaged files than hardware decoders. For example, I had a video that failed to play after the 11-minute mark in some players. Using the hardware decoder resulted in the following error:</p>
@@ -214,13 +214,13 @@ Error while decoding stream #0:0: Generic error in an external library
 <p>In <a href="/docs/blogs/d9ba468687c5b3cf754b0b6c05feaed8.html">my previous blog about macOS FFmpeg hardware acceleration</a>, I compared hardware transcoding (QSV) when converting MP4 to MOV and reducing the bitrate from 42Mbps to 10Mbps:</p>
 
 <div style="text-align: center;">
-  <img alt="FFmpeg hardware vs software transcoding quality comparison (macOS QSV)" src="/assets/images/219aeb795d53c0a107543cf6629b785c.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+  <img alt="FFmpeg hardware vs software transcoding quality comparison (macOS QSV)" src="/assets/images/219aeb795d53c0a107543cf6629b785c.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
 </div>
 
 <p>Results with CUDA hardware transcoding (3060):</p>
 
 <div style="text-align: center;">
-  <img alt="FFmpeg CUDA transcoding quality (3060 NVENC)" src="/assets/images/1e77a0c716cd49cc91481bef71dad6e4.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="FFmpeg CUDA transcoding quality (3060 NVENC)" src="/assets/images/6be2aa79ff1a427d8cefd8d2effe503c.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
 </div>
 
 <p>The 3060’s NVENC encoder delivers better quality than the 8th-gen Intel QSV encoder—impressive, though it consumes more power.</p>
@@ -228,13 +228,13 @@ Error while decoding stream #0:0: Generic error in an external library
 <h2 id="obs">OBS</h2>
 <p>Hardware encoders have a supported bitrate range—exceeding or falling below this range results in significant quality loss or encoding issues.</p>
 
-<p>NVIDIA’s official recommended OBS streaming settings (resolution, bitrate, frame rate) are shown below (note: “1440点” in the machine translation refers to 1440P/2K):</p>
+<p>NVIDIA’s official recommended OBS streaming settings (resolution, bitrate, frame rate) are shown below:</p>
 
 <div style="text-align: center;">
-  <img alt="NVIDIA official OBS streaming recommendations (resolution, bitrate, frame rate)" src="/assets/images/86c927f7cb8749298dd1f9cda201112d.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+  <img alt="NVIDIA official OBS streaming recommendations (resolution, bitrate, frame rate)" src="/assets/images/86c927f7cb8749298dd1f9cda201112d.png" style="box-shadow: 0px 0px 0px 0px; width: 65%;" />
 </div>
 
-<p>When playing “Yan Yun Shi Liu Sheng” (Sixteen Tones of Yan Yun), recording with OBS using NVENC H.264 encoding at 8000kbps produced quality nearly identical to software encoding. At 40Mbps, the quality was slightly lower but still acceptable. I’ll cover this in more detail in a separate blog—previously, I used an NVIDIA MX250 GPU, whose encoding speed and quality were much worse than QSV. Below are quick screenshots:</p>
+<p>When playing <strong>Where Winds Meet</strong>, recording with OBS using NVENC H.264 encoding at 8000kbps produced quality nearly identical to software encoding. At 40Mbps, the quality was slightly lower but still acceptable. I’ll cover this in more detail in a separate blog—previously, I used an NVIDIA MX250 GPU, whose encoding speed and quality were much worse than QSV. Below are quick screenshots:</p>
 
 <blockquote>
   <p>I used custom settings based on personal preference, not NVIDIA’s official recommendations (I was unaware of the official guidelines initially).<br /></p>
@@ -247,11 +247,8 @@ Error while decoding stream #0:0: Generic error in an external library
 </div>
 
 <div style="text-align: center;">
-  <img alt="NVENC encoding quality (close-up)" src="/assets/images/12045740638b4b08a226629a04da5f41.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
-</div>
-
-<div style="text-align: center;">
-  <img alt="Software encoding quality (close-up) for comparison" src="/assets/images/87442ae6ec504b34ac3e4bceb4deca73.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="NVENC encoding quality (close-up)" src="/assets/images/12045740638b4b08a226629a04da5f41.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+  <img alt="Software encoding quality (close-up) for comparison" src="/assets/images/87442ae6ec504b34ac3e4bceb4deca73.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
 </div>
 
 <p>I hope these will help someone in need~</p>
