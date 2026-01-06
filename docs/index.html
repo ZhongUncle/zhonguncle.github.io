@@ -1,30 +1,44 @@
 <!doctype html>
 <html>
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv='content-language' content='en'>
-        <title>ZhongUncle's blogs</title>
-        <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <link rel="stylesheet" type="text/css" href="assets/css/headerstyle.css" />
-        <link rel="stylesheet" type="text/css" href="assets/css/blogstyle.css" />
-        <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
-        
-        <meta name='description' content=''>
-        
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>ZhongUncle's blogs</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" type="text/css" href="assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+
+    
+    <meta name='description' content=''>
+    
 
 
-        <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
-        <script type="text/javascript">
-            (function(c,l,a,r,i,t,y){
-                c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};
-                t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
-                y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
-            })(window, document, "clarity", "script", "ky7zebz4nm");
-        </script>
-    </head>
-    <body>
-        <!-- 这个文件里是用来生成导航栏的 -->
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+</head>
+
+<body>
+    <!-- 这个文件里是用来生成导航栏的 -->
 <div class="header">
     
         <a href="/index.html" class="headerItem">
@@ -68,8 +82,8 @@
         </a>
     
 </div>
-        <div class="stackedit__html">
-            <h1>ZhongUncle</h1>
+    <div class="stackedit__html">
+        <h1>ZhongUncle</h1>
 <p>Welcome to my blogs' site. If you like, please give a Star in  <a href="https://github.com/ZhongUncle/zhonguncle.github.io">ZhongUncle/zhonguncle.github.io - GitHub</a></p>
 <p>This site is mainly backup my CSDN blogs in Chinese, but also has some notes.</p>
 
@@ -78,10 +92,24 @@
 <ul>
     
     <li>
+        <h2><a class="blog" href="/blogs/f2e2f0872254f46bc568fc9f306c8885.html">Introduction to Maximum Likelihood Estimation and How to Automatically Learn Parameters with Code (ML/DL)</a></h2>
+        <p class="info">2025-07-28 ｜ <a href="/research.html"> Research</a> ｜ #Words: 0</p>
+        
+        <p></p>
+    </li>
+    
+    <li>
         <h2><a class="blog" href="/blogs/1f68c2685d8d80d8ff07b09419200350.html">Dell T5810, 2680 v4, RTX 2080Ti 22GB and 3060 12GB in 2025</a></h2>
         <p class="info">2025-01-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 3359</p>
         
         <p>This article is mainly my notes to prevent you from having to re-study solutions to problems that you have solved in the future. However, since it has been almost 20 days since I started writing this article, I can't remember many details for the time being, so I may make some updates in the future.</p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/661f65540201ea68013c6ee55d0fe051.html">Fix: Not Implemented Error: Loading a Dataset Cached in a LocalFileSystem is Not Supported</a></h2>
+        <p class="info">2025-01-05 ｜ <a href="/research.html"> Research</a> ｜ #Words: 235</p>
+        
+        <p>If you check the top of the error message, you’ll find the root cause: the lookup path points to a `.cache/` directory (e.g., `xxxxxxx/.cache/`). This error persists regardless of whether you use an absolute or relative path.</p>
     </li>
     
     <li>
@@ -92,8 +120,22 @@
     </li>
     
     <li>
+        <h2><a class="blog" href="/blogs/f92abd53b1f21dc7596dc41b2f02b86a.html">SMA (3/3) KMP (Knuth–Morris–Pratt) string matching algorithm</a></h2>
+        <p class="info">2024-07-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 4801</p>
+        
+        <p></p>
+    </li>
+    
+    <li>
+        <h2><a class="blog" href="/blogs/fb2cd287c09c099d1e1ab1bb7c7732c1.html">SMA (2/3) Finite automaton string matching algorithm</a></h2>
+        <p class="info">2024-07-12 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2160</p>
+        
+        <p></p>
+    </li>
+    
+    <li>
         <h2><a class="blog" href="/blogs/5f746cc9188e19f1faa956679085e322.html">SMA (1/3) Naive and Rabin-Karp</a></h2>
-        <p class="info">2024-07-12 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 1907</p>
+        <p class="info">2024-07-12 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1911</p>
         
         <p>SMA (String matching algorithms) have always been my weak spot, and I happened to have a need for them recently, so I took the opportunity to catch up. String matching algorithms primarily involve identifying a substring (pattern, which is sometimes translated as pattern in other contexts, hence sometimes called pattern matching) within a larger body of text, such as finding a word in a text editor or a specific sequence in a DNA strand.</p>
     </li>
@@ -589,9 +631,10 @@
     </li>
     
 </ul>
-        </div>
-        <hr>
-        <div class="footer__html">
-        </div>
-    </body>
+    </div>
+    <hr>
+    <div class="footer__html">
+    </div>
+</body>
+
 </html>

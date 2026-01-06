@@ -1,0 +1,140 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Fix: Not Implemented Error: Loading a Dataset Cached in a LocalFileSystem is Not Supported</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='If you check the top of the error message, you’ll find the root cause: the lookup path points to a `.cache/` directory (e.g., `xxxxxxx/.cache/`). This error persists regardless of whether you use an absolute or relative path.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Fix: Not Implemented Error: Loading a Dataset Cached in a LocalFileSystem is Not Supported</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-05 ｜ <a href="/research.html"> Research</a> ｜ #Words: 235 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/144952796"> 中文原版 </a></p>
+        </div>
+        <p>When loading a local dataset, I encountered the error:<br />
+<code class="language-plaintext highlighter-rouge">Not Implemented Error: Loading a dataset cached in a LocalFileSystem is not supported</code></p>
+
+<p>If you check the top of the error message, you’ll find the root cause: the lookup path points to a <code class="language-plaintext highlighter-rouge">.cache/</code> directory (e.g., <code class="language-plaintext highlighter-rouge">xxxxxxx/.cache/</code>). This error persists regardless of whether you use an absolute or relative path.</p>
+
+<p>I found others who encountered the same issue, but they attributed it to an outdated <code class="language-plaintext highlighter-rouge">datasets</code> library. However, updating the library didn’t resolve the problem for me.</p>
+
+<p>Based on the mention of “cache”, I made an educated guess that the error was caused by repeated data extraction—Jupyter had cached the dataset. The solution turned out to be surprisingly simple: if you run <code class="language-plaintext highlighter-rouge">ls -a</code> in the directory of your current notebook, you’ll find a hidden file <code class="language-plaintext highlighter-rouge">._train.json</code> and a hidden directory <code class="language-plaintext highlighter-rouge">.ipynb_checkpoints</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ls -a
+.  ..  .ipynb_checkpoints  ._train.json  train.json  Untitled.ipynb
+</code></pre></div></div>
+
+<p>I wasn’t able to reproduce the issue to confirm which one was the exact cause, so I deleted both:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>rm -rf .ipynb_checkpoints ._train.json
+</code></pre></div></div>
+
+<p>After deletion, loading the dataset worked normally:</p>
+
+<div style="text-align: center;">
+<img alt="Dataset loaded successfully after deleting hidden cache files" src="/assets/images/d4f1ec254df0439b9d927f99cc646fde.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

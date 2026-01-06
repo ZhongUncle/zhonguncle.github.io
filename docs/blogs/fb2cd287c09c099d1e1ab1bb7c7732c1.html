@@ -1,0 +1,321 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>SMA (2/3) Finite automaton string matching algorithm</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content=''>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>SMA (2/3) Finite automaton string matching algorithm</h1>
+        <div class="bloginfo">
+            <p class="info">2024-07-12 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2160 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/140387905"> 中文原版 </a></p>
+        </div>
+        <p>The finite automaton string matching algorithm requires some number theory knowledge and isn’t particularly engaging.</p>
+
+<p>This article won’t delve into its mathematical properties—explaining them requires readers to have a basic grasp of discrete mathematics; otherwise, we’d first need to clarify several concepts. So if you’re unfamiliar with automata, state machines, sets, relations, or other related concepts and don’t want to learn them, you can just focus on understanding the code below. I’ll provide some conceptual explanations though, since this is also a personal record.</p>
+
+<p>If you do want to understand the underlying mathematics, start by learning discrete mathematics—with an emphasis on number theory. Once you have that foundation, check out <em>Introduction to Algorithms</em> and the University of Chicago’s <a href="http://homepages.math.uic.edu/~leon/cs-mcs401-r07/handouts/finite-automata.pdf">String Matching with Finite Automata</a>. The latter has better examples, and this article draws some inspiration from it.</p>
+
+<div style="text-align: center;">
+  <img alt="Diagram related to the finite automaton string matching algorithm" src="/assets/images/d79ff302fef54095931b1eb3ed27720a.jpg" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<h2 id="what-does-the-automaton-do">What Does the Automaton Do?</h2>
+<p>An automaton is a mathematical model consisting of a set of states. Different inputs trigger transitions between these states. Generally, such “machines” are used to implement formal languages or computational models (like the famous Turing machine), but they can also be simulated with programming languages. Finite automata are typically implemented using a <strong>state transition table</strong>—similar to how graphs are often represented with matrices.</p>
+
+<p>The image below shows a state transition table from <em>Introduction to Algorithms</em>. How is this table constructed, and how do we read it?</p>
+
+<p>This table illustrates how the finite automaton’s state changes based on input:</p>
+<ul>
+  <li>The three “input” columns represent possible inputs: <code class="language-plaintext highlighter-rouge">a</code>, <code class="language-plaintext highlighter-rouge">b</code>, and <code class="language-plaintext highlighter-rouge">c</code>. (Inputting <code class="language-plaintext highlighter-rouge">d</code> won’t match, so the table’s width often equals the size of the ASCII character set.)</li>
+  <li>The row labeled <code class="language-plaintext highlighter-rouge">P</code> shows the pattern string we’re matching against.</li>
+  <li>Each row represents a state. The first row is the initial state (state 0).</li>
+  <li>Each cell indicates the next state to transition to given the current state and input.</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="State transition table from Introduction to Algorithms" src="/assets/images/f96649ddd1fc4ffc96c59641f44f6eea.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>If you’re confused about how to read the table, follow these steps (I arranged them to be visible simultaneously so you don’t have to scroll):</p>
+<ol>
+  <li>Start with the first row (state 0): If the input character (from the string being checked) matches the corresponding character in <code class="language-plaintext highlighter-rouge">P</code>, transition to the next state (state 1). For any other input, stay in state 0.</li>
+  <li>Suppose you input <code class="language-plaintext highlighter-rouge">a</code> and move to state 1:
+    <ul>
+      <li>If the next input is also <code class="language-plaintext highlighter-rouge">a</code>, stay in state 1 (equivalent to restarting from state 0 with another <code class="language-plaintext highlighter-rouge">a</code>).</li>
+      <li>If the input is <code class="language-plaintext highlighter-rouge">b</code>, transition to state 2.</li>
+      <li>If the input is <code class="language-plaintext highlighter-rouge">c</code>, return to state 0 (since we need to restart the pattern match from the beginning).</li>
+    </ul>
+  </li>
+  <li>Repeat this process until a full match is achieved. When you reach state 7 (the final state), the next input will transition you to state 0, 1, or 2. (To test your understanding, think about why inputting <code class="language-plaintext highlighter-rouge">b</code> in the final state returns to state 2.)</li>
+</ol>
+
+<h2 id="algorithm-logic">Algorithm Logic</h2>
+<p>From the process above, if there’s any input sequence that leads to state 7, the input string contains the pattern we’re matching. The algorithm logic is roughly as follows:</p>
+<ol>
+  <li>Generate a state transition table (this only depends on the pattern string).</li>
+  <li>“Traverse” the input string using this table. If you reach the final state, the pattern exists in the input.</li>
+</ol>
+
+<h2 id="generating-the-state-transition-table">Generating the State Transition Table</h2>
+<p>Generating the state transition table is deceptively simple:</p>
+<ul>
+  <li>The simple part: For positions where the input character (row) matches the pattern character (column), set the cell value to the next state number (current row + 1).</li>
+  <li>The tricky part: What state do we return to if there’s a mismatch? As we saw earlier, returning directly to the initial state (0) can cause errors in some cases. The solution involves backtracking from the current state—but how far back should we go?</li>
+</ul>
+
+<p>First, find the closest previous state where the pattern character matches the current input. Repetition means we <strong>might</strong> only need to backtrack to the state right after this match. Remember state 1 earlier? Inputting <code class="language-plaintext highlighter-rouge">a</code> kept us in state 1 instead of returning to 0.</p>
+
+<p>Next, check incrementally from the start to see if any substring of the pattern matches the substring ending at the current state. If a match is found, we don’t need to restart from the beginning.</p>
+
+<p>For example, in the full code below, you’ll find this snippet handling the backtracking logic:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">state</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">partern</span><span class="p">[</span><span class="n">state</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">in</span><span class="p">)</span> <span class="p">{</span>
+        <span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+        <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">state</span><span class="o">-</span><span class="n">i</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">partern</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">partern</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">state</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">FA</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">in</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+            <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>What is the line <code class="language-plaintext highlighter-rouge">partern[j] != partern[i+j]</code> doing here? Whether the outer loop increments (<code class="language-plaintext highlighter-rouge">i++</code>) or decrements (<code class="language-plaintext highlighter-rouge">nextState--</code>), this part can be confusing at first.</p>
+
+<blockquote>
+  <p>Some blogs and textbooks use <code class="language-plaintext highlighter-rouge">nextState--</code> instead of <code class="language-plaintext highlighter-rouge">i++</code> and <code class="language-plaintext highlighter-rouge">state-i</code>. I prefer the latter—and you’ll understand why after the explanation below.<br /></p>
+</blockquote>
+
+<p>This code is looking for repeated substrings in the pattern that match the start of the pattern.</p>
+
+<p>Take the pattern <code class="language-plaintext highlighter-rouge">ABABAC</code> as an example. If we input <code class="language-plaintext highlighter-rouge">B</code> at the <code class="language-plaintext highlighter-rouge">C</code> position (a mismatch), we first find the previous <code class="language-plaintext highlighter-rouge">B</code> in the pattern:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Pattern:      A B A B A C (input B)
+Step 1:                |         (Find the previous B that matches the input)
+Step 2:                |__2__|   (The distance between the two Bs is 2—meaning if the substring starting at the beginning matches the substring containing this B, the start substring is shifted right by 2)
+Step 3:        |   |             (Start comparing from the shifted position; first character matches)
+Step 4:          |   |           (Increment both indices; second character matches)
+Step 5:            |   |         (Increment both indices; third character matches)
+Step 6:                          (We already confirmed the Bs match when entering the loop, so no need to compare this position)
+Step 7:        |_____|           (The substrings match—so we backtrack 2 states)
+                |_____|
+</code></pre></div></div>
+
+<p>In other words:</p>
+<ol>
+  <li>Assume there’s a repeated substring that matches the start of the pattern. Calculate how far this substring is shifted from the start.</li>
+  <li>Verify this assumption by comparing the two substrings. If they match, we can backtrack to the state right after the repeated substring. (This is why the code stores <code class="language-plaintext highlighter-rouge">state-(i-1)</code> in the transition table instead of <code class="language-plaintext highlighter-rouge">state-i</code>.)</li>
+</ol>
+
+<p>That’s the logic behind the code snippet above.</p>
+
+<h2 id="traversing-the-state-transition-table">Traversing the State Transition Table</h2>
+<p>This part is straightforward: feed the input string into the table one character at a time. Here’s how it’s implemented:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">lenstr</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">state</span> <span class="o">=</span> <span class="n">FA</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+    <span class="c1">// If we reach the final state, the pattern is found</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">lenpart</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">printf</span> <span class="p">(</span><span class="s">"Match starts at index %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">lenpart</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="full-code">Full Code</h2>
+<blockquote>
+  <p>I referenced some existing implementations when writing this code—initially, I couldn’t figure out how the algorithm worked after reading <em>Introduction to Algorithms</em>. Many sources use a decrementing loop (<code class="language-plaintext highlighter-rouge">for</code> with <code class="language-plaintext highlighter-rouge">nextState--</code>) to handle backtracking, but it took me a while to understand. I prefer the incrementing approach (<code class="language-plaintext highlighter-rouge">i++</code> and <code class="language-plaintext highlighter-rouge">state-i</code>). When I modified it, I forgot to adjust one part and spent an hour debugging—total rookie mistake.<br /></p>
+</blockquote>
+
+<p>Here’s the complete code:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span><span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="c1">// Length equals the size of the ASCII character set</span>
+<span class="cp">#define NumInput 256
+</span>
+<span class="kt">void</span> <span class="nf">automataMatch</span><span class="p">(</span><span class="kt">char</span> <span class="n">str</span><span class="p">[],</span> <span class="kt">char</span> <span class="n">partern</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">lenstr</span><span class="p">,</span> <span class="kt">int</span> <span class="n">lenpart</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Initialize all state transition table values to 0</span>
+    <span class="kt">int</span> <span class="n">FA</span><span class="p">[</span><span class="n">lenpart</span><span class="o">+</span><span class="mi">1</span><span class="p">][</span><span class="n">NumInput</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="p">(</span><span class="n">lenpart</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">j</span><span class="o">&lt;</span><span class="n">NumInput</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">FA</span><span class="p">[</span><span class="n">i</span><span class="p">][</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+ 
+    <span class="c1">// Build the state transition table</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">state</span> <span class="o">&lt;=</span> <span class="n">lenpart</span><span class="p">;</span> <span class="n">state</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">in</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">in</span> <span class="o">&lt;</span> <span class="n">NumInput</span><span class="p">;</span> <span class="n">in</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// If current state's pattern character matches the input</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">&lt;</span> <span class="n">lenpart</span> <span class="o">&amp;&amp;</span> <span class="n">in</span> <span class="o">==</span> <span class="n">partern</span><span class="p">[</span><span class="n">state</span><span class="p">])</span> <span class="p">{</span>
+                <span class="n">FA</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">in</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+            <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                <span class="c1">// Handle mismatch: determine the state to backtrack to</span>
+                <span class="cm">/*  For example, with the pattern "ababaca" from the table:
+                    If we input 'b' at the 'c' position (state=6), we backtrack to find a previous 'b'.
+                    We find it at position 4 (preState = state-2 = 4).
+                    We then check if the substring starting at state 2 matches the start of the pattern.
+                    If all characters match, we return to that state.
+                 */</span>
+                <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">state</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">partern</span><span class="p">[</span><span class="n">state</span><span class="o">-</span><span class="n">i</span><span class="p">]</span> <span class="o">==</span> <span class="n">in</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="n">state</span><span class="o">-</span><span class="n">i</span><span class="p">;</span> <span class="n">j</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="k">if</span> <span class="p">(</span><span class="n">partern</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">partern</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+                                <span class="k">break</span><span class="p">;</span>
+                            <span class="p">}</span>
+                        <span class="p">}</span>
+
+                        <span class="k">if</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">state</span><span class="o">-</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+                            <span class="n">FA</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">in</span><span class="p">]</span> <span class="o">=</span> <span class="n">state</span><span class="o">-</span><span class="p">(</span><span class="n">i</span><span class="o">-</span><span class="mi">1</span><span class="p">);</span>
+                            <span class="k">break</span><span class="p">;</span>
+                        <span class="p">}</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Start matching the input string</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">state</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">lenstr</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">FA</span><span class="p">[</span><span class="n">state</span><span class="p">][</span><span class="n">str</span><span class="p">[</span><span class="n">i</span><span class="p">]];</span>
+        <span class="c1">// If we reach the final state, the pattern is found</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">state</span> <span class="o">==</span> <span class="n">lenpart</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">printf</span> <span class="p">(</span><span class="s">"Match starts at index %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">i</span><span class="o">-</span><span class="n">lenpart</span><span class="o">+</span><span class="mi">1</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">char</span> <span class="n">str</span><span class="p">[]</span><span class="o">=</span><span class="s">"ABABAC"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">partern</span><span class="p">[]</span><span class="o">=</span><span class="s">"ABA"</span><span class="p">;</span>
+
+    <span class="kt">int</span> <span class="n">lenstr</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">str</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">lenpart</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">partern</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    
+    <span class="n">automataMatch</span><span class="p">(</span><span class="n">str</span><span class="p">,</span> <span class="n">partern</span><span class="p">,</span> <span class="n">lenstr</span><span class="p">,</span> <span class="n">lenpart</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The string here is different from the earlier example to demonstrate multiple matches. The output is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Match starts at index 0
+Match starts at index 2
+</code></pre></div></div>
+
+<p>Next article: <a href="/blogs/f92abd53b1f21dc7596dc41b2f02b86a.html">SMA (3/3) KMP (Knuth–Morris–Pratt) string matching algorithm - ZhongUncle GitHub Pages</a></p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

@@ -1,0 +1,653 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>SMA (3/3) KMP (Knuth–Morris–Pratt) string matching algorithm</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content=''>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>SMA (3/3) KMP (Knuth–Morris–Pratt) string matching algorithm</h1>
+        <div class="bloginfo">
+            <p class="info">2024-07-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 4801 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/140368749"> 中文原版 </a></p>
+        </div>
+        <h1 id="kmp-knuthmorrispratt-string-matching-algorithm">KMP (Knuth–Morris–Pratt) String Matching Algorithm</h1>
+<p>The KMP (Knuth–Morris–Pratt) string matching algorithm is well-suited for finding a single match. For multiple matches, an improved version of Rabin-Karp is a better choice.</p>
+
+<p>This article is structured as follows (corresponding to the sidebar directory):</p>
+<ol>
+  <li>Why KMP is so hard to understand across different resources, along with key differences and considerations;</li>
+  <li>A brief introduction and characteristics of the KMP algorithm;</li>
+  <li>How KMP works;</li>
+  <li>The working logic of KMP;</li>
+  <li>How the critical <code class="language-plaintext highlighter-rouge">next</code> array in KMP is calculated;</li>
+  <li>Why the <code class="language-plaintext highlighter-rouge">next</code> array can compute the appropriate offset;</li>
+  <li>Complete code.</li>
+</ol>
+
+<p>The reason I explain “how it works” before “working logic” is to let you first see KMP in action, making it easier to understand the underlying logic. <strong>Do not force yourself to master the “How KMP Works” section right away</strong>. I know many blog examples are subpar and incomplete. (The example in the original paper perfectly covers the three required scenarios—it’s excellent, just a bit lengthy.)</p>
+
+<p>I provide numerous examples in subsequent sections, which can also aid memorization. After reading these, you’ll understand the original paper’s example at a glance, saving time.</p>
+
+<h2 id="some-rants">Some Rants</h2>
+<p>KMP is a masterpiece, and its three independent inventors are all extraordinary:</p>
+<ul>
+  <li>Donald Knuth: Author of TAOCP and TeX, recipient of the 1974 Turing Award.</li>
+  <li>James H. Morris: Emeritus Professor of Computer Science at Carnegie Mellon University.</li>
+  <li>Vaughan Pratt: Knuth’s student, who completed his Stanford PhD in 20 months and became an emeritus professor at Stanford University in 2000.</li>
+</ul>
+
+<p>This background (especially Knuth’s involvement) makes the algorithm’s underlying principles hard to grasp. It took me an entire day to understand what KMP is and how the paper relates to the explanations in various textbooks—making the learning process somewhat comical.</p>
+
+<p>When learning KMP, I found that domestic textbooks introduce it as an improvement on the naive algorithm, adding a <code class="language-plaintext highlighter-rouge">next</code> array (Partial Match table, PM) that records the length of the longest equal prefix and suffix for each position in the substring. I don’t know if you understood this explanation, but I certainly didn’t.</p>
+
+<p>I then discovered that <em>Introduction to Algorithms</em> frames KMP as an improvement on finite automata, also mentioning prefix calculation, with a strong mathematical focus. I grasped the general idea but had no clue how to implement it in code.</p>
+
+<p>Neither explanation satisfied me.</p>
+
+<p>Online blogs and code implementations either parrot domestic textbooks, reference <em>Introduction to Algorithms</em>, or provide no explanation at all—yielding the same confusing results.</p>
+
+<p>Finally, I read KMP’s original paper and realized why domestic textbooks and <em>Introduction to Algorithms</em> fail to clarify the logic: the algorithm is incredibly ingenious and difficult to explain simply. Additionally, while Knuth is now a renowned figure, this paper was written early in his career, with immature writing techniques and no fixed structure (academic papers lacked standard formatting back then), resulting in a disorganized presentation.</p>
+
+<p>The funniest part? There’s no unified method for calculating KMP across resources—this is why you’ll never see exams test <code class="language-plaintext highlighter-rouge">next</code> array calculation, as it’s not unique. How inconsistent is it?</p>
+<ul>
+  <li>Whether character numbering starts at 0 or 1.</li>
+  <li>Whether <code class="language-plaintext highlighter-rouge">next</code> array numbering starts at 0 or 1.</li>
+  <li>Whether <code class="language-plaintext highlighter-rouge">next[0]</code> is 0 or 1.</li>
+</ul>
+
+<p>Do the permutations: theoretically, a single pattern can have 8 versions of the <code class="language-plaintext highlighter-rouge">test</code> array (fewer in practice—about 3–4, since character and array numbering are correlated). Each version uses a slightly different calculation method but yields the same final result. So if you’re studying for exams, memorize your textbook’s method and don’t waste time researching the algorithm itself like I did.</p>
+
+<p>This article uses the original paper’s method for calculating KMP’s <code class="language-plaintext highlighter-rouge">test</code> array (string and <code class="language-plaintext highlighter-rouge">next</code> numbering start at 1). However, the code follows C conventions (string and <code class="language-plaintext highlighter-rouge">next</code> numbering start at 0).</p>
+
+<h2 id="what-is-the-kmp-algorithm">What is the KMP Algorithm?</h2>
+<p>Most string matching algorithms consist of two phases: preprocessing and matching. Preprocessing involves processing the pattern string to speed up subsequent matching.</p>
+
+<p>However, during matching (whether with the naive algorithm or finite automata), mismatches occur, requiring “backtracking”—rechecking the same segment multiple times.</p>
+
+<blockquote>
+  <p>“Backtracking” refers to moving backward in the pattern string, not the text string being matched.<br /></p>
+</blockquote>
+
+<p>For example, when matching <code class="language-plaintext highlighter-rouge">BCD</code> in <code class="language-plaintext highlighter-rouge">ABCBCD</code>, a mismatch occurs at the second <code class="language-plaintext highlighter-rouge">B</code>:</p>
+<ul>
+  <li>The naive algorithm resumes comparison at the first <code class="language-plaintext highlighter-rouge">C</code> (since the previous <code class="language-plaintext highlighter-rouge">B</code> failed), and the pattern string restarts matching from its first element (<code class="language-plaintext highlighter-rouge">B</code>).</li>
+  <li>Finite automata stay at the current <code class="language-plaintext highlighter-rouge">B</code> and attempt to match <code class="language-plaintext highlighter-rouge">C</code> next, but this involves a backtracking operation that ultimately keeps it at the same position.</li>
+</ul>
+
+<p>The former restarts matching from the beginning of the pattern string every time, while the latter sometimes avoids full restarts—making it slightly faster.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>Preprocessing Time</th>
+      <th>Matching Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Naive Algorithm</td>
+      <td>$0$</td>
+      <td>$O((n-m+1)m)$</td>
+    </tr>
+    <tr>
+      <td>Finite Automaton</td>
+      <td>$\Theta(m|\sum|)$</td>
+      <td>$\Theta(n)$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>If you read the previous article, you know the finite automaton’s preprocessing phase is quite complex—it not only determines the next state in a table but also sets the backtracking position. So is it possible to eliminate backtracking entirely? In other words, ensure each character in the text string is matched only once.</p>
+
+<p>This is exactly what KMP does. Compared to traditional methods, it eliminates the backtracking phase by directly shifting the pattern string to the right, avoiding repeated character comparisons.</p>
+
+<p>Additionally, KMP only requires a one-dimensional array (length = pattern string length) instead of a two-dimensional array (size = pattern string length × number of possible input values), resulting in significant improvements in both time and space efficiency.</p>
+
+<blockquote>
+  <p>Time efficiency improves because the preprocessing phase requires less work, naturally reducing computation time.<br /></p>
+</blockquote>
+
+<table>
+  <thead>
+    <tr>
+      <th>Algorithm</th>
+      <th>Preprocessing Time</th>
+      <th>Matching Time</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Naive Algorithm</td>
+      <td>$0$</td>
+      <td>$O((n-m+1)m)$</td>
+    </tr>
+    <tr>
+      <td>Rabin-Karp</td>
+      <td>$\Theta(m)$</td>
+      <td>$O((n-m+1)m)$</td>
+    </tr>
+    <tr>
+      <td>Finite Automaton</td>
+      <td>$\Theta(m|\sum|)$</td>
+      <td>$\Theta(n)$</td>
+    </tr>
+    <tr>
+      <td>KMP</td>
+      <td>$\Theta(m)$</td>
+      <td>$\Theta(n)$</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Like other string matching algorithms, KMP’s preprocessing phase is the most critical and complex part. Shifting the pattern string to the right is simple, but calculating the correct shift distance is not.</p>
+
+<h2 id="how-kmp-works">How KMP Works</h2>
+<p>The original paper’s example is used to explain how KMP works.</p>
+
+<p>The image below shows the pattern string and corresponding <code class="language-plaintext highlighter-rouge">next</code> array elements:</p>
+
+<div style="text-align: center;">
+  <img alt="Pattern string and corresponding next array elements" src="/assets/images/b7146458a04e4cbcbe9510a9f11a11e1.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>In the image below: the top row is the pattern string, the middle row is the text string, and the bottom row indicates the character being checked:</p>
+
+<div style="text-align: center;">
+  <img alt="Text string, pattern string, and checked characters" src="/assets/images/6e42c7bfc5684d239f9f6dd4023fde2b.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>As shown, the first character mismatches, so the pattern string is shifted right by $1-\text{next}[1] = 1$ position. Since $\text{next}[1]=0$, matching restarts from the beginning. A mismatch occurs at the 4th character:</p>
+
+<div style="text-align: center;">
+  <img alt="Mismatch at the 4th character" src="/assets/images/815148ab14d2469cb9bf911676cb2407.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>At this point, $\text{next}[4]=0$, so $4-\text{next}[4] = 4-0 = 4$—shift right by 4 positions, and restart matching from the beginning. Another mismatch occurs at the 8th character:</p>
+
+<div style="text-align: center;">
+  <img alt="Mismatch at the 8th character" src="/assets/images/4180837f69da4cc1b5da602958b389a8.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Now, $\text{next}[8]=5$, so $8-\text{next}[8] = 8-5 = 3$—shift right by 3 positions, and resume matching from the 5th character.</p>
+
+<blockquote>
+  <p>If you’re confused why we only shift 3 positions here, the section “Why $\text{index}-\text{next}[\text{index}]$ is the pattern offset” will explain this.<br /></p>
+</blockquote>
+
+<p>A mismatch occurs at the 5th character this time:</p>
+
+<div style="text-align: center;">
+  <img alt="Mismatch at the 5th character after shifting" src="/assets/images/01561dbf4baf4412ae811c0bc8a06cde.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Here, $\text{next}[5]=1$, so $5-\text{next}[5] = 5-1 = 4$—shift right by 4 positions, and restart matching from the first character. Another mismatch occurs at the 8th character:</p>
+
+<div style="text-align: center;">
+  <img alt="Mismatch at the 8th character after another shift" src="/assets/images/13505d4fc0084e2aa13963f2f427aa97.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Shift right by 3 positions and resume matching from the 5th character. This time, a full match is achieved:</p>
+
+<div style="text-align: center;">
+  <img alt="Full match after final shift" src="/assets/images/0eac846cba5c46cba5bdf3a2bd161e98.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<h2 id="kmp-working-logic">KMP Working Logic</h2>
+<p>KMP uses the same algorithm for both preprocessing and matching—a detail mentioned in both <em>Introduction to Algorithms</em> and the original paper.</p>
+
+<p>The only difference is:</p>
+<ul>
+  <li>Preprocessing involves matching the pattern string <strong>against itself</strong>;</li>
+  <li>Matching involves matching the pattern string against <strong>another text string</strong>.</li>
+</ul>
+
+<p>The algorithm structure is as follows:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Place the pattern on the left
+while the pattern is not fully matched and the text string is not exhausted
+	while the pattern character does not match the current text character
+		shift the pattern right to the appropriate position
+	move to the next character in the text string
+</code></pre></div></div>
+
+<p>The code structure is shown below:</p>
+
+<div style="text-align: center;">
+  <img alt="KMP algorithm code structure" src="/assets/images/61fae801098e49c088c5f6159860abb3.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>What does “shift the pattern right to the appropriate position” mean? This relies on the following equation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k = p + j
+</code></pre></div></div>
+
+<ul>
+  <li>$k$ = index of the text string;</li>
+  <li>$j$ = index of the pattern string;</li>
+  <li>$p$ = a value that satisfies the equation (essentially the offset, as seen by rearranging to $p=k-j$).</li>
+</ul>
+
+<p>We typically fix $k$ and $p$ to match the string—once these two are determined, the third value is known.</p>
+
+<p><strong>This equation is the core idea of KMP</strong>. KMP’s correctness is proven using this equation, and it is also used to calculate the <code class="language-plaintext highlighter-rouge">next</code> array. The section “Why $\text{index}-\text{next}[\text{index}]$ is the pattern offset” will explain why this is KMP’s core.</p>
+
+<blockquote>
+  <p>Proving an algorithm’s correctness means verifying it mathematically—ensuring it is logical and rigorous. Even extensive testing with examples cannot guarantee no errors otherwise.<br /></p>
+</blockquote>
+
+<h2 id="how-kmps-next-array-is-derived">How KMP’s <code class="language-plaintext highlighter-rouge">next</code> Array is Derived</h2>
+<p>From the above process, you can see the <code class="language-plaintext highlighter-rouge">next</code> array is the key to KMP. So how is this array calculated?</p>
+
+<p>Let’s walk through the calculation of the <code class="language-plaintext highlighter-rouge">next</code> array for the original paper’s example.</p>
+
+<p>The original paper introduces a function $f[x]$ when calculating <code class="language-plaintext highlighter-rouge">next</code>. Recall earlier that KMP uses the same algorithm for preprocessing and matching (only the target differs)—this $f[x]$ corresponds to $j$ in the demonstration below.</p>
+
+<p>$f[x]$ is defined for both the text and pattern strings, but when calculating <code class="language-plaintext highlighter-rouge">next</code>, both are the pattern string. Do not overcomplicate things by following the paper’s notation—$f[x]$ is included as a comment in the code below and is not required.</p>
+
+<p>The code structure for calculating <code class="language-plaintext highlighter-rouge">next</code> described in the paper is as follows:</p>
+
+<div style="text-align: center;">
+  <img alt="Code structure for calculating next array in original paper" src="/assets/images/faed7a30dced434a8e56b5ec8078f457.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>This explanation is quite abstract, so let’s use the paper’s example to walk through the steps:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Initial</span> <span class="n">state</span><span class="o">:</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>  
+<span class="n">pattern</span><span class="o">:</span>   <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>                     <span class="o">-&gt;</span> <span class="n">By</span> <span class="n">convention</span><span class="p">,</span> <span class="n">the</span> <span class="n">first</span> <span class="n">value</span> <span class="n">is</span> <span class="mi">0</span> <span class="n">or</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span> <span class="n">here</span> <span class="n">we</span> <span class="n">set</span> <span class="n">next</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+         <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">text</span> <span class="n">index</span><span class="p">;</span> <span class="n">k</span><span class="o">=</span><span class="n">p</span><span class="o">+</span><span class="n">j</span><span class="p">;</span> <span class="n">j</span><span class="o">=</span><span class="n">pattern</span> <span class="n">index</span><span class="p">)</span>
+<span class="n">First</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+              <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>                  
+<span class="n">pattern</span><span class="o">:</span>     <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>                  <span class="o">-&gt;</span> <span class="n">text</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">next</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">Second</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>
+<span class="n">pattern</span><span class="o">:</span>       <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>                <span class="o">-&gt;</span> <span class="n">text</span><span class="p">[</span><span class="n">k</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">next</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">Third</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">4</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                  <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>
+<span class="n">pattern</span><span class="o">:</span>         <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>              <span class="o">-&gt;</span> <span class="n">Match</span> <span class="n">found</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+ <span class="p">(</span><span class="n">When</span> <span class="n">matching</span><span class="p">,</span> <span class="n">only</span> <span class="n">move</span> <span class="n">the</span> <span class="n">check</span> <span class="n">point</span><span class="err">—</span><span class="k">do</span> <span class="n">not</span> <span class="n">shift</span> <span class="n">the</span> <span class="n">pattern</span> <span class="p">(</span><span class="n">p</span> <span class="n">remains</span> <span class="n">unchanged</span><span class="p">))</span>
+<span class="n">Fourth</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+                    <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>
+<span class="n">pattern</span><span class="o">:</span>         <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>              <span class="o">-&gt;</span> <span class="n">Match</span> <span class="n">found</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">5</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">Fifth</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">6</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+                      <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>                  
+<span class="n">pattern</span><span class="o">:</span>         <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>              <span class="o">-&gt;</span> <span class="n">Match</span> <span class="n">found</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">6</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="mi">1</span>
+
+<span class="n">Sixth</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">7</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+                        <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>
+<span class="n">pattern</span><span class="o">:</span>         <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>              <span class="o">-&gt;</span> <span class="n">Match</span> <span class="n">found</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">7</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="mi">4</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Seventh</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">5</span><span class="p">)</span>
+                          <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>  
+<span class="n">pattern</span><span class="o">:</span>         <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>              <span class="o">-&gt;</span> <span class="n">Mismatch</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">8</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="o">=</span><span class="mi">5</span>
+<span class="n">Eighth</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                            <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>
+<span class="n">pattern</span><span class="o">:</span>                 <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>      <span class="o">-&gt;</span> <span class="n">Match</span> <span class="n">found</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">9</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">Ninth</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">9</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                              <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>
+<span class="n">pattern</span><span class="o">:</span>                   <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span> <span class="n">c</span> <span class="n">a</span> <span class="n">c</span> <span class="n">a</span> <span class="n">b</span>    <span class="o">-&gt;</span> <span class="n">Mismatch</span> <span class="n">and</span> <span class="n">end</span> <span class="n">of</span> <span class="n">string</span><span class="p">,</span> <span class="n">next</span><span class="p">[</span><span class="mi">10</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+</code></pre></div></div>
+
+<p>This result matches the paper exactly:</p>
+
+<div style="text-align: center;">
+  <img alt="Final next array values matching the original paper" src="/assets/images/b7146458a04e4cbcbe9510a9f11a11e1.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>In summary:</p>
+<ul>
+  <li>If a match is found: only move the check point (do not shift the pattern, so p remains unchanged). Then $\text{next}[k]=\text{next}[j]$.</li>
+  <li>If a mismatch occurs (or the string is exhausted): only move the check point (do not shift the pattern, so p remains unchanged). Then $\text{next}[k]=j$.</li>
+</ul>
+
+<p>However, calculating the <code class="language-plaintext highlighter-rouge">next</code> array using some textbooks’ methods will yield different values.</p>
+
+<p>For example, calculating based on the number of common prefix/suffix elements:</p>
+<ul>
+  <li>For <code class="language-plaintext highlighter-rouge">a</code>: both prefix and suffix are empty sets → value = 0;</li>
+  <li>For <code class="language-plaintext highlighter-rouge">ab</code>: prefix = {a}, suffix = {b}, intersection is empty → value = 0;</li>
+  <li>For <code class="language-plaintext highlighter-rouge">abc</code>: prefix = {a, ab}, suffix = {c, bc}, intersection is empty → value = 0;</li>
+  <li>For <code class="language-plaintext highlighter-rouge">abca</code>: prefix = {a, ab, abc}, suffix = {a, ca, bca}, intersection = {a} → value = 1;</li>
+  <li>…..</li>
+</ul>
+
+<p>The first few values are already different, but the shift distance and final result remain the same. <strong>If you use this method to generate the <code class="language-plaintext highlighter-rouge">next</code> array, note that numbering must start at 0 (i.e., j in the image above)—otherwise, errors will occur</strong>.</p>
+
+<blockquote>
+  <p>Some textbooks suggest only considering matched characters when calculating shift distance. I find this redundant—proper index handling is more convenient and efficient.<br /></p>
+</blockquote>
+
+<h3 id="nextval"><code class="language-plaintext highlighter-rouge">nextval</code></h3>
+<p>Another reason I recommend the original paper’s method: some textbooks mention a <code class="language-plaintext highlighter-rouge">nextval</code> array for KMP and highlight its advantages, but this is actually the same as the paper’s approach.</p>
+
+<h2 id="why-textindex-textnexttextindex-is-the-pattern-offset">Why $\text{index}-\text{next}[\text{index}]$ is the Pattern Offset</h2>
+<p>Mathematically proving KMP’s correctness is complex (the paper covers this in detail), so I’ll use plain language to explain key points readers may care about.</p>
+
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">next</code> array used here is calculated using the paper’s method—adjust accordingly if you use a different approach.<br /></p>
+</blockquote>
+
+<p>From the previous section, you’ll see <code class="language-plaintext highlighter-rouge">next</code> represents the current index of the pattern string. During matching, we operate on the text string’s index; if we know the pattern string’s index (i.e., <code class="language-plaintext highlighter-rouge">next</code>), we can calculate the offset using the earlier equation.</p>
+
+<p>This raises the question: why is the offset from self-matching equal to the offset from pattern matching?</p>
+
+<p>First, let’s verify this with an example: text string = <code class="language-plaintext highlighter-rouge">ABABBABC</code>, pattern string = <code class="language-plaintext highlighter-rouge">ABABC</code>. The <code class="language-plaintext highlighter-rouge">next</code> array calculation process is:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Initial</span> <span class="n">state</span><span class="o">:</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>       <span class="o">-&gt;</span> <span class="n">next</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span>
+<span class="n">pattern</span><span class="o">:</span>   <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>  
+         <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="n">text</span> <span class="n">index</span><span class="p">;</span> <span class="n">k</span><span class="o">=</span><span class="n">p</span><span class="o">+</span><span class="n">j</span><span class="p">;</span> <span class="n">j</span><span class="o">=</span><span class="n">pattern</span> <span class="n">index</span><span class="p">)</span>
+<span class="n">First</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">1</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+              <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+<span class="n">pattern</span><span class="o">:</span>     <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>      <span class="o">-&gt;</span> <span class="n">text</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">next</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+<span class="n">Second</span> <span class="n">match</span> <span class="p">(</span><span class="n">p</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">j</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
+                <span class="o">|</span>
+<span class="n">text</span><span class="o">:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">C</span> 
+<span class="n">pattern</span><span class="o">:</span>       <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>    <span class="o">-&gt;</span> <span class="n">text</span><span class="p">[</span><span class="n">p</span><span class="o">+</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">],</span> <span class="n">next</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span><span class="o">=</span><span class="n">j</span><span class="o">=</span><span class="mi">1</span>
+</code></pre></div></div>
+
+<p>The <code class="language-plaintext highlighter-rouge">next</code> results are:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Index</th>
+      <th>1</th>
+      <th>2</th>
+      <th>3</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Character</td>
+      <td>A</td>
+      <td>B</td>
+      <td>C</td>
+    </tr>
+    <tr>
+      <td>next</td>
+      <td>0</td>
+      <td>1</td>
+      <td>1</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Assume we initially know nothing about the text string except the pattern string:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">text:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+<span class="n">pattern</span><span class="o">:</span>   <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+</code></pre></div></div>
+
+<p>KMP first matches up to the third character (<code class="language-plaintext highlighter-rouge">A</code>), where a mismatch occurs. At this point, we know the first three characters of the text string are <code class="language-plaintext highlighter-rouge">ABX</code> (X ≠ C, otherwise the match would succeed). Since X ≠ C, it might equal the pattern’s first character (<code class="language-plaintext highlighter-rouge">A</code>), so we restart matching at the same position.</p>
+
+<blockquote>
+  <p>Key insight: There’s no need to remember the preceding <code class="language-plaintext highlighter-rouge">AB</code>—reaching position X means the preceding characters matched successfully.<br /></p>
+</blockquote>
+
+<p>Using the <code class="language-plaintext highlighter-rouge">next</code> array: $3-\text{next}[3] = 3-1 = 2$ → shift right by 2 positions. This yields the same result as the manual operation:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">text:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+<span class="n">pattern</span><span class="o">:</span>     <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+</code></pre></div></div>
+<p>(Write down the subsequent shifts on paper—hands-on practice accelerates learning.)</p>
+
+<p>For the same reason as before: we now know the first five characters of the text string are <code class="language-plaintext highlighter-rouge">ABABX</code> (X ≠ C). Since X ≠ C, it might equal the pattern’s first character (<code class="language-plaintext highlighter-rouge">A</code>), so we shift to X again:</p>
+
+<blockquote>
+  <p>You may wonder why I said not to remember the initial <code class="language-plaintext highlighter-rouge">AB</code> but wrote <code class="language-plaintext highlighter-rouge">ABABX</code> here.<br />
+This is just to indicate positions—would writing <code class="language-plaintext highlighter-rouge">..ABX</code> affect comparing the last three characters with <code class="language-plaintext highlighter-rouge">ABC</code>? No. This is KMP’s advantage: no redundant backtracking, so no need to “go back” and recheck.<br /></p>
+</blockquote>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">text:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+<span class="n">pattern</span><span class="o">:</span>       <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+</code></pre></div></div>
+
+<p>This time, a mismatch occurs immediately: we know the first six characters of the text string are <code class="language-plaintext highlighter-rouge">ABABBX</code> (X ≠ A). This means the substring starting at X cannot match the pattern, so we skip this character:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">text:</span>      <span class="n">A</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">B</span> <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+<span class="n">pattern</span><span class="o">:</span>         <span class="n">A</span> <span class="n">B</span> <span class="n">C</span>
+</code></pre></div></div>
+
+<p>A full match is achieved this time. Return index <code class="language-plaintext highlighter-rouge">6</code> (or <code class="language-plaintext highlighter-rouge">5</code> if starting from 0).</p>
+
+<p>Now that we’ve confirmed the equality, why are the self-matching and pattern-matching offsets the same?</p>
+
+<p>We can borrow the physics concept of a “frame of reference” to help explain this.</p>
+
+<blockquote>
+  <p>This concept is not my invention—it is mentioned in the original paper (referencing “relative” positions).<br /></p>
+</blockquote>
+
+<p>There is “movement” within the pattern string itself, and the pattern string as a whole “moves” across the text string. Here, “movement” refers to “shifting right”.</p>
+
+<p>Since “shifting right” is one-dimensional and unidirectional, we can derive a simple transformation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Absolute coordinate = relative origin + relative coordinate
+</code></pre></div></div>
+
+<p>Here:</p>
+<ul>
+  <li>“Relative origin” = the element in the pattern string used for comparison;</li>
+  <li>“Relative coordinate” = the offset from self-matching.</li>
+</ul>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Absolute offset = relative origin + relative offset
+</code></pre></div></div>
+
+<p>This formula is exactly the earlier equation:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>k = p + j
+</code></pre></div></div>
+
+<p>With this relationship, we can find repeated segments before the mismatched character and shift by the corresponding distance whenever a right shift is needed:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Relative origin = absolute offset - relative offset
+</code></pre></div></div>
+
+<p>Where:</p>
+<ul>
+  <li>“Relative origin” = the shift distance of the origin (if the starting point is 0), i.e., the index shift of the text string—in other words, the desired target position.</li>
+  <li>“Absolute offset” = the index of the text string;</li>
+  <li>“Relative offset” = the index of the pattern string.</li>
+</ul>
+
+<p>Rearranging gives:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>p = k - j
+</code></pre></div></div>
+
+<p>This distance depends <strong>only</strong> on the pattern string—not the text string being matched.</p>
+
+<p>Honestly, I was amazed when I grasped this layer of logic. The ingenuity of this algorithm, conceived by three people fifty years ago, is truly remarkable.</p>
+
+<blockquote>
+  <p>If you still don’t understand, see the “Generating the State Transition Table” section in <a href="https://blog.csdn.net/qq_33919450/article/details/140387905">「String Matching Algorithm 2/3」Finite Automaton String Matching Algorithm</a>. I provide an example there that explains this concept and may help clarify things.<br />
+The core idea is the same— the only difference is that finite automata search for repeated substrings including the current input character, while KMP excludes it.<br /></p>
+</blockquote>
+
+<h2 id="complete-code">Complete Code</h2>
+<p>Earlier, we mentioned preprocessing and matching use the same algorithm with similar code structures. This code is adapted from the paper, with indices modified to start at 0 (per C conventions). The complete C implementation is:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">getNext</span><span class="p">(</span><span class="kt">char</span> <span class="n">pattern</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="n">next</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="n">next</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">t</span><span class="o">=-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">t</span><span class="o">&gt;</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">!=</span> <span class="n">pattern</span><span class="p">[</span><span class="n">t</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">t</span> <span class="o">=</span> <span class="n">next</span><span class="p">[</span><span class="n">t</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">j</span><span class="o">++</span><span class="p">;</span> <span class="n">t</span><span class="o">++</span><span class="p">;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">pattern</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">==</span> <span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">t</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">]</span><span class="o">=</span><span class="n">t</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">kmp</span><span class="p">(</span><span class="kt">char</span> <span class="n">text</span><span class="p">[],</span> <span class="kt">char</span> <span class="n">pattern</span><span class="p">[],</span> <span class="kt">int</span> <span class="n">n</span><span class="p">,</span> <span class="kt">int</span> <span class="n">m</span><span class="p">,</span> <span class="kt">int</span> <span class="n">next</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">j</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">k</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span><span class="o">&lt;</span><span class="n">m</span> <span class="o">&amp;&amp;</span> <span class="n">k</span><span class="o">&lt;</span><span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">j</span><span class="o">&gt;</span><span class="mi">0</span> <span class="o">&amp;&amp;</span> <span class="n">text</span><span class="p">[</span><span class="n">k</span><span class="p">]</span><span class="o">!=</span><span class="n">pattern</span><span class="p">[</span><span class="n">j</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">j</span><span class="o">=</span><span class="n">next</span><span class="p">[</span><span class="n">j</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">k</span><span class="o">++</span><span class="p">;</span><span class="n">j</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">j</span> <span class="o">==</span> <span class="n">m</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">k</span><span class="o">-</span><span class="n">j</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">char</span> <span class="n">text</span><span class="p">[]</span><span class="o">=</span><span class="s">"babcbabcabcaabcabcabcabcacabc"</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">pattern</span><span class="p">[]</span><span class="o">=</span><span class="s">"abcabcacab"</span><span class="p">;</span>
+    <span class="c1">// Note that C strings have a terminator at the end</span>
+    <span class="kt">int</span> <span class="n">n</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">text</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">m</span><span class="o">=</span><span class="k">sizeof</span><span class="p">(</span><span class="n">pattern</span><span class="p">)</span><span class="o">/</span><span class="k">sizeof</span><span class="p">(</span><span class="kt">char</span><span class="p">)</span><span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    
+    <span class="kt">int</span> <span class="n">next</span><span class="p">[</span><span class="n">m</span><span class="p">];</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="n">m</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">next</span><span class="p">[</span><span class="n">i</span><span class="p">]</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="n">getNext</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">next</span><span class="p">);</span>
+    
+    <span class="kt">int</span> <span class="n">index</span><span class="o">=</span><span class="n">kmp</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">pattern</span><span class="p">,</span> <span class="n">n</span><span class="p">,</span> <span class="n">m</span><span class="p">,</span> <span class="n">next</span><span class="p">);</span>
+    
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Match starts at index %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">index</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The output is:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Match starts at index 18
+</code></pre></div></div>
+
+<p>I hope these will help someone in need~</p>
+
+<p>First article: <a href="/blogs/5f746cc9188e19f1faa956679085e322.html">SMA (1/3) Naive and Rabin-Karp - ZhongUncle GitHub Pages</a></p>
+
+<h2 id="references">References</h2>
+<p><em>Introduction to Algorithms</em>, Chapter 32.</p>
+
+<p><a href="https://epubs.siam.org/doi/10.1137/0206024">Knuth, Donald; Morris, James H.; Pratt, Vaughan (1977). “Fast pattern matching in strings”. SIAM Journal on Computing.</a>: The original KMP paper.</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
