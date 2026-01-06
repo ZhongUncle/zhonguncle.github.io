@@ -1,0 +1,221 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>FaceFusion Running Slow? Fix It with NVIDIA cuDNN Installation</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='It’s another FaceFusion issue! While using it, I noticed it was barely faster than running on CPU. I initially thought this was normal—until I watched others’ demos and realized it should be much quicker.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>FaceFusion Running Slow? Fix It with NVIDIA cuDNN Installation</h1>
+        <div class="bloginfo">
+            <p class="info">2025-02-01 ｜ <a href="/python.html"> Python</a> ｜ #Words: 697 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145413120"> 中文原版 </a></p>
+        </div>
+        <p>It’s another FaceFusion issue! While using it, I noticed it was barely faster than running on CPU. I initially thought this was normal—until I watched others’ demos and realized it should be much quicker.</p>
+
+<h2 id="problem-description">Problem Description</h2>
+<p>First, the terminal displayed the following error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>2025-01-31 12:30:59.244128068 [E:onnxruntime:Default, provider_bridge_ort.cc:1862 TryGetProviderInfo_CUDA] /onnxruntime_src/onnxruntime/core/session/provider_bridge_ort.cc:1539 onnxruntime::Provider&amp; onnxruntime::ProviderLibrary::Get() [ONNXRuntimeError] : 1 : FAIL : Failed to load library libonnxruntime_providers_cuda.so with error: libcudnn.so.9: cannot open shared object file: No such file or directory
+</code></pre></div></div>
+
+<div style="text-align: center;">
+  <img alt="ONNX Runtime error showing missing libcudnn.so.9" src="/assets/images/c2919808066c4d9e86d75a648ac195df.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>This error occurs because <strong>NVIDIA cuDNN is not installed, or the installed version is incompatible</strong>.</p>
+
+<blockquote>
+  <p>Note: If this error doesn’t appear every time (i.e., not consistently when selecting “cuda” in FaceFusion), it may be a temporary glitch—simply restart FaceFusion to fix it.<br /></p>
+</blockquote>
+
+<p>Additionally, FaceFusion only processed 1–2 frames per second. <code class="language-plaintext highlighter-rouge">nvidia-smi</code> showed GPU utilization at just 45% and VRAM usage at a mere 500 MB. This scenario typically means either:</p>
+<ol>
+  <li>You didn’t select “cuda” as the execution provider in FaceFusion, or</li>
+  <li>cuDNN is not properly installed.</li>
+</ol>
+
+<h2 id="how-to-check-cudnn-installation--version">How to Check cuDNN Installation &amp; Version?</h2>
+<p>For compatibility between ONNX Runtime, cuDNN, and CUDA, refer to the official documentation: <a href="https://onnxruntime.ai/docs/execution-providers/CUDA-ExecutionProvider.html#requirements">Requirements - CUDA Execution Provider - ONNX Runtime</a>. For example, requirements for CUDA 12.x are shown below:</p>
+
+<div style="text-align: center;">
+  <img alt="ONNX Runtime CUDA 12.x compatibility requirements (cuDNN version)" src="/assets/images/eb1e2f45bdab4c68b1005512e7a38e65.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>From the error message, we know the issue lies with cuDNN. Unlike checking Python versions with <code class="language-plaintext highlighter-rouge">python --version</code>, there’s no universal command-line tool to verify cuDNN. The methods I found online didn’t work, so I figured out these reliable approaches:</p>
+
+<h3 id="method-1-check-for-cudnn-sample-files">Method 1: Check for cuDNN Sample Files</h3>
+<p>When cuDNN is installed, it includes sample projects for testing. You can check for these files to confirm installation:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">ls</span> /usr/src/ | <span class="nb">grep </span>cudnn
+cudnn_samples_v9
+</code></pre></div></div>
+
+<p>The directory name <code class="language-plaintext highlighter-rouge">cudnn_samples_v9</code> indicates cuDNN version 9.</p>
+
+<h3 id="method-2-locate-installation-path-debianubuntu">Method 2: Locate Installation Path (Debian/Ubuntu)</h3>
+<p>If you’re unsure about installation, use <code class="language-plaintext highlighter-rouge">dpkg</code> to find the cuDNN samples path (works for Debian/Ubuntu-based systems):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>dpkg <span class="nt">-L</span> libcudnn9-samples
+/.
+/usr
+/usr/share
+/usr/share/doc
+.....
+</code></pre></div></div>
+
+<h3 id="method-3-verify-with-pytorch-most-practical">Method 3: Verify with PyTorch (Most Practical)</h3>
+<p>If you’re working with models, you likely have PyTorch installed. Use this Python snippet to check cuDNN availability and version:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">torch</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">backends</span><span class="p">.</span><span class="n">cudnn</span><span class="p">.</span><span class="n">m</span><span class="p">.</span><span class="nf">is_available</span><span class="p">())</span>
+<span class="nf">print</span><span class="p">(</span><span class="n">torch</span><span class="p">.</span><span class="n">backends</span><span class="p">.</span><span class="n">cudnn</span><span class="p">.</span><span class="nf">version</span><span class="p">())</span>
+</code></pre></div></div>
+
+<p>Sample output:</p>
+
+<div style="text-align: center;">
+  <img alt="PyTorch output showing cuDNN is available (version 9.0.1)" src="/assets/images/a1dc153bbaa044039d9a43ff1d21fd49.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>This confirms cuDNN is installed (output: <code class="language-plaintext highlighter-rouge">True</code>) with version 9.0.1.</p>
+
+<h2 id="how-to-install-cudnn">How to Install cuDNN</h2>
+<p>If cuDNN is missing or incompatible, <strong>download it directly from the official NVIDIA website</strong> (not via package managers). Older system versions may cause issues with package manager installations.</p>
+
+<p>Official download link: <a href="https://developer.nvidia.com/cudnn-downloads">cuDNN Downloads</a></p>
+
+<blockquote>
+  <p>This is not redundant advice! I wasted an entire afternoon trying to install it via package managers—save yourself the hassle and use the official installer.<br /></p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="NVIDIA cuDNN download page" src="/assets/images/1f154cd9fce84830af8db976227e3c74.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>Detailed installation instructions are provided on the download page—no need to search elsewhere:</p>
+
+<div style="text-align: center;">
+  <img alt="cuDNN official installation instructions" src="/assets/images/7764a66d2f3e4c8caee28df2319d3581.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<h2 id="results-after-installation">Results After Installation</h2>
+<p>After installing the correct cuDNN version:</p>
+<ul>
+  <li>FaceFusion’s speed increased to 10–20 frames per second.</li>
+  <li><code class="language-plaintext highlighter-rouge">nvidia-smi</code> showed stable GPU utilization above 90% and VRAM usage reaching 5000 MB.</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="nvidia-smi showing high GPU utilization (90%+) after cuDNN installation" src="/assets/images/aff30d26127f41b8b4939da2aa4aa8d3.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="FaceFusion speed improvement (10-20 FPS) after cuDNN fix" src="/assets/images/e3edc842f39a4419a9debb7963bc3003.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>This speed is finally acceptable!</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
