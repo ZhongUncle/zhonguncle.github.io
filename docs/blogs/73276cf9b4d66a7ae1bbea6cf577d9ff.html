@@ -1,0 +1,282 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>FFmpeg CUDA Hardware-Accelerated Transcoding on Ubuntu</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This article uses an Ubuntu environment. The version of FFmpeg installed directly via APT on Ubuntu supports CUDA acceleration. This demonstration uses this pre-installed version—your experience may vary if you compile FFmpeg yourself or install it from other sources.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>FFmpeg CUDA Hardware-Accelerated Transcoding on Ubuntu</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-14 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1506 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145127397"> 中文原版 </a></p>
+        </div>
+        <p>This article uses an Ubuntu environment. The version of FFmpeg installed directly via APT on Ubuntu supports CUDA acceleration. This demonstration uses this pre-installed version—your experience may vary if you compile FFmpeg yourself or install it from other sources.</p>
+
+<blockquote>
+  <p>For an introduction to FFmpeg and hardware acceleration on macOS, see <a href="/docs/blogs/9f9e0b435184c6bb5504b94388d21852.html">Convert MKV to MP4 on macOS with FFmpeg: A Hardware-Accelerated Guide - ZhongUncle GitHub Pages</a>.<br /></p>
+</blockquote>
+
+<p>If you’re already familiar with the transcoding process, skip the first two sections and jump directly to the “Using FFmpeg for Hardware-Accelerated Transcoding” section via the sidebar to view the commands.</p>
+
+<h1 id="transcoding-workflow-differences-between-decoding-encoding-and-transcoding">Transcoding Workflow (Differences Between Decoding, Encoding, and Transcoding)</h1>
+<p>Any transcoding process consists of two steps: decoding and encoding. Simply put, decoding converts a video file into a displayable video stream, while encoding converts a video stream into a video file.</p>
+
+<p>Here are two examples to illustrate decoding and encoding:</p>
+<ul>
+  <li>Camera: A camera encodes signals from its sensor into a specific video format. This makes streaming or storage easier, as it decouples the data from the sensor’s proprietary signal format.</li>
+  <li>Video playback: Playing a video involves decoding the transmitted video format into a specific signal, which is then sent to a display or other device for you to watch.</li>
+</ul>
+
+<p>By default, FFmpeg uses software decoding and encoding without any special options. Hardware-accelerated decoding/encoding leverages dedicated chips designed for specific formats—offering faster performance and lower power consumption compared to general-purpose CPUs.</p>
+
+<blockquote>
+  <p>General knowledge: Purpose-built hardware chips are much faster and more power-efficient than CPU-based software processing.<br /></p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="Transcoding workflow diagram (decoding → encoding)" src="/assets/images/297d01b527a54bfebf965682cf383e62.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<h1 id="differences-between-software-and-hardware-decodingencoding">Differences Between Software and Hardware Decoding/Encoding</h1>
+<p>Software decoding/encoding uses the CPU to run specialized software that handles the decoding/encoding process. The main advantage is flexibility—support for new formats or custom encodings can be added via software updates. In contrast, hardware encoding/decoding is hardwired into the chip during manufacturing and cannot be modified. Typically, each new generation of hardware adds support for additional formats. For example:</p>
+<ul>
+  <li>The 980 Ti’s encoder only supports 4:2:0 4K H.265:</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="980 Ti supported encoding formats" src="/assets/images/2a2ad233a3344aed8981b4eb4496c15d.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<ul>
+  <li>The 1080 Ti added support for three more formats:</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="1080 Ti supported encoding formats (additional 3 formats vs 980 Ti)" src="/assets/images/28e8a38a707a4e31b94e0f7d60630ba5.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>Important note: While video codecs are often bundled with GPUs, they are separate from CUDA or rasterization units. For example, high-performance GPUs like the Tesla A100 do not support hardware encoding/decoding because they lack dedicated codec chips (though not all data center GPUs are this way—e.g., the V100 and P100 include them).</p>
+
+<div style="text-align: center;">
+  <img alt="GPU hardware codec support explanation (Tesla A100 vs V100/P100)" src="/assets/images/355dc2d97bec461a8428828e0782f07a.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>Additionally, hardware codecs have limited capacity—processing 10 videos simultaneously will not be as fast as processing one. This phenomenon is demonstrated later in the article.</p>
+
+<h1 id="using-ffmpeg-for-hardware-accelerated-transcoding">Using FFmpeg for Hardware-Accelerated Transcoding</h1>
+<h2 id="simple-start">Simple Start</h2>
+<p>Now that you understand the basics, let’s start transcoding. Below is the simplest command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg <span class="nt">-c</span>:v h264_cuvid <span class="nt">-i</span> input.mp4 <span class="nt">-c</span>:v h264_nvenc output.mp4
+</code></pre></div></div>
+
+<p>Explanation:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-c:v h264_cuvid</code>: Specifies the hardware decoder (CUDA-accelerated H.264 decoder). Unlike macOS hardware acceleration, FFmpeg requires explicit decoder specification on Ubuntu (see the next section for what happens if you omit this).</li>
+  <li><code class="language-plaintext highlighter-rouge">-c:v h264_nvenc</code>: Specifies the hardware encoder (NVIDIA NVENC H.264 encoder).</li>
+</ul>
+
+<p>Note: This usage differs from the official FFmpeg documentation. Following the official command format may cause transcoding issues in practice.</p>
+
+<h2 id="setting-bitrate-and-frame-rate">Setting Bitrate and Frame Rate</h2>
+<p>Using the basic command above may result in changed bitrate or frame rate (e.g., 30fps → 25fps, 6Mbps → 2Mbps). To preserve or customize these parameters:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg <span class="nt">-c</span>:v h264_cuvid <span class="nt">-i</span> input.mp4 <span class="nt">-c</span>:v h264_nvenc <span class="nt">-b</span>:v 6000k <span class="nt">-r</span> 30 output.mp4
+</code></pre></div></div>
+
+<p>Explanation:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-b:v 6000k</code>: Sets the video bitrate to 6000kbps (6Mbps).</li>
+  <li><code class="language-plaintext highlighter-rouge">-r 30</code>: Sets the output frame rate to 30fps.</li>
+</ul>
+
+<p>With these settings, the transcoding speed reaches 16x—much faster than integrated GPU acceleration. The GPU utilization during transcoding is shown below:</p>
+
+<div style="text-align: center;">
+  <img alt="GPU utilization during 16x transcoding (3060)" src="/assets/images/92a0b7b7afeb4e759b8cd98c5f904f16.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<h2 id="what-happens-if-you-omit-the-hardware-decoder">What Happens If You Omit the Hardware Decoder?</h2>
+<p>As mentioned earlier, FFmpeg requires explicit hardware decoder specification. If you omit it, FFmpeg will use CPU-based software decoding—resulting in high CPU usage but similar transcoding speed (sometimes slightly faster):</p>
+
+<div style="text-align: center;">
+  <img alt="CPU utilization with software decoding (no hardware decoder specified)" src="/assets/images/b6136b8225484b7ab7fd846737725641.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>Software decoding has its use cases: When repairing corrupted video encodings, software decoders are more likely to correctly handle damaged files than hardware decoders. For example, I had a video that failed to play after the 11-minute mark in some players. Using the hardware decoder resulted in the following error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>[h264_cuvid @ 0x55ed4090d540] cuvid decode callback error
+Error while decoding stream #0:0: Generic error in an external library
+</code></pre></div></div>
+
+<p>The transcoded video was black. However, omitting the hardware decoder (using software decoding) allowed successful transcoding.</p>
+
+<h2 id="what-happens-when-running-multiple-jobs-on-a-single-encoder">What Happens When Running Multiple Jobs on a Single Encoder?</h2>
+<p>As noted earlier, hardware codecs have limited capacity—processing multiple videos simultaneously does not scale linearly. For example, the 3060 achieves 16x speed for a single transcoding job. Running two jobs simultaneously results in a combined speed of roughly 16x:</p>
+
+<div style="text-align: center;">
+  <img alt="Total transcoding speed with two simultaneous jobs (3060)" src="/assets/images/6be2aa79ff1a427d8cefd8d2effe503c.png" style="box-shadow: 0px 0px 0px 0px; width: 5%;" />
+</div>
+
+<p>This may seem disappointing, but consider practical use cases: Live streaming and recording only require 1x speed. With 16x total capacity, you could theoretically run up to 16 concurrent streams (fewer in practice, as workloads vary—always leave a buffer). This is still a significant advantage for multi-tasking.</p>
+
+<h1 id="encoding-quality">Encoding Quality</h1>
+<h2 id="ffmpeg">FFmpeg</h2>
+<p>Transcoding is typically used to change the video codec (e.g., H.265 → H.264) or file format. Transcoding between the same codec and format is less common, but tests show the quality is excellent—nearly indistinguishable from software transcoding.</p>
+
+<p>In <a href="/docs/blogs/d9ba468687c5b3cf754b0b6c05feaed8.html">my previous blog about macOS FFmpeg hardware acceleration</a>, I compared hardware transcoding (QSV) when converting MP4 to MOV and reducing the bitrate from 42Mbps to 10Mbps:</p>
+
+<div style="text-align: center;">
+  <img alt="FFmpeg hardware vs software transcoding quality comparison (macOS QSV)" src="/assets/images/219aeb795d53c0a107543cf6629b785c.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>Results with CUDA hardware transcoding (3060):</p>
+
+<div style="text-align: center;">
+  <img alt="FFmpeg CUDA transcoding quality (3060 NVENC)" src="/assets/images/1e77a0c716cd49cc91481bef71dad6e4.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>The 3060’s NVENC encoder delivers better quality than the 8th-gen Intel QSV encoder—impressive, though it consumes more power.</p>
+
+<h2 id="obs">OBS</h2>
+<p>Hardware encoders have a supported bitrate range—exceeding or falling below this range results in significant quality loss or encoding issues.</p>
+
+<p>NVIDIA’s official recommended OBS streaming settings (resolution, bitrate, frame rate) are shown below (note: “1440点” in the machine translation refers to 1440P/2K):</p>
+
+<div style="text-align: center;">
+  <img alt="NVIDIA official OBS streaming recommendations (resolution, bitrate, frame rate)" src="/assets/images/86c927f7cb8749298dd1f9cda201112d.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>When playing “Yan Yun Shi Liu Sheng” (Sixteen Tones of Yan Yun), recording with OBS using NVENC H.264 encoding at 8000kbps produced quality nearly identical to software encoding. At 40Mbps, the quality was slightly lower but still acceptable. I’ll cover this in more detail in a separate blog—previously, I used an NVIDIA MX250 GPU, whose encoding speed and quality were much worse than QSV. Below are quick screenshots:</p>
+
+<blockquote>
+  <p>I used custom settings based on personal preference, not NVIDIA’s official recommendations (I was unaware of the official guidelines initially).<br /></p>
+</blockquote>
+
+<p>Scenes with dense objects (like wheat fields) are ideal for testing bitrate loss (colorful scenes also work well). As shown below, individual wheat ears are indistinguishable, but the overall image remains clear from a distance (the images below are re-compressed but still demonstrate acceptable quality):</p>
+
+<div style="text-align: center;">
+  <img alt="NVENC encoding quality test (wheat field scene) at 40Mbps" src="/assets/images/97e626abe7a541b5a91aac800ce1f76e.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="NVENC encoding quality (close-up)" src="/assets/images/12045740638b4b08a226629a04da5f41.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="Software encoding quality (close-up) for comparison" src="/assets/images/87442ae6ec504b34ac3e4bceb4deca73.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>I hope these will help someone in need~</p>
+
+<h1 id="referencesfurther-reading">References/Further Reading</h1>
+<ul>
+  <li><a href="https://developer.nvidia.com/blog/nvidia-ffmpeg-transcoding-guide/">NVIDIA FFmpeg Transcoding Guide - Nvidia Developer Technical Blog</a>: Technical introduction to CUDA-accelerated transcoding in FFmpeg.</li>
+  <li><a href="https://docs.nvidia.com/video-technologies/video-codec-sdk/12.2/ffmpeg-with-nvidia-gpu/index.html">Using FFmpeg with NVIDIA GPU Hardware Acceleration</a>: Official documentation for CUDA-accelerated encoding/decoding in FFmpeg.</li>
+  <li><a href="https://developer.nvidia.com/video-encode-and-decode-gpu-support-matrix-new">Video Encode and Decode GPU Support Matrix - Nvidia Developer</a>: Check which codecs are supported by your GPU.</li>
+  <li><a href="https://www.nvidia.com/en-us/geforce/guides/broadcasting-guide/">NVIDIA NVENC OBS Guide - Nvidia</a>: Nvidia’s guide to live streaming with OBS.</li>
+  <li><a href="https://www.nvidia.com/en-us/geforce/guides/broadcasting-with-geforce-rtx-beginners-guide/">Broadcasting 101: A Beginner’s Guide to Live Streaming</a>: Covers streaming hardware requirements and additional resources.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
