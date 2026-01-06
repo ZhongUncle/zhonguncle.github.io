@@ -1,0 +1,400 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Run Ollama on GPU in Ubuntu: Direct Installation & Docker Deployment Guide</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='I’ve been using Ollama on macOS for a while without issues, but recently noticed it was running on the CPU after switching to Ubuntu. At first, I thought it was out of VRAM—on macOS, Ollama automatically falls back to CPU if it runs out of memory. However, I found that Llama3.2 3B only uses 3GB of VRAM, which is far from exceeding limits. I checked the command line options but found no relevant settings, so I did some research.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Run Ollama on GPU in Ubuntu: Direct Installation & Docker Deployment Guide</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-18 ｜ <a href="/research.html"> Research</a> ｜ #Words: 2335 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145069806"> 中文原版 </a></p>
+        </div>
+        <p>I’ve been using Ollama on macOS for a while without issues, but recently noticed it was running on the CPU after switching to Ubuntu. At first, I thought it was out of VRAM—on macOS, Ollama automatically falls back to CPU if it runs out of memory. However, I found that Llama3.2 3B only uses 3GB of VRAM, which is far from exceeding limits. I checked the command line options but found no relevant settings, so I did some research.</p>
+
+<p>Luckily, I found a blog explaining how to force GPU usage: run Ollama in a Docker container.</p>
+
+<blockquote>
+  <p>Updated on February 21, 2025<br />
+Thanks to two readers in the comments for pointing this out. After carefully checking the official documentation, I realized that while most official guides use containers, they don’t explicitly state that Linux only supports GPU acceleration via containers. I sincerely apologize for any confusion this oversight may have caused.<br />
+Before installing the Ollama container, I’ll explain how to verify if your system can run Ollama on GPU natively. You can decide whether to use containers based on your needs.<br /></p>
+</blockquote>
+
+<h1 id="direct-ollama-installation">Direct Ollama Installation</h1>
+<h2 id="install-ollama">Install Ollama</h2>
+<p>Installation is straightforward with a single command (use a mirror if the download is slow):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>curl <span class="nt">-fsSL</span> https://ollama.com/install.sh | sh
+</code></pre></div></div>
+
+<p>Test it by installing any model (e.g., Llama3.2):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ollama run llama3.2 <span class="nt">--verbose</span>
+<span class="o">&gt;&gt;&gt;</span> tell me a 100 words story
+As the sun <span class="nb">set </span>over the ocean, Lena sat alone on the beach. She had just received 
+news that her grandmother, <span class="nb">who </span>had been her closest friend and confidant, had passed 
+away. Tears streamed down her face as she gazed out at the waves, feeling lost and 
+alone. But <span class="k">then </span>she remembered the words of wisdom her grandmother had once shared: 
+<span class="s2">"Life is like the tides, Lena. Sometimes it's calm, sometimes it's rough. But no 
+matter what, the beauty of the world will always be there."</span> With a newfound sense of 
+peace, Lena <span class="nb">let </span>out a deep breath and smiled.
+
+total duration:       1.64130885s
+load duration:        56.215161ms
+prompt <span class="nb">eval </span>count:    33 token<span class="o">(</span>s<span class="o">)</span>
+prompt <span class="nb">eval </span>duration: 229ms
+prompt <span class="nb">eval </span>rate:     144.10 tokens/s
+<span class="nb">eval </span>count:           124 token<span class="o">(</span>s<span class="o">)</span>
+<span class="nb">eval </span>duration:        1.354s
+<span class="nb">eval </span>rate:            91.58 tokens/s
+</code></pre></div></div>
+
+<h2 id="verify-gpu-usage-in-ollama">Verify GPU Usage in Ollama</h2>
+<p>You can roughly tell if Ollama is using the GPU from the generation speed, but here are more reliable methods:</p>
+
+<h3 id="check-ollamas-built-in-status">Check Ollama’s Built-in Status</h3>
+<p>Run the following command to view Ollama’s process status:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ollama ps
+NAME               ID              SIZE      PROCESSOR    UNTIL                   
+llama3.2:latest    a80c4f17acd5    4.0 GB    100% GPU     About a minute from now  
+</code></pre></div></div>
+
+<p>The “100% GPU” label indicates Ollama is configured to use the GPU, but it doesn’t confirm actual GPU utilization.</p>
+
+<h3 id="confirm-with-nvidia-smi">Confirm with <code class="language-plaintext highlighter-rouge">nvidia-smi</code></h3>
+<p>To verify real-time GPU usage, run <code class="language-plaintext highlighter-rouge">nvidia-smi</code> with a 1-second refresh rate:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvidia-smi <span class="nt">-l</span> 1
+</code></pre></div></div>
+
+<p>If GPU utilization and power consumption are at full load, Ollama is successfully using the GPU—congratulations!</p>
+
+<h2 id="what-to-do-if-gpu-isnt-being-used">What to Do If GPU Isn’t Being Used</h2>
+<p>If the GPU isn’t utilized, the issue likely occurs during GPU initialization. Try these fixes:</p>
+
+<h3 id="1-reinstall-ollama-with-a-mirror">1. Reinstall Ollama with a Mirror</h3>
+<p>Sometimes GPU support fails due to network issues—Ollama downloads verification files during runtime, and failures prevent GPU initialization. Run <code class="language-plaintext highlighter-rouge">ollama serve</code> in the terminal to see error logs. Reinstall using a Gitee mirror to resolve network-related problems.</p>
+
+<h3 id="2-follow-official-troubleshooting-steps">2. Follow Official Troubleshooting Steps</h3>
+<p>Refer to the <a href="https://github.com/ollama/ollama/blob/main/docs/troubleshooting.md#linux-nvidia-troubleshooting">official NVIDIA troubleshooting guide</a>:</p>
+
+<div style="text-align: center;">
+  <img alt="Ollama Linux NVIDIA troubleshooting steps from official documentation" src="/assets/images/9f8626a20b154a7c983e091dda6e430d.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<h3 id="3-fix-nvidia_uvm-driver-issues">3. Fix <code class="language-plaintext highlighter-rouge">nvidia_uvm</code> Driver Issues</h3>
+<p>According to the <a href="https://github.com/ollama/ollama/blob/main/docs/gpu.md#linux-suspend-resume">official docs</a>, suspending Ubuntu and resuming may cause Ollama to lose access to the NVIDIA GPU, forcing it to use the CPU. The official fix is to reload the <code class="language-plaintext highlighter-rouge">nvidia_uvm</code> module:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>rmmod nvidia_uvm <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>modprobe nvidia_uvm
+</code></pre></div></div>
+
+<p>However, on desktop versions of Linux, you may encounter an “in use” error:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>rmmod nvidia_uvm <span class="o">&amp;&amp;</span> <span class="nb">sudo </span>modprobe nvidia_uvm
+rmmod: ERROR: Module nvidia_uvm is <span class="k">in </span>use
+</code></pre></div></div>
+
+<h3 id="resolve-module-in-use-errors">Resolve “Module in Use” Errors</h3>
+<ol>
+  <li>Check processes using the GPU with <code class="language-plaintext highlighter-rouge">nvidia-smi</code>:</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="nvidia-smi showing processes using the GPU" src="/assets/images/603d2f07297b45b182ffd0eff3ab6f50.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<ol>
+  <li>Kill the processes (replace <code class="language-plaintext highlighter-rouge">PID</code> with the actual process ID):
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo kill</span> <span class="nt">-9</span> PID
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>Desktop environments often restart these processes automatically, making it impossible to reload the driver. Server versions of Linux don’t have this issue.</p>
+
+<p>If you can tolerate or resolve these driver issues, using the direct Ollama installation is more convenient. If not, use Docker for reliable GPU access.</p>
+
+<h1 id="docker-container-deployment">Docker Container Deployment</h1>
+<h2 id="prerequisites">Prerequisites</h2>
+<p>To run Ollama with GPU acceleration in Docker, you need:</p>
+<ul>
+  <li>Docker Engine</li>
+  <li>NVIDIA Container Toolkit (enables GPU support in containers)</li>
+</ul>
+
+<p>If downloads are slow (e.g., for Ollama models or NVIDIA tools), switch your DNS to Alibaba Public DNS (<code class="language-plaintext highlighter-rouge">223.5.5.5</code>), restart your system, and wait a while for speeds to improve (I got full-speed downloads by afternoon).</p>
+
+<h3 id="install-docker-engine">Install Docker Engine</h3>
+<p>These steps install Docker Engine (command-line only) on Ubuntu/Debian. For Docker Desktop (GUI), search for separate guides. For other distributions, see the <a href="https://docs.docker.com/engine/install/">official Docker docs</a>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Remove pre-installed Docker-related packages (if any)</span>
+<span class="k">for </span>pkg <span class="k">in </span>docker.io docker-doc docker-compose docker-compose-v2 podman-docker containerd runc<span class="p">;</span> <span class="k">do </span><span class="nb">sudo </span>apt-get remove <span class="nv">$pkg</span><span class="p">;</span> <span class="k">done</span>
+
+<span class="c"># Add Docker's official GPG key</span>
+<span class="nb">sudo </span>apt-get update
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>ca-certificates curl
+<span class="nb">sudo install</span> <span class="nt">-m</span> 0755 <span class="nt">-d</span> /etc/apt/keyrings
+<span class="nb">sudo </span>curl <span class="nt">-fsSL</span> https://download.docker.com/linux/ubuntu/gpg <span class="nt">-o</span> /etc/apt/keyrings/docker.asc
+<span class="nb">sudo chmod </span>a+r /etc/apt/keyrings/docker.asc
+
+<span class="c"># Add Docker repository to APT sources</span>
+<span class="nb">echo</span> <span class="se">\</span>
+  <span class="s2">"deb [arch=</span><span class="si">$(</span>dpkg <span class="nt">--print-architecture</span><span class="si">)</span><span class="s2"> signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu </span><span class="se">\</span><span class="s2">
+  </span><span class="si">$(</span><span class="nb">.</span> /etc/os-release <span class="o">&amp;&amp;</span> <span class="nb">echo</span> <span class="s2">"</span><span class="nv">$VERSION_CODENAME</span><span class="s2">"</span><span class="si">)</span><span class="s2"> stable"</span> | <span class="se">\</span>
+  <span class="nb">sudo tee</span> /etc/apt/sources.list.d/docker.list <span class="o">&gt;</span> /dev/null
+<span class="nb">sudo </span>apt-get update
+
+<span class="c"># Install Docker Engine</span>
+<span class="nb">sudo </span>apt-get <span class="nb">install </span>docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+</code></pre></div></div>
+
+<h3 id="install-nvidia-container-toolkit">Install NVIDIA Container Toolkit</h3>
+<p>Ensure you have NVIDIA GPU drivers installed first. For other distributions, refer to the <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html">official NVIDIA docs</a>.</p>
+
+<h4 id="installation-steps">Installation Steps</h4>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add NVIDIA Container Toolkit GPG key and repository</span>
+curl <span class="nt">-fsSL</span> https://nvidia.github.io/libnvidia-container/gpgkey | <span class="nb">sudo </span>gpg <span class="nt">--dearmor</span> <span class="nt">-o</span> /usr/share/keyrings/nvidia-container-toolkit-keyring.gpg <span class="se">\</span>
+  <span class="o">&amp;&amp;</span> curl <span class="nt">-s</span> <span class="nt">-L</span> https://nvidia.github.io/libnvidia-container/stable/deb/nvidia-container-toolkit.list | <span class="se">\</span>
+    <span class="nb">sed</span> <span class="s1">'s#deb https://#deb [signed-by=/usr/share/keyrings/nvidia-container-toolkit-keyring.gpg] https://#g'</span> | <span class="se">\</span>
+    <span class="nb">sudo tee</span> /etc/apt/sources.list.d/nvidia-container-toolkit.list
+
+<span class="c"># Update APT and install the toolkit</span>
+<span class="nb">sudo </span>apt-get update
+<span class="nb">sudo </span>apt-get <span class="nb">install</span> <span class="nt">-y</span> nvidia-container-toolkit
+</code></pre></div></div>
+
+<h4 id="configuration">Configuration</h4>
+<p>Configure Docker to use the NVIDIA runtime (run as root; see <a href="https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html">docs</a> for non-root setup):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>nvidia-ctk runtime configure <span class="nt">--runtime</span><span class="o">=</span>docker
+<span class="nb">sudo </span>systemctl restart docker
+</code></pre></div></div>
+
+<p>All prerequisites are now complete!</p>
+
+<h2 id="deploy-ollama-with-gpu-acceleration">Deploy Ollama with GPU Acceleration</h2>
+<h3 id="step-1-stop-the-native-ollama-service">Step 1: Stop the Native Ollama Service</h3>
+<p>Ensure the native Ollama service is stopped to avoid port conflicts (Ollama uses port 11434 by default):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Check for running Ollama processes</span>
+ps <span class="nt">-A</span> | <span class="nb">grep </span>ollama
+
+<span class="c"># Kill the process (replace 1321 with your PID)</span>
+<span class="nb">sudo kill </span>1321
+</code></pre></div></div>
+
+<h3 id="step-2-run-the-ollama-docker-container">Step 2: Run the Ollama Docker Container</h3>
+<p>Use this command to deploy Ollama with full GPU access:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>docker run <span class="nt">-d</span> <span class="nt">--gpus</span><span class="o">=</span>all <span class="nt">-v</span> ./ollama:/root/.ollama <span class="nt">-p</span> 11434:11434 <span class="nt">--name</span> ollama ollama/ollama
+</code></pre></div></div>
+
+<p>Command explanation:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">--gpus=all</code>: Enable all available GPUs for the container.</li>
+  <li><code class="language-plaintext highlighter-rouge">-v ./ollama:/root/.ollama</code>: Mount the local <code class="language-plaintext highlighter-rouge">./ollama</code> directory to <code class="language-plaintext highlighter-rouge">/root/.ollama</code> in the container. This shares model files and resources (e.g., images for Llama3.2-Vision) between the host and container—no need to re-download models after container reinstallation.</li>
+  <li><code class="language-plaintext highlighter-rouge">-p 11434:11434</code>: Map container port 11434 (Ollama’s default port) to the host’s port 11434.</li>
+  <li><code class="language-plaintext highlighter-rouge">--name ollama</code>: Name the container “ollama” for easy management.</li>
+  <li><code class="language-plaintext highlighter-rouge">ollama/ollama</code>: Official Ollama Docker image name.</li>
+</ul>
+
+<h3 id="step-3-use-ollama-in-the-container">Step 3: Use Ollama in the Container</h3>
+<p>Enter the container’s command line:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>docker <span class="nb">exec</span> <span class="nt">-it</span> ollama /bin/bash
+</code></pre></div></div>
+
+<p>You can now use Ollama directly (no re-installation needed). Test with Llama3.1 8B:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ollama run llama3.1 <span class="nt">--verbose</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">--verbose</code> flag shows generation speed and performance metrics.</p>
+</blockquote>
+
+<p>The model will download automatically. Once complete, you can start using Ollama:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>root@b82bf49334f9:/# ollama run llama3.1 <span class="nt">--verbose</span>
+pulling manifest 
+pulling 667b0c1932bc... 100% ▕███████████████████████████████████████████████████████████████▏ 4.9 GB                         
+pulling 948af2743fc7... 100% ▕███████████████████████████████████████████████████████████████▏ 1.5 KB                         
+pulling 0ba8f0e314b4... 100% ▕███████████████████████████████████████████████████████████████▏  12 KB                         
+pulling 56bb8bd477a5... 100% ▕███████████████████████████████████████████████████████████████▏   96 B                         
+pulling 455f34728c9b... 100% ▕███████████████████████████████████████████████████████████████▏  487 B                         
+verifying sha256 digest 
+writing manifest 
+success 
+<span class="o">&gt;&gt;&gt;</span> 你好，请介绍一下你自己
+大家好！我是 LLaMA，一个由 Meta 研发的语境理解和生成模型。我的主要功能是理解自然语言并根据上下文生成相关响应或内容。
+
+total duration:       841.833803ms
+load duration:        39.937882ms
+prompt <span class="nb">eval </span>count:    17 token<span class="o">(</span>s<span class="o">)</span>
+prompt <span class="nb">eval </span>duration: 5ms
+prompt <span class="nb">eval </span>rate:     3400.00 tokens/s
+<span class="nb">eval </span>count:           42 token<span class="o">(</span>s<span class="o">)</span>
+<span class="nb">eval </span>duration:        795ms
+<span class="nb">eval </span>rate:            52.83 tokens/s
+<span class="o">&gt;&gt;&gt;</span> 你可以给我讲个故事吗
+当然！这里有一个故事：
+
+有一只小猴子名叫李莫，住在一个美丽的雨林里。他非常好奇，一天到晚都在探索周围的世界。有一天，他迷路了，找不到回家的路。
+
+李莫沿着河流行走，希望能找到熟悉的地方。但是，无论他走多远，都不能见到熟悉的树木和花草。他开始感到害怕和孤独。
+
+就在这时，他遇到了一个聪明的鸟儿。鸟儿问李莫：“你在哪里？你想去哪里？”李莫告诉了鸟儿自己的情况，鸟儿笑着说：“我知道这里的路
+，你跟我走就可以找到回家的路。”
+
+李莫和鸟儿一起行走，他们聊天、玩耍，这让小猴子觉得很开心。他慢慢地放下了担忧，感受到鸟儿的帮助和陪伴。
+
+最后，他们来到一个熟悉的地方，小猴子看到家里熟悉的树木和花草，他高兴地冲向家门，鸟儿也跟着他一起欢笑。从那天起，李莫和鸟儿
+成为好朋友，他们经常一起探索雨林里的秘密。
+
+这个故事告诉我们，即使在迷路时，我们也可以寻找帮助和陪伴，而不是孤独地面对困难。
+
+total duration:       6.86419438s
+load duration:        35.787939ms
+prompt <span class="nb">eval </span>count:    75 token<span class="o">(</span>s<span class="o">)</span>
+prompt <span class="nb">eval </span>duration: 9ms
+prompt <span class="nb">eval </span>rate:     8333.33 tokens/s
+<span class="nb">eval </span>count:           306 token<span class="o">(</span>s<span class="o">)</span>
+<span class="nb">eval </span>duration:        5.993s
+<span class="nb">eval </span>rate:            51.06 tokens/s
+</code></pre></div></div>
+
+<h3 id="gpu-utilization-verification">GPU Utilization Verification</h3>
+<p>Docker uses a different architecture than traditional VMs—there’s no significant performance overhead. Check GPU usage with <code class="language-plaintext highlighter-rouge">nvidia-smi</code> (results may vary by model):</p>
+
+<div style="text-align: center;">
+  <img alt="nvidia-smi showing GPU utilization during Ollama model run" src="/assets/images/603d2f07297b45b182ffd0eff3ab6f50.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<h3 id="restart-the-container-later">Restart the Container Later</h3>
+<p>After shutting down your system, restart the Ollama container with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Stop any running native Ollama processes first (if needed)</span>
+ps <span class="nt">-A</span> | <span class="nb">grep </span>ollama <span class="o">&amp;&amp;</span> <span class="nb">sudo kill</span> <span class="o">[</span>PID]
+
+<span class="c"># Start the existing container (do NOT use docker run—this creates a new container)</span>
+docker start ollama
+</code></pre></div></div>
+
+<p>Using <code class="language-plaintext highlighter-rouge">docker run</code> again will throw an error: “Unable to find image ‘ollama:latest’ locally”.</p>
+
+<p>I’ll cover how to interact with the containerized Ollama from the host system in a future blog—this will include a comprehensive example using Llama3.2-Vision (which requires image sharing between the host and container).</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><a href="https://medium.com/@tubelwj/how-to-deploy-the-llama3-large-model-in-cpu-and-gpu-environments-with-ollama-0036c8b288e7">How to deploy the llama3 large model in CPU and GPU environments with Ollama - Gen. David L.</a>: Where I learned about container-based GPU deployment.</li>
+  <li><a href="https://ollama.com/blog/ollama-is-now-available-as-an-official-docker-image">Ollama is now available as an official Docker image - Ollama</a>: Official announcement stating Linux requires containers for GPU support (opposite of macOS, which needs the native app for GPU access).</li>
+  <li><a href="https://hub.docker.com/r/ollama/ollama">https://hub.docker.com/r/ollama/ollama - DockerHub</a>: Official Ollama Docker image page.</li>
+  <li><a href="https://github.com/ollama/ollama/blob/main/docs/gpu.md">GPU - Ollama GitHub</a>: Official Ollama documentation on GPU support.</li>
+  <li><a href="https://github.com/ollama/ollama/blob/main/docs/troubleshooting.md">How to troubleshoot issues - Ollama GitHub</a>: Official Ollama troubleshooting guide.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
