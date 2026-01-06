@@ -1,0 +1,184 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Fix "Symbol Not Found" Error When Installing FaceFusion with Miniconda</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='I’d been avoiding Miniconda for as long as possible, but I finally couldn’t escape it—using FaceFusion today required Miniconda. Right at the final step of installing FaceFusion, I encountered the following error'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Fix "Symbol Not Found" Error When Installing FaceFusion with Miniconda</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-31 ｜ <a href="/go.html"> Go</a> ｜ #Words: 447 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145402659"> 中文原版 </a></p>
+        </div>
+        <p>I’d been avoiding Miniconda for as long as possible, but I finally couldn’t escape it—using FaceFusion today required Miniconda. Right at the final step of installing FaceFusion, I encountered the following error:</p>
+
+<div style="text-align: center;">
+  <img alt="Error message at the final step of FaceFusion installation with Miniconda" src="/assets/images/73753ae9648d46249c71fc34bd20233a.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>The root cause of this issue was that symbols could not be found in the library. This was not a problem with FaceFusion itself, but rather an issue with the Miniconda environment configuration.</p>
+
+<p>Although minor version updates (even patch-level) for Python and its packages may seem insignificant, they often introduce substantial differences—for example, changes to function parameters. This means many projects require specific versions of Python or packages to run correctly. Without a dedicated tool, you’d have to manually install multiple Python versions and packages, then explicitly specify versions (e.g., <code class="language-plaintext highlighter-rouge">Python3.9</code>) every time you run a program—a cumbersome process. Miniconda addresses this pain point by offering “virtual environments” that automate the management of different Python and package versions for different projects.</p>
+
+<p>However, Miniconda has a quirk: while it includes its own package management functionality, operating systems already have their native package managers (e.g., Homebrew for macOS, APT for Ubuntu). Miniconda sometimes fails to properly recognize or integrate with these system-level package managers, which is exactly what caused my error.</p>
+
+<p><strong>The solution is surprisingly simple: just install <code class="language-plaintext highlighter-rouge">curl</code> via Miniconda within the required virtual environment.</strong></p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>facefusion<span class="o">)</span> zhonguncle@zhonguncle-Precision-Tower-5810:~<span class="nv">$ </span>conda <span class="nb">install </span>curl
+Channels:
+ - defaults
+Platform: linux-64
+Collecting package metadata <span class="o">(</span>repodata.json<span class="o">)</span>: <span class="k">done
+</span>Solving environment: <span class="k">done</span>
+
+<span class="c">## Package Plan ##</span>
+
+  environment location: /home/zhonguncle/miniconda3/envs/facefusion
+
+  added / updated specs:
+    - curl
+
+
+The following packages will be downloaded:
+
+    package                    |            build
+    <span class="nt">---------------------------</span>|-----------------
+    curl-8.11.1                |       hdbd6064_0          90 KB
+    libcurl-8.11.1             |       hc9e6f67_0         454 KB
+    <span class="nt">------------------------------------------------------------</span>
+                                           Total:         544 KB
+
+The following NEW packages will be INSTALLED:
+
+  c-ares             pkgs/main/linux-64::c-ares-1.19.1-h5eee18b_0 
+  curl               pkgs/main/linux-64::curl-8.11.1-hdbd6064_0 
+  krb5               pkgs/main/linux-64::krb5-1.20.1-h143b758_1 
+  libcurl            pkgs/main/linux-64::libcurl-8.11.1-hc9e6f67_0 
+  libedit            pkgs/main/linux-64::libedit-3.1.20230828-h5eee18b_0 
+  libev              pkgs/main/linux-64::libev-4.33-h7f8727e_1 
+  libnghttp2         pkgs/main/linux-64::libnghttp2-1.57.0-h2d74bed_0 
+  libssh2            pkgs/main/linux-64::libssh2-1.11.1-h251f7ec_0 
+  lz4-c              pkgs/main/linux-64::lz4-c-1.9.4-h6a678d5_1 
+  zstd               pkgs/main/linux-64::zstd-1.5.6-hc292b87_0 
+
+
+Proceed <span class="o">([</span>y]/n<span class="o">)</span>? y
+
+
+Downloading and Extracting Packages:
+                                                                                                                                    
+Preparing transaction: <span class="k">done                                                                                                         
+</span>Verifying transaction: <span class="k">done
+</span>Executing transaction: <span class="k">done</span>
+</code></pre></div></div>
+
+<p>I came across other solutions suggested in online blogs, but they’re not ideal:</p>
+<ul>
+  <li>Some recommended uninstalling Miniconda entirely—this is a drastic “nuke it from orbit” approach that was clearly not feasible for my situation (since I needed Miniconda for FaceFusion).</li>
+  <li>Others proposed manually creating symbolic links. While this might work as a temporary fix, it’s by no means a reliable long-term solution—managing symlinks across multiple virtual environments would be extremely tedious and error-prone.</li>
+</ul>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
