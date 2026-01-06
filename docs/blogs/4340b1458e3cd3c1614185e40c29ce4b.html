@@ -1,0 +1,146 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Fix FaceFusion Video Format Error: Incompatible Encoding Solution</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This issue stems from incompatible video formats. Many video formats are more complex than they appear—even if two videos share the same container format (e.g., MPEG-4), their underlying encoding or settings may differ significantly.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Fix FaceFusion Video Format Error: Incompatible Encoding Solution</h1>
+        <div class="bloginfo">
+            <p class="info">2025-02-01 ｜ <a href="/python.html"> Python</a> ｜ #Words: 310 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145404930"> 中文原版 </a></p>
+        </div>
+        <p>While using FaceFusion again, some videos triggered the following error:</p>
+
+<div style="text-align: center;">
+  <img alt="FaceFusion error caused by incompatible video format" src="/assets/images/10f3c0c378e74dd3807c79d40c52a746.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>This issue stems from <strong>incompatible video formats</strong>. Many video formats are more complex than they appear—even if two videos share the same container format (e.g., MPEG-4), their underlying encoding or settings may differ significantly.</p>
+
+<p>You might wonder: “Why can I play the video fine with regular players?” That’s because mainstream media players (like VLC) have extensive compatibility after testing countless video variants. For example, some videos may glitch in Apple’s default player but work perfectly in VLC.</p>
+
+<h2 id="simple-solution-transcode-the-video">Simple Solution: Transcode the Video</h2>
+<p>The fix is straightforward—use a reliable transcoding tool like FFmpeg to convert the video to a more compatible format.</p>
+
+<h3 id="key-note-avoid-ffmpegs-copy-mode">Key Note: Avoid FFmpeg’s Copy Mode</h3>
+<p>Do <strong>not</strong> use FFmpeg’s <code class="language-plaintext highlighter-rouge">copy</code> mode (stream copy) for this fix, as the root cause is often faulty encoding. Stream copy only duplicates the original encoding, which won’t resolve compatibility issues.</p>
+
+<h3 id="option-1-basic-transcoding-no-bitrate-concerns">Option 1: Basic Transcoding (No Bitrate Concerns)</h3>
+<p>If you don’t mind potential bitrate changes, use this simple command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ffmpeg <span class="nt">-i</span> <span class="k">in</span>.mp4 out.mp4
+</code></pre></div></div>
+
+<h3 id="option-2-preserve-original-bitrate">Option 2: Preserve Original Bitrate</h3>
+<p>To retain the original video’s bitrate, first retrieve it with <code class="language-plaintext highlighter-rouge">ffprobe</code> (FFmpeg’s companion tool). This command returns the bitrate as a numerical value, making it easy to integrate into scripts:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">bitrate</span><span class="o">=</span><span class="si">$(</span>ffprobe <span class="nt">-v</span> quiet <span class="nt">-select_streams</span> v:0 <span class="nt">-show_entries</span> <span class="nv">stream</span><span class="o">=</span>bit_rate <span class="nt">-of</span> <span class="nv">default</span><span class="o">=</span><span class="nv">noprint_wrappers</span><span class="o">=</span>1:nokey<span class="o">=</span>1 &lt;input_video&gt;<span class="si">)</span>
+</code></pre></div></div>
+
+<p>Replace <code class="language-plaintext highlighter-rouge">&lt;input_video&gt;</code> with your video file path. You can then use this <code class="language-plaintext highlighter-rouge">$bitrate</code> variable in FFmpeg to transcode while preserving the original bitrate (ideal for maintaining quality).</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
