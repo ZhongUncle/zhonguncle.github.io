@@ -1,0 +1,344 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Animagine XL V3.1 Complete Guide: Master SD WebUI Parameters & Prompt Writing (Teach You to Fish)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Yesterday, I spent hours experimenting with Animagine XL V3.1 and realized most tutorials online only give you fish rather than teach you how to fish. Understandably, why share the secrets when you can make money from them? On Xianyu (a Chinese second-hand platform), some people even charge 200 yuan just to deploy Deepseek for others. Still, I want to write this article—it may not be comprehensive, but I’ll try to show you how to find resources or craft your own prompts instead of just copying and pasting.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Animagine XL V3.1 Complete Guide: Master SD WebUI Parameters & Prompt Writing (Teach You to Fish)</h1>
+        <div class="bloginfo">
+            <p class="info">2025-02-03 ｜ <a href="/python.html"> Python</a> ｜ #Words: 1502 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145430316"> 中文原版 </a></p>
+        </div>
+        <p>Yesterday, I spent hours experimenting with Animagine XL V3.1 and realized most tutorials online only “give you fish rather than teach you how to fish.” Understandably, why share the secrets when you can make money from them? On Xianyu (a Chinese second-hand platform), some people even charge 200 yuan just to deploy Deepseek for others. Still, I want to write this article—it may not be comprehensive, but I’ll try to show you how to find resources or craft your own prompts instead of just copying and pasting.</p>
+
+<p>First, here’s what the Stable Diffusion WebUI interface looks like:</p>
+
+<div style="text-align: center;">
+  <img alt="Stable Diffusion WebUI main interface" src="/assets/images/ab9adbaf1fb643f79a09431a3587f506.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Below, I’ll only introduce key or commonly used parameters (with brief explanations)—detailed demos follow later:</p>
+<ul>
+  <li><strong>Stable Diffusion checkpoint</strong>: The model you select. Located in <code class="language-plaintext highlighter-rouge">stable-diffusion-webui/models/Stable-diffusion</code>.</li>
+  <li><strong>Prompt</strong>: Positive prompts—what you want to generate.</li>
+  <li><strong>Negative Prompt</strong>: Negative prompts—what you don’t want to generate.</li>
+  <li><strong>Sampling steps</strong>: Sampling iterations. Higher values = more image details.</li>
+  <li><strong>Width/Height</strong>: Image dimensions. <strong>Note: These are linked to detail quality—smaller sizes result in fewer details.</strong></li>
+  <li><strong>Batch count</strong>: Number of image batches. Higher values reduce generation noise.</li>
+  <li><strong>Batch size</strong>: Number of images generated per batch. Higher values require more VRAM; otherwise, speed will slow down.</li>
+  <li><strong>CFG Scale</strong>: Adherence to prompt instructions. Typically 7–12. Use 12–16 if your prompt is highly detailed. Lower values allow more creative freedom.</li>
+  <li><strong>Seed</strong>: Random seed. Save the seed if you’re satisfied with an image—adjust other parameters for consistent variations. Default <code class="language-plaintext highlighter-rouge">-1</code> = random seed.</li>
+</ul>
+
+<h1 id="parameter-demos">Parameter Demos</h1>
+<p>We’ll start with demos of non-prompt parameters (Prompt and Negative Prompt are more complex and covered later).</p>
+
+<h2 id="fixed-base-prompt">Fixed Base Prompt</h2>
+<h3 id="positive-prompt">Positive Prompt</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1girl, looking at viewer, wool coat, fur collar, smile, standing on a hillside, snowfall, mountains in the background, masterpiece, best quality, very aesthetic, 1990s style, retro artstyle,
+</code></pre></div></div>
+
+<h3 id="negative-prompt">Negative Prompt</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lowres, bad anatomy, displeasing, ugly, fewer digit, extra digit, missing fingers, bad hands, blurry, (low quality, worst quality:1.3) 
+</code></pre></div></div>
+
+<h2 id="width-and-height">Width and Height</h2>
+<p>As mentioned, dimensions directly impact detail quality. Compare 512x512 vs. 1024x1024 (Seed: 3503979678, Sampling steps: 20, CFG Scale: 7):</p>
+
+<div style="text-align: center;">
+  <img alt="512x512 image (lower detail)" src="/assets/images/135afd4fdff948e189f33c8ca21ecc4f.png" style="box-shadow: 0px 0px 0px 0px; width: 45%;" />
+  <img alt="1024x1024 image (higher detail)" src="/assets/images/d2a75c0d4c264221aa91242e1fa26fa3.png" style="box-shadow: 0px 0px 0px 0px; width: 45%;" />
+</div>
+
+<p>The detail gap is striking.</p>
+
+<p>Dimensions also affect composition. Compare 512x1024, 1024x1024, and 1024x2048:</p>
+
+<div style="text-align: center;">
+  <img alt="512x1024 vertical image" src="/assets/images/cfe91d74a5a340779fbb9c981290db86.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="1024x1024 square image" src="/assets/images/d2a75c0d4c264221aa91242e1fa26fa3.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="1024x2048 tall vertical image" src="/assets/images/1c8efa30a65d4363b3fff4c709812581.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<h3 id="pro-tip-for-dimensions">Pro Tip for Dimensions</h3>
+<p>Since SD is trained on 1024x1024 images, results are best when (Width + Height) is a multiple of 1024. Recommended aspect ratios:</p>
+<ul>
+  <li>1:1: 1024x1024, 768x768</li>
+  <li>3:2: 1152x768</li>
+  <li>2:3: 768x1152</li>
+  <li>4:3: 1152x864</li>
+  <li>3:4: 864x1152</li>
+  <li>16:9: 1360x768</li>
+  <li>9:16: 768x1360</li>
+</ul>
+
+<h2 id="sampling-steps">Sampling Steps</h2>
+<p>Sampling steps enhance detail. 30–40 steps are sufficient for most cases:</p>
+<ul>
+  <li>Use 20 steps if either dimension is below 1024.</li>
+  <li>Use ~35 steps for 1024+ dimensions.</li>
+</ul>
+
+<p>Demo with Sampling steps increased to 35 (same base parameters):</p>
+
+<div style="text-align: center;">
+  <img alt="Image with 35 sampling steps (enhanced details)" src="/assets/images/5b2678ae768146a3a7ef8d14cbecaec9.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Notice more facial/background details and richer color gradients—zoom in on the hair for a clearer comparison.</p>
+
+<h2 id="batch-count-and-batch-size">Batch Count and Batch Size</h2>
+<ul>
+  <li><strong>Batch count</strong>: Number of batches.</li>
+  <li><strong>Batch size</strong>: Number of images per batch.</li>
+</ul>
+
+<p><strong>Important Note</strong>: Even with a fixed seed, Batch count and Batch size will increment the seed. For example, the 4 images below use seeds 3503979678～3503979681.</p>
+
+<h3 id="demo-1-batch-count--4-batch-size--1">Demo 1: Batch count = 4, Batch size = 1</h3>
+<p>Generated images:</p>
+
+<div style="text-align: center;">
+  <img alt="4 images generated with Batch count=4, Batch size=1" src="/assets/images/14c69960a84a47f1b46d142fd5092792.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<h3 id="demo-2-batch-count--1-batch-size--2">Demo 2: Batch count = 1, Batch size = 2</h3>
+<p>Images generate simultaneously:</p>
+
+<div style="text-align: center;">
+  <img alt="UI showing Batch size=2 (two images generating at once)" src="/assets/images/822d145b36bc4652b116b1eadea486ae.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Generated images:</p>
+
+<div style="text-align: center;">
+  <img alt="2 images generated with Batch count=1, Batch size=2" src="/assets/images/cb446f3a941848bba145d4f8f6e763b3.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<h2 id="seed">Seed</h2>
+<p>The seed acts as the “foundation” for image generation. As shown in the batch demos, seed variations drastically change the output.</p>
+
+<h3 id="how-to-view-the-seed">How to View the Seed</h3>
+<ol>
+  <li>After generation, the seed is displayed below the image:</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Seed displayed below generated image in SD WebUI" src="/assets/images/e3f4915ec0314b4abc336a76b6b4099c.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<ol>
+  <li>The seed is also included in the filename in <code class="language-plaintext highlighter-rouge">stable-diffusion-webui/output</code>—easy to retrieve later:</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Seed included in output filename" src="/assets/images/dd1c5ba57a0d4d58a4477a312e6136c6.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<h3 id="demo-seed-variations">Demo: Seed Variations</h3>
+<p>Images with larger seed gaps show more significant differences:</p>
+
+<div style="text-align: center;">
+  <img alt="4 images with distinct seed values (larger variations)" src="/assets/images/e64a7893c169456f9e5c5f95308e420a.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<h1 id="prompt-and-negative-prompt">Prompt and Negative Prompt</h1>
+<p>These are the most critical components. Let’s break down the base prompts and explore advanced usage.</p>
+
+<h2 id="base-prompt-analysis">Base Prompt Analysis</h2>
+<h3 id="positive-prompt-breakdown">Positive Prompt Breakdown</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1girl, looking at viewer, wool coat, fur collar, smile, standing on a hillside, snowfall, mountains in the background, masterpiece, best quality, very aesthetic, 1990s style, retro artstyle,
+</code></pre></div></div>
+<p>Covers: Character (1girl), pose (looking at viewer), clothing (wool coat, fur collar), expression (smile), setting (standing on a hillside, snowfall, mountains), quality (masterpiece, best quality), and style (1990s style, retro artstyle).</p>
+
+<h3 id="negative-prompt-breakdown">Negative Prompt Breakdown</h3>
+<p>This is my go-to Negative Prompt for most scenarios:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lowres, bad anatomy, displeasing, ugly, fewer digit, extra digit, missing fingers, bad hands, blurry, (low quality, worst quality:1.3) 
+</code></pre></div></div>
+<p>Targets: Low resolution (lowres), anatomical errors (bad anatomy), unpleasant/ugly details, digit abnormalities (fewer/extra/missing fingers), bad hand rendering (bad hands), blurriness, and low quality (amplified by 1.3x weight).</p>
+
+<h2 id="artist-style-prompts">Artist Style Prompts</h2>
+<p>Animagine XL V3.1 supports style specification in two ways:</p>
+<ol>
+  <li>General styles (e.g., <code class="language-plaintext highlighter-rouge">1990s style, retro artstyle</code>).</li>
+  <li>Artist-specific styles: Add <code class="language-plaintext highlighter-rouge">(Artist Name:1.3)</code> to the prompt (1.3x weight amplifies the style).</li>
+</ol>
+
+<p>A comprehensive list of compatible artists is available here: <a href="https://civitai.com/posts/2273977">Animagine XL v3.1 - Artists’ Style Sheet</a>. Example snippet:</p>
+
+<div style="text-align: center;">
+  <img alt="Animagine XL v3.1 artist style reference sheet" src="/assets/images/b229f356fa7a465dbe72471ba27f75f2.jpg" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<h3 id="demo-1-artist-tinnies">Demo 1: Artist “tinnies”</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1girl, looking at viewer, wool coat, fur collar, smile, standing on a hillside, snowfall, mountains in the background, masterpiece, best quality, very aesthetic, (tinnies:1.3)
+</code></pre></div></div>
+
+<p>Generated image:</p>
+
+<div style="text-align: center;">
+  <img alt="Image generated with tinnies' art style" src="/assets/images/a407ee67a54643708030c431780ae4da.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<h3 id="demo-2-artist-sekina">Demo 2: Artist “sekina”</h3>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1girl, looking at viewer, wool coat, fur collar, smile, standing on a hillside, snowfall, mountains in the background, masterpiece, best quality, very aesthetic, (sekina:1.3)
+</code></pre></div></div>
+
+<p>Generated image:</p>
+
+<div style="text-align: center;">
+  <img alt="Image generated with sekina's art style" src="/assets/images/8bd5f60c1342438aa7a62ec351e0bfee.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<h2 id="teach-you-to-fish-danbooru-tags">Teach You to Fish: Danbooru Tags</h2>
+<h3 id="what-are-danbooru-tags">What Are Danbooru Tags?</h3>
+<p>Notice how prompts use short phrases (not full sentences)? <a href="https://danbooru.donmai.us/wiki_pages/tag_groups">Danbooru tags</a> is a community-driven database of tags covering styles, poses, expressions, objects, and more (note: contains NSFW content).</p>
+
+<div style="text-align: center;">
+  <img alt="Danbooru tags homepage" src="/assets/images/61a681ae184a44cf9642d331bb42dc4c.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>For example, the tag <code class="language-plaintext highlighter-rouge">flustered</code> (described as “embarrassed/nervous”) includes visual examples:</p>
+
+<div style="text-align: center;">
+  <img alt="Danbooru tag 'flustered' with examples" src="/assets/images/c5b07301b390434cafefda7bd05fbd77.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<h3 id="how-to-use-danbooru-tags">How to Use Danbooru Tags</h3>
+<p>Let’s demo with expressions and backgrounds:</p>
+
+<h4 id="demo-1-expression-swap-smile--flustered">Demo 1: Expression Swap (Smile → Flustered)</h4>
+<p>Change <code class="language-plaintext highlighter-rouge">smile</code> to <code class="language-plaintext highlighter-rouge">flustered</code> (I think this translates better to “shy” than “flustered” based on examples):</p>
+
+<div style="text-align: center;">
+  <img alt="Image with 'flustered' expression (shy)" src="/assets/images/0ebded7d40a043f29aaf0a9f246458bb.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+  <img alt="Close-up of 'flustered' expression" src="/assets/images/3435e617589446b5ba5ea4256984f812.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>The expression clearly shifts to shy/embarrassed.</p>
+
+<h4 id="demo-2-background-swap-mountains--city-street">Demo 2: Background Swap (Mountains → City Street)</h4>
+<p>Replace <code class="language-plaintext highlighter-rouge">standing on a hillside, mountains in the background</code> with <code class="language-plaintext highlighter-rouge">city street in the background</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1girl, looking at viewer, wool coat, fur collar, smile, snowfall, city street in the background, masterpiece, best quality, very aesthetic, 1990s style, retro artstyle,
+</code></pre></div></div>
+
+<p>Generated image (correct background):</p>
+
+<div style="text-align: center;">
+  <img alt="Image with city street background" src="/assets/images/a9a1e9a0f9464c3293bdcdc288fb3050.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Generated image (forgot to remove <code class="language-plaintext highlighter-rouge">standing on a hillside</code>—inconsistent composition):</p>
+
+<div style="text-align: center;">
+  <img alt="Inconsistent image (city street + hillside)" src="/assets/images/ff9b307d92ba4ba0beb6db1f7c1af197.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Explore more prompts by browsing Danbooru tags and experimenting on your own!</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
