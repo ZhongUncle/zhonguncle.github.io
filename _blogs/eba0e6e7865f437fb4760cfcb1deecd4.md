@@ -1,6 +1,6 @@
 ---
 layout: article
-category: Go
+category: Python
 date: 2025-01-31
 title: 'Fix "Symbol Not Found" Error When Installing FaceFusion with Miniconda'
 excerpt: "I’d been avoiding Miniconda for as long as possible, but I finally couldn’t escape it—using FaceFusion today required Miniconda. Right at the final step of installing FaceFusion, I encountered the following error"
