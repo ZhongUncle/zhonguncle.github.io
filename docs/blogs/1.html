@@ -1,0 +1,138 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Jekyll Not Generating HTML? Fix UTF-8 with BOM Encoding Issue</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Today, while translating a blog post, I noticed Jekyll wasn’t generating HTML files as it usually does. After troubleshooting for a while, I found the cause: Jekyll cannot correctly recognize files encoded in **UTF-8 with BOM**.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Jekyll Not Generating HTML? Fix UTF-8 with BOM Encoding Issue</h1>
+        <div class="bloginfo">
+            <p class="info">2025-01-19 ｜ <a href="/research.html"> Research</a> ｜ #Words: 195 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145244725"> 中文原版 </a></p>
+        </div>
+        <p>Today, while translating a blog post, I noticed Jekyll wasn’t generating HTML files as it usually does. After troubleshooting for a while, I found the cause: Jekyll cannot correctly recognize files encoded in <strong>UTF-8 with BOM</strong>.</p>
+
+<blockquote>
+  <p>The byte-order mark (BOM) is used for text streams like HTML to prevent potential issues. For details, see <a href="https://www.w3.org/International/questions/qa-byte-order-mark">The byte-order mark (BOM) in HTML - W3C</a>—this article won’t go into further explanation.<br /></p>
+</blockquote>
+
+<p>When opening such files in VSCode, the encoding is displayed as “UTF-8 with BOM” at the bottom, as shown below:</p>
+
+<div style="text-align: center;">
+  <img alt="VSCode showing file encoding as UTF-8 with BOM" src="/assets/images/b41756b31f7d473ab92cf3ddcbe059f8.png" style="box-shadow: 0px 0px 0px 0px; width: 20%;" />
+</div>
+
+<p>Fixing this is simple—just convert the file to standard UTF-8. No extra software is needed; VSCode can do it in seconds:</p>
+<ol>
+  <li>Click the encoding display area at the bottom (labeled “UTF-8 with BOM” in the image).</li>
+  <li>Select “Save with Encoding” from the top menu, then choose standard “UTF-8”.</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="VSCode Save with Encoding option to convert to UTF-8" src="/assets/images/3c22aa4a9a7f40b99bc9e51c54ee60c7.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
