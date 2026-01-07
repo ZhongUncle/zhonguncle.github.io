@@ -1,0 +1,234 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Compile & Use ISPC on Ubuntu: Fix Single-Core Issue with LLVM/Clang</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='I’ve been using ISPC on macOS for a while, but it’s limited by the small number of cores/threads. Recently, I wanted to switch to Ubuntu, but the snap-installed ISPC only ran on a single core for some reason. To fix this, I decided to compile ISPC from source—this requires Clang and LLVM. However, Ubuntu has a quirk: many software versions are tied to the system version, and the default installed LLVM/Clang is version 14, which may lack necessary components. I had no choice but to tackle this, and took the opportunity to study their compilation and usage.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Compile & Use ISPC on Ubuntu: Fix Single-Core Issue with LLVM/Clang</h1>
+        <div class="bloginfo">
+            <p class="info">2025-03-13 ｜ <a href="/c.html"> C</a> ｜ #Words: 914 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/146221233"> 中文原版 </a></p>
+        </div>
+        <p>I’ve been using ISPC on macOS for a while, but it’s limited by the small number of cores/threads. Recently, I wanted to switch to Ubuntu, but the snap-installed ISPC only ran on a single core for some reason. To fix this, I decided to compile ISPC from source—this requires Clang and LLVM. However, Ubuntu has a quirk: many software versions are tied to the system version, and the default installed LLVM/Clang is version 14, which may lack necessary components. I had no choice but to tackle this, and took the opportunity to study their compilation and usage.</p>
+
+<p>This post is a quick memo, not a detailed guide.</p>
+
+<h2 id="prerequisites">Prerequisites</h2>
+<p>First, install required build tools:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt-get <span class="nb">install </span>git curl cmake xz-utils m4 flex bison python3 libtbb-dev g++-multilib
+</code></pre></div></div>
+
+<h2 id="compile-llvm-with-clang--lld">Compile LLVM (with Clang &amp; LLD)</h2>
+<blockquote>
+  <p>While the official docs mention APT installation, the version is incompatible. Compiling LLVM takes a long time—if you have few CPU cores, you can use the official script to install prebuilt binaries and rename them manually (also cumbersome).<br />
+Fortunately, most modern processors (with big.LITTLE cores) have a dozen or more threads, making compilation manageable. I once compiled it on a 6-core CPU overnight—it was painfully slow.</p>
+</blockquote>
+
+<p>LLVM compilation is time-consuming with complex options. We only need LLVM, Clang, and LLD for ISPC. Use this command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">-S</span> llvm <span class="nt">-B</span> build <span class="nt">-G</span> <span class="s1">'Unix Makefiles'</span> <span class="nt">-DLLVM_ENABLE_PROJECTS</span><span class="o">=</span><span class="s2">"clang;lld"</span> <span class="nt">-DCMAKE_BUILD_TYPE</span><span class="o">=</span>Release
+</code></pre></div></div>
+
+<p>Build with all available threads:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>make <span class="nt">-j</span><span class="si">$(</span><span class="nb">nproc</span><span class="si">)</span>
+</code></pre></div></div>
+
+<p>Install (move binaries to system directories):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">--build</span> <span class="nb">.</span> <span class="nt">--target</span> <span class="nb">install</span>
+</code></pre></div></div>
+
+<p>Note: The <code class="language-plaintext highlighter-rouge">FileCheck</code> tool may not be copied automatically (not sure if it’s a command oversight or my environment). Manually copy it if missing:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo cp </span>FileCheck /usr/local/bin/FileCheck
+</code></pre></div></div>
+
+<p>Verify LLVM installation (check version and path):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>which llvm-config
+/usr/local/bin/llvm-config
+<span class="nv">$ </span>llvm-config <span class="nt">--version</span>
+21.0.0git
+</code></pre></div></div>
+
+<p>You can also verify Clang with <code class="language-plaintext highlighter-rouge">clang --version</code>.</p>
+
+<p>For more compilation details, check out my other blog post (link omitted as per original).</p>
+
+<h2 id="compile-ispc">Compile ISPC</h2>
+<p>First, clone the ISPC repository:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone https://github.com/ispc/ispc.git
+</code></pre></div></div>
+<blockquote>
+  <p>Not recommended to use the official installation script—it’s too slow due to network issues.</p>
+</blockquote>
+
+<p>Compile ISPC (do NOT run in the ISPC repo directory; use a separate <code class="language-plaintext highlighter-rouge">build-ispc</code> folder):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>cmake <span class="nt">-B</span> build-ispc ispc
+</code></pre></div></div>
+
+<p>Build with all threads (avoid the official <code class="language-plaintext highlighter-rouge">cmake --build build-ispc</code>—it only uses one core):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>build-ispc
+make <span class="nt">-j</span><span class="si">$(</span><span class="nb">nproc</span><span class="si">)</span>
+</code></pre></div></div>
+
+<p>Add the ISPC binary directory to your <code class="language-plaintext highlighter-rouge">PATH</code> (replace <code class="language-plaintext highlighter-rouge">&lt;your-directory&gt;</code> with the actual path):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">export </span><span class="nv">PATH</span><span class="o">=</span><span class="s2">"</span><span class="nv">$PATH</span><span class="s2">:&lt;your-directory&gt;/build-ispc/bin"</span>
+</code></pre></div></div>
+<blockquote>
+  <p>If you’re unfamiliar with modifying <code class="language-plaintext highlighter-rouge">PATH</code>, refer to my CSDN post: <a href="https://blog.csdn.net/qq_33919450/article/details/122076994">How to Directly Use Scripts or Downloaded Programs in macOS Terminal - ZhongUncle</a></p>
+</blockquote>
+
+<p>Verify ISPC installation:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ispc <span class="nt">--version</span>
+Intel<span class="o">(</span>r<span class="o">)</span> Implicit SPMD Program Compiler <span class="o">(</span>Intel<span class="o">(</span>r<span class="o">)</span> ISPC<span class="o">)</span>, 1.27.0dev <span class="o">(</span>build commit f988909621671856 @ 20250313, LLVM 21.0.0<span class="o">)</span>
+</code></pre></div></div>
+
+<h2 id="use-ispc">Use ISPC</h2>
+<p>Important: Add the <code class="language-plaintext highlighter-rouge">--pic</code> (Position-Independent Code) option when compiling ISPC kernels—this fixes linking errors:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>ispc SGEMM_kernels.ispc <span class="nt">-O3</span> <span class="nt">-o</span> SGEMM_kernels_ispc.o <span class="nt">-h</span> SGEMM_kernels_ispc.h <span class="nt">--target</span><span class="o">=</span>avx2-i32x16 <span class="nt">--pic</span>
+</code></pre></div></div>
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">--pic</code> option is quite obscure—I found it by digging through the documentation!</p>
+</blockquote>
+
+<p>Then compile the host code with a general-purpose compiler like <code class="language-plaintext highlighter-rouge">clang++</code> or <code class="language-plaintext highlighter-rouge">g++</code>:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>clang++ <span class="nt">-O3</span> SGEMM_main.cpp SGEMM_kernels_ispc.o ../common/tasksys.cpp
+</code></pre></div></div>
+
+<h3 id="fix-linking-error">Fix Linking Error</h3>
+<p>Without <code class="language-plaintext highlighter-rouge">--pic</code>, you may encounter this error:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>/usr/bin/ld: SGEMM_kernels_ispc.o: relocation R_X86_64_32 against `.text' can not be used when making a PIE object; recompile with -fPIE
+/usr/bin/ld: failed to set dynamic section sizes: bad value
+collect2: error: ld returned 1 exit status
+</code></pre></div></div>
+
+<h3 id="run-the-compiled-program">Run the Compiled Program</h3>
+<p>After successful compilation, run the executable (example matrix multiplication test):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>./a.out 2048 16 4096
+
+Usage: SGEMM <span class="o">(</span>optional<span class="o">)[</span>ispc iterations] <span class="o">(</span>optional<span class="o">)[[</span>Matrix A Rows] <span class="o">[</span>Matrix A Columns/ matrix B Rows] <span class="o">[</span>Matrix B Columns]]
+./a.out
+ispc iterations <span class="o">=</span> 500[default],	 Matrix A Rows <span class="o">=</span> 2048,	 Matrix A Columns/ matrix B Rows <span class="o">=</span> 16, Matrix B Columns <span class="o">=</span> 4096
+                   SGEMM_naive_withTasks     5.4232 millisecs    49.4920 GFLOPs Validation: valid.
+             SGEMM_tileShuffle_withTasks     2.7940 millisecs    96.0635 GFLOPs Validation: valid.
+        SGEMM_tileNoSIMDIntrin_withTasks     1.4964 millisecs   179.3685 GFLOPs Validation: valid.
+   SGEMM_tileBlockNoSIMDIntrin_withTasks     1.0402 millisecs   258.0334 GFLOPs Validation: valid.
+ SGEMM_tileBlockNoSIMDIntrin_2_withTasks     1.0505 millisecs   255.5048 GFLOPs Validation: valid.
+</code></pre></div></div>
+
+<p>The CPU should run at full utilization (look for the <code class="language-plaintext highlighter-rouge">./a.out 2048 16 4096</code> process):</p>
+
+<div style="text-align: center;">
+  <img alt="CPU utilization showing full load during ISPC program execution" src="/assets/images/608f3364e72746f69c3d80c96600d2ef.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<h2 id="side-note">Side Note</h2>
+<p>ISPC was the first parallel computing language I learned, and I invested a lot of time studying it.</p>
+
+<p>Despite the sentimental value, I don’t recommend ISPC. The main reason: Intel updates ISPC too frequently with major changes, and the documentation is incomplete. This wastes a lot of time on research and updates instead of actual coding—it’s just too cumbersome.</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
