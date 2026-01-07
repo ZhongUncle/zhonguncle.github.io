@@ -1,0 +1,384 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to Install Stable Diffusion Web UI & xFormers on Ubuntu (Fix Network & Version Mismatch Issues)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This is a verified step-by-step guide I compiled after multiple tests. Installing Stable Diffusion Web UI and the corresponding xFormers correctly can be extremely tedious—official and online tutorials are often incomplete or scattered. I figured out the process earlier but forgot to document it, leading to installation failures after reinstalling my system. This time, I’m writing it down so you can get everything up and running in **1 hour max** (or under 10 minutes with fast internet).'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to Install Stable Diffusion Web UI & xFormers on Ubuntu (Fix Network & Version Mismatch Issues)</h1>
+        <div class="bloginfo">
+            <p class="info">2025-02-14 ｜ <a href="/python.html"> Python</a> ｜ #Words: 1534 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145639353"> 中文原版 </a></p>
+        </div>
+        <p>This is a verified step-by-step guide I compiled after multiple tests. Installing Stable Diffusion Web UI and the corresponding xFormers correctly can be extremely tedious—official and online tutorials are often incomplete or scattered. I figured out the process earlier but forgot to document it, leading to installation failures after reinstalling my system. This time, I’m writing it down so you can get everything up and running in <strong>1 hour max</strong> (or under 10 minutes with fast internet).</p>
+
+<h2 id="why-do-we-need-xformers">Why Do We Need xFormers?</h2>
+<p>xFormers is an optimization framework developed by Meta (formerly Facebook) that reduces VRAM/memory usage and speeds up image generation in Stable Diffusion Web UI.</p>
+
+<p>Here’s a comparison on my RTX 3060 12GB (note: results are for common resolutions—unusual resolutions may produce glitched images):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Resolution</th>
+      <th>Without xFormers</th>
+      <th>With xFormers</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>512x512 Speed</td>
+      <td>5.1 s</td>
+      <td>4.5 s</td>
+    </tr>
+    <tr>
+      <td>512x512 VRAM Usage</td>
+      <td>7608MiB</td>
+      <td>7606MiB</td>
+    </tr>
+    <tr>
+      <td>1024x1024 Speed</td>
+      <td>18.1 s</td>
+      <td>14.6 s</td>
+    </tr>
+    <tr>
+      <td>1024x1024 VRAM Usage</td>
+      <td>8866MiB</td>
+      <td>8094MiB</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>However, installing xFormers is the tricky part. While many tutorials mention matching xFormers with specific PyTorch and CUDA versions, two key issues remain:</p>
+<ol>
+  <li>Most guides only point to version compatibility tables without clear instructions on how to use them.</li>
+  <li>Even after following table-based installations, errors often persist.</li>
+</ol>
+
+<p>After research, I found these version concerns are unnecessary—my guide avoids manual version matching entirely. For more details on Python and package management, see the “Extra Tips” section at the end.</p>
+
+<blockquote>
+  <p>If you only need the steps, skip to the “Condensed Installation Steps” section.</p>
+</blockquote>
+
+<h2 id="detailed-installation-guide">Detailed Installation Guide</h2>
+<p>I’ll demonstrate the full installation process, highlighting potential pitfalls. Please follow along sequentially—Python version management can be complex!</p>
+
+<h3 id="step-1-clone-the-repository">Step 1: Clone the Repository</h3>
+<p>First, clone the Stable Diffusion Web UI repo (Git is required—ZIP downloads require extra configuration and are not recommended):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:AUTOMATIC1111/stable-diffusion-webui.git
+</code></pre></div></div>
+
+<blockquote>
+  <p>If the repo fails to clone due to network issues, try modifying GitHub’s IP or use other Git acceleration methods. The repo must remain a Git repository for proper functionality.</p>
+</blockquote>
+
+<h3 id="step-2-initialize-the-installation-and-stop-it">Step 2: Initialize the Installation (and Stop It)</h3>
+<p>Navigate to the repo directory and start the official installation script:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>stable-diffusion-webui/
+./webui.sh 
+</code></pre></div></div>
+
+<p>You’ll likely encounter slowdowns or errors when you see this output:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>............
+............
+Successfully installed pip-25.0.1
+
+################################################################
+Launching launch.py...
+
+Launching launch.py...
+################################################################
+glibc version is 2.35
+Check TCMalloc: libtcmalloc_minimal.so.4
+libtcmalloc_minimal.so.4 is linked with libc.so,execute LD_PRELOAD=/lib/x86_64-linux-gnu/libtcmalloc_minimal.so.4
+Python 3.10.12 (main, Jan 17 2025, 14:35:34) [GCC 11.4.0]
+Version: v1.10.1
+Commit hash: 82a973c04367123ae98bd9abdf80d9eda9b910e2
+Installing torch and torchvision
+Looking in indexes: https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple, https://download.pytorch.org/whl/cu121
+</code></pre></div></div>
+
+<p><strong>Press <code class="language-plaintext highlighter-rouge">Ctrl+C</code> to stop the process immediately</strong> (explanation later). The last line shows PyTorch is being installed from two sources:</p>
+<ul>
+  <li>Tsinghua University’s mirror (only provides CPU-only PyTorch builds).</li>
+  <li>Official PyTorch repo (prone to network timeouts in China).</li>
+</ul>
+
+<p>This causes the slowdown/error—we need to fix the mirror first.</p>
+
+<h3 id="step-3-configure-mirror-and-launch-arguments">Step 3: Configure Mirror and Launch Arguments</h3>
+<p>Edit the <code class="language-plaintext highlighter-rouge">webui-user.sh</code> file in the repo directory to:</p>
+<ol>
+  <li>Use Alibaba Cloud’s PyTorch mirror (supports GPU/CUDA builds).</li>
+  <li>Enable xFormers and LAN access.</li>
+</ol>
+
+<p>Modify the file as follows (replace <code class="language-plaintext highlighter-rouge">cu124</code> with your CUDA version):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Commandline arguments for webui.py, for example: export COMMANDLINE_ARGS="--medvram --opt-split-attention"</span>
+<span class="nb">export </span><span class="nv">COMMANDLINE_ARGS</span><span class="o">=</span><span class="s2">"--listen --xformers"</span>  <span class="c"># --listen enables LAN access; --xformers enables xFormers</span>
+
+<span class="c"># Install command for torch (replace cu124 with your CUDA version)</span>
+<span class="nb">export </span><span class="nv">TORCH_COMMAND</span><span class="o">=</span><span class="s2">"pip install torch -f https://mirrors.aliyun.com/pytorch-wheels/cu124"</span>
+</code></pre></div></div>
+
+<h3 id="step-4-resume-installation">Step 4: Resume Installation</h3>
+<p>Restart the installation script—it will now download required repos and models using the correct mirror:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./webui.sh 
+</code></pre></div></div>
+
+<blockquote>
+  <p>If repos fail to clone: Use Git acceleration methods (e.g., modify GitHub IP).<br />
+If models fail to download: Manually download them via <a href="https://hf-mirror.com/">HF-Mirror</a> (follow their documentation) and move/link them to the correct directories.</p>
+</blockquote>
+
+<h3 id="step-5-fix-xformers-cuda-compatibility-error">Step 5: Fix xFormers CUDA Compatibility Error</h3>
+<p>After installation completes, the Web UI will launch. However, image generation will fail with this error (in the browser and terminal):</p>
+
+<div style="text-align: center;">
+  <img alt="xFormers CUDA compatibility error in Stable Diffusion Web UI" src="/assets/images/e35d8063908e4c05a00ae7ba7bc4f171.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Terminal error output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>....
+....
+        raise NotImplementedError(msg)
+    NotImplementedError: No operator found for `memory_efficient_attention_forward` with inputs:
+         query       : shape=(2, 4096, 8, 40) (torch.float16)
+         key         : shape=(2, 4096, 8, 40) (torch.float16)
+         value       : shape=(2, 4096, 8, 40) (torch.float16)
+         attn_bias   : &lt;class 'NoneType'&gt;
+         p           : 0.0
+    `decoderF` is not supported because:
+        xFormers wasn't build with CUDA support
+        attn_bias type is &lt;class 'NoneType'&gt;
+        operator wasn't built - see `python -m xformers.info` for more info
+    `flshattF@0.0.0` is not supported because:
+        xFormers wasn't build with CUDA support
+        operator wasn't built - see `python -m xformers.info` for more info
+    `tritonflashattF` is not supported because:
+        xFormers wasn't build with CUDA support
+        operator wasn't built - see `python -m xformers.info` for more info
+        triton is not available
+        Only work on pre-MLIR triton for now
+    `cutlassF` is not supported because:
+        xFormers wasn't build with CUDA support
+        operator wasn't built - see `python -m xformers.info` for more info
+    `smallkF` is not supported because:
+        max(query.shape[-1] != value.shape[-1]) &gt; 32
+        xFormers wasn't build with CUDA support
+        dtype=torch.float16 (supported: {torch.float32})
+        operator wasn't built - see `python -m xformers.info` for more info
+        unsupported embed per head: 40
+</code></pre></div></div>
+
+<p>This error means xFormers and CUDA versions are mismatched. Here’s how to fix it:</p>
+
+<ol>
+  <li><strong>Press <code class="language-plaintext highlighter-rouge">Ctrl+C</code> to stop the Web UI</strong>.</li>
+  <li>Check xFormers info using the project’s virtual environment (not the system Python):
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./venv/bin/python <span class="nt">-m</span> xformers.info
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<p>Sample output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./venv/bin/python -m xformers.info
+WARNING[XFORMERS]: xFormers can't load C++/CUDA extensions. xFormers was built for:
+    PyTorch 2.1.2+cu121 with CUDA 1201 (you have 2.6.0+cu124)
+    Python  3.10.13 (you have 3.10.12)
+  Please reinstall xformers (see https://github.com/facebookresearch/xformers#installing-xformers)
+  Memory-efficient attention, SwiGLU, sparse and more won't be available.
+  Set XFORMERS_MORE_DETAILS=1 for more details
+.....
+.....
+</code></pre></div></div>
+
+<p>The output shows xFormers was built for PyTorch 2.1.2+cu121, but we’re using PyTorch 2.6.0+cu124. No need to memorize these versions—we’ll let pip handle the matching.</p>
+
+<h3 id="step-6-install-compatible-xformers-in-the-virtual-environment">Step 6: Install Compatible xFormers in the Virtual Environment</h3>
+<p>Stable Diffusion Web UI uses a built-in Python virtual environment (in the <code class="language-plaintext highlighter-rouge">venv</code> directory) to avoid version conflicts. We need to activate this environment and install the correct xFormers version:</p>
+
+<ol>
+  <li>Activate the virtual environment:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ./venv/bin/activate
+</code></pre></div>    </div>
+    <p>You’ll see <code class="language-plaintext highlighter-rouge">(venv)</code> at the start of your terminal prompt.</p>
+  </li>
+  <li>Install the compatible xFormers version (replace <code class="language-plaintext highlighter-rouge">cu124</code> with your CUDA version):
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install</span> <span class="nt">-U</span> xformers <span class="nt">-f</span> https://mirrors.aliyun.com/pytorch-wheels/cu124
+</code></pre></div>    </div>
+    <ul>
+      <li>The <code class="language-plaintext highlighter-rouge">-U</code> flag (short for <code class="language-plaintext highlighter-rouge">--upgrade</code>) automatically finds and installs the latest xFormers version compatible with your PyTorch/CUDA setup (it can even “downgrade” to a compatible version if needed).</li>
+    </ul>
+  </li>
+</ol>
+
+<h3 id="step-7-launch-stable-diffusion-web-ui">Step 7: Launch Stable Diffusion Web UI</h3>
+<p>Now you can start the Web UI—xFormers will work with CUDA properly:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./webui.sh 
+</code></pre></div></div>
+
+<p>For a guide on using Stable Diffusion Web UI (prompts, parameters, etc.), check out my other blog: <a href="/blogs/61ab08c2ae947939d5414717fdb5a93f.html">Animagine XL V3.1 Complete Guide: Master SD WebUI Parameters &amp; Prompt Writing (Teach You to Fish)</a></p>
+
+<h2 id="condensed-installation-steps">Condensed Installation Steps</h2>
+<ol>
+  <li>Clone the repository:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>git clone git@github.com:AUTOMATIC1111/stable-diffusion-webui.git
+</code></pre></div>    </div>
+  </li>
+  <li>Initialize the installation and stop it when stuck:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">cd </span>stable-diffusion-webui/
+./webui.sh  <span class="c"># Press Ctrl+C after seeing "Installing torch and torchvision"</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Edit <code class="language-plaintext highlighter-rouge">webui-user.sh</code> to configure mirror and arguments:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Add these lines to webui-user.sh</span>
+<span class="nb">export </span><span class="nv">COMMANDLINE_ARGS</span><span class="o">=</span><span class="s2">"--listen --xformers"</span>
+<span class="nb">export </span><span class="nv">TORCH_COMMAND</span><span class="o">=</span><span class="s2">"pip install torch -f https://mirrors.aliyun.com/pytorch-wheels/cu124"</span>  <span class="c"># Replace cu124 with your CUDA version</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Resume installation to download dependencies:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./webui.sh 
+</code></pre></div>    </div>
+  </li>
+  <li>Activate the virtual environment:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">source</span> ./venv/bin/activate
+</code></pre></div>    </div>
+  </li>
+  <li>Install compatible xFormers:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>pip <span class="nb">install</span> <span class="nt">-U</span> xformers <span class="nt">-f</span> https://mirrors.aliyun.com/pytorch-wheels/cu124  <span class="c"># Match CUDA version</span>
+</code></pre></div>    </div>
+  </li>
+  <li>Launch the Web UI:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>./webui.sh 
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<h2 id="extra-tips">Extra Tips</h2>
+<p>Managing multiple Python/PIP versions can be confusing—here are key best practices:</p>
+
+<ol>
+  <li><strong>Check for Virtual Environments</strong>: Look for prefixes like <code class="language-plaintext highlighter-rouge">(venv)</code> or <code class="language-plaintext highlighter-rouge">(base)</code> (Conda) in your terminal to see if a virtual environment is active.</li>
+  <li><strong>Verify Default Python Version</strong>:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">--version</span>
+</code></pre></div>    </div>
+  </li>
+  <li><strong>Align PIP with Python</strong>: If your default <code class="language-plaintext highlighter-rouge">pip</code> doesn’t match your default <code class="language-plaintext highlighter-rouge">python</code>, install packages using:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>python <span class="nt">-m</span> pip <span class="nb">install</span> &lt;package&gt;
+</code></pre></div>    </div>
+    <p>This ensures the package is installed for the specific Python interpreter you’re using.</p>
+  </li>
+  <li><strong>Master PIP’s <code class="language-plaintext highlighter-rouge">-U</code> Flag</strong>: While <code class="language-plaintext highlighter-rouge">-U</code> stands for “upgrade,” it also resolves version conflicts by fetching the latest compatible version (even if it’s an older release than the current one). Use it when forcing versions to avoid “no operation” errors.</li>
+</ol>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
