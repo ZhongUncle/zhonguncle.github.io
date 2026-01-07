@@ -1,0 +1,148 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Access FaceFusion Across Local Network: Fix Gradio Public Link & Port Settings</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Sometimes we want to use FaceFusion on other devices within the local area network (LAN), which requires configuring a publicly accessible link and port.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Access FaceFusion Across Local Network: Fix Gradio Public Link & Port Settings</h1>
+        <div class="bloginfo">
+            <p class="info">2025-02-09 ｜ <a href="/python.html"> Python</a> ｜ #Words: 380 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/145539062"> 中文原版 </a></p>
+        </div>
+        <p>Sometimes we want to use FaceFusion on other devices within the local area network (LAN), which requires configuring a publicly accessible link and port.</p>
+
+<p>When you run FaceFusion, you’ll see the following prompt:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>To create a public link, set `share=True` in `launch()`.
+</code></pre></div></div>
+
+<p>However, this prompt is <strong>incorrect</strong>. If you’ve researched this issue, you’ll find it’s a leftover problem from the Gradio framework. While Stable Diffusion Web UI (which also uses Gradio) fixed this by modifying the framework, FaceFusion has not implemented this adjustment.</p>
+
+<p>After extensive searching, I found a user mention that you can directly modify Gradio’s environment variables. I then “drew inferences from one example” and used the same approach to change the port as well.</p>
+
+<p>The solution is extremely simple:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c"># Set IP to 0.0.0.0 to allow access from all devices on the current network (default is 127.0.0.1)</span>
+<span class="nb">export </span><span class="nv">GRADIO_SERVER_NAME</span><span class="o">=</span><span class="s2">"0.0.0.0"</span>
+
+<span class="c"># Set port to 7861 (default is 7860)</span>
+<span class="nb">export </span><span class="nv">GRADIO_SERVER_PORT</span><span class="o">=</span><span class="s2">"7861"</span>
+</code></pre></div></div>
+
+<p>If you want these settings to persist permanently, add the above lines to your Shell configuration file (e.g., <code class="language-plaintext highlighter-rouge">.bashrc</code>), then run <code class="language-plaintext highlighter-rouge">source .bashrc</code> to apply the changes immediately.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<p><a href="https://www.answeroverflow.com/m/1204359671599603762">Running on local URL but can’t access from outside - answeroverflow</a>: This post explains how to configure a publicly accessible link for Gradio-based applications.</p>
+
+<h3 id="总结">总结</h3>
+<ol>
+  <li>FaceFusion运行时提示的<code class="language-plaintext highlighter-rouge">share=True</code>配置方法无效，该问题源于Gradio框架，且FaceFusion未像Stable Diffusion Web UI那样对框架做定制化修改。</li>
+  <li>实现局域网访问的核心是修改Gradio环境变量：<code class="language-plaintext highlighter-rouge">GRADIO_SERVER_NAME=0.0.0.0</code>允许全网段设备访问，<code class="language-plaintext highlighter-rouge">GRADIO_SERVER_PORT</code>可自定义端口避免冲突。</li>
+  <li>若需永久生效，将环境变量配置写入<code class="language-plaintext highlighter-rouge">.bashrc</code>等Shell配置文件，执行<code class="language-plaintext highlighter-rouge">source .bashrc</code>即可即时生效。</li>
+</ol>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
