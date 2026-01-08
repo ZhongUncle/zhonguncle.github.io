@@ -1,0 +1,151 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Swift Error: "main attribute cannot be used in a module that contains top-level code"</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content=''>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Swift Error: "main attribute cannot be used in a module that contains top-level code"</h1>
+        <div class="bloginfo">
+            <p class="info">2025-03-22 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 264 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/146443472"> 中文原版 </a></p>
+        </div>
+        <h2 id="problem">Problem</h2>
+<p>When opening your project in Xcode, you may encounter the following error: <code class="language-plaintext highlighter-rouge">'main' attribute cannot be used in a module that contains top-level code</code>:</p>
+
+<div style="text-align: center;">
+  <img alt="Xcode error showing main attribute conflict" src="/assets/images/b8bed0eda11043bbacc463fe43b8e9a8.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>This issue occurs because, according to Swift’s official specification, the default entry points are either <code class="language-plaintext highlighter-rouge">main.swift</code> or the <code class="language-plaintext highlighter-rouge">@main</code> attribute—<strong>they cannot be used simultaneously</strong>.</p>
+
+<blockquote>
+  <p>However, if you build the project via the command line with <code class="language-plaintext highlighter-rouge">swift build -c release</code>, you’ll find it compiles successfully.</p>
+</blockquote>
+
+<p>If you delete <code class="language-plaintext highlighter-rouge">@main</code> in Xcode, the built product will be empty (no executable generated):</p>
+
+<div style="text-align: center;">
+  <img alt="Empty build output after deleting @main" src="/assets/images/5f121593a84940b4826260386c94156d.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>If you rename the <code class="language-plaintext highlighter-rouge">main.swift</code> file (e.g., to match the project name), the project will build normally:</p>
+
+<div style="text-align: center;">
+  <img alt="Successful build after renaming main.swift" src="/assets/images/3416ebe6c91348eda0518a9c7f00cbe2.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<h2 id="summary">Summary</h2>
+<p>When developing Swift projects in Xcode, it’s best to name your main function file after the project itself—<strong>avoid using “main” as the filename</strong>.</p>
+
+<p>I hope this helps anyone who might need it~</p>
+
+<h2 id="references">References</h2>
+<p><a href="https://apple.github.io/swift-argument-parser/documentation/argumentparser/gettingstarted/">Getting Started with ArgumentParser</a>: Apple’s official documentation explicitly states that <code class="language-plaintext highlighter-rouge">main.swift</code> or <code class="language-plaintext highlighter-rouge">@main</code> serves as the entry point, and they cannot be used together. Screenshot below:</p>
+
+<div style="text-align: center;">
+  <img alt="Apple's official documentation showing main.swift/@main entry point rule" src="/assets/images/98a1d10097854c4389ce5b53586c79d1.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

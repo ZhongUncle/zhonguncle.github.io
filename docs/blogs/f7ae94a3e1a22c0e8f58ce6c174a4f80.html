@@ -8,7 +8,7 @@
     <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     
-    <meta name='description' content='However, since the core development team is relatively small, their focus remains on Apple’s Xcode and GUI development. When working outside of Xcode and GUI environments, various odd issues may pop up. I plan to publish several blog posts covering these issues in the coming days.'>
+    <meta name='description' content='However, given the small size of the core development team, their focus remains on Apple’s Xcode and GUI development. When working outside of Xcode and GUI environments, various odd issues may arise. I plan to publish several blog posts covering these issues in the coming days.'>
     
     <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
@@ -94,15 +94,15 @@
 </div>
         <h1>Swift Command Line Development on macOS: Fix "Undefined Symbols for Architecture x86_64" Linker Error</h1>
         <div class="bloginfo">
-            <p class="info">2025-03-22 ｜ <a href="/xxx.html"> XXX</a> ｜ #Words: 457 ｜ <a
+            <p class="info">2025-03-22 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 458 ｜ <a
                     href="https://blog.csdn.net/qq_33919450/article/details/146442731"> 中文原版 </a></p>
         </div>
-        <p>Swift is primarily designed for Apple platforms, but it also supports development on Linux and Windows—especially for command-line applications, it works quite well.</p>
+        <p>Swift is primarily designed for Apple platforms, but it also supports development on Linux and Windows—particularly excelling for command-line application development.</p>
 
-<p>However, since the core development team is relatively small, their focus remains on Apple’s Xcode and GUI development. When working outside of Xcode and GUI environments, various odd issues may pop up. I plan to publish several blog posts covering these issues in the coming days.</p>
+<p>However, given the small size of the core development team, their focus remains on Apple’s Xcode and GUI development. When working outside of Xcode and GUI environments, various odd issues may arise. I plan to publish several blog posts covering these issues in the coming days.</p>
 
 <h2 id="linker-error-when-building-swift-projects-in-macos-command-line">Linker Error When Building Swift Projects in macOS Command Line</h2>
-<p>When building a Swift project via the command line on macOS, you may encounter the following linking error:</p>
+<p>When building a Swift project via the command line on macOS, you may encounter the following linker error:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% swift build
 error: 'hello': Invalid manifest (compiled with: ["/Library/Developer/CommandLineTools/usr/bin/swiftc", "-vfsoverlay", "/var/folders/_j/f2g2qcw11379d43mq5rdj5jw0000gn/T/TemporaryDirectory.8ntpr4/vfs.yaml", "-L", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-lPackageDescription", "-Xlinker", "-rpath", "-Xlinker", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-target", "x86_64-apple-macosx13.0", "-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks", "-sdk", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", "-swift-version", "6", "-I", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-sdk", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", "-package-description-version", "6.0.0", "/Users/zhonguncle/Desktop/test/swift/hello/Package.swift", "-o", "/var/folders/_j/f2g2qcw11379d43mq5rdj5jw0000gn/T/TemporaryDirectory.X34Ik8/hello-manifest"])
@@ -124,10 +124,10 @@ fatal error: /Library/Developer/CommandLineTools/usr/bin/lipo: can't open input 
 </code></pre></div></div>
 
 <h2 id="root-cause">Root Cause</h2>
-<p>This issue likely arose because I corrupted some system files while uninstalling Xcode and building LLVM/Clang from source. Reinstalling Xcode or installing Clang/Swift via Homebrew did <strong>not</strong> resolve the problem in this case.</p>
+<p>This issue likely occurred because I corrupted some system files while uninstalling Xcode and building LLVM/Clang from source. Reinstalling Xcode or installing Clang/Swift via Homebrew did <strong>not</strong> resolve the problem in this scenario.</p>
 
 <h2 id="solution">Solution</h2>
-<p>It is recommended to install Xcode (if not already installed), then reset the toolchain with <code class="language-plaintext highlighter-rouge">sudo xcode-select --reset</code>—this will fix the issue:</p>
+<p>It is recommended to install Xcode (if not already installed), then reset the Xcode command-line toolchain with <code class="language-plaintext highlighter-rouge">sudo xcode-select --reset</code>—this will fix the issue:</p>
 
 <div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% swift build              
 Fetching https://github.com/apple/swift-argument-parser from cache
@@ -143,7 +143,7 @@ Building for debugging...
 Build complete! (24.41s)
 </code></pre></div></div>
 
-<p>I hope these will help someone in need~</p>
+<p>I hope this helps anyone who might need it~</p>
 
     </div>
     <!-- comment by utterances -->
