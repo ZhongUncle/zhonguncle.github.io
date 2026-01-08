@@ -1,0 +1,169 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>What Are MSRs (Model-Specific Registers)?</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='MSRs (Model-Specific Registers) are specialized registers designed for various experimental functions, including debugging, program execution tracing, computer performance monitoring, simplified software programming, and power control. '>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>What Are MSRs (Model-Specific Registers)?</h1>
+        <div class="bloginfo">
+            <p class="info">2024-04-22 ｜ <a href="/research.html"> Research</a> ｜ #Words: 881 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/138087399"> 中文原版 </a></p>
+        </div>
+        <p>MSRs (Model-Specific Registers) are specialized registers designed for various experimental functions, including debugging, program execution tracing, computer performance monitoring, simplified software programming, and power control.</p>
+
+<h2 id="what-are-msrs">What Are MSRs?</h2>
+<p>The concept of MSRs can be elusive, so this section only covers their external aspects—such as descriptions and related instructions—before expanding further. By the end of this article, you should have a clear understanding.</p>
+
+<p>MSRs are a set of registers primarily intended for use by the operating system or executive processes (i.e., code running at privilege level 0). The number and functionality of these registers may vary by processor model.</p>
+
+<p>Virtually all MSRs handle system-related functions and are inaccessible to application programs. Reading and writing MSRs requires the <code class="language-plaintext highlighter-rouge">WRMSR</code> and <code class="language-plaintext highlighter-rouge">RDMSR</code> system instructions—with one exception: the TSC (Time-Stamp Counter) covered in this series, which can also be read via instructions like <code class="language-plaintext highlighter-rouge">rdtsc</code>.</p>
+
+<h2 id="why-were-msrs-designed">Why Were MSRs Designed?</h2>
+<p>Why design such registers? They are quite different from common general-purpose registers like <code class="language-plaintext highlighter-rouge">EAX</code>.</p>
+
+<p>To understand this, we first need to look at the origin of MSRs. Starting with the 80386 processor, Intel introduced “experimental” features in each new generation of CPUs—features that might not be retained in future processors. This posed a problem: instructions tied to these features could become obsolete.</p>
+
+<p>For example, suppose a new processor generation adds several test-function registers, along with a variant of the <code class="language-plaintext highlighter-rouge">mov</code> instruction (let’s call it <code class="language-plaintext highlighter-rouge">movx</code>) to read them. If subsequent processors discard these test registers, the <code class="language-plaintext highlighter-rouge">movx</code> instruction becomes useless. Programs or compilers using <code class="language-plaintext highlighter-rouge">movx</code> would then require rewriting, increasing development effort and compatibility challenges.</p>
+
+<p>To solve this issue, starting with Pentium processors, Intel introduced the <code class="language-plaintext highlighter-rouge">WRMSR</code> and <code class="language-plaintext highlighter-rouge">RDMSR</code> instruction pair to access both current and future “model-specific registers.” For instance, to read a register related to a test feature, you don’t need to worry about the specific instruction for that register—instead, you use <code class="language-plaintext highlighter-rouge">RDMSR</code> to read the register associated with the test feature model. The low-level implementation of the read operation is handled by <code class="language-plaintext highlighter-rouge">RDMSR</code> itself. This avoids the problem of instructions becoming obsolete when registers are phased out.</p>
+
+<p>If you search for MSRs in the Intel SDM (Software Developer’s Manual), you’ll find they are consistently associated with experimental functionalities. Additionally, the entire Volume 4 of the manual is titled <em>Model-Specific Registers</em>, highlighting the importance of this technology.</p>
+
+<p>This abstraction may feel similar to high-level programming languages, leading some to refer to MSRs as “virtual registers.” However, MSRs are physical registers—their underlying hardware implementation may change between processor generations, giving them a somewhat “virtual” feel due to the abstraction layer.</p>
+
+<p>You might wonder: If application programs can’t access MSRs, how can <code class="language-plaintext highlighter-rouge">WRMSR</code> and <code class="language-plaintext highlighter-rouge">RDMSR</code> read/write them?<br />
+Except for the TSC (which can be read via <code class="language-plaintext highlighter-rouge">rdtsc</code>), accessing MSRs requires setting the <code class="language-plaintext highlighter-rouge">ECX</code> register to the target MSR’s address, using <code class="language-plaintext highlighter-rouge">RDMSR</code> to transfer the MSR’s value to the <code class="language-plaintext highlighter-rouge">EDX:EAX</code> register pair, and then reading <code class="language-plaintext highlighter-rouge">EAX</code> and <code class="language-plaintext highlighter-rouge">EDX</code> with instructions like <code class="language-plaintext highlighter-rouge">mov</code>. Direct access to MSRs via <code class="language-plaintext highlighter-rouge">mov</code> or its variants is not allowed.</p>
+
+<p>For details on reading the TSC with <code class="language-plaintext highlighter-rouge">rdtsc</code>, see my article: <a href="/blogs/ef42ec535b362342be65d9acc8a1c98f.html">How to Measure Execution Time with rdtsc and C/C++: Using Inline Assembly and Retrieving CPU TSC Clock Frequency</a>. This article uses inline assembly and serves as a practical example to aid understanding.</p>
+
+<h2 id="what-are-architectural-msrs">What Are Architectural MSRs?</h2>
+<p>Let’s consider another question: We’ve addressed the risk of instruction obsolescence, but what if an entire model is discontinued? As technology evolves, some technologies may be abandoned, leading to obsolete models.</p>
+
+<p>There’s no magic solution like MSRs for this scenario—instead, it relies on conventions and practices.</p>
+
+<p>According to Intel’s documentation: If an MSR is classified as an <strong>Architectural MSR</strong>, it is expected to persist in future processor generations. Non-architectural MSRs, however, may be deprecated. The responsibility for adapting falls to developers.</p>
+
+<p>A subset of MSRs and their associated bit fields that will remain unchanged across future processor generations are known as “Architectural MSRs.” For historical reasons (dating back to Pentium 4 processors), these Architectural MSRs are prefixed with <code class="language-plaintext highlighter-rouge">IA32_</code>.</p>
+
+<h2 id="namesaddresses">Names/Addresses</h2>
+<p>Each MSR has a unique name and address. For a complete list, refer to <em>Intel® 64 and IA-32 Architectures Software Developer’s Manual Volume 4: Model-Specific Registers</em>—the entire 500+ page volume is dedicated to listing MSRs.</p>
+
+<p>The image below shows a mapping between an MSR address and its Architectural MSR name:</p>
+
+<div style="text-align: center;">
+  <img alt="Mapping of MSR address to Architectural MSR name" src="/assets/images/85e18b209c0a0f5bd4d0e6ebc36b6c85.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>The MSR address range from 4000000H to 4000FFFFH is designated as a specially reserved range. No existing or future processors will use any MSRs in this range for functional implementation.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">Intel® 64 and IA-32 Architectures Software Developer Manuals</a>: Official Intel processor documentation that details MSRs and includes an extensive list of registers.</li>
+  <li><a href="https://en.wikipedia.org/wiki/Model-specific_register">Model-specific register - Wikipedia</a>: While the Wikipedia entry itself is not highly detailed (compiled based on community research), its accompanying references are valuable—worth checking out.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
