@@ -94,7 +94,7 @@
 </div>
         <h1>How to Measure Execution Time with rdtsc and C/C++: Using Inline Assembly and Retrieving CPU TSC Clock Frequency</h1>
         <div class="bloginfo">
-            <p class="info">2024-04-22 ｜ <a href="/c.html"> C</a> ｜ #Words: 3761 ｜ <a
+            <p class="info">2024-04-22 ｜ <a href="/c.html"> C</a> ｜ #Words: 3758 ｜ <a
                     href="https://blog.csdn.net/qq_33919450/article/details/137979409"> 中文原版 </a></p>
         </div>
         <p>This article is primarily an experimental exploration and intellectual exercise—a preliminary attempt to study implementations of time measurement and the use of inline assembly and assembly functions in C/C++. Unless you have specific use cases, <strong>do not</strong> use assembly instructions to implement this functionality. The “Further Reading” section lists alternative methods that do not require inline assembly.</p>
@@ -126,7 +126,7 @@
 
 <p>Additionally, after reviewing numerous domestic and international articles, I noticed a <strong>significant shift in x86 TSC technology around 2014</strong> (personal observation). Early blogs, articles, and code describe methods and issues that are almost unrecognizable today. This timeline aligns with Intel’s official documentation on processor updates from that period.</p>
 
-<p>Many early articles (including on CSDN) covered TSC because assembly was a popular programming technique back then—widely used and studied. Today, high-level languages cover nearly all development scenarios, and assembly has faded from view. As a result, fewer people research assembly or low-level infrastructure implementations, leading to fewer such articles.</p>
+<p>Many early articles covered TSC because assembly was a popular programming technique back then—widely used and studied. Today, high-level languages cover nearly all development scenarios, and assembly has faded from view. As a result, fewer people research assembly or low-level infrastructure implementations, leading to fewer such articles.</p>
 
 <h2 id="implementation-with-inline-assembly">Implementation with Inline Assembly</h2>
 <p>Pure assembly is rarely used in daily development, so we use <strong>inline assembly</strong> to reduce complexity and improve readability. Inline assembly also preserves the structure of assembly code, making it easy to convert to pure assembly if needed later.</p>
