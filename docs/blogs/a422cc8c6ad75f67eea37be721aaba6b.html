@@ -1,0 +1,505 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to Do SIMD Programming in C++</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='I previously mentioned planning to abandon ISPC in favor of C++—ISPC evolves too quickly, and its documentation is poor, making it hard to keep up. Additionally, recent C++ standards have added solid support for official SIMD libraries, eliminating the need for third-party tools like ISPC. While ISPC still offers the best performance, I can no longer keep pace with its updates. However, you could pin to a specific ISPC version for development, as CPU instruction set updates are relatively slow.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to Do SIMD Programming in C++</h1>
+        <div class="bloginfo">
+            <p class="info">2025-05-11 ｜ <a href="/c.html"> C</a> ｜ #Words: 3884 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/147399848"> 中文原版 </a></p>
+        </div>
+        <p>I previously mentioned planning to abandon ISPC in favor of C++—ISPC evolves too quickly, and its documentation is poor, making it hard to keep up. Additionally, recent C++ standards have added solid support for official SIMD libraries, eliminating the need for third-party tools like ISPC. While ISPC still offers the best performance, I can no longer keep pace with its updates. However, you could pin to a specific ISPC version for development, as CPU instruction set updates are relatively slow.</p>
+
+<p>Originally, I chose ISPC over C++ SIMD not for performance, but because C++ SIMD programming was quite “problematic”: implementations varied across compilers, and platform support was inconsistent.</p>
+<blockquote>
+  <p>Despite being developed by Intel, ISPC supports multiple platforms including ARM—Intel engineers even contributed the LLVM IR for ARM’s SIMD instructions.</p>
+</blockquote>
+
+<p>This article marks the start of a series. Since parallel computing is not widely used, there’s much to learn.</p>
+
+<h2 id="what-is-simd-programming">What is SIMD Programming?</h2>
+<p>If you’re reading this, you likely have a background in computer science and have heard:</p>
+<blockquote>
+  <p>“GPUs are more parallel than CPUs.”</p>
+</blockquote>
+
+<p>Strictly speaking, this is inaccurate. GPUs excel at the “D” (Multiple Data) part of SIMD (Single Instruction Multiple Data)—in other words, GPUs are powerful for <strong>parallel computing</strong>, not just general parallelism.</p>
+
+<p>SIMD applies a single instruction to multiple data elements simultaneously. While there are many technical explanations, a simple analogy suffices: SIMD is like copying punishment in primary/secondary school—you can hold multiple pens to copy words at once. With one writing motion (time), you can write 2-5 words (5 pens means you’re truly skilled).</p>
+
+<p>For example, to compute these 8 additions:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>1 + 1
+2 + 2
+3 + 3
+4 + 4 
+5 + 5
+6 + 6
+7 + 7
+8 + 8
+</code></pre></div></div>
+
+<p>Serial computing requires 8 separate addition operations. However, all these operations follow the same pattern: load data → execute addition → store result. We can design circuits to perform this action on multiple registers simultaneously, drastically reducing execution time.</p>
+
+<p>By design, GPUs are optimized for SIMD, while CPUs favor MIMD (Multiple Instruction Multiple Data). Thus, GPUs excel at parallel computing but struggle with multitasking. Modern CPUs also include SIMD support via instruction sets like SSE and AVX.</p>
+
+<p>Here’s a real-world example: I previously implemented matrix multiplication with CUDA and ISPC. The floating-point performance of a 4C8T i5-10510U CPU was nearly identical to a 384-core MX250 GPU—with the same power consumption. This is a surprising result.</p>
+
+<p>In recent years, Nvidia GPUs have grown exponentially in core count: the RTX 4090 delivers 145 TFLOPS of half-precision floating-point performance, leaving CPUs with no competitive advantage in this area.</p>
+
+<p>But let’s focus on C++ SIMD. This detour helps explain why learning CPU SIMD programming is valuable. (I’m writing a separate blog on this topic, but it’s quite extensive—so it’s on hold for now.)</p>
+
+<blockquote>
+  <p>SIMD is also known as <strong>vectorization</strong>.
+If you’ve studied computer organization, you may have heard the term “vector processor”—the “vector” here refers to SIMD.</p>
+</blockquote>
+
+<h2 id="the-low-level-approach-intrinsicsassembly">The Low-Level Approach: Intrinsics/Assembly</h2>
+<p>First, let’s define “Intrinsics”: compiler-provided functions that wrap assembly code for easier use (common on Windows and other compilers). For example, in my previous blog <a href="https://blog.csdn.net/qq_33919450/article/details/137979409">How to Measure Execution Time with rdtsc and C/C++ (Using Inline Assembly and Retrieving CPU TSC Frequency)</a>, I used inline assembly to get the CPU’s TSC frequency. However, Windows provides the <code class="language-plaintext highlighter-rouge">intrin.h</code> library, which includes <code class="language-plaintext highlighter-rouge">__rdtsc()</code> and <code class="language-plaintext highlighter-rouge">__cpuid()</code>—no manual assembly required.</p>
+
+<p>When searching for C++ SIMD implementations online, you’ll either find third-party libraries or this intrinsic-based method.</p>
+
+<p>SIMD intrinsics are spread across multiple libraries, and instructions for different instruction sets are scattered. To use them, look up the required functions in the <a href="https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html">Intel® Intrinsics Guide</a>.</p>
+<blockquote>
+  <p>I won’t list which libraries correspond to each instruction set because there’s no consistent mapping across generations. You’ll need to look this up yourself. Creating an accurate table would be extremely time-consuming, and an incomplete one would be useless (though it might make this article seem more professional—I’d rather avoid that).</p>
+</blockquote>
+
+<p>I won’t dive too deep into this method, as this article is just an introduction. While the barrier to entry is high (finding reliable learning resources), I’ll provide a simple example to demonstrate how to write SIMD code with intrinsics.</p>
+
+<h3 id="example-vector-addition-with-simd">Example: Vector Addition with SIMD</h3>
+<p>Below is a parallel implementation of vector addition using AVX intrinsics:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;immintrin.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;random&gt;</span><span class="cp">
+</span>
+<span class="k">const</span> <span class="kt">int</span> <span class="n">VECTOR_SIZE</span> <span class="o">=</span> <span class="mi">4096</span><span class="p">;</span> <span class="c1">// Vector size</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+   <span class="c1">// Initialize SIMD vectors (AVX: 8 floats per __m256)</span>
+   <span class="n">__m256</span> <span class="n">vector1</span><span class="p">[</span><span class="n">VECTOR_SIZE</span> <span class="o">/</span> <span class="mi">8</span><span class="p">];</span>
+   <span class="n">__m256</span> <span class="n">vector2</span><span class="p">[</span><span class="n">VECTOR_SIZE</span> <span class="o">/</span> <span class="mi">8</span><span class="p">];</span>
+   <span class="n">__m256</span> <span class="n">result_simd</span><span class="p">[</span><span class="n">VECTOR_SIZE</span> <span class="o">/</span> <span class="mi">8</span><span class="p">];</span>
+
+   <span class="c1">// Initialize serial vectors for comparison</span>
+   <span class="kt">float</span> <span class="n">vector_serial1</span><span class="p">[</span><span class="n">VECTOR_SIZE</span><span class="p">],</span> <span class="n">vector_serial2</span><span class="p">[</span><span class="n">VECTOR_SIZE</span><span class="p">];</span>
+   <span class="kt">float</span> <span class="n">result_serial</span><span class="p">[</span><span class="n">VECTOR_SIZE</span><span class="p">];</span>
+
+   <span class="c1">// Populate SIMD vectors (8 floats at a time)</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">VECTOR_SIZE</span><span class="p">;</span> <span class="n">i</span> <span class="o">+=</span> <span class="mi">8</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">vector1</span><span class="p">[</span><span class="n">i</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_set_ps</span><span class="p">(</span><span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">));</span>
+      <span class="n">vector2</span><span class="p">[</span><span class="n">i</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_set_ps</span><span class="p">(</span><span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                                     <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">));</span>
+      <span class="n">result_simd</span><span class="p">[</span><span class="n">i</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_set1_ps</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span> <span class="c1">// Set all 8 floats to 0.0</span>
+   <span class="p">}</span>
+
+   <span class="c1">// Populate serial vectors</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">VECTOR_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">vector_serial1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">vector_serial2</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span><span class="p">);</span>
+      <span class="n">result_serial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">;</span>
+   <span class="p">}</span>
+
+   <span class="c1">// ****************** SIMD Calculation ******************</span>
+   <span class="k">auto</span> <span class="n">start_simd</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+
+   <span class="c1">// Run 100,000 iterations to amplify time difference</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">VECTOR_SIZE</span> <span class="o">/</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+         <span class="n">result_simd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_add_ps</span><span class="p">(</span><span class="n">vector1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vector2</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span> <span class="c1">// Add 8 floats at once</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+
+   <span class="k">auto</span> <span class="n">end_simd</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">elapsed_simd</span> <span class="o">=</span> <span class="n">end_simd</span> <span class="o">-</span> <span class="n">start_simd</span><span class="p">;</span>
+
+   <span class="c1">// ****************** Serial Calculation ******************</span>
+   <span class="k">auto</span> <span class="n">start_serial</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">j</span> <span class="o">&lt;</span> <span class="mi">100000</span><span class="p">;</span> <span class="o">++</span><span class="n">j</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">VECTOR_SIZE</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+         <span class="n">result_serial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">vector_serial1</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">+</span> <span class="n">vector_serial2</span><span class="p">[</span><span class="n">i</span><span class="p">];</span> <span class="c1">// Add 1 float at a time</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+
+   <span class="k">auto</span> <span class="n">end_serial</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">high_resolution_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span> <span class="n">elapsed_serial</span> <span class="o">=</span> <span class="n">end_serial</span> <span class="o">-</span> <span class="n">start_serial</span><span class="p">;</span>
+
+   <span class="c1">// Print execution times</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"SIMD Time taken: "</span> <span class="o">&lt;&lt;</span> <span class="n">elapsed_simd</span><span class="p">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">" seconds"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Serial Time taken: "</span> <span class="o">&lt;&lt;</span> <span class="n">elapsed_serial</span><span class="p">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="s">" seconds"</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+   <span class="c1">// Verify results (compare first 24 elements)</span>
+   <span class="kt">bool</span> <span class="n">results_match</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+   <span class="kt">float</span> <span class="n">temp</span><span class="p">[</span><span class="mi">24</span><span class="p">];</span>
+   <span class="n">_mm256_storeu_ps</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">result_simd</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>       <span class="c1">// Extract 8 floats from result_simd[0]</span>
+   <span class="n">_mm256_storeu_ps</span><span class="p">(</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">result_simd</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>    <span class="c1">// Extract 8 floats from result_simd[1]</span>
+   <span class="n">_mm256_storeu_ps</span><span class="p">(</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">result_simd</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>   <span class="c1">// Extract 8 floats from result_simd[2]</span>
+
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">24</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="k">if</span> <span class="p">(</span><span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">!=</span> <span class="n">result_serial</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="p">{</span>
+         <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Mismatch at index "</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">": SIMD result = "</span> <span class="o">&lt;&lt;</span> <span class="n">temp</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
+                   <span class="o">&lt;&lt;</span> <span class="s">", Serial result = "</span> <span class="o">&lt;&lt;</span> <span class="n">result_serial</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+         <span class="n">results_match</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+         <span class="k">break</span><span class="p">;</span>
+      <span class="p">}</span>
+   <span class="p">}</span>
+
+   <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Results match: "</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">results_match</span> <span class="o">?</span> <span class="s">"Yes"</span> <span class="o">:</span> <span class="s">"No"</span><span class="p">)</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+
+   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="compilation--execution">Compilation &amp; Execution</h3>
+<p>Compile with the <code class="language-plaintext highlighter-rouge">-mavx</code> flag (enables AVX instruction set support—omitting this will cause errors):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% clang++ simd.cpp <span class="nt">-mavx</span> <span class="o">&amp;&amp;</span> ./a.out
+SIMD Time taken: 0.133898 seconds
+Serial Time taken: 0.744482 seconds
+Results match: Yes
+</code></pre></div></div>
+
+<p>The SIMD implementation is approximately <strong>6x faster</strong> than the serial version. Unlike ISPC-generated code, this method won’t fully utilize the CPU (there’s room for further optimization), but it’s still vastly better than serial.</p>
+
+<blockquote>
+  <p>Why not use <code class="language-plaintext highlighter-rouge">-O3</code> optimization?
+Compiler optimizations are often unpredictable. For low-level tests (e.g., memory I/O, instruction latency), it’s best to avoid optimizations.
+In this example, vectors are initialized with constant values. A smart compiler might optimize away the entire calculation (since the result is predictable).
+For instance, a loop that accumulates a fixed value might be replaced with a multiplication in <code class="language-plaintext highlighter-rouge">-O3</code>, which would invalidate the performance comparison.
+Here’s how the results vary with different optimization levels:</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zhonguncle@ZhongUncle-Mac-mini simd % clang++ simd.cpp <span class="nt">-mavx</span> <span class="nt">-O0</span> <span class="o">&amp;&amp;</span> ./a.out
+SIMD Time taken: 1.42122 seconds
+Serial Time taken: 7.51199 seconds
+Results match: Yes
+
+zhonguncle@ZhongUncle-Mac-mini simd % clang++ simd.cpp <span class="nt">-mavx</span> <span class="nt">-O1</span> <span class="o">&amp;&amp;</span> ./a.out
+SIMD Time taken: 0.858161 seconds
+Serial Time taken: 3.23735 seconds
+Results match: Yes
+
+zhonguncle@ZhongUncle-Mac-mini simd % clang++ simd.cpp <span class="nt">-mavx</span> <span class="nt">-O2</span> <span class="o">&amp;&amp;</span> ./a.out
+SIMD Time taken: 0.875178 seconds
+Serial Time taken: 0.850877 seconds
+Results match: Yes
+
+zhonguncle@ZhongUncle-Mac-mini simd % clang++ simd.cpp <span class="nt">-mavx</span> <span class="nt">-O3</span> <span class="o">&amp;&amp;</span> ./a.out
+SIMD Time taken: 0.840105 seconds
+Serial Time taken: 0.805046 seconds
+Results match: Yes
+</code></pre></div></div>
+
+<h3 id="code-explanation">Code Explanation</h3>
+<p>This method is essentially assembly in disguise—you must manually load, manipulate, and store data (no “one-size-fits-all” abstraction). Below is a breakdown, with tips on reading the official documentation:</p>
+
+<h4 id="1-data-conversion-float--__m256">1. Data Conversion: <code class="language-plaintext highlighter-rouge">float</code> → <code class="language-plaintext highlighter-rouge">__m256</code></h4>
+<p>AVX instructions require data in the <code class="language-plaintext highlighter-rouge">__m256</code> format (8 floats per register). The <code class="language-plaintext highlighter-rouge">_mm256_set_ps</code> function initializes a <code class="language-plaintext highlighter-rouge">__m256</code> value:</p>
+
+<div style="text-align: center;">
+  <img alt="Intel Intrinsics Guide: _mm256_set_ps documentation" src="/assets/images/b71cef19712c4681b4f732398eee8176.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>As shown in the documentation, <code class="language-plaintext highlighter-rouge">_mm256_set_ps</code> accepts 1-8 single-precision floats. Examples from the code:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1">// Initialize 8 floats (note: reverse order in the function call)</span>
+<span class="n">vector2</span><span class="p">[</span><span class="n">i</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_set_ps</span><span class="p">(</span><span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">7</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">6</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">5</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">4</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">3</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">2</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">1</span> <span class="o">+</span> <span class="mi">1</span><span class="p">),</span>
+                               <span class="mf">2.5</span> <span class="o">*</span> <span class="p">(</span><span class="n">i</span> <span class="o">+</span> <span class="mi">0</span> <span class="o">+</span> <span class="mi">1</span><span class="p">));</span>
+
+<span class="c1">// Initialize all 8 floats to 0.0</span>
+<span class="n">result_simd</span><span class="p">[</span><span class="n">i</span> <span class="o">/</span> <span class="mi">8</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_set1_ps</span><span class="p">(</span><span class="mf">0.0</span><span class="p">);</span>
+</code></pre></div></div>
+
+<h4 id="2-simd-calculation">2. SIMD Calculation</h4>
+<p><code class="language-plaintext highlighter-rouge">_mm256_add_ps</code> performs parallel addition on 8 floats (one <code class="language-plaintext highlighter-rouge">__m256</code> register):</p>
+
+<div style="text-align: center;">
+  <img alt="Intel Intrinsics Guide: _mm256_add_ps documentation" src="/assets/images/43f2b027530549a6a114722322be5cc1.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>This is why the loop increments by 8 (<code class="language-plaintext highlighter-rouge">VECTOR_SIZE / 8</code>):</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">VECTOR_SIZE</span> <span class="o">/</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+   <span class="n">result_simd</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">_mm256_add_ps</span><span class="p">(</span><span class="n">vector1</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">vector2</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="3-data-conversion-__m256--float">3. Data Conversion: <code class="language-plaintext highlighter-rouge">__m256</code> → <code class="language-plaintext highlighter-rouge">float</code></h4>
+<p>After calculation, use <code class="language-plaintext highlighter-rouge">_mm256_storeu_ps</code> to extract 8 floats from a <code class="language-plaintext highlighter-rouge">__m256</code> register into a regular <code class="language-plaintext highlighter-rouge">float</code> array:</p>
+
+<div style="text-align: center;">
+  <img alt="Intel Intrinsics Guide: _mm256_storeu_ps documentation" src="/assets/images/0c76389cb62d4555822cf92f918df18c.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Example (extract 24 floats total):</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">_mm256_storeu_ps</span><span class="p">(</span><span class="n">temp</span><span class="p">,</span> <span class="n">result_simd</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>       <span class="c1">// Extract first 8 floats</span>
+<span class="n">_mm256_storeu_ps</span><span class="p">(</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">[</span><span class="mi">8</span><span class="p">],</span> <span class="n">result_simd</span><span class="p">[</span><span class="mi">1</span><span class="p">]);</span>    <span class="c1">// Extract next 8 floats</span>
+<span class="n">_mm256_storeu_ps</span><span class="p">(</span><span class="o">&amp;</span><span class="n">temp</span><span class="p">[</span><span class="mi">16</span><span class="p">],</span> <span class="n">result_simd</span><span class="p">[</span><span class="mi">2</span><span class="p">]);</span>   <span class="c1">// Extract next 8 floats</span>
+</code></pre></div></div>
+
+<h3 id="drawbacks-of-intrinsics">Drawbacks of Intrinsics</h3>
+<ul>
+  <li><strong>Verbose code</strong>: Manual data management (loading/storing) adds boilerplate.</li>
+  <li><strong>Requires manual optimization</strong>: You must handle instruction scheduling, memory alignment, and vectorization yourself.</li>
+</ul>
+
+<h2 id="the-simplest-approach-gccs-experimental-experimentalsimd">The Simplest Approach: GCC’s Experimental <code class="language-plaintext highlighter-rouge">&lt;experimental/simd&gt;</code></h2>
+<p>Another option is GCC’s experimental <code class="language-plaintext highlighter-rouge">&lt;experimental/simd&gt;</code> library.</p>
+<blockquote>
+  <p>The C++26 standard will introduce a standard SIMD library, but none of the four major compilers (GCC, Clang, MSVC, Apple Clang) have implemented it yet. In a few years, there may be a universal solution—but for now, no cross-compiler SIMD library exists.</p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="C++26 SIMD library status (not yet implemented)" src="/assets/images/b73bd939620d4bca8d3d3a97cf1a671e.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>Fortunately, most <code class="language-plaintext highlighter-rouge">&lt;cmath&gt;</code> functions have been reimplemented for SIMD, making this library suitable for most use cases.</p>
+
+<h3 id="example-simd-with-experimentalsimd">Example: SIMD with <code class="language-plaintext highlighter-rouge">&lt;experimental/simd&gt;</code></h3>
+<p>This method is far simpler. Below is an annotated example from cppreference.com:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;experimental/simd&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;string_view&gt;</span><span class="cp">
+</span><span class="k">namespace</span> <span class="n">stdx</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">experimental</span><span class="p">;</span>
+ 
+<span class="c1">// Helper function to print SIMD vectors</span>
+<span class="kt">void</span> <span class="nf">println</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">string_view</span> <span class="n">name</span><span class="p">,</span> <span class="k">auto</span> <span class="k">const</span><span class="o">&amp;</span> <span class="n">a</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">name</span> <span class="o">&lt;&lt;</span> <span class="s">": "</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">i</span><span class="p">{};</span> <span class="n">i</span> <span class="o">!=</span> <span class="n">std</span><span class="o">::</span><span class="n">size</span><span class="p">(</span><span class="n">a</span><span class="p">);</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">a</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">&lt;&lt;</span> <span class="sc">' '</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+<span class="p">}</span>
+ 
+<span class="c1">// SIMD-enabled absolute value function</span>
+<span class="k">template</span><span class="o">&lt;</span><span class="k">class</span> <span class="nc">A</span><span class="p">&gt;</span>
+<span class="n">stdx</span><span class="o">::</span><span class="n">simd</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span> <span class="n">my_abs</span><span class="p">(</span><span class="n">stdx</span><span class="o">::</span><span class="n">simd</span><span class="o">&lt;</span><span class="kt">int</span><span class="p">,</span> <span class="n">A</span><span class="o">&gt;</span> <span class="n">x</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">where</span><span class="p">(</span><span class="n">x</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">x</span><span class="p">)</span> <span class="o">=</span> <span class="o">-</span><span class="n">x</span><span class="p">;</span> <span class="c1">// Apply operation to elements where condition is true</span>
+    <span class="k">return</span> <span class="n">x</span><span class="p">;</span>
+<span class="p">}</span>
+ 
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="c1">// stdx::native_simd&lt;int&gt;: SIMD array with compiler-determined size (matches hardware)</span>
+    <span class="k">const</span> <span class="n">stdx</span><span class="o">::</span><span class="n">native_simd</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="c1">// Set all elements to 1</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"a"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+ 	
+    <span class="c1">// Initialize elements with a lambda (value = index - 2)</span>
+    <span class="k">const</span> <span class="n">stdx</span><span class="o">::</span><span class="n">native_simd</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">b</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">;</span> <span class="p">});</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"b"</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+ 
+    <span class="c1">// SIMD vector addition (parallelized automatically)</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">c</span> <span class="o">=</span> <span class="n">a</span> <span class="o">+</span> <span class="n">b</span><span class="p">;</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"c"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+ 
+    <span class="c1">// Apply SIMD absolute value</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">d</span> <span class="o">=</span> <span class="n">my_abs</span><span class="p">(</span><span class="n">c</span><span class="p">);</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"d"</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+ 	
+    <span class="c1">// Element-wise multiplication (d[i] * d[i])</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">e</span> <span class="o">=</span> <span class="n">d</span> <span class="o">*</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"e"</span><span class="p">,</span> <span class="n">e</span><span class="p">);</span>
+ 	
+    <span class="c1">// Reduce: sum all elements of e (inner product of d with itself)</span>
+    <span class="k">const</span> <span class="k">auto</span> <span class="n">inner_product</span> <span class="o">=</span> <span class="n">stdx</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"inner product: "</span> <span class="o">&lt;&lt;</span> <span class="n">inner_product</span> <span class="o">&lt;&lt;</span> <span class="sc">'\n'</span><span class="p">;</span>
+ 	
+    <span class="c1">// stdx::fixed_size_simd: SIMD array with user-specified size (16 elements of long double)</span>
+    <span class="k">const</span> <span class="n">stdx</span><span class="o">::</span><span class="n">fixed_size_simd</span><span class="o">&lt;</span><span class="kt">long</span> <span class="kt">double</span><span class="p">,</span> <span class="mi">16</span><span class="o">&gt;</span> <span class="n">x</span><span class="p">([](</span><span class="kt">int</span> <span class="n">i</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">i</span><span class="p">;</span> <span class="p">});</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"x"</span><span class="p">,</span> <span class="n">x</span><span class="p">);</span>
+    <span class="c1">// SIMD-enabled math functions (cos, sin, pow)</span>
+    <span class="n">println</span><span class="p">(</span><span class="s">"cos²(x) + sin²(x)"</span><span class="p">,</span> <span class="n">stdx</span><span class="o">::</span><span class="n">pow</span><span class="p">(</span><span class="n">stdx</span><span class="o">::</span><span class="n">cos</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">2</span><span class="p">)</span> <span class="o">+</span> <span class="n">stdx</span><span class="o">::</span><span class="n">pow</span><span class="p">(</span><span class="n">stdx</span><span class="o">::</span><span class="n">sin</span><span class="p">(</span><span class="n">x</span><span class="p">),</span> <span class="mi">2</span><span class="p">));</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="compilation--execution-1">Compilation &amp; Execution</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>g++ <span class="nt">-std</span><span class="o">=</span>c++20 simd.cpp <span class="o">&amp;&amp;</span> ./a.out
+a: 1 1 1 1 
+b: <span class="nt">-2</span> <span class="nt">-1</span> 0 1 
+c: <span class="nt">-1</span> 0 1 2 
+d: 1 0 1 2 
+e: 1 0 1 4 
+inner product: 6
+x: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+cos²<span class="o">(</span>x<span class="o">)</span> + sin²<span class="o">(</span>x<span class="o">)</span>: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+</code></pre></div></div>
+
+<h4 id="controlling-native_simd-size">Controlling <code class="language-plaintext highlighter-rouge">native_simd</code> Size</h4>
+<p>The size of <code class="language-plaintext highlighter-rouge">native_simd</code> is determined by the target platform during compilation. To specify the instruction set (e.g., AVX2), add the <code class="language-plaintext highlighter-rouge">-mavx2</code> flag:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>g++ <span class="nt">-std</span><span class="o">=</span>c++20 simd.cpp <span class="nt">-mavx2</span> <span class="o">&amp;&amp;</span> ./a.out
+a: 1 1 1 1 1 1 1 1 
+b: <span class="nt">-2</span> <span class="nt">-1</span> 0 1 2 3 4 5 
+c: <span class="nt">-1</span> 0 1 2 3 4 5 6 
+d: 1 0 1 2 3 4 5 6 
+e: 1 0 1 4 9 16 25 36 
+inner product: 92
+x: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+cos²<span class="o">(</span>x<span class="o">)</span> + sin²<span class="o">(</span>x<span class="o">)</span>: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+</code></pre></div></div>
+
+<p>With AVX2, <code class="language-plaintext highlighter-rouge">native_simd&lt;int&gt;</code> uses 8 elements (matches AVX2’s 256-bit registers). For AVX (128-bit registers), use <code class="language-plaintext highlighter-rouge">-mavx</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>g++ <span class="nt">-std</span><span class="o">=</span>c++20 simd.cpp <span class="nt">-mavx</span> <span class="o">&amp;&amp;</span> ./a.out
+a: 1 1 1 1 
+b: <span class="nt">-2</span> <span class="nt">-1</span> 0 1 
+c: <span class="nt">-1</span> 0 1 2 
+d: 1 0 1 2 
+e: 1 0 1 4 
+inner product: 6
+x: 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 
+cos²<span class="o">(</span>x<span class="o">)</span> + sin²<span class="o">(</span>x<span class="o">)</span>: 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 1 
+</code></pre></div></div>
+
+<p>Other SIMD methods exist (e.g., Intel Compiler-specific extensions), but they are not compiler-agnostic. I rarely use the Intel Compiler, so I won’t cover them here—but I’ve included relevant resources in the references below.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><a href="https://www.intel.com/content/www/us/en/docs/intrinsics-guide/index.html">Intel® Intrinsics Guide</a>: Search for SIMD intrinsics and their documentation.</li>
+  <li><a href="https://en.cppreference.com/w/cpp/experimental/simd">SIMD library - cppreference.com</a>: Official documentation for <code class="language-plaintext highlighter-rouge">&lt;experimental/simd&gt;</code>.</li>
+  <li><a href="https://www.open-std.org/jtc1/sc22/wg21/docs/papers/2023/p2803r0.pdf">std::simd - Dr. Matthias Kretz</a>: 2023 PPT introducing C++’s upcoming standard SIMD library.</li>
+  <li><a href="https://www.intel.com/content/dam/develop/external/us/en/documents/18072-347603.pdf">Intel C++ Intrinsic Reference</a>: Comprehensive guide to Intel’s C++ intrinsics.</li>
+  <li><a href="https://chryswoods.com/vector_c++/README.html">Efficient Vectorisation with C++ - chryswoods.com</a>: Practical guide to vectorization in C++ (includes compiler setup and SIMD examples).
+    <blockquote>
+      <p>The first section covers parallel <code class="language-plaintext highlighter-rouge">for</code> loops (unrelated to SIMD but useful for parallel computing).</p>
+    </blockquote>
+  </li>
+  <li><a href="https://www.diehlpk.de/blog/modern-cpp/">Advanced Parallel Programming in C++ - Patrick Diehl et al.</a>: High-level overview of parallel computing in C++ (covers async programming, parallel algorithms, and HPX).</li>
+  <li><a href="http://const.me/articles/simd/simd.pdf">SIMD for C++ Developers - const.me</a>: Personal guide with excellent visual explanations of SIMD concepts:</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="SIMD visual explanation from const.me" src="/assets/images/81108810e30343dc880234abbc34a59b.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<ul>
+  <li><a href="https://www.cs.cmu.edu/afs/cs/academic/class/15210-f15/www/pasl.html">An Introduction to Parallel Computing in C++ - CMU</a>: Carnegie Mellon University’s guide to parallel computing (introduces a third-party library and core concepts).</li>
+  <li><a href="https://www.intel.com/content/www/us/en/docs/dpcpp-cpp-compiler/developer-guide-reference/2025-1/c-classes-and-simd-operations.html">C++ Classes and SIMD Operations - Intel® oneAPI DPC++/C++ Compiler Guide</a>: SIMD documentation for the Intel Compiler (relevant if you use it).</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
