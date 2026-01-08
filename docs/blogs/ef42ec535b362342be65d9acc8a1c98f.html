@@ -1,0 +1,567 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to Measure Execution Time with rdtsc and C/C++: Using Inline Assembly and Retrieving CPU TSC Clock Frequency</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This article is primarily an experimental exploration and intellectual exercise—a preliminary attempt to study implementations of time measurement and the use of inline assembly and assembly functions in C/C++. Unless you have specific use cases, do not use assembly instructions to implement this functionality. The Further Reading section lists alternative methods that do not require inline assembly.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to Measure Execution Time with rdtsc and C/C++: Using Inline Assembly and Retrieving CPU TSC Clock Frequency</h1>
+        <div class="bloginfo">
+            <p class="info">2024-04-22 ｜ <a href="/c.html"> C</a> ｜ #Words: 3765 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/137979409"> 中文原版 </a></p>
+        </div>
+        <p>This article is primarily an experimental exploration and intellectual exercise—a preliminary attempt to study implementations of time measurement and the use of inline assembly and assembly functions in C/C++. Unless you have specific use cases, <strong>do not</strong> use assembly instructions to implement this functionality. The “Further Reading” section lists alternative methods that do not require inline assembly.</p>
+
+<p>I wrote this article because while researching for <a href="/blogs/91462bb2f64aea5546c615a3d10811c9.html">High-Precision Time Measurement in C/C++ on Windows: A Guide to QPC (QueryPerformanceCounter)</a>, I discovered insights into how time measurement works. Out of curiosity, I conducted research and practical experiments on this topic.</p>
+
+<p>Regarding platforms and systems: this article only tests on <strong>X86-based macOS</strong>. However, since we use inline assembly (not kernel-level system calls), the macOS approach should theoretically work on Linux—though I have not tested this (I lack access to an X86 Linux device).</p>
+
+<p>If you want to implement this on Windows:</p>
+<ul>
+  <li>Import <code class="language-plaintext highlighter-rouge">intrin.h</code> and use <code class="language-plaintext highlighter-rouge">__rdtsc()</code> and <code class="language-plaintext highlighter-rouge">__cpuid()</code> (these intrinsic functions are equivalent to most of the inline assembly in this article).</li>
+  <li><strong>Avoid inline assembly</strong> on Windows: Visual Studio’s inline assembly is far more complex than GCC/Clang’s. For compatibility, Microsoft’s intrinsic functions are the better choice. While this article does not provide Windows-specific code, the “Further Reading” section includes resources to help you implement it yourself.</li>
+</ul>
+
+<blockquote>
+  <p>I originally planned to cover Windows, but omitted it for brevity. Overly long blog posts are inconvenient for both readers and authors (a personal preference).</p>
+</blockquote>
+
+<h2 id="core-concept">Core Concept</h2>
+<p>The time measurement approach in this article works by:</p>
+<ol>
+  <li>Calculating the difference between two TSC (Time-Stamp Counter) readings.</li>
+  <li>Dividing the difference by the TSC frequency to get the elapsed time.</li>
+</ol>
+
+<p>The timing error of this method mainly depends on the quality of the crystal oscillator—similar to <code class="language-plaintext highlighter-rouge">clock()</code>, but far more complex. Unlike <code class="language-plaintext highlighter-rouge">clock()</code> (which uses a simple 1 MHz denominator), the TSC frequency is not a fixed value.</p>
+
+<p>On x86 architectures, the most common timer is the CPU’s TSC. However, due to BIOS settings, TSC support, and other factors, popular timing functions typically use multiple timers to eliminate errors. This article does not go that far—we only use TSC counts and frequency for timing.</p>
+
+<p>Additionally, after reviewing numerous domestic and international articles, I noticed a <strong>significant shift in x86 TSC technology around 2014</strong> (personal observation). Early blogs, articles, and code describe methods and issues that are almost unrecognizable today. This timeline aligns with Intel’s official documentation on processor updates from that period.</p>
+
+<p>Many early articles (including on CSDN) covered TSC because assembly was a popular programming technique back then—widely used and studied. Today, high-level languages cover nearly all development scenarios, and assembly has faded from view. As a result, fewer people research assembly or low-level infrastructure implementations, leading to fewer such articles.</p>
+
+<h2 id="implementation-with-inline-assembly">Implementation with Inline Assembly</h2>
+<p>Pure assembly is rarely used in daily development, so we use <strong>inline assembly</strong> to reduce complexity and improve readability. Inline assembly also preserves the structure of assembly code, making it easy to convert to pure assembly if needed later.</p>
+
+<h3 id="step-1-verify-tsc-exists-and-is-invariant">Step 1: Verify TSC Exists and Is Invariant</h3>
+<p>First, confirm two critical points:</p>
+<ol>
+  <li>The CPU has a TSC.</li>
+  <li>The TSC is <strong>invariant</strong> (its frequency does not change with Turbo Boost, overheating, core switching, etc.).</li>
+</ol>
+
+<p>If the TSC is variable, this method cannot reliably measure time. If no TSC exists, further steps are unnecessary.</p>
+
+<h4 id="how-to-verify-tsc-existence">How to Verify TSC Existence</h4>
+<p>Check if <code class="language-plaintext highlighter-rouge">CPUID.1:EDX.TSC[bit 4] = 1</code>:</p>
+<ul>
+  <li>Initialize <code class="language-plaintext highlighter-rouge">EAX = 0x1</code> for the <code class="language-plaintext highlighter-rouge">CPUID</code> instruction.</li>
+  <li>Check bit 4 of the <code class="language-plaintext highlighter-rouge">EDX</code> register returned by <code class="language-plaintext highlighter-rouge">CPUID</code>. A value of <code class="language-plaintext highlighter-rouge">1</code> means TSC is supported.</li>
+</ul>
+
+<h4 id="how-to-verify-invariant-tsc">How to Verify Invariant TSC</h4>
+<p>Check if <code class="language-plaintext highlighter-rouge">CPUID.80000007H:EDX.InvariantTSC[bit 8] = 1</code>:</p>
+<ul>
+  <li>Initialize <code class="language-plaintext highlighter-rouge">EAX = 0x80000007</code> for the <code class="language-plaintext highlighter-rouge">CPUID</code> instruction.</li>
+  <li>Check bit 8 of the <code class="language-plaintext highlighter-rouge">EDX</code> register returned by <code class="language-plaintext highlighter-rouge">CPUID</code>. A value of <code class="language-plaintext highlighter-rouge">1</code> means invariant TSC is available.</li>
+</ul>
+
+<p>Inline assembly code:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#define BIT(nr) (1UL &lt;&lt; (nr)) // Macro to check bit nr (LSB = rightmost bit)
+</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">void</span> <span class="nf">isTSC</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">a</span><span class="o">=</span><span class="mh">0x1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">d</span> <span class="o">&amp;</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"TSC exist!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="n">a</span><span class="o">=</span><span class="mh">0x80000007</span><span class="p">;</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">d</span> <span class="o">&amp;</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Invariant TSC available!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="key-notes-on-the-code">Key Notes on the Code:</h4>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">static inline</code>: Used to improve performance, but may sometimes reduce performance (depending on the compilation pipeline). Use it at your discretion.</li>
+  <li>Inline assembly structure:
+    <pre><code class="language-asm">asm volatile ("cpuid"
+     : "=a" (a), "=b" (b), "=c" (c), "=d" (d)  // Output operands (registers → variables)
+     : "a" (a), "b" (b), "c" (c), "d" (d)       // Input operands (variables → registers)
+     );
+</code></pre>
+    <ul>
+      <li>The assembly is split by colons (<code class="language-plaintext highlighter-rouge">:</code>) into up to three parts: instructions, outputs, inputs (<strong>outputs first, then inputs</strong>).</li>
+      <li><code class="language-plaintext highlighter-rouge">a</code>/<code class="language-plaintext highlighter-rouge">b</code>/<code class="language-plaintext highlighter-rouge">c</code>/<code class="language-plaintext highlighter-rouge">d</code> represent the <code class="language-plaintext highlighter-rouge">eax</code>/<code class="language-plaintext highlighter-rouge">ebx</code>/<code class="language-plaintext highlighter-rouge">ecx</code>/<code class="language-plaintext highlighter-rouge">edx</code> registers (compatible across 32/64-bit architectures).</li>
+    </ul>
+  </li>
+  <li>Always declare all registers (even if unused): Omitting registers like <code class="language-plaintext highlighter-rouge">ebx</code>/<code class="language-plaintext highlighter-rouge">ecx</code> on macOS may cause memory access errors (e.g., when checking invariant TSC).</li>
+</ul>
+
+<p>Sample output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>TSC exist!
+Invariant TSC available!
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Important</strong>: This code uses print statements for demonstration. In production code, return a boolean value to check TSC availability (implemented in the full code below).</p>
+</blockquote>
+
+<h3 id="step-2-read-tsc-count-with-rdtsc">Step 2: Read TSC Count with <code class="language-plaintext highlighter-rouge">rdtsc</code></h3>
+<p>The TSC value is read via the <code class="language-plaintext highlighter-rouge">rdtsc</code> instruction, which loads the 64-bit TSC from the MSR (Model-Specific Register) into the <code class="language-plaintext highlighter-rouge">EDX:EAX</code> register pair:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">EDX</code>: High 32 bits of the TSC.</li>
+  <li><code class="language-plaintext highlighter-rouge">EAX</code>: Low 32 bits of the TSC.</li>
+</ul>
+
+<p>Wrapper function with inline assembly:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">rdtsc</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">;</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"rdtsc"</span> <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">high</span><span class="p">));</span>
+    <span class="k">return</span> <span class="n">low</span> <span class="o">|</span> <span class="p">(</span><span class="n">high</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">);</span> <span class="c1">// Combine high/low into 64-bit value</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Test the function:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">printf</span><span class="p">(</span><span class="s">"%llu</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">rdtsc</span><span class="p">());</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"%llu</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">rdtsc</span><span class="p">());</span>
+</code></pre></div></div>
+
+<p>Sample output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>13207359930699
+13207359964314
+</code></pre></div></div>
+
+<blockquote>
+  <p>If you’re curious about MSR, check out my blog post: <a href="https://blog.csdn.net/qq_33919450/article/details/138087399">What is an MSR (Model-Specific Register)? - ZhongUncle CSDN</a></p>
+</blockquote>
+
+<h3 id="step-3-get-tsc-frequency-via-cpuid">Step 3: Get TSC Frequency via <code class="language-plaintext highlighter-rouge">cpuid</code></h3>
+<p>Obtaining the TSC frequency is the most challenging part of this article—direct access to TSC values is restricted for security/readability reasons. We need to calculate it using <code class="language-plaintext highlighter-rouge">CPUID</code> data.</p>
+
+<h4 id="simplified-example-code">Simplified Example Code</h4>
+<p>First, here’s the code (we explain it in detail below):</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kr">inline</span> <span class="kt">uint32_t</span> <span class="nf">tsc_freq</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">a</span><span class="o">=</span><span class="mh">0x15</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"0"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"1"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"2"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"3"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    <span class="k">return</span> <span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="o">*</span><span class="mi">24000000</span><span class="p">;</span> <span class="c1">// 24000000 = core crystal clock (adjust for your CPU)</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h4 id="how-tsc-frequency-is-calculated">How TSC Frequency Is Calculated</h4>
+<p>The process is complex because TSC frequency calculation differs between old and new CPUs:</p>
+<blockquote>
+  <p>Many articles/books get TSC frequency via the kernel file <code class="language-plaintext highlighter-rouge">/sys/devices/system/cpu/cpu0/tsc_freq_khz</code>. This article <strong>does not use this method</strong> (see “References/Further Reading” for resources on this approach).</p>
+</blockquote>
+
+<h5 id="step-31-cpuid15h-return-values">Step 3.1: <code class="language-plaintext highlighter-rouge">CPUID.15H</code> Return Values</h5>
+<p>From Intel’s <em>Intel® 64 and IA-32 Architectures Software Developer Manuals (April 2021)</em>:</p>
+<blockquote>
+  <p>Table numbers may vary across manual versions.</p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="CPUID.15H Return Values from Intel SDM" src="/assets/images/51d83b79539c3eb2bcded22a1d400335.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">CPUID</code> instruction returns processor identification/feature info in the <code class="language-plaintext highlighter-rouge">EAX</code>, <code class="language-plaintext highlighter-rouge">EBX</code>, <code class="language-plaintext highlighter-rouge">ECX</code>, and <code class="language-plaintext highlighter-rouge">EDX</code> registers. The output depends on the <code class="language-plaintext highlighter-rouge">EAX</code> value (and sometimes <code class="language-plaintext highlighter-rouge">ECX</code>) before execution.</p>
+</blockquote>
+
+<p>In our code:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">EAX = 0x15</code> (15H)</li>
+  <li><code class="language-plaintext highlighter-rouge">ECX = 0x0</code></li>
+</ul>
+
+<h5 id="step-32-core-crystal-clock-frequency">Step 3.2: Core Crystal Clock Frequency</h5>
+<p>From Section 18.7.3 of the Intel manual:</p>
+<div style="text-align: center;">
+  <img alt="Core Crystal Clock Frequency Explanation" src="/assets/images/a43df53288fd94062df2081752d99512.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>Key takeaways from the diagram:</p>
+<ol>
+  <li>The nominal core crystal clock frequency is listed in <code class="language-plaintext highlighter-rouge">ECX</code> (fixed frequency, synchronized with the system clock).
+    <ul>
+      <li>Most modern CPUs (Skylake and later) or CPUs with scaled frequencies <strong>no longer list this value in <code class="language-plaintext highlighter-rouge">ECX</code></strong>.</li>
+      <li>If <code class="language-plaintext highlighter-rouge">ECX = 0</code>, use Table 18-85 to calculate TSC frequency.</li>
+    </ul>
+  </li>
+  <li><code class="language-plaintext highlighter-rouge">CPUID.15H</code> returns the core crystal clock ratio (numerator/denominator).</li>
+  <li>The formula calculates the nominal TSC frequency.</li>
+</ol>
+
+<p>Table 18-85 (for <code class="language-plaintext highlighter-rouge">ECX = 0</code>):</p>
+<div style="text-align: center;">
+  <img alt="Table 18-85 Core Crystal Clock Frequencies" src="/assets/images/7a90a18e287a273356508232ae4b86e9.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<h5 id="step-33-calculate-tsc-frequency-practical-example">Step 3.3: Calculate TSC Frequency (Practical Example)</h5>
+<p>Test on an Intel i5-8500B:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">CPUID.15H</code> returns: <code class="language-plaintext highlighter-rouge">eax=2</code>, <code class="language-plaintext highlighter-rouge">ebx=250</code>, <code class="language-plaintext highlighter-rouge">ecx=0</code>, <code class="language-plaintext highlighter-rouge">edx=0</code></li>
+  <li>Ratio: <code class="language-plaintext highlighter-rouge">ebx/eax = 250/2 = 125</code></li>
+  <li>Core crystal clock (from Table 18-85): <code class="language-plaintext highlighter-rouge">24 MHz</code></li>
+  <li>TSC frequency = <code class="language-plaintext highlighter-rouge">24 MHz × 125 = 3000 MHz</code> (matches the i5-8500B base frequency)</li>
+</ul>
+
+<p>Sample test results (<code class="language-plaintext highlighter-rouge">time</code> = TSC-calculated time; <code class="language-plaintext highlighter-rouge">duration</code> = <code class="language-plaintext highlighter-rouge">clock_gettime()</code> time):</p>
+<div style="text-align: center;">
+  <img alt="TSC vs clock_gettime() Test Result 1" src="/assets/images/82e08d872b3f384fd4696d65520ee9c3.png" style="box-shadow: 0px 0px 0px 0px; width: 25%;" />
+  <img alt="TSC vs clock_gettime() Test Result 2" src="/assets/images/781721738a40e3723fdf63c03b4fc0be.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>Multiple tests show a maximum error of less than 500 ns (results may vary by machine and environment).</p>
+
+<h5 id="step-34-cpuid-signature">Step 3.4: CPUID Signature</h5>
+<p>To determine the core crystal clock frequency (when <code class="language-plaintext highlighter-rouge">ECX = 0</code>), you need the <strong>CPUID signature</strong> (returned in <code class="language-plaintext highlighter-rouge">EAX</code> when <code class="language-plaintext highlighter-rouge">EAX = 0x1</code> for <code class="language-plaintext highlighter-rouge">CPUID</code>):</p>
+<div style="text-align: center;">
+  <img alt="CPUID Signature Structure" src="/assets/images/e7fd22a7dca4a4c4ace6a01e71869598.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>You only need the <strong>Model</strong> portion of the signature (not the full <code class="language-plaintext highlighter-rouge">EAX</code> value) for two reasons:</p>
+<ol>
+  <li>Most modern Intel Core/Xeon CPUs use a Family ID of <code class="language-plaintext highlighter-rouge">06H</code> (hex), which covers the processors in Table 18-85.</li>
+  <li>Only CPUs with Family ID <code class="language-plaintext highlighter-rouge">06H</code> lack core crystal clock info in <code class="language-plaintext highlighter-rouge">ECX</code> (all others list it directly).</li>
+</ol>
+
+<p>Family ID <code class="language-plaintext highlighter-rouge">06H</code> includes:</p>
+<div style="text-align: center;">
+  <img alt="Intel Processor Family ID 06H" src="/assets/images/4e1fcb7558958335ed5eaaa7292a781f.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Processors using Extended Family ID:</p>
+<div style="text-align: center;">
+  <img alt="Processors with Extended Family ID" src="/assets/images/224a96e2b46a93026dc01d87cb8ebdaf.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<h5 id="step-35-extract-the-cpu-model">Step 3.5: Extract the CPU Model</h5>
+<p>Code to get the CPU Model (combines Base Model and Extended Model):</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">cpu_model</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">a</span><span class="o">=</span><span class="mh">0x1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+    <span class="n">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="n">model</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">&gt;&gt;</span><span class="mi">4</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">0</span><span class="n">b1111</span><span class="p">;</span>        <span class="c1">// Extract Base Model (bits 7-4)</span>
+    <span class="kt">uint32_t</span> <span class="n">extend_model</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">)</span><span class="o">&amp;</span><span class="mi">0</span><span class="n">b1111</span><span class="p">;</span> <span class="c1">// Extract Extended Model (bits 19-16)</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">extend_model</span><span class="o">&lt;&lt;</span><span class="mi">4</span><span class="p">)</span> <span class="o">|</span> <span class="n">model</span><span class="p">;</span>      <span class="c1">// Combine into full Model ID</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p><strong>Warning</strong>: Do not use <code class="language-plaintext highlighter-rouge">a&amp;0b11110000</code>—this includes extra bits (bits 3-0) that you do not need.</p>
+</blockquote>
+
+<p>Sample output (i5-8500B):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>9e
+</code></pre></div></div>
+
+<h2 id="important-considerations">Important Considerations</h2>
+<h3 id="multicore-parallel-task-timing">Multicore Parallel Task Timing</h3>
+<p>Some articles claim TSC cannot measure multicore parallel tasks. This is likely due to:</p>
+<ul>
+  <li>Kernel implementation differences on certain systems.</li>
+  <li>Early CPU limitations.</li>
+</ul>
+
+<p>In modern CPUs (with invariant TSC), this is no longer an issue:</p>
+<ul>
+  <li>I tested with multicore parallel tasks written in ISPC.</li>
+  <li>TSC-based timing results are nearly identical to <code class="language-plaintext highlighter-rouge">clock_gettime()</code>.</li>
+</ul>
+
+<p>Sample result:</p>
+<div style="text-align: center;">
+  <img alt="Multicore Parallel Task Timing Result" src="/assets/images/044361ab7d164b5d9381a147ba1eedd4.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<h3 id="instruction-execution-order">Instruction Execution Order</h3>
+<p>Some developers worry about <code class="language-plaintext highlighter-rouge">rdtsc</code> being delayed or reordered by the CPU. From Intel’s documentation:</p>
+<div style="text-align: center;">
+  <img alt="RDTSC Execution Order Explanation" src="/assets/images/3256f7039dfdd7c4bdef7580e26e062f.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>Key points:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">RDTSC</code> is <strong>not a serializing instruction</strong>: It does not wait for all prior instructions to complete before reading the counter.</li>
+  <li>Subsequent instructions may execute before <code class="language-plaintext highlighter-rouge">RDTSC</code> finishes reading the counter.</li>
+  <li>The behavior depends on your application’s requirements (three scenarios are covered in the documentation).</li>
+</ul>
+
+<h2 id="full-code">Full Code</h2>
+<p>We use C++ standard library (<code class="language-plaintext highlighter-rouge">iostream</code>) for convenience (supports <code class="language-plaintext highlighter-rouge">uint32_t</code>, <code class="language-plaintext highlighter-rouge">bool</code>, etc.). For pure C, replace with <code class="language-plaintext highlighter-rouge">&lt;stdio.h&gt;</code>/<code class="language-plaintext highlighter-rouge">&lt;stdint.h&gt;</code> and adjust the code accordingly.</p>
+
+<p>I have organized both C and C++ versions in <a href="https://github.com/ZhongUncle/TSC_Timer">TSC_Timer - GitHub ZhongUncle</a> (clone and run directly).</p>
+
+<p>Full C++ code:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="cp">#define BIT(nr) (1UL &lt;&lt; (nr)) // Check bit nr (LSB = rightmost bit)
+</span>
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="nf">rdtsc</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="kt">long</span> <span class="n">low</span><span class="p">,</span> <span class="n">high</span><span class="p">;</span>
+    <span class="k">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"rdtsc"</span> <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">low</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">high</span><span class="p">));</span>
+    <span class="k">return</span> <span class="n">low</span> <span class="o">|</span> <span class="p">(</span><span class="n">high</span> <span class="o">&lt;&lt;</span> <span class="mi">32</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">bool</span> <span class="nf">isTSC</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">a</span><span class="o">=</span><span class="mh">0x1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+    <span class="k">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    <span class="k">if</span> <span class="p">((</span><span class="n">d</span> <span class="o">&amp;</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">4</span><span class="p">)))</span> <span class="p">{</span>
+        <span class="c1">// TSC exists</span>
+        <span class="n">a</span><span class="o">=</span><span class="mh">0x80000007</span><span class="p">;</span>
+        <span class="k">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+             <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+             <span class="o">:</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+             <span class="p">);</span>
+        <span class="k">if</span> <span class="p">((</span><span class="n">d</span> <span class="o">&amp;</span> <span class="n">BIT</span><span class="p">(</span><span class="mi">8</span><span class="p">)))</span> <span class="p">{</span>
+            <span class="c1">// Invariant TSC available</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="c1">// TSC does not exist</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="kt">int</span> <span class="nf">cpu_model</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">a</span><span class="o">=</span><span class="mh">0x1</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+    <span class="k">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    <span class="kt">uint32_t</span> <span class="n">model</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">&gt;&gt;</span><span class="mi">4</span><span class="p">)</span><span class="o">&amp;</span><span class="mb">0b1111</span><span class="p">;</span>
+    <span class="kt">uint32_t</span> <span class="n">extend_model</span> <span class="o">=</span> <span class="p">(</span><span class="n">a</span><span class="o">&gt;&gt;</span><span class="mi">16</span><span class="p">)</span><span class="o">&amp;</span><span class="mb">0b1111</span><span class="p">;</span>
+    
+    <span class="k">return</span> <span class="p">(</span><span class="n">extend_model</span><span class="o">&lt;&lt;</span><span class="mi">4</span><span class="p">)</span><span class="o">|</span><span class="n">model</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="k">static</span> <span class="kr">inline</span> <span class="kt">unsigned</span> <span class="kt">long</span> <span class="nf">tsc_freq</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">uint32_t</span> <span class="n">model</span> <span class="o">=</span> <span class="n">cpu_model</span><span class="p">();</span>
+    
+    <span class="kt">uint32_t</span> <span class="n">a</span><span class="o">=</span><span class="mh">0x15</span><span class="p">,</span> <span class="n">b</span><span class="p">,</span> <span class="n">c</span><span class="p">,</span> <span class="n">d</span><span class="p">;</span>
+    <span class="k">asm</span> <span class="k">volatile</span> <span class="p">(</span><span class="s">"cpuid"</span>
+         <span class="o">:</span> <span class="s">"=a"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"=b"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"=c"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"=d"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="o">:</span> <span class="s">"0"</span> <span class="p">(</span><span class="n">a</span><span class="p">),</span> <span class="s">"1"</span> <span class="p">(</span><span class="n">b</span><span class="p">),</span> <span class="s">"2"</span> <span class="p">(</span><span class="n">c</span><span class="p">),</span> <span class="s">"3"</span> <span class="p">(</span><span class="n">d</span><span class="p">)</span>
+         <span class="p">);</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">c</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">b</span> <span class="o">/</span> <span class="n">a</span> <span class="o">*</span> <span class="n">c</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">model</span> <span class="o">==</span> <span class="mh">0x55</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">b</span> <span class="o">/</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">25000000</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="n">model</span> <span class="o">==</span> <span class="mh">0x5c</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">b</span> <span class="o">/</span> <span class="n">a</span> <span class="o">*</span> <span class="mi">19200000</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">b</span><span class="o">/</span><span class="n">a</span><span class="o">*</span><span class="mi">24000000</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">int</span> <span class="n">argc</span><span class="p">,</span> <span class="k">const</span> <span class="kt">char</span> <span class="o">*</span> <span class="n">argv</span><span class="p">[])</span> <span class="p">{</span>
+    <span class="c1">// Check for reliable TSC</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isTSC</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"TSC is not exist or variant!"</span><span class="p">);</span>
+        <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Get TSC frequency</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">freq</span> <span class="o">=</span> <span class="n">tsc_freq</span><span class="p">();</span>
+    
+    <span class="c1">// Verify with clock_gettime</span>
+    <span class="k">struct</span> <span class="nc">timespec</span> <span class="n">start</span><span class="p">;</span>
+    <span class="n">clock_gettime</span><span class="p">(</span><span class="n">CLOCK_MONOTONIC</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">start</span><span class="p">);</span>
+    <span class="c1">// Get start TSC count</span>
+    <span class="kt">uint64_t</span> <span class="n">rdtsc1</span> <span class="o">=</span> <span class="n">rdtsc</span><span class="p">();</span>
+    
+    <span class="c1">// Test code for timing</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span><span class="o">=</span><span class="mi">0</span><span class="p">;</span> <span class="n">i</span><span class="o">&lt;</span><span class="mi">100</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"Hello, World!</span><span class="se">\n</span><span class="s">"</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Get end TSC count</span>
+    <span class="kt">uint64_t</span> <span class="n">rdtsc2</span> <span class="o">=</span> <span class="n">rdtsc</span><span class="p">();</span>
+    <span class="k">struct</span> <span class="nc">timespec</span> <span class="n">end</span><span class="p">;</span>
+    <span class="n">clock_gettime</span><span class="p">(</span><span class="n">CLOCK_MONOTONIC</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">end</span><span class="p">);</span>
+    
+    <span class="c1">// Calculate elapsed time (nanoseconds)</span>
+    <span class="kt">double</span> <span class="n">time</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">rdtsc2</span><span class="o">-</span><span class="n">rdtsc1</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="n">freq</span><span class="o">*</span><span class="mf">1e9</span><span class="p">;</span>
+    <span class="c1">// Print results</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"clock</span><span class="se">\t</span><span class="s"> = %llu cycles</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">rdtsc2</span><span class="o">-</span><span class="n">rdtsc1</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"freq</span><span class="se">\t</span><span class="s"> = %lu Hz</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">freq</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"TSC time = %.0f ns</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">time</span><span class="p">);</span>
+    
+    <span class="c1">// Calculate clock_gettime result (nanoseconds)</span>
+    <span class="kt">double</span> <span class="n">duration</span> <span class="o">=</span> <span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">end</span><span class="p">.</span><span class="n">tv_nsec</span><span class="o">-</span><span class="n">start</span><span class="p">.</span><span class="n">tv_nsec</span><span class="p">)</span> <span class="o">+</span> <span class="p">(</span><span class="kt">double</span><span class="p">)(</span><span class="n">end</span><span class="p">.</span><span class="n">tv_sec</span><span class="o">-</span><span class="n">start</span><span class="p">.</span><span class="n">tv_sec</span><span class="p">)</span><span class="o">*</span><span class="mf">1e9</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"duration = %.0f ns</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">duration</span><span class="p">);</span>
+    
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="further-reading">Further Reading</h2>
+<ul>
+  <li><a href="https://stackoverflow.com/questions/13772567/how-to-get-the-cpu-cycle-count-in-x86-64-from-c/51907627#comment135802869_51907627">How to get the CPU cycle count in x86_64 from C++? - Stack Overflow</a>: Top answer explaining <code class="language-plaintext highlighter-rouge">__rdtsc</code> for Linux/Windows.</li>
+  <li><a href="https://learn.microsoft.com/en-us/cpp/intrinsics/rdtsc?view=msvc-170">__rdtsc - Microsoft Learn</a>: Official docs for Microsoft’s <code class="language-plaintext highlighter-rouge">__rdtsc</code> intrinsic.</li>
+  <li><a href="https://blog.trailofbits.com/2019/10/03/tsc-frequency-for-all-better-profiling-and-benchmarking">TSC Frequency For All: Better Profiling and Benchmarking - Trail of Bits</a>: Uses <code class="language-plaintext highlighter-rouge">/sys/devices/system/cpu/cpu0/tsc_freq_khz</code> to get TSC frequency.</li>
+  <li><a href="https://stackoverflow.com/questions/35123379/getting-tsc-rate-from-x86-kernel/57835630#57835630">Getting TSC rate from x86 kernel - Stack Overflow</a>: High-level methods to get TSC frequency.</li>
+  <li><a href="https://learn.microsoft.com/en-us/cpp/assembler/inline/using-and-preserving-registers-in-inline-assembly?view=msvc-170">Using and Preserving Registers in Inline Assembly - Microsoft Learn</a>: Windows inline assembly best practices.</li>
+  <li><a href="https://www.softwareverify.com/blog/how-to-do-cpuid-and-rdtsc-on-32-bit-and-64-bit-windows/">How to do cpuid and rdtsc on 32 bit and 64 bit Windows - Stephen Kellett</a>: Windows-specific <code class="language-plaintext highlighter-rouge">cpuid</code>/<code class="language-plaintext highlighter-rouge">rdtsc</code> implementation.</li>
+</ul>
+
+<h2 id="references">References</h2>
+<p>I encountered many misleading resources during my research—here are the most reliable ones:</p>
+<ol>
+  <li><a href="https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html">Intel® 64 and IA-32 Architectures Software Developer Manuals</a>: Official Intel docs (very long—read the overview first, then only updates).</li>
+  <li><a href="https://gcc.gnu.org/onlinedocs/gcc/Extended-Asm.html">6.48.2 Extended Asm - GCC</a>: Official GCC inline assembly docs.</li>
+  <li><a href="https://wiki.osdev.org/Inline_Assembly/Examples">Inline Assembly/Examples - OS Dev</a>: Practical inline assembly examples.</li>
+</ol>
+
+<p><strong>Recommended to read these 4 together</strong>:</p>
+<ul>
+  <li><a href="https://www.felixcloutier.com/x86/cpuid">CPUID — CPU Identification - felixcloutier</a>: Online version of Intel SDM (CPUID details).</li>
+  <li><a href="https://wiki.osdev.org/CPUID">CPUID - OS Dev</a>: Detailed <code class="language-plaintext highlighter-rouge">cpuid</code> examples (no explanations).</li>
+  <li><a href="https://en.wikipedia.org/wiki/CPUID">CPUID - Wikipedia</a>: Quick reference for CPUID families/registers.</li>
+  <li><a href="https://blog.cubieserver.de/2018/query-cpuid-with-inline-assembly/">Query CPUID with Inline Assembly - Jack Henschel’s Blog</a>: Bachelor’s thesis summary (better examples than OS Dev).</li>
+</ul>
+
+<p>Other key resources:</p>
+<ul>
+  <li><a href="https://www.felixcloutier.com/x86/rdtsc">RDTSC — Read Time-Stamp Counter - felixcloutier</a>: <code class="language-plaintext highlighter-rouge">rdtsc</code> instruction details.</li>
+  <li><a href="https://stackoverflow.com/questions/23402701/function-asm-volatile-rdtsc">Function <strong>asm</strong> <strong>volatile</strong>(“rdtsc”); - Stack Overflow</a>: <code class="language-plaintext highlighter-rouge">rdtsc</code> inline assembly discussion.</li>
+  <li><a href="https://community.intel.com/t5/Software-Tuning-Performance/TSC-frequency-computation/m-p/1193432">TSC frequency computation - Intel Community</a>: TSC frequency precision issues on early CPUs.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
