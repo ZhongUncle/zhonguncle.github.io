@@ -1,0 +1,162 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Swift Command Line Development on macOS: Fix "Undefined Symbols for Architecture x86_64" Linker Error</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='However, since the core development team is relatively small, their focus remains on Apple’s Xcode and GUI development. When working outside of Xcode and GUI environments, various odd issues may pop up. I plan to publish several blog posts covering these issues in the coming days.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Swift Command Line Development on macOS: Fix "Undefined Symbols for Architecture x86_64" Linker Error</h1>
+        <div class="bloginfo">
+            <p class="info">2025-03-22 ｜ <a href="/xxx.html"> XXX</a> ｜ #Words: 457 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/146442731"> 中文原版 </a></p>
+        </div>
+        <p>Swift is primarily designed for Apple platforms, but it also supports development on Linux and Windows—especially for command-line applications, it works quite well.</p>
+
+<p>However, since the core development team is relatively small, their focus remains on Apple’s Xcode and GUI development. When working outside of Xcode and GUI environments, various odd issues may pop up. I plan to publish several blog posts covering these issues in the coming days.</p>
+
+<h2 id="linker-error-when-building-swift-projects-in-macos-command-line">Linker Error When Building Swift Projects in macOS Command Line</h2>
+<p>When building a Swift project via the command line on macOS, you may encounter the following linking error:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% swift build
+error: 'hello': Invalid manifest (compiled with: ["/Library/Developer/CommandLineTools/usr/bin/swiftc", "-vfsoverlay", "/var/folders/_j/f2g2qcw11379d43mq5rdj5jw0000gn/T/TemporaryDirectory.8ntpr4/vfs.yaml", "-L", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-lPackageDescription", "-Xlinker", "-rpath", "-Xlinker", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-target", "x86_64-apple-macosx13.0", "-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks", "-sdk", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", "-swift-version", "6", "-I", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-sdk", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", "-package-description-version", "6.0.0", "/Users/zhonguncle/Desktop/test/swift/hello/Package.swift", "-o", "/var/folders/_j/f2g2qcw11379d43mq5rdj5jw0000gn/T/TemporaryDirectory.X34Ik8/hello-manifest"])
+error: link command failed with exit code 1 (use -v to see invocation)
+Undefined symbols for architecture x86_64:
+  "PackageDescription.Package.__allocating_init(name: Swift.String, defaultLocalization: PackageDescription.LanguageTag?, platforms: [PackageDescription.SupportedPlatform]?, pkgConfig: Swift.String?, providers: [PackageDescription.SystemPackageProvider]?, products: [PackageDescription.Product], dependencies: [PackageDescription.Package.Dependency], targets: [PackageDescription.Target], swiftLanguageVersions: [PackageDescription.SwiftVersion]?, cLanguageStandard: PackageDescription.CLanguageStandard?, cxxLanguageStandard: PackageDescription.CXXLanguageStandard?) -&gt; PackageDescription.Package", referenced from:
+      _main in Package-1.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+error: 'hello': Invalid manifest (compiled with: ["/Library/Developer/CommandLineTools/usr/bin/swiftc", "-vfsoverlay", "/var/folders/_j/f2g2qcw11379d43mq5rdj5jw0000gn/T/TemporaryDirectory.E6a9BS/vfs.yaml", "-L", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-lPackageDescription", "-Xlinker", "-rpath", "-Xlinker", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-target", "x86_64-apple-macosx13.0", "-F", "/Library/Developer/CommandLineTools/Library/Developer/Frameworks", "-sdk", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", "-swift-version", "6", "-I", "/Library/Developer/CommandLineTools/usr/lib/swift/pm/ManifestAPI", "-sdk", "/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk", "-package-description-version", "6.0.0", "/Users/zhonguncle/Desktop/test/swift/hello/Package.swift", "-o", "/var/folders/_j/f2g2qcw11379d43mq5rdj5jw0000gn/T/TemporaryDirectory.sX9I7Q/hello-manifest"])
+error: link command failed with exit code 1 (use -v to see invocation)
+Undefined symbols for architecture x86_64:
+  "PackageDescription.Package.__allocating_init(name: Swift.String, defaultLocalization: PackageDescription.LanguageTag?, platforms: [PackageDescription.SupportedPlatform]?, pkgConfig: Swift.String?, providers: [PackageDescription.SystemPackageProvider]?, products: [PackageDescription.Product], dependencies: [PackageDescription.Package.Dependency], targets: [PackageDescription.Target], swiftLanguageVersions: [PackageDescription.SwiftVersion]?, cLanguageStandard: PackageDescription.CLanguageStandard?, cxxLanguageStandard: PackageDescription.CXXLanguageStandard?) -&gt; PackageDescription.Package", referenced from:
+      _main in Package-1.o
+ld: symbol(s) not found for architecture x86_64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+zhonguncle@ZhongUncle-Mac-mini hello % lipo -i your_private_sdk 
+fatal error: /Library/Developer/CommandLineTools/usr/bin/lipo: can't open input file: your_private_sdk (No such file or directory)
+</code></pre></div></div>
+
+<h2 id="root-cause">Root Cause</h2>
+<p>This issue likely arose because I corrupted some system files while uninstalling Xcode and building LLVM/Clang from source. Reinstalling Xcode or installing Clang/Swift via Homebrew did <strong>not</strong> resolve the problem in this case.</p>
+
+<h2 id="solution">Solution</h2>
+<p>It is recommended to install Xcode (if not already installed), then reset the toolchain with <code class="language-plaintext highlighter-rouge">sudo xcode-select --reset</code>—this will fix the issue:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% swift build              
+Fetching https://github.com/apple/swift-argument-parser from cache
+Fetching https://github.com/apple/example-package-figlet from cache
+Fetched https://github.com/apple/swift-argument-parser from cache (0.03s)
+Fetched https://github.com/apple/example-package-figlet from cache (0.03s)
+Creating working copy for https://github.com/apple/swift-argument-parser
+Working copy of https://github.com/apple/swift-argument-parser resolved at 1.5.0
+Creating working copy for https://github.com/apple/example-package-figlet
+Working copy of https://github.com/apple/example-package-figlet resolved at main (166eef4)
+Building for debugging...
+[63/63] Applying MyCLI
+Build complete! (24.41s)
+</code></pre></div></div>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
