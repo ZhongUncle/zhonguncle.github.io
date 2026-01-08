@@ -1,0 +1,243 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Measure Function Execution Time with C++20 chrono: Simplified Timing (System Clock & Steady Clock)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This method is less universal than the ones in my previous post, but it drastically reduces code volume (*way* less code).'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Measure Function Execution Time with C++20 chrono: Simplified Timing (System Clock & Steady Clock)</h1>
+        <div class="bloginfo">
+            <p class="info">2025-03-14 ｜ <a href="/c.html"> C</a> ｜ #Words: 1119 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/146254281"> 中文原版 </a></p>
+        </div>
+        <p>I previously wrote a blog post: <a href="/blogs/a6760ccfef5eb01bf90c7c638203b3ca.html">Measuring Function/Feature Execution Time in C/C++: Serial vs. Parallel, and Practical Comparison of Three Methods</a>. Recently, I discovered new capabilities of the <code class="language-plaintext highlighter-rouge">chrono</code> library.</p>
+
+<blockquote>
+  <p>While <code class="language-plaintext highlighter-rouge">chrono</code> was added in C++11, it saw little adoption back then—its design was incomplete, and it offered no advantages over other timing methods. Fortunately, C++20 introduced significant revisions that made it far more useful, leading to its growing prevalence in modern C++ code.<br />
+This article uses features exclusive to C++20—earlier versions may work but are not guaranteed.</p>
+</blockquote>
+
+<p>This method is less universal than the ones in my previous post, but it drastically reduces code volume (<em>way</em> less code).</p>
+
+<p>However, I can’t definitively say which approach is better or worse. Unlike the methods in my earlier blog (which I used extensively and understand their pros/cons thoroughly), this is just a record of <code class="language-plaintext highlighter-rouge">chrono</code> usage that I may update later. I’m writing this because <code class="language-plaintext highlighter-rouge">chrono</code> is appearing more frequently in modern C++ code—at the very least, you should understand how it works.</p>
+
+<blockquote>
+  <p>The word “chrono” is an abbreviation of “chronometer” (an astronomical clock). Another theory states it derives from the Greek word “chrónos”—in Greek mythology, Chrónos is the personification of time (Father Time).</p>
+</blockquote>
+
+<p>According to documentation, <code class="language-plaintext highlighter-rouge">chrono</code> can be seen as a successor to the older <code class="language-plaintext highlighter-rouge">time</code> library. Its primary feature is formatted time printing (unsurprising, as most modern languages have standardized time libraries, while C++’s traditional time utilities are outdated and overly complex). This makes its timing logic different from methods like <code class="language-plaintext highlighter-rouge">clock_gettime</code>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">chrono</code> measures time by capturing system clock values and calculating the difference.</li>
+  <li><code class="language-plaintext highlighter-rouge">clock_gettime</code> relies on hardware timers/counters on the device.</li>
+</ul>
+
+<p>Of course, you can also use counters with <code class="language-plaintext highlighter-rouge">chrono</code>—more on that later.</p>
+
+<blockquote>
+  <p>This article focuses on measuring elapsed time (execution duration). Formatted system time printing is not covered here.</p>
+</blockquote>
+
+<h2 id="measure-execution-time-with-system-clock">Measure Execution Time with System Clock</h2>
+<h3 id="verbose-version">Verbose Version</h3>
+<p>First, here’s the full, non-simplified code (included to explain the underlying mechanics; a simplified version follows):</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="c1"> // Added for std::cout/endl (omitted in original but required for compilation)</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">&gt;</span> <span class="n">start</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+
+    <span class="c1">// ... Code to be measured goes here</span>
+    
+    <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">time_point</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">&gt;</span> <span class="n">end</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">duration</span><span class="o">&lt;</span><span class="kt">double</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">nano</span><span class="o">&gt;</span>  <span class="n">elapsed</span> <span class="o">=</span> <span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">;</span>
+    <span class="c1">// Note: Use elapsed.count() (not just elapsed) to get the numerical value</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">elapsed</span><span class="p">.</span><span class="n">count</span><span class="p">()</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="explanation-of-the-verbose-code">Explanation of the Verbose Code</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">system_clock::now()</code> captures the current system time for start/end points. To use hardware counters instead, replace <code class="language-plaintext highlighter-rouge">system_clock</code> with <code class="language-plaintext highlighter-rouge">steady_clock</code> (example below).</li>
+  <li>The <code class="language-plaintext highlighter-rouge">std::chrono::duration&lt;double, std::nano&gt;</code> type defines the elapsed time:
+    <ul>
+      <li><code class="language-plaintext highlighter-rouge">double</code>: Uses double-precision floating-point for the value.</li>
+      <li><code class="language-plaintext highlighter-rouge">std::nano</code>: Sets the time unit to <strong>nanoseconds</strong> (a <code class="language-plaintext highlighter-rouge">std::ratio</code> constant).</li>
+    </ul>
+  </li>
+</ul>
+
+<p>This is where <code class="language-plaintext highlighter-rouge">chrono</code> differs from traditional methods: instead of manual unit conversions (which I always copy-paste—who writes them from scratch every time?), <code class="language-plaintext highlighter-rouge">std::nano</code> (and similar constants) handle units automatically. These constants represent ratios and can be replaced with other units (note: not all are time-related):</p>
+
+<div style="text-align: center;">
+  <img alt="std::ratio constants for unit conversion (chrono)" src="/assets/images/c454064c715545a3ba7dbdfb1237764b.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Important: These are <strong>ratios</strong>. For example, using <code class="language-plaintext highlighter-rouge">std::deci</code> (meaning 1/10) would return a value 10x the actual seconds—remember to divide by 10 when printing.</p>
+
+<blockquote>
+  <p>This is just an example—practically, you can use <code class="language-plaintext highlighter-rouge">std::nano</code> and divide by <code class="language-plaintext highlighter-rouge">1e9</code> to get seconds (equivalent to using <code class="language-plaintext highlighter-rouge">std::second</code>).</p>
+</blockquote>
+
+<h3 id="simplified-version-c20">Simplified Version (C++20)</h3>
+<p>C++20 simplifies this significantly. According to a C++ Foundation survey, only 30% of developers used C++20 in 2024—but modern C++ is evolving fast:</p>
+
+<div style="text-align: center;">
+  <img alt="C++20 adoption rate (2024 C++ Foundation survey)" src="/assets/images/51ba7ac90e6f485e817c1facbbb30495.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p><strong>You can simplify the code by using <code class="language-plaintext highlighter-rouge">auto</code> (stop obsessing over explicit types in C++20!)</strong>:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="c1">// Using std::literals lets you use `1s` for 1 second, `1ms` for 1 millisecond, etc.—extremely convenient</span>
+    <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">literals</span><span class="p">;</span>
+    
+    <span class="k">auto</span> <span class="n">start</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+
+    <span class="c1">// ... Code to be measured goes here</span>
+    
+    <span class="k">auto</span> <span class="n">end</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">system_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ms: "</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mx">1ms</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"s: "</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mx">1s</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Sample output:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>$ ./a.out 
+ms: 2317
+s: 2
+</code></pre></div></div>
+
+<p>This code is drastically shorter and eliminates manual unit conversion entirely!</p>
+
+<h2 id="measure-execution-time-with-hardware-counters-steady-clock">Measure Execution Time with Hardware Counters (Steady Clock)</h2>
+<p>Returning to <code class="language-plaintext highlighter-rouge">steady_clock</code> (hardware counter-based timing): simply replace <code class="language-plaintext highlighter-rouge">system_clock</code> with <code class="language-plaintext highlighter-rouge">steady_clock</code>. Here’s the simplified version:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;chrono&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">auto</span> <span class="n">start</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+ 
+    <span class="c1">// ... Code to be measured goes here</span>
+ 
+    <span class="k">auto</span> <span class="n">end</span> <span class="o">=</span> <span class="n">std</span><span class="o">::</span><span class="n">chrono</span><span class="o">::</span><span class="n">steady_clock</span><span class="o">::</span><span class="n">now</span><span class="p">();</span>
+    <span class="c1">// Time calculation works exactly like system_clock</span>
+    <span class="k">using</span> <span class="k">namespace</span> <span class="n">std</span><span class="o">::</span><span class="n">literals</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="s">"ms: "</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="n">end</span> <span class="o">-</span> <span class="n">start</span><span class="p">)</span> <span class="o">/</span> <span class="mx">1ms</span> <span class="o">&lt;&lt;</span> <span class="n">std</span><span class="o">::</span><span class="n">endl</span><span class="p">;</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>The time calculation logic is identical to the system clock method.</p>
+
+<h2 id="references">References</h2>
+<p><a href="https://en.cppreference.com/w/cpp/header/chrono">chrono - Standard library header - cppreference.com</a></p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

@@ -1,0 +1,211 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>High-Precision Time Measurement in C/C++ on Windows: A Guide to QPC (QueryPerformanceCounter)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='This article only covers native (Microsoft-provided) time measurement functions on Windows. Third-party high-precision time measurement libraries are not discussed here.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>High-Precision Time Measurement in C/C++ on Windows: A Guide to QPC (QueryPerformanceCounter)</h1>
+        <div class="bloginfo">
+            <p class="info">2024-04-15 ｜ <a href="/c.html"> C</a> ｜ #Words: 850 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/137643993"> 中文原版 </a></p>
+        </div>
+        <blockquote>
+  <p>Updated on April 11, 2024
+Thanks to commenters for pointing out that when I wrote <a href="/blogs/a6760ccfef5eb01bf90c7c638203b3ca.html">Measuring Function/Feature Execution Time in C/C++: Serial vs. Parallel, and Practical Comparison of Three Methods</a>, I only tested it on Unix-like systems such as Linux and macOS, and overlooked Windows compatibility.</p>
+</blockquote>
+
+<p>This article only covers <strong>native (Microsoft-provided)</strong> time measurement functions on Windows. Third-party high-precision time measurement libraries are not discussed here.</p>
+
+<p>The optimal method for high-precision time interval measurement on Windows is QPC (QueryPerformanceCounter).</p>
+
+<p>QPC is a <strong>Difference Clock</strong> that does not rely on external time references—unlike the absolute time (e.g., “2020/3/18 14:29:59”, also vividly called “wall-clock time”) we commonly use (similar to <code class="language-plaintext highlighter-rouge">clock()</code>). Additionally, QPC is unaffected by standard/system time adjustments, analogous to <code class="language-plaintext highlighter-rouge">CLOCK_MONOTONIC</code> in <code class="language-plaintext highlighter-rouge">clock_gettime()</code>.</p>
+
+<blockquote>
+  <p>QPC uses hardware counters to calculate time.
+On most x86-based devices, QPC measures time by accessing the processor’s TSC (Time Stamp Counter). However, the BIOS on some devices may misconfigure CPU features (e.g., setting TSC to variable mode), introducing external interference. For multi-processor systems, dual TSC sources may be unsynchronized. In such cases, Windows uses platform counters or other motherboard timers instead of TSC—adding an overhead of 0.8 to 1.0 microseconds.
+While QPC primarily uses TSC, Microsoft officially discourages directly retrieving TSC values via RDTSC/RDTSCP (the latter specifies a CPU core). This drastically reduces software compatibility (e.g., programs may fail or return large errors on systems with variable TSC or no TSC support).
+Most C/C++ compilers provide built-in functions like <code class="language-plaintext highlighter-rouge">__builtin_ia32_rdtsc()</code> or <code class="language-plaintext highlighter-rouge">__builtin_ia32_rdtscp()</code>, allowing you to get the counter value with <code class="language-plaintext highlighter-rouge">uint64_t rdtsc = rdtsc();</code> and calculate the difference (similar to <code class="language-plaintext highlighter-rouge">clock()</code>). However, you must compute the TSC frequency to get accurate time.
+<strong>TSC is just one mechanism—Windows 8 and later use multiple hardware counters to detect errors and apply compensation as much as possible.</strong></p>
+</blockquote>
+
+<p>QPC’s precision is two orders of magnitude lower than <code class="language-plaintext highlighter-rouge">clock_gettime()</code> (100 nanoseconds vs. 1 nanosecond), but this is sufficient for most practical scenarios.</p>
+
+<h2 id="qpc-usage-example">QPC Usage Example</h2>
+<p>Below is a practical example (the first line indicates the required header file):</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;windows.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">LARGE_INTEGER</span> <span class="n">StartingTime</span><span class="p">,</span> <span class="n">EndingTime</span><span class="p">,</span> <span class="n">ElapsedMicroseconds</span><span class="p">;</span>
+    <span class="n">LARGE_INTEGER</span> <span class="n">Frequency</span><span class="p">;</span>
+
+    <span class="n">QueryPerformanceFrequency</span><span class="p">(</span><span class="o">&amp;</span><span class="n">Frequency</span><span class="p">);</span> <span class="c1">// Get counter frequency</span>
+    <span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">StartingTime</span><span class="p">);</span> <span class="c1">// Record start time</span>
+	
+    <span class="c1">// ... Code to be measured goes here</span>
+
+    <span class="n">QueryPerformanceCounter</span><span class="p">(</span><span class="o">&amp;</span><span class="n">EndingTime</span><span class="p">);</span> <span class="c1">// Record end time</span>
+    <span class="c1">// Calculate and print time in microseconds (μs)</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">" %.1f us"</span><span class="p">,</span> <span class="mi">1000000</span><span class="o">*</span><span class="p">((</span><span class="kt">double</span><span class="p">)</span><span class="n">EndingTime</span><span class="p">.</span><span class="n">QuadPart</span> <span class="o">-</span> <span class="n">StartingTime</span><span class="p">.</span><span class="n">QuadPart</span><span class="p">)</span><span class="o">/</span> <span class="n">Frequency</span><span class="p">.</span><span class="n">QuadPart</span><span class="p">);</span>   
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="understanding-large_integer">Understanding <code class="language-plaintext highlighter-rouge">LARGE_INTEGER</code></h3>
+<p><code class="language-plaintext highlighter-rouge">LARGE_INTEGER</code> is a Windows union for storing 64-bit integers, defined as:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">typedef</span> <span class="k">union</span> <span class="n">_LARGE_INTEGER</span> <span class="p">{</span>
+  <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">DWORD</span> <span class="n">LowPart</span><span class="p">;</span> <span class="c1">// Lower 32 bits</span>
+    <span class="n">LONG</span>  <span class="n">HighPart</span><span class="p">;</span> <span class="c1">// Higher 32 bits</span>
+  <span class="p">}</span> <span class="n">DUMMYSTRUCTNAME</span><span class="p">;</span>
+  <span class="k">struct</span> <span class="p">{</span>
+    <span class="n">DWORD</span> <span class="n">LowPart</span><span class="p">;</span>
+    <span class="n">LONG</span>  <span class="n">HighPart</span><span class="p">;</span>
+  <span class="p">}</span> <span class="n">u</span><span class="p">;</span>
+  <span class="n">LONGLONG</span> <span class="n">QuadPart</span><span class="p">;</span> <span class="c1">// 64-bit integer (preferred if supported)</span>
+<span class="p">}</span> <span class="n">LARGE_INTEGER</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Use <code class="language-plaintext highlighter-rouge">QuadPart</code> if your compiler natively supports 64-bit integers; otherwise, use <code class="language-plaintext highlighter-rouge">LowPart</code> + <code class="language-plaintext highlighter-rouge">HighPart</code>. The example above uses <code class="language-plaintext highlighter-rouge">QuadPart</code> to read the 64-bit counter value.</p>
+
+<blockquote>
+  <p>If you’re unfamiliar with unions, refer to my blog: <a href="/blogs/1c5afcf8b5da5cde7fec78f0491280e7.html">What is Union? Where do I need to use it?</a></p>
+</blockquote>
+
+<h3 id="key-functions-explained">Key Functions Explained</h3>
+<ol>
+  <li><code class="language-plaintext highlighter-rouge">QueryPerformanceFrequency</code>: Retrieves the hardware counter’s oscillator frequency (required for converting counts to time).</li>
+  <li><code class="language-plaintext highlighter-rouge">QueryPerformanceCounter</code>: Captures the current counter value at the start/end of the measured code.</li>
+  <li>Time calculation formula:<br />
+<code class="language-plaintext highlighter-rouge">(EndingCount - StartingCount) / Frequency</code><br />
+The <code class="language-plaintext highlighter-rouge">1000000</code> multiplier converts the result to microseconds—use <code class="language-plaintext highlighter-rouge">1000</code> for milliseconds or <code class="language-plaintext highlighter-rouge">1000000000</code> for nanoseconds.</li>
+</ol>
+
+<h3 id="precision-notes">Precision Notes</h3>
+<p>QPC’s 100-nanosecond precision means the last two digits of nanosecond values are always <code class="language-plaintext highlighter-rouge">0</code> (see screenshot below):</p>
+
+<div style="text-align: center;">
+  <img alt="QPC nanosecond precision limitation (last two digits are 0)" src="/assets/images/9b2b3615282b556b4d6784dfe7db56f8.png" style="box-shadow: 0px 0px 0px 0px; width: 100%;" />
+</div>
+
+<p>Use appropriate format specifiers:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">%.1f</code> for microseconds (1 decimal place)</li>
+  <li><code class="language-plaintext highlighter-rouge">%.f</code>/<code class="language-plaintext highlighter-rouge">%.0f</code> for nanoseconds (no decimal places)</li>
+</ul>
+
+<p>Additional decimal places exceed QPC’s precision (though you may use them for alignment if needed).</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="referencesfurther-reading">References/Further Reading</h2>
+<ul>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps">Acquiring high-resolution time stamps - Microsoft Learn</a>: Official guide to high-precision time retrieval on Windows. The <a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/acquiring-high-resolution-time-stamps#resolution-precision-accuracy-and-stability">Resolution, Precision, Accuracy, and Stability</a> section explains error sources in hardware counter-based time measurement (highly recommended).</li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/sysinfo/time">Time - Microsoft Learn</a>: Comprehensive overview of time-related functions on Windows.</li>
+  <li><a href="https://learn.microsoft.com/en-us/windows/win32/api/winnt/ns-winnt-large_integer-r1">LARGE_INTEGER union (winnt.h) - Microsoft Learn</a>: Official documentation for <code class="language-plaintext highlighter-rouge">LARGE_INTEGER</code>.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
