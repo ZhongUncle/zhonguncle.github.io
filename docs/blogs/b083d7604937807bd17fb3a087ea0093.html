@@ -1,0 +1,395 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Formatting C/C++ Code in VS Code: Presets, Key-Value Pairs, and .clang-format Configuration</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Microsoft’s official C/C++ extension for VS Code offers features like syntax highlighting, library recognition, and—most importantly for this article—code formatting. Code formatting automatically adjusts your code to follow a specific standard, making it easier to read. In many large projects, formatting code to meet project standards is required before submission (though some projects use custom formatters, which we won’t discuss here).'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Formatting C/C++ Code in VS Code: Presets, Key-Value Pairs, and .clang-format Configuration</h1>
+        <div class="bloginfo">
+            <p class="info">2025-05-07 ｜ <a href="/c.html"> C</a> ｜ #Words: 1878 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/147739687"> 中文原版 </a></p>
+        </div>
+        <p>Microsoft’s official C/C++ extension for VS Code offers features like syntax highlighting, library recognition, and—most importantly for this article—code formatting. Code formatting automatically adjusts your code to follow a specific standard, making it easier to read. In many large projects, formatting code to meet project standards is required before submission (though some projects use custom formatters, which we won’t discuss here).</p>
+
+<p>However, the default formatting may not meet your needs. While you could spend time writing a ClangFormat configuration file (since VS Code uses ClangFormat under the hood), most people don’t need such depth—they only want to tweak a few parameters. For that reason, we’ll cover the configuration file method last.</p>
+
+<h2 id="settings-location">Settings Location</h2>
+<p>First, you need to know where to adjust the formatting settings. Go to the extension’s settings and look for the “Formatting” section:</p>
+
+<div style="text-align: center;">
+  <img alt="Formatting section in VS Code C/C++ extension settings" src="/assets/images/867f4596591a408b8024f50e15d851ba.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>Here, you’ll find three ways to configure code formatting:</p>
+<ol>
+  <li><strong>Presets</strong>: Includes <code class="language-plaintext highlighter-rouge">Visual Studio</code> (default), <code class="language-plaintext highlighter-rouge">LLVM</code>, <code class="language-plaintext highlighter-rouge">Google</code>, <code class="language-plaintext highlighter-rouge">Chromium</code>, <code class="language-plaintext highlighter-rouge">Mozilla</code>, <code class="language-plaintext highlighter-rouge">WebKit</code>, <code class="language-plaintext highlighter-rouge">Microsoft</code>, <code class="language-plaintext highlighter-rouge">GNU</code>, and <code class="language-plaintext highlighter-rouge">none</code>.</li>
+  <li><strong>Key-Value Pairs</strong>: A more granular approach using <code class="language-plaintext highlighter-rouge">{key: value, ...}</code> to adjust specific parameters (builds on presets).</li>
+  <li><strong>.clang-format Configuration File</strong>: VS Code uses this if it exists; otherwise, it falls back to the extension’s settings.</li>
+</ol>
+
+<p>Below, we’ll explain the differences and details of each method.</p>
+
+<h2 id="demo-code">Demo Code</h2>
+<p>We’ll use the following messy code to demonstrate formatting changes—it’s short and clearly shows the impact of different settings:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span><span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+<span class="p">}</span><span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="1-presets">1. Presets</h2>
+<p>We’ll only cover the most commonly used presets—feel free to experiment with the others on your own.</p>
+
+<h3 id="visual-studio-default">Visual Studio (Default)</h3>
+<p>The default preset is <code class="language-plaintext highlighter-rouge">Visual Studio</code>. To format the entire document:</p>
+<ol>
+  <li>Right-click in the editor.</li>
+  <li>Select “Format Document” (as shown below):</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Format Document option in VS Code right-click menu" src="/assets/images/fc065b73c773405e9477712b050102d5.png" style="box-shadow: 0px 0px 0px 0px; width: 25%;" />
+</div>
+
+<p>Formatted result:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Key features:</p>
+<ul>
+  <li>4-space indentation.</li>
+  <li>Braces on new lines (known as <strong>Allman style</strong> or <strong>BSD style</strong> in ClangFormat).</li>
+</ul>
+
+<h3 id="llvm">LLVM</h3>
+<p>Using the <code class="language-plaintext highlighter-rouge">LLVM</code> preset:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Key features:</p>
+<ul>
+  <li>Braces on the same line as the statement.</li>
+  <li>Only 1-space indentation (not recommended for readability).</li>
+</ul>
+
+<p>Even though Clang and its tools are developed by LLVM, LLVM has its own formatting defaults—this preset is not recommended for most projects.</p>
+
+<h3 id="gnu">GNU</h3>
+<p>The <code class="language-plaintext highlighter-rouge">GNU</code> preset has a unique style:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span>
+<span class="nf">main</span> <span class="p">()</span>
+<span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Key features:</p>
+<ul>
+  <li>2-space indentation.</li>
+  <li>Braces on new lines.</li>
+  <li>Function names split onto separate lines (unconventional for most modern C/C++ projects).</li>
+</ul>
+
+<h4 id="a-note-on-indentation">A Note on Indentation</h4>
+<p>Let’s dive deeper into indentation—relevant here because GNU is closely tied to Linux, and VS Code lacks a Linux-specific preset:</p>
+<ul>
+  <li>For most languages, 2 or 4 spaces provide the best readability.</li>
+  <li>While “indentation” and “Tab” are technically different, they are often used interchangeably. To understand this, you need to grasp the concept of a “tab stop”—see my blog post: <a href="https://blog.csdn.net/qq_33919450/article/details/119022248">What is a tab stop? - ZhongUncle’s CSDN</a></li>
+  <li>Linus Torvalds (creator of Linux) advocates for 8-space indentation, calling 4 or 2 spaces “heretical”—a very traditional view (Vim defaults to 8 spaces). From the Linux kernel documentation (<a href="https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/coding-style.rst">root/Documentation/process/coding-style.rst</a>):
+    <blockquote>
+      <p>Tabs are 8 characters, and thus indentations are also 8 characters. There are heretic movements that try to make indentations 4 (or even 2!) characters deep, and that is akin to trying to define the value of PI to be 3.</p>
+    </blockquote>
+  </li>
+  <li>3 spaces is also a viable middle ground (not too many, not too few)—we’ll see an example later.</li>
+</ul>
+
+<h3 id="google">Google</h3>
+<p>The <code class="language-plaintext highlighter-rouge">Google</code> preset is similar to <code class="language-plaintext highlighter-rouge">LLVM</code>:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+  <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+  <span class="p">}</span>
+  <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Key features:</p>
+<ul>
+  <li>Braces on the same line as the statement.</li>
+  <li>2-space indentation (more readable than LLVM’s 1-space).</li>
+</ul>
+
+<p>That covers the main presets—let’s move to more customizable options.</p>
+
+<h2 id="2-key-value-pairs">2. Key-Value Pairs</h2>
+<p>The extension’s settings provide a sample key-value pair configuration:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{ BasedOnStyle: LLVM, UseTab: Never, IndentWidth: 4, TabWidth: 4, BreakBeforeBraces: Allman, AllowShortIfStatementsOnASingleLine: false, IndentCaseLabels: false, ColumnLimit: 0, AccessModifierOffset: -4, NamespaceIndentation: All, FixNamespaceComments: false }
+</code></pre></div></div>
+
+<p>To improve readability, we’ve formatted it with line breaks:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{ 
+    BasedOnStyle: LLVM, 
+    UseTab: Never, 
+    IndentWidth: 4, 
+    TabWidth: 4, 
+    BreakBeforeBraces: Allman, 
+    AllowShortIfStatementsOnASingleLine: false, 
+    IndentCaseLabels: false, 
+    ColumnLimit: 0, 
+    AccessModifierOffset: -4, 
+    NamespaceIndentation: All, 
+    FixNamespaceComments: false
+}
+</code></pre></div></div>
+
+<p>This configuration builds on the <code class="language-plaintext highlighter-rouge">LLVM</code> preset and overrides specific parameters. Let’s test it:</p>
+
+<p>Formatted result:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span>
+    <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Compared to the default <code class="language-plaintext highlighter-rouge">LLVM</code> preset, the indentation is now 4 spaces (controlled by these lines):</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>IndentWidth: 4, 
+TabWidth: 4, 
+</code></pre></div></div>
+
+<p>To move braces back to the same line as the statement, change <code class="language-plaintext highlighter-rouge">BreakBeforeBraces</code> to <code class="language-plaintext highlighter-rouge">Attach</code>:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>BreakBeforeBraces: Attach, 
+</code></pre></div></div>
+
+<p>Updated result:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We won’t cover all parameters here (we don’t want to repeat the official documentation). For a complete list of options, see <a href="https://clang.llvm.org/docs/ClangFormatStyleOptions.html">Clang-Format Style Options</a>.</p>
+
+<h2 id="3-clang-format-configuration-file">3. .clang-format Configuration File</h2>
+<p>The <code class="language-plaintext highlighter-rouge">.clang-format</code> file (YAML format) is the most flexible option—place it in your project’s root directory:</p>
+
+<div style="text-align: center;">
+  <img alt="Creating a .clang-format file in the project root directory" src="/assets/images/d2e20fbbe2564e528aa9a511ef55e4f1.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>The configuration is similar to the key-value pair method but uses YAML syntax. For example:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">Language</span><span class="pi">:</span> <span class="s">Cpp</span>
+<span class="na">BasedOnStyle</span><span class="pi">:</span> <span class="s">LLVM</span>
+<span class="na">UseTab</span><span class="pi">:</span> <span class="s">Never</span>
+<span class="na">IndentWidth</span><span class="pi">:</span> <span class="m">3</span>
+<span class="na">TabWidth</span><span class="pi">:</span> <span class="m">3</span>
+<span class="na">BreakBeforeBraces</span><span class="pi">:</span> <span class="s">Attach</span>
+<span class="na">AllowShortIfStatementsOnASingleLine</span><span class="pi">:</span> <span class="kc">false</span>
+<span class="na">IndentCaseLabels</span><span class="pi">:</span> <span class="kc">false</span>
+<span class="na">ColumnLimit</span><span class="pi">:</span> <span class="m">0</span>
+<span class="na">AccessModifierOffset</span><span class="pi">:</span> <span class="s">-4</span>
+<span class="na">NamespaceIndentation</span><span class="pi">:</span> <span class="s">All</span>
+<span class="na">FixNamespaceComments</span><span class="pi">:</span> <span class="kc">false</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>Formatted result (note the 3-space indentation):</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;iostream&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+   <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">5</span><span class="p">;</span> <span class="o">++</span><span class="n">i</span><span class="p">)</span> <span class="p">{</span>
+      <span class="n">std</span><span class="o">::</span><span class="n">cout</span> <span class="o">&lt;&lt;</span> <span class="n">i</span> <span class="o">&lt;&lt;</span> <span class="s">" "</span><span class="p">;</span>
+   <span class="p">}</span>
+   <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h3 id="multi-language-support">Multi-Language Support</h3>
+<p>You can configure formatting for different languages in a single <code class="language-plaintext highlighter-rouge">.clang-format</code> file. Example from the official documentation:</p>
+<div class="language-yaml highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nn">---</span>
+<span class="na">Language</span><span class="pi">:</span> <span class="s">Cpp</span>
+<span class="c1"># Force pointers to the type for C++.</span>
+<span class="na">DerivePointerAlignment</span><span class="pi">:</span> <span class="kc">false</span>
+<span class="na">PointerAlignment</span><span class="pi">:</span> <span class="s">Left</span>
+<span class="nn">---</span>
+<span class="na">Language</span><span class="pi">:</span> <span class="s">JavaScript</span>
+<span class="c1"># Use 100 columns for JS.</span>
+<span class="na">ColumnLimit</span><span class="pi">:</span> <span class="m">100</span>
+<span class="nn">---</span>
+</code></pre></div></div>
+
+<p>This is incredibly useful for large projects with mixed languages.</p>
+
+<p>For all available settings, refer to the official ClangFormat documentation.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><a href="https://clang.llvm.org/docs/ClangFormatStyleOptions.html">Clang-Format Style Options - Clang 21.0.0git documentation</a>: Core reference—VS Code’s formatting is powered by ClangFormat.</li>
+  <li><a href="https://www.gnu.org/prep/standards/">GNU coding standards - GNU Project</a>: GNU’s official coding style guide.</li>
+  <li><a href="https://docs.kernel.org/process/coding-style.html#codingstyle">Linux kernel coding style - The Linux Kernel</a>: Linux kernel’s coding style guide (highly recommended over GNU’s).</li>
+</ul>
+
+<p>While GNU and Linux have a complex relationship (and GNU has made significant contributions), Linux’s coding style documentation is far more accessible. As Linus Torvalds writes in the Linux guide:</p>
+<blockquote>
+  <p>First off, I’d suggest printing out a copy of the GNU coding standards, and NOT read it. Burn them, it’s a great symbolic gesture.</p>
+</blockquote>
+
+<p>Coincidentally, the two Linus quotes we referenced are nearly adjacent in the document:</p>
+
+<div style="text-align: center;">
+  <img alt="Adjacent Linus quotes in the Linux kernel coding style documentation" src="/assets/images/b692741967d1431c9b78ddb131566544.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Coding styles are subjective—different projects use different standards, and no style is inherently “better” than others. Large companies like Google and Apple also have their own guidelines. If we had to recommend one guide to read first, it would be the Linux kernel’s—it’s concise, includes examples, and explains the “why” behind the rules. The others are easier to understand once you have a foundational grasp of coding style principles.</p>
+
+<ul>
+  <li><a href="https://clang.llvm.org/docs/ClangFormat.html">ClangFormat - Clang 21.0.0git documentation</a>: Official ClangFormat documentation (covers structure and command-line usage).</li>
+  <li><a href="https://www.youtube.com/watch?v=gybQtWGvupM">Lightning Talk: How Far Should You Indent Your Code? - The Number Of The Counting - Dave Steffen - CppCon</a>: A short, entertaining video about indentation. Example slide from the video:</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="Slide from CppCon talk on code indentation" src="/assets/images/b8c8c3e4b45d4be2a77c727ed0b5891d.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
