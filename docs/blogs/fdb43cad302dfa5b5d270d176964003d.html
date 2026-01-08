@@ -1,0 +1,154 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to Set Options and Arguments of Command Line Programs in Xcode via Scheme</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='You could test the program in a separate terminal, but this is cumbersome. Instead, you can set options and arguments directly by modifying the Xcode Scheme—this eliminates the need to retype commands (or switch windows and use arrow keys) every time you run the program.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to Set Options and Arguments of Command Line Programs in Xcode via Scheme</h1>
+        <div class="bloginfo">
+            <p class="info">2025-03-22 ｜ <a href="/swift.html"> Swift</a> ｜ #Words: 287 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/146444677"> 中文原版 </a></p>
+        </div>
+        <p>When writing command-line programs in Xcode, you can enter text in the bottom console area, but <strong>you cannot input options or arguments</strong> there, as shown below:</p>
+
+<div style="text-align: center;">
+  <img alt="Xcode console area where options/arguments cannot be input" src="/assets/images/936f6d093cfc466bb0880e18f43f7395.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>You could test the program in a separate terminal, but this is cumbersome. Instead, you can set options and arguments directly by modifying the Xcode Scheme—this eliminates the need to retype commands (or switch windows and use arrow keys) every time you run the program.</p>
+
+<h2 id="step-by-step-guide">Step-by-Step Guide</h2>
+<ol>
+  <li>Click the Scheme editor button (as shown below) or use the shortcut <code class="language-plaintext highlighter-rouge">Command+&lt;</code> ( <code class="language-plaintext highlighter-rouge">&lt;</code> is typed by pressing <code class="language-plaintext highlighter-rouge">Shift+,</code>—sometimes written as <code class="language-plaintext highlighter-rouge">Command+Shift+,</code>):</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Xcode Scheme editor button location" src="/assets/images/1d6a8838b2064c1ca1750164ad265487.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<ol>
+  <li>In the Scheme settings, add your desired options and arguments (you can also set environment variables here):</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Xcode Scheme settings for adding options and arguments" src="/assets/images/ea01ffd8d6c64d8280c7e718cfdcb095.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<h2 id="important-note">Important Note</h2>
+<p>The entries here represent <strong>multiple options/arguments for a single command</strong> (not two separate commands). This setup lets you easily enable/disable options by checking/unchecking them.</p>
+
+<p>For example, the two entries in the screenshot above correspond to the command:<br />
+<code class="language-plaintext highlighter-rouge">ascii-print --input1 123 --input2 abc</code></p>
+
+<div style="text-align: center;">
+  <img alt="Terminal command equivalent to Scheme settings" src="/assets/images/6c57618c0ed948c3a5a3823ce32b00f0.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>I hope this helps anyone who might need it~</p>
+
+<h2 id="references">References</h2>
+<p><a href="https://developer.apple.com/documentation/xcode/customizing-the-build-schemes-for-a-project">Customizing the build schemes for a project - Apple Developer Documentation</a>: Official Apple guide on editing Xcode Schemes.</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
