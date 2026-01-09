@@ -1,0 +1,383 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>What Is Hamming Code? A Deep Dive into Error Detection and Correction</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='I first learned about Hamming codes a few yedars ago when I watched 3Blue1Brown’s video. I then looked into Hamming himself and thought he was brilliant. Later, I was impressed to discover in *The UNIX Hater’s Handbook* that Hamming was actually Brian Kernighan’s (co-author of the C language bible *The C Programming Language*, commonly known as K&R) mentor at Bell Labs and the third Turing Award winner.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>What Is Hamming Code? A Deep Dive into Error Detection and Correction</h1>
+        <div class="bloginfo">
+            <p class="info">2024-07-22 ｜ <a href="/xxx.html"> XXX</a> ｜ #Words: 2622 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/140594917"> 中文原版 </a></p>
+        </div>
+        <p>I first learned about Hamming codes a few years ago when I watched 3Blue1Brown’s video <a href="https://youtu.be/X8jsijhllIA?si=0ZtrVkE1rFrQ82X9">But what are Hamming codes? The origin of error correction - 3Blue1Brown’s YouTube</a>. I then looked into Hamming himself and thought he was brilliant. Later, I was impressed to discover in <em>The UNIX Hater’s Handbook</em> that Hamming was actually Brian Kernighan’s (co-author of the C language bible <em>The C Programming Language</em>, commonly known as K&amp;R) mentor at Bell Labs and the third Turing Award winner. It felt like a sense of historical inheritance, so I read his Turing Award lecture. Honestly, many of Hamming’s viewpoints are fascinating, and from Brian’s descriptions, he was also a humorous person—feel free to check it out if you’re interested.</p>
+
+<p>I never remember things from math popularization videos; maybe our “wavelengths” don’t match. So I decided to research Hamming codes myself.</p>
+
+<h2 id="what-is-hamming-code">What Is Hamming Code?</h2>
+<p>In his original paper, Hamming described an error-detecting and error-correcting code: a <strong>Systematic Code</strong>.</p>
+
+<p>The structure of a systematic code is as follows: Assume there are <code class="language-plaintext highlighter-rouge">n</code> binary bits, where <code class="language-plaintext highlighter-rouge">m</code> bits are used to represent data, and <code class="language-plaintext highlighter-rouge">k</code> bits are used for error detection and correction. This gives a redundancy rate <code class="language-plaintext highlighter-rouge">R = n/m</code>, which is the minimum number of bits required to transmit the same information.</p>
+
+<blockquote>
+  <p>At the time, channel capacity was truly limited, so Hamming emphasized multiple times at the beginning of the paper that error detection and correction would reduce channel utilization.</p>
+</blockquote>
+
+<p>The paper constructs three types of minimum redundancy codes:</p>
+<ul>
+  <li>Single error detection code (parity check code);</li>
+  <li>Single error correction code;</li>
+  <li>Single error correction and double error detection code.</li>
+</ul>
+
+<p>The latter two are both called <strong>Hamming Codes</strong>—named after Hamming, they are sometimes referred to as the Hamming code family. However, the single error correction code is the most critical in terms of core ideas.</p>
+
+<h2 id="single-error-detection-code-parity-check-code">Single Error Detection Code (Parity Check Code)</h2>
+<p>This code uses the highest bit to detect errors. If the total number of <code class="language-plaintext highlighter-rouge">1</code>s in <strong>all bits</strong> is even, the highest bit is set to <code class="language-plaintext highlighter-rouge">1</code>; otherwise, it is set to <code class="language-plaintext highlighter-rouge">0</code>.</p>
+
+<p>Following the earlier assumption: with <code class="language-plaintext highlighter-rouge">n</code> binary bits (<code class="language-plaintext highlighter-rouge">m</code> data bits + <code class="language-plaintext highlighter-rouge">k</code> parity bits), the redundancy rate is:</p>
+
+\[R = n/m = (m+k)/m = (m+1)/m = 1 + 1/m\]
+
+<p>There’s not much to say about this—it’s simple and has been used in machines nearly a century ago. As the amount of transmitted data increases, the likelihood of errors grows, demanding new technologies.</p>
+
+<p>Take the smallest example: We want to send <code class="language-plaintext highlighter-rouge">1</code>. The parity bit is also <code class="language-plaintext highlighter-rouge">1</code>, so we transmit <code class="language-plaintext highlighter-rouge">11</code>:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Transmit:</span> <span class="mi">11</span>
+<span class="n">Receive</span><span class="o">:</span> <span class="mi">10</span>
+</code></pre></div></div>
+
+<p>The parity bit does not match the actual number of <code class="language-plaintext highlighter-rouge">1</code>s, so an error is detected—but it cannot be corrected.</p>
+
+<h2 id="single-error-correction-code">Single Error Correction Code</h2>
+<p>To correct an error, we need to know its position. How to achieve this?</p>
+
+<p>Remember we’re working with binary—we need to identify the position (i.e., which bit) is incorrect.</p>
+
+<p>Hamming introduced a concept called <strong>Checking Number</strong>, which essentially involves multiple parity checks in a specific order. This is the most ingenious part of Hamming codes.</p>
+
+<p>With the parity check code, we can only know that one bit is wrong—but how do we find which one?</p>
+
+<p>Let’s use the 4-bit binary number <code class="language-plaintext highlighter-rouge">12</code> (i.e., <code class="language-plaintext highlighter-rouge">1100</code>) as an example. To locate an error among the 4 data bits, <code class="language-plaintext highlighter-rouge">m</code> and <code class="language-plaintext highlighter-rouge">k</code> must satisfy the following formula (explained later), where <code class="language-plaintext highlighter-rouge">m</code> = data bits and <code class="language-plaintext highlighter-rouge">k</code> = parity/correction bits:</p>
+
+\[2^k \ge m+k+1\]
+
+<p>Thus, 3 additional parity bits are needed to find the error position.</p>
+
+<p>This means we <strong>need to transmit 7 bits</strong>—this is crucial; be sure to track the bit count change. From now on, when considering single-bit errors, we must include these parity bits.</p>
+
+<p>In the case of at most one error, there are 8 possibilities: no error, or an error in bit 1～7.</p>
+
+<p>Hamming’s approach is brilliantly simple: If you can’t locate the error directly, narrow it down bit by bit. First, look at the rightmost bit of the binary representation of the positions:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	 <span class="o">|</span>
+<span class="mi">1</span><span class="o">=</span><span class="mo">0001</span>
+<span class="mi">3</span><span class="o">=</span><span class="mo">0011</span>
+<span class="mi">5</span><span class="o">=</span><span class="mo">0101</span>
+<span class="mi">7</span><span class="o">=</span><span class="mo">0111</span>
+<span class="err">（</span><span class="n">Range</span><span class="o">:</span> <span class="mi">0</span><span class="err">～</span><span class="mi">7</span><span class="p">,</span> <span class="n">covering</span> <span class="n">all</span> <span class="n">possible</span> <span class="n">error</span> <span class="n">scenarios</span> <span class="n">above</span><span class="err">）</span>
+</code></pre></div></div>
+
+<p>This gives us bits 1, 3, 5, 7. Then take two more groups (since we have 3 parity bits total):</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>	<span class="o">|</span>
+<span class="mi">2</span><span class="o">=</span><span class="mo">0010</span>
+<span class="mi">3</span><span class="o">=</span><span class="mo">0011</span>
+<span class="mi">6</span><span class="o">=</span><span class="mo">0110</span>
+<span class="mi">7</span><span class="o">=</span><span class="mo">0111</span>
+
+   <span class="o">|</span> 
+<span class="mi">4</span><span class="o">=</span><span class="mo">0100</span>
+<span class="mi">5</span><span class="o">=</span><span class="mo">0101</span>
+<span class="mi">6</span><span class="o">=</span><span class="mo">0110</span>
+<span class="mi">7</span><span class="o">=</span><span class="mo">0111</span>
+</code></pre></div></div>
+
+<p>Combine these three groups:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>
+</code></pre></div></div>
+
+<p>You’ll notice these three groups cover the entire range 1～7.</p>
+
+<p>Additionally, using only 2 groups would leave one position uncovered, while 4 groups would be redundant (3 groups are sufficient for full coverage). Hence, we derive the earlier formula:</p>
+
+\[2^k \ge m+k+1\]
+
+<p>The <code class="language-plaintext highlighter-rouge">1</code> in the formula accounts for the “no error” scenario.</p>
+
+<p>Hamming then performs parity checks on these three groups. The results of the parity checks are stored in the first position of each group (where <code class="language-plaintext highlighter-rouge">x</code> = parity bit, unknown initially):</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Sequence:</span>   <span class="n">x</span> <span class="n">x</span> <span class="mi">1</span> <span class="n">x</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>	<span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="n">x</span> <span class="mi">1</span> <span class="n">x</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="n">x</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span> 
+
+<span class="n">Final</span> <span class="n">sequence</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<p>This result matches exactly what’s in the original paper:</p>
+
+<div style="text-align: center;">
+  <img alt="Hamming code result from original paper" src="/assets/images/c08f168480be420cb9f14c62220590c6.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>How to use this result?</p>
+
+<p>Assume an error occurs in the 5th bit:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="o">|</span>
+<span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<p>The receiver performs three parity checks (same method as encoding) using the bit positions:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Sequence:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>	<span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span>
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">1</span> <span class="p">(</span><span class="n">inserted</span> <span class="n">at</span> <span class="n">the</span> <span class="n">front</span><span class="p">)</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span> 
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<p>The binary value <code class="language-plaintext highlighter-rouge">101</code> converts to decimal <code class="language-plaintext highlighter-rouge">5</code>—the error is in the 5th bit. This <code class="language-plaintext highlighter-rouge">101</code> is the <strong>Checking Number</strong> mentioned earlier, which indicates the error position.</p>
+
+<p>Another example: What if there’s no error?</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Sequence:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>	<span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mo">000</span>
+</code></pre></div></div>
+
+<p>A result of <code class="language-plaintext highlighter-rouge">000</code> means no error (<code class="language-plaintext highlighter-rouge">0</code> is not in the range 1～7).</p>
+
+<p>Isn’t this amazing? How does converting between these groups instantly reveal the error position?</p>
+
+<p>Let’s return to the three groups:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>
+</code></pre></div></div>
+
+<p>These groups depend <strong>only on bit positions</strong>, not the data being transmitted. Let’s analyze the groups themselves.</p>
+
+<p>Suppose an error occurs in one of the four positions in Group 1. From the other two groups, we know bits 3, 5, 7 are correct—so the error must be in bit 1. This matches the binary sequence <code class="language-plaintext highlighter-rouge">001</code> we obtained.</p>
+
+<p>Each group combination uniquely identifies a bit position—hence the need for full coverage (no gaps, no redundancy).</p>
+
+<p>Additionally, if you plot these groups, it matches the Hamming code diagram on Wikipedia: the final intersection is unique (the erroneous bit):</p>
+
+<div style="text-align: center;">
+  <img alt="Hamming code group intersection diagram" src="/assets/images/b28b58316416419ab3c17a89974ff42e.png" style="box-shadow: 0px 0px 0px 0px; width: 15%;" />
+</div>
+
+<h2 id="single-error-correction-and-double-error-detection-code">Single Error Correction and Double Error Detection Code</h2>
+<p>This code builds on the single error correction code by adding an extra parity bit at the end to check the entire sequence.</p>
+
+<p><strong>Important note</strong>: Single error correction and double error detection does not mean correcting one error while detecting two. Instead, it either corrects one error or detects two errors.</p>
+
+<p>Three scenarios:</p>
+<ol>
+  <li>No error: All parity checks (including the final extra bit) pass (even parity) → no error.</li>
+  <li>One error: The final extra parity check fails → the checking number indicates the error position.</li>
+  <li>Two errors: The final extra parity check passes, but the checking number is non-zero (indicating errors) → two errors detected.</li>
+</ol>
+
+<p>Continuing with the earlier sequence <code class="language-plaintext highlighter-rouge">0 1 1 1 1 0 0</code>, adding an extra parity bit gives:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Sequence:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="n">x</span> <span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+
+<span class="n">Final</span> <span class="n">sequence</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<p>Again, assume an error in the 5th bit:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>        <span class="o">|</span>
+<span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Sequence:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Final</span> <span class="n">bit</span><span class="o">:</span>     		  <span class="o">|</span> <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span> <span class="p">(</span><span class="n">possible</span> <span class="n">single</span> <span class="n">error</span><span class="p">)</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>	<span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span>
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span>
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">0</span> <span class="mi">1</span> <span class="p">(</span><span class="n">inserted</span> <span class="n">at</span> <span class="n">the</span> <span class="n">front</span><span class="p">)</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span> 
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">1</span>             <span class="o">---</span> <span class="n">Non</span><span class="o">-</span><span class="n">zero</span> <span class="err">→</span> <span class="n">single</span> <span class="n">error</span> <span class="p">(</span><span class="n">correctable</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>The 5th bit is corrected as before.</p>
+
+<p>Now assume errors in the 2nd and 5th bits:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code>  <span class="o">|</span>     <span class="o">|</span>
+<span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+</code></pre></div></div>
+
+<p>Then:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">Sequence:</span>   <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Final</span> <span class="n">bit</span><span class="o">:</span>     		  <span class="o">|</span>  <span class="o">---</span> <span class="n">Even</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">0</span> <span class="p">(</span><span class="n">possible</span> <span class="n">no</span> <span class="n">error</span> <span class="n">or</span> <span class="n">two</span> <span class="n">errors</span><span class="p">)</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">1</span><span class="o">:</span> <span class="mi">1</span>   <span class="mi">3</span>   <span class="mi">5</span>   <span class="mi">7</span>	<span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span>
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">2</span><span class="o">:</span>  <span class="mi">2</span> <span class="mi">3</span>     <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span>
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span> <span class="mi">1</span> <span class="p">(</span><span class="n">inserted</span> <span class="n">at</span> <span class="n">the</span> <span class="n">front</span><span class="p">)</span>
+
+<span class="n">Sequence</span><span class="o">:</span>   <span class="mi">0</span> <span class="mi">0</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span> <span class="mi">0</span>
+<span class="n">Group</span> <span class="mi">3</span><span class="o">:</span>      <span class="mi">4</span> <span class="mi">5</span> <span class="mi">6</span> <span class="mi">7</span>   <span class="o">---</span> <span class="n">Odd</span> <span class="n">parity</span> <span class="err">→</span> <span class="mi">1</span> 
+<span class="n">Checking</span> <span class="n">Number</span><span class="o">:</span> <span class="mi">1</span> <span class="mi">1</span> <span class="mi">1</span>
+</code></pre></div></div>
+
+<p>The checking number still points to a single position, but two errors are actually present.</p>
+
+<h2 id="hamming-distance">Hamming Distance</h2>
+<p>Hamming referred to binary numbers that differ by 1 bit as having a <strong>distance of 1</strong>. Similarly, a difference of 2 bits means a distance of 2, and so on. The term “Hamming Distance” is used today but was not in the original paper.</p>
+
+<p>Hamming treated a set of binary numbers as vectors in an n-dimensional space. By observing that 1 error changes one coordinate and 2 errors change two coordinates, he derived a matrix called the <strong>distance</strong> ($D(x,y)$), or Hamming distance.</p>
+
+<p>Additionally, Hamming distance is defined as the minimum number of substitutions required to convert one string into another (represented as equivalence classes in the original paper).</p>
+
+<p>Errors cannot be detected if the entire code is corrupted:</p>
+<ul>
+  <li>To detect <code class="language-plaintext highlighter-rouge">d</code> errors, the Hamming distance must be <code class="language-plaintext highlighter-rouge">d+1</code>;</li>
+  <li>To correct <code class="language-plaintext highlighter-rouge">d</code> errors, the Hamming distance must be <code class="language-plaintext highlighter-rouge">2d+1</code>.</li>
+</ul>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="references">References</h2>
+<ul>
+  <li><em>Error detecting and error correcting codes</em>: Hamming’s original 1950 paper on Hamming codes.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
