@@ -1,0 +1,469 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to Adjust NVIDIA GPU Frequency, Volte and Other Settings on Linux (or Overlocking)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Recently, I wanted to adjust the frequency of my NVIDIA GPU on Linux because I noticed some software (like FaceFusion) doesn't utilize the GPU at its maximum frequency (e.g., a maximum of 2000 MHz, but only 1850 MHz in practice). So I decided to figure out how to tweak settings like frequency. This article will use `nvtop` and `nvidia-smi` for monitoring.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to Adjust NVIDIA GPU Frequency, Volte and Other Settings on Linux (or Overlocking)</h1>
+        <div class="bloginfo">
+            <p class="info">2025-09-09 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 2512 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/151333045"> 中文原版 </a></p>
+        </div>
+        <p>Recently, I wanted to adjust the frequency of my NVIDIA GPU on Linux because I noticed some software (like FaceFusion) doesn’t utilize the GPU at its maximum frequency (e.g., a maximum of 2000 MHz, but only 1850 MHz in practice). So I decided to figure out how to tweak settings like frequency. This article will use <code class="language-plaintext highlighter-rouge">nvtop</code> and <code class="language-plaintext highlighter-rouge">nvidia-smi</code> for monitoring.</p>
+
+<p>I’ll first explain basic frequency adjustment, then cover undervolting and overclocking, and finally share adjustment strategies and precautions.</p>
+
+<blockquote>
+  <p>Linux has a policy table that the GPU follows for dynamic adjustments unless you manually lock the frequency. All settings in this article comply with this behavior.
+After adjusting frequencies as described in this section, you may notice both core and memory frequencies seem constrained by certain factors. For example, I set my memory frequency to <code class="language-plaintext highlighter-rouge">7500</code> MHz (it stays at 7500 MHz when idle), but drops to <code class="language-plaintext highlighter-rouge">7300</code> MHz when running some programs. If you know why this happens, please let me know—or feel free to share your hypotheses for discussion.</p>
+</blockquote>
+
+<p>Additionally, modifications on Linux reset after reboot, so you’ll need to reapply them each time. You can add them to your <code class="language-plaintext highlighter-rouge">cron</code> jobs or startup scripts (I won’t cover this here to keep the article concise).</p>
+
+<h1 id="adjusting-frequencies-power-limits-etc-via-nvidia-smi">Adjusting Frequencies, Power Limits, etc. (via <code class="language-plaintext highlighter-rouge">nvidia-smi</code>)</h1>
+<p>First, you need to get the GPU’s UUID or PCI Bus ID to specify which card to modify.</p>
+<blockquote>
+  <p>If you only have one GPU, you can simply use <code class="language-plaintext highlighter-rouge">0</code>.</p>
+</blockquote>
+
+<p>Let’s first check the frequency with <code class="language-plaintext highlighter-rouge">nvtop</code> (while running FaceFusion):</p>
+
+<div style="text-align: center;">
+  <img alt="nvtop showing GPU frequency at 1867 MHz and power usage at 114W" src="/assets/images/8d3038aef0214ba5b087ce369be1eabf.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>You can see the frequency is <code class="language-plaintext highlighter-rouge">1867 MHz</code> and power consumption is <code class="language-plaintext highlighter-rouge">114W</code>.</p>
+
+<p>List your GPUs with <code class="language-plaintext highlighter-rouge">nvidia-smi -L</code>—here the RTX 3060’s UUID is <code class="language-plaintext highlighter-rouge">GPU-037a6092-3f62-5b68-ac66-856918216320</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>nvidia-smi <span class="nt">-L</span>
+GPU 0: NVIDIA GeForce RTX 3060 <span class="o">(</span>UUID: GPU-037a6092-3f62-5b68-ac66-856918216320<span class="o">)</span>
+</code></pre></div></div>
+
+<p>Next, use <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[UUID] -lgc [min_freq],[max_freq]</code>. To lock the core frequency at 2000 MHz, set both min and max to <code class="language-plaintext highlighter-rouge">2000</code>:</p>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">-lgc</code> = lock core clock, <code class="language-plaintext highlighter-rouge">-lmc</code> = lock memory clock, <code class="language-plaintext highlighter-rouge">-pl</code> = power limit.</p>
+</blockquote>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-lgc</span> 2000,2000
+<span class="o">[</span><span class="nb">sudo</span><span class="o">]</span> password <span class="k">for </span>zhonguncle: 
+GPU clocks <span class="nb">set </span>to <span class="s2">"(gpuClkMin 2000, gpuClkMax 2000)"</span> <span class="k">for </span>GPU 00000000:03:00.0
+
+Warning: persistence mode is disabled on device 00000000:03:00.0. See the Known Issues section of the nvidia-smi<span class="o">(</span>1<span class="o">)</span> man page <span class="k">for </span>more information. Run with <span class="o">[</span><span class="nt">--help</span> | <span class="nt">-h</span><span class="o">]</span> switch to get more information on how to <span class="nb">enable </span>persistence mode.
+All <span class="k">done</span><span class="nb">.</span>
+</code></pre></div></div>
+
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">Warning</code> indicates persistence mode is disabled, meaning some tasks may not apply your changes.</p>
+</blockquote>
+
+<p>To enable persistence mode, use <code class="language-plaintext highlighter-rouge">-pm 1</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">-pm</span> 1
+Enabled persistence mode <span class="k">for </span>GPU 00000000:03:00.0.
+All <span class="k">done</span><span class="nb">.</span>
+</code></pre></div></div>
+
+<p>Check the status again:</p>
+<div style="text-align: center;">
+  <img alt="nvtop showing GPU frequency at 1995 MHz and power usage at 149W after lock" src="/assets/images/6af6f5c978dc407580ff74a1404e795c.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>The frequency is now <code class="language-plaintext highlighter-rouge">1995 MHz</code> and power consumption is <code class="language-plaintext highlighter-rouge">149W</code>.</p>
+
+<p>To modify the power limit, use <code class="language-plaintext highlighter-rouge">-pl</code>:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-pl</span> 120
+Power limit <span class="k">for </span>GPU 00000000:03:00.0 was <span class="nb">set </span>to 120.00 W from 170.00 W.
+All <span class="k">done</span><span class="nb">.</span>
+</code></pre></div></div>
+
+<p>However, the frequency may become unstable at this point. If you set a value outside the valid range, you’ll get a warning:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-pl</span> 200
+Provided power limit 200.00 W is not a valid power limit which should be between 100.00 W and 187.00 W <span class="k">for </span>GPU 00000000:03:00.0
+Terminating early due to previous errors.
+</code></pre></div></div>
+
+<blockquote>
+  <p>As shown, the valid power range is <code class="language-plaintext highlighter-rouge">between 100.00 W and 187.00 W</code>.</p>
+</blockquote>
+
+<p>With this method, reducing power limit almost always lowers frequency. In the next section, we’ll cover undervolting, which lets you reduce power consumption while maintaining or even improving performance.</p>
+
+<p>Additionally, with fixed frequency settings, power consumption remains high even at idle:</p>
+<div style="text-align: center;">
+  <img alt="nvtop showing high idle power consumption with fixed frequency" src="/assets/images/9d8bf74f38f140c493efb60168874c46.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>To reset frequencies, use <code class="language-plaintext highlighter-rouge">-rgc</code> (reset core clock) and <code class="language-plaintext highlighter-rouge">-rmc</code> (reset memory clock):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-rgc</span>
+All <span class="k">done</span><span class="nb">.</span>
+<span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-rmc</span>
+All <span class="k">done</span><span class="nb">.</span>
+</code></pre></div></div>
+
+<div style="text-align: center;">
+  <img alt="nvtop showing restored default frequencies" src="/assets/images/dce8013fe17b438cbfac4fc6acb8cf2c.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>Like power limits, core and memory frequencies have predefined ranges. View the full list with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>nvidia-smi <span class="nt">--query-supported-clocks</span><span class="o">=</span>timestamp,gpu_name,gpu_uuid,memory,graphics <span class="nt">--format</span><span class="o">=</span>csv
+timestamp, gpu_name, gpu_uuid, memory <span class="o">[</span>MHz], graphics <span class="o">[</span>MHz]
+2025/09/09 06:03:42.922, NVIDIA GeForce RTX 3060, GPU-037a6092-3f62-5b68-ac66-856918216320, 7501 MHz, 2190 MHz
+2025/09/09 06:03:42.922, NVIDIA GeForce RTX 3060, GPU-037a6092-3f62-5b68-ac66-856918216320, 7501 MHz, 2182 MHz
+2025/09/09 06:03:42.922, NVIDIA GeForce RTX 3060, GPU-037a6092-3f62-5b68-ac66-856918216320, 7501 MHz, 2175 MHz
+2025/09/09 06:03:42.922, NVIDIA GeForce RTX 3060, GPU-037a6092-3f62-5b68-ac66-856918216320, 7501 MHz, 2167 MHz
+....
+</code></pre></div></div>
+
+<p>This maximum core frequency is essentially the highest sustainable value (though this may be specific to my RTX 3060—feel free to test higher values).</p>
+
+<h1 id="undervolting-and-overclocking-pythonpynvml">Undervolting and Overclocking (Python/pynvml)</h1>
+<p>Next, we’ll cover undervolting and overclocking.</p>
+
+<p>We’ll use Python for this, as NVIDIA doesn’t provide a command-line API for undervolting.</p>
+<blockquote>
+  <p>Important note: We’ll use root privileges, so proceed carefully and test incrementally. Avoid large adjustments to prevent irreversible damage.
+Since we’re using NVML, you can also write a C/C++ version and compile it to run on startup.</p>
+</blockquote>
+
+<p>First, the default state:</p>
+<div style="text-align: center;">
+  <img alt="Default GPU state before undervolting/overclocking" src="/assets/images/e7bf4bbc10b04a7aae7cb56091ca93bc.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<p>FP16 benchmark results at this state: <code class="language-plaintext highlighter-rouge">28.08</code> TFLOPS:</p>
+<div style="text-align: center;">
+  <img alt="FP16 benchmark result (28.08 TFLOPS) at default settings" src="/assets/images/a043a0c3649e4ae78120e0aa8fa940bf.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>Checking voltage with <code class="language-plaintext highlighter-rouge">nvidia-smi -q -d VOLTAGE</code> shows around 1050 mV.</p>
+
+<p>Install <code class="language-plaintext highlighter-rouge">nvidia-ml-py</code> (using Python’s pip—Python environments can be tricky!):</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>python <span class="nt">-m</span> pip <span class="nb">install </span>nvidia-ml-py
+Requirement already satisfied: nvidia-ml-py <span class="k">in</span> /usr/local/lib/python3.10/dist-packages <span class="o">(</span>13.580.65<span class="o">)</span>
+WARNING: Running pip as the <span class="s1">'root'</span> user can result <span class="k">in </span>broken permissions and conflicting behaviour with the system package manager. It is recommended to use a virtual environment instead: https://pip.pypa.io/warnings/venv
+</code></pre></div></div>
+
+<p>Or install via apt:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>python3-pynvml
+</code></pre></div></div>
+
+<p>Ignore the warning—we intentionally use root for this operation.</p>
+
+<p>Create a script to dynamically adjust frequency (+100MHz), set a fixed power limit (-30W), and tweak voltage:</p>
+<blockquote>
+  <p>I recommend reading the full section before running this script.</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pynvml</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># Initialize NVML
+</span><span class="nf">nvmlInit</span><span class="p">()</span>
+<span class="n">GPU</span> <span class="o">=</span> <span class="nf">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Set core clock offset to +100 MHz
+</span><span class="nf">nvmlDeviceSetGpcClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="c1"># Set memory clock offset to 0 MHz
+</span><span class="nf">nvmlDeviceSetMemClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Set power limit to 140 W (140000 mW)
+</span><span class="nf">nvmlDeviceSetPowerManagementLimit</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">140000</span><span class="p">)</span>
+<span class="c1"># Set GpcClk V/F (Voltage/Frequency) curve offset to -200 MHz. 
+# Unlike MSI Afterburner, we use this to indirectly reduce voltage (explained later).
+</span><span class="nf">nvmlDeviceSetGpcClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Shutdown NVML
+</span><span class="nf">nvmlShutdown</span><span class="p">()</span>
+</code></pre></div></div>
+
+<p>Run with <code class="language-plaintext highlighter-rouge">sudo</code> or as root:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>python3 oc.py 
+</code></pre></div></div>
+
+<p>With everything configured, test the results:</p>
+<div style="text-align: center;">
+  <img alt="GPU state after undervolting/overclocking" src="/assets/images/81ace89f45974ddebd5c19c3f6ee9b6b.png" style="box-shadow: 0px 0px 0px 0px; width: 80%;" />
+</div>
+
+<div style="text-align: center;">
+  <img alt="FP16 benchmark result after tuning (28.58 TFLOPS)" src="/assets/images/475ab74a2bbd4698bf33ae86cac577f2.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>You can see power consumption dropped by 30W while FP16 performance increased by 0.5 TFLOPS.</p>
+
+<p>Let’s explain voltage adjustment in detail.</p>
+
+<h2 id="explaining-nvmldevicesetgpcclkvfoffset">Explaining <code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset</code></h2>
+<p><code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset(GPU, 200)</code> adjusts the GpcClk V/F (Voltage/Frequency) curve offset.</p>
+<blockquote>
+  <p>GPC (Graphics Processing Cluster) is a core hardware module in modern GPU architectures that manages and schedules key computing resources. The GpcClk V/F curve is the foundation of Boost technology. When GPU load increases, the driver automatically raises GpcClk and adjusts voltage to reach Boost frequency.</p>
+</blockquote>
+
+<p>If frequency is fixed, reducing this ratio lowers voltage—right?</p>
+
+<p>First, we need to understand the unit of this offset value.</p>
+
+<p>Through testing, I found this value represents a “frequency reduction”. For example, setting it to <code class="language-plaintext highlighter-rouge">100</code> means the voltage used at the current frequency is the same as the default voltage at <code class="language-plaintext highlighter-rouge">-100 MHz</code>.</p>
+
+<p>Let’s verify this:</p>
+<ol>
+  <li>Force the frequency to 2000 MHz using the method from Section 1</li>
+  <li>Monitor real-time frequency and voltage in a new window:
+    <div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>watch <span class="nt">-n</span> 1 <span class="s1">'echo "Core Frequency:"; nvidia-smi -q -d CLOCK | grep "Graphics"; echo "Voltage:"; nvidia-smi -q -d VOLTAGE | grep "Graphics"'</span>
+</code></pre></div>    </div>
+  </li>
+</ol>
+
+<ul>
+  <li>With <code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset(GPU, 0)</code>: Voltage at 2000 MHz is 1081.250 mV
+    <div style="text-align: center;">
+  <img alt="Voltage at 2000 MHz with 0 offset (1081.250 mV)" src="/assets/images/69d04dc8d00a430c8b35c664c8803764.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+  </li>
+  <li>With <code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset(GPU, 100)</code>: Voltage at 2000 MHz drops to 1012.500 mV
+    <div style="text-align: center;">
+  <img alt="Voltage at 2000 MHz with 100 offset (1012.500 mV)" src="/assets/images/86a9ada3cc1f4cacac0dfbf248a9c094.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+  </li>
+  <li>Reset offset to <code class="language-plaintext highlighter-rouge">0</code> but set frequency to 1900 MHz: Voltage is 1012.500 mV (same as above!)
+    <div style="text-align: center;">
+  <img alt="Voltage at 1900 MHz with 0 offset (1012.500 mV)" src="/assets/images/df23bbfd84df4683aabf093e2107c466.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+  </li>
+  <li>Compare <code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset(GPU, 200)</code> (2000 MHz) with 1800 MHz (0 offset): Both show ~950 mV
+    <div style="text-align: center;">
+  <img alt="Voltage at 2000 MHz with 200 offset (~950 mV)" src="/assets/images/76eea51fb03b445eb606a1a7bcc10b48.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+    <div style="text-align: center;">
+  <img alt="Voltage at 1800 MHz with 0 offset (~950 mV)" src="/assets/images/b1941d87d9054a90b320f56aa9c7dee0.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+  </li>
+</ul>
+
+<p>Confirmed!</p>
+
+<h2 id="precautions">Precautions</h2>
+<p>After setting the offset, voltage is no longer constant—since frequency dynamically changes.</p>
+
+<p>Even with forced frequency settings, ensure sufficient power headroom; otherwise, the GPU will throttle.</p>
+
+<p>Also monitor temperature: hitting the temperature threshold will cause throttling (this threshold can be adjusted).</p>
+
+<p>If you encounter errors like this during FP16 benchmarking, your settings are unstable:</p>
+<div style="text-align: center;">
+  <img alt="FP16 benchmark error due to unstable overclocking" src="/assets/images/7ef9300f5c19459f86a0bf7ad935e142.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>Simply restart the Jupyter kernel (no system reboot needed). <strong>Failing to restart will cause persistent errors regardless of subsequent adjustments.</strong></p>
+
+<h1 id="adjustment-strategies">Adjustment Strategies</h1>
+<blockquote>
+  <p>For best results, combine the two methods described above.</p>
+</blockquote>
+
+<p>First, decide whether to prioritize performance or power efficiency.</p>
+
+<h2 id="power-efficiency-undervolting--overclocking">Power Efficiency (Undervolting + Overclocking)</h2>
+<p>To maintain performance while reducing power consumption:</p>
+<ol>
+  <li>Force maximum frequency near the default Boost frequency (or slightly lower)</li>
+  <li>Adjust <code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset</code> to reduce power consumption significantly</li>
+</ol>
+
+<p>Example for my GPU:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-lgc</span> 200,2100
+</code></pre></div></div>
+
+<p>Then set power limit and voltage via Python:</p>
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Set power limit to 140 W (140000 mW)
+</span><span class="nf">nvmlDeviceSetPowerManagementLimit</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">140000</span><span class="p">)</span>
+<span class="c1"># Set GpcClk V/F curve offset (indirect voltage reduction)
+</span><span class="nf">nvmlDeviceSetGpcClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>Setting frequencies via command line is more stable than adjusting offsets directly in Python.</p>
+
+<p>This setup saves 30W of power—about 0.7 kWh per day at full load (and lowers temperatures too!). Higher-power GPUs will save even more energy.</p>
+
+<h2 id="performance-overclocking">Performance (Overclocking)</h2>
+<p>For pure performance gains:</p>
+<ol>
+  <li>Expand frequency range</li>
+  <li>Adjust <code class="language-plaintext highlighter-rouge">nvmlDeviceSetGpcClkVfOffset</code> to optimize voltage</li>
+</ol>
+
+<p>From the supported clocks list, my GPU’s maximum frequency is 2190 MHz:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span><span class="nb">sudo </span>nvidia-smi <span class="nt">--id</span><span class="o">=</span>GPU-037a6092-3f62-5b68-ac66-856918216320 <span class="nt">-lgc</span> 200,2190
+</code></pre></div></div>
+
+<p>Running at this frequency will hit the power limit—raise it to maximum (187W). However, even maximum power can’t sustain peak frequency, so reduce voltage incrementally. Here’s my stable configuration:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nf">nvmlDeviceSetPowerManagementLimit</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">187000</span><span class="p">)</span>
+<span class="nf">nvmlDeviceSetGpcClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">170</span><span class="p">)</span>
+</code></pre></div></div>
+
+<div style="text-align: center;">
+  <img alt="FP16 benchmark result after performance overclocking" src="/assets/images/6c80302035ea4975938d9e9ea5db0578.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>This delivers a 7.8% performance increase with a 10% (17W) power consumption increase.</p>
+
+<p>I hope these tips help anyone who needs them!</p>
+
+<h1 id="quick-reference">Quick Reference</h1>
+<p>Command Line:</p>
+<ul>
+  <li>Adjust core frequency: <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[id] -lgc [min_freq],[max_freq]</code></li>
+  <li>Adjust memory frequency: <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[id] -lmc [min_freq],[max_freq]</code></li>
+  <li>Reset core frequency: <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[id] -rgc</code></li>
+  <li>Reset memory frequency: <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[id] -rmc</code></li>
+  <li>Enable persistence mode: <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[id] -pm 1</code></li>
+  <li>Set power limit: <code class="language-plaintext highlighter-rouge">sudo nvidia-smi --id=[id] -pl [power_limit]</code></li>
+</ul>
+
+<p>Python:
+Dynamic frequency adjustment (+100MHz), fixed power reduction (-30W), and voltage tuning:</p>
+<blockquote>
+  <p>Still recommend reading the full explanation first!</p>
+</blockquote>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">from</span> <span class="n">pynvml</span> <span class="kn">import</span> <span class="o">*</span>
+<span class="c1"># Initialize NVML
+</span><span class="nf">nvmlInit</span><span class="p">()</span>
+<span class="n">GPU</span> <span class="o">=</span> <span class="nf">nvmlDeviceGetHandleByIndex</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="c1"># Set core clock offset to +100 MHz
+</span><span class="nf">nvmlDeviceSetGpcClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>
+<span class="c1"># Set memory clock offset to 0 MHz
+</span><span class="nf">nvmlDeviceSetMemClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="c1"># Set power limit to 140 W (140000 mW)
+</span><span class="nf">nvmlDeviceSetPowerManagementLimit</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">140000</span><span class="p">)</span>
+<span class="c1"># Set GpcClk V/F (Voltage/Frequency) curve offset to -200 MHz
+</span><span class="nf">nvmlDeviceSetGpcClkVfOffset</span><span class="p">(</span><span class="n">GPU</span><span class="p">,</span> <span class="mi">200</span><span class="p">)</span>
+
+<span class="c1"># Shutdown NVML
+</span><span class="nf">nvmlShutdown</span><span class="p">()</span>
+</code></pre></div></div>
+
+<h1 id="referencesfurther-reading">References/Further Reading</h1>
+<ul>
+  <li><a href="https://docs.nvidia.com/deploy/nvml-api/group__nvmlDeviceCommands.html#group__nvmlDeviceCommands_1gc2a9a8db6fffb2604d27fd67e8d5d87f">5.18. Device Commands - NVML API</a>: NVML API documentation (where I found the voltage adjustment method). Note: NVIDIA mentions deprecated APIs—my driver version may be too old for the new ones.</li>
+  <li><a href="https://massedcompute.com/faq-answers/?question=How%20do%20I%20reset%20NVIDIA%20GPU%20power%20management%20settings%20using%20NVML?">How do I reset NVIDIA GPU power management settings using NVML? - Massed Compute</a>: Learned Python-based adjustment methods here.</li>
+  <li><a href="https://skatterbencher.com/asus-v-f-point-offset/">ASUS V/F Point Offset - SkatterBencher</a>: Explains ASUS CPU V/F point offset (contains useful V/F curve concepts).</li>
+  <li><a href="https://www.techpowerup.com/review/nvidia-geforce-rtx-5080-founders-edition/44.html">Voltage Frequency Curve - NVIDIA GeForce RTX 5080 Founders Edition Review - TechPowerUp</a>: Shows RTX 5080 V/F curves and clock/voltage relationships.</li>
+</ul>
+
+<p>For GPU power management research, check these papers:</p>
+<ul>
+  <li><a href="https://ieeexplore.ieee.org/document/8327055">GPGPU Power Modeling for Multi-domain Voltage-Frequency Scaling</a></li>
+  <li><a href="https://ieeexplore.ieee.org/document/6687422">Effects of Dynamic Voltage and Frequency Scaling on a K20 GPU</a></li>
+  <li><a href="https://arxiv.org/abs/1905.11012">The Impact of GPU DVFS on the Energy and Performance of Deep Learning: an Empirical Study</a></li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
