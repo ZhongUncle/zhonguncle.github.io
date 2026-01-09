@@ -1,0 +1,219 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Ubuntu can't access Network: No DNS or APT Failure in Setting</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='For some unknown reason, APT suddenly stopped working: only a few default repositories were accessible, while others showed `ign` (meaning they couldn’t be connected to). I tried several mirrors, but the issue persisted. At this point, Wi-Fi was connected, so I suspected a GPG key problem. However, as I tried to fix it, the network stopped working entirely'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Ubuntu can't access Network: No DNS or APT Failure in Setting</h1>
+        <div class="bloginfo">
+            <p class="info">2025-06-30 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 959 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/149009661"> 中文原版 </a></p>
+        </div>
+        <p>The final solution in this article is to delete the connected/configured Wi-Fi and reconnect to it.</p>
+
+<blockquote>
+  <p>Why write so much? Mainly to document the discovery process, some symptoms, and that certain online solutions may make the situation worse.</p>
+</blockquote>
+
+<p>For some unknown reason, APT suddenly stopped working: only a few default repositories were accessible, while others showed <code class="language-plaintext highlighter-rouge">ign</code> (meaning they couldn’t be connected to). I tried several mirrors, but the issue persisted. At this point, Wi-Fi was connected, so I suspected a GPG key problem. However, as I tried to fix it, the network stopped working entirely:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="o">(</span>base<span class="o">)</span> zhonguncle@zhonguncle-Precision-Tower-5810:~<span class="nv">$ </span>ping baidu.com
+ping: baidu.com: Temporary failure <span class="k">in </span>name resolution
+</code></pre></div></div>
+
+<h2 id="step-1-check-wi-fi-module">Step 1: Check Wi-Fi Module</h2>
+<p>First, check if the Wi-Fi module is functioning properly:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>lspci | <span class="nb">grep </span>Wi-Fi
+07:00.0 Network controller: Intel Corporation Wi-Fi 6 AX210/AX211/AX411 160MHz <span class="o">(</span>rev 1a<span class="o">)</span>
+</code></pre></div></div>
+
+<p>The Wi-Fi module was working, so I guessed it might be a DNS issue. Although checking various files showed that DNS server IPs were set, and I even tried directly modifying the configuration file <code class="language-plaintext highlighter-rouge">/etc/resolv.conf</code> (which is supposed to be auto-generated), the GUI settings also displayed configured DNS servers.</p>
+
+<p>However, when I checked with <code class="language-plaintext highlighter-rouge">resolvectl status</code>, I found there were no DNS servers configured:</p>
+
+<div style="text-align: center;">
+  <img alt="resolvectl status showing no DNS servers" src="/assets/images/e6fde9822b2a46a1bbfade30af0e4192.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<h2 id="step-2-check-firewall">Step 2: Check Firewall</h2>
+<p>I suspected the firewall might be the cause. Checking with <code class="language-plaintext highlighter-rouge">sudo ufw status</code> revealed that most IPs used for internet access were not in the firewall’s allowed range (I thought I was about to fix it then). However, after manually adding them following some online tutorials, the issue persisted—I still couldn’t <code class="language-plaintext highlighter-rouge">ping</code> through.</p>
+
+<blockquote>
+  <p>You might say this is too troublesome and suggest reinstalling the system.<br />
+I can only say that the time required to reinstall and reconfigure the system far exceeds my acceptable range, and there are many files on the hard drive—I can’t even bear the thought of backing them up.</p>
+</blockquote>
+
+<h2 id="step-3-check-network-interfaces-with-networkctl">Step 3: Check Network Interfaces with networkctl</h2>
+<p>Moving on, checking with <code class="language-plaintext highlighter-rouge">networkctl</code> showed that the interfaces had no active operations:</p>
+
+<div style="text-align: center;">
+  <img alt="networkctl output showing inactive interfaces" src="/assets/images/33c04eef2ac642b8b925a34121908ac1.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>Restart it with <code class="language-plaintext highlighter-rouge">sudo systemctl start systemd-networkd</code>:</p>
+
+<div style="text-align: center;">
+  <img alt="Output of starting systemd-networkd" src="/assets/images/55d7138dcf8944728405822fe3dda2e0.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>But I still couldn’t <code class="language-plaintext highlighter-rouge">ping</code> through.</p>
+
+<h2 id="step-4-try-grub-recovery-mode">Step 4: Try GRUB Recovery Mode</h2>
+<p>I then tried many other methods, such as restarting services and modifying a series of configuration files. However, many online solutions are outdated, so none worked. As usual, I entered GRUB’s recovery mode to check:</p>
+
+<div style="text-align: center;">
+  <img alt="GRUB recovery mode menu" src="/assets/images/0cfb87a3f62b4838bca58916f829f6fd.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>When checking the network, the following error appeared (it flashed too quickly later, so I captured it with a screen recording):</p>
+
+<div style="text-align: center;">
+  <img alt="Network error in GRUB recovery mode" src="/assets/images/6660b7a9d3b248b2b917a3553512ed5c.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>This clearly indicated issues with some files. Since I had tried a bunch of online solutions—some very irresponsible ones that directly deleted certain files without explanation (and I was a bit desperate)—I decided to take a break.</p>
+
+<h2 id="the-final-solution-reconnect-wi-fi">The Final Solution: Reconnect Wi-Fi</h2>
+<p>After waking up, it suddenly occurred to me: since restarting Wi-Fi, services, or the machine didn’t fix the problem, the issue must lie in the automatic file configuration process (as many configuration files are auto-generated by the system, such as <code class="language-plaintext highlighter-rouge">/etc/resolv.conf</code> mentioned earlier).</p>
+
+<p>I suddenly noticed that although the firewall hadn’t automatically allowed internet IPs, the previous settings were still intact. I still thought it was a firewall issue because, in theory, the system should obtain IP, DNS, and other network configurations via the router’s DHCP, but something was blocking it. Since I hadn’t modified the gateway settings before, the problem must be with the firewall.</p>
+
+<p>Unfortunately, I couldn’t recall the original correct firewall configuration. At this point, I wondered: could I make it auto-generate again? I turned Wi-Fi off and on again—no luck. Restarted network services—still no luck……</p>
+
+<p>Staring at the <code class="language-plaintext highlighter-rouge">nmtui</code> interface, I fell silent:</p>
+
+<div style="text-align: center;">
+  <img alt="nmtui interface showing Wi-Fi connection" src="/assets/images/76fcd4cb7f3248999703a02c633686d6.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>It suddenly hit me: the system stores Wi-Fi information by SSID. Deleting the existing connection and reconnecting might remove the original configuration files (whether they were missing or corrupted) and auto-generate new ones. I decided to go for it—it wouldn’t cause any irreversible damage.</p>
+
+<blockquote>
+  <p>Note: If you’re remotely connecting to Ubuntu via Wi-Fi, you may need to connect an Ethernet cable or a monitor.</p>
+</blockquote>
+
+<p>After re-adding the Wi-Fi connection, <code class="language-plaintext highlighter-rouge">networkctl</code> showed it was active automatically:</p>
+
+<div style="text-align: center;">
+  <img alt="networkctl output showing active Wi-Fi interface" src="/assets/images/a8a2e99459d840a68288944dc52f68d1.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>Checking with <code class="language-plaintext highlighter-rouge">resolvectl status</code> showed that DNS was correctly configured:</p>
+
+<div style="text-align: center;">
+  <img alt="resolvectl status showing correct DNS configuration" src="/assets/images/334094f0810342b28abfd582bc750993.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Did it work? Let’s run a <code class="language-plaintext highlighter-rouge">ping</code> test:</p>
+
+<div style="text-align: center;">
+  <img alt="Successful ping test after reconnecting Wi-Fi" src="/assets/images/e2dd4259e63a40fc99c0d524896810f0.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Perfect! I checked the <code class="language-plaintext highlighter-rouge">ufw</code> rules afterward and found there were more allowed entries than before. However, I don’t recommend messing with firewall rules—reconnecting Wi-Fi is much faster and less likely to open unnecessary ports.</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
