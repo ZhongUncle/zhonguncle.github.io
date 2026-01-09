@@ -1,0 +1,251 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to use lstopo to visualize System Topology</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='`lstopo` is an excellent tool for generating intuitive, concise system topology diagrams. This article documents small issues I encountered while using it—it is not a comprehensive manual. For detailed options, refer to the official documentation. Many Linux distributions come with `hwloc` preinstalled. If your system lacks it (e.g., Ubuntu), install it with'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to use lstopo to visualize System Topology</h1>
+        <div class="bloginfo">
+            <p class="info">2025-06-21 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 892 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/148811153"> 中文原版 </a></p>
+        </div>
+        <p><code class="language-plaintext highlighter-rouge">lstopo</code> is an excellent tool for generating intuitive, concise system topology diagrams. This article documents small issues I encountered while using it—it is not a comprehensive manual. For detailed options, refer to the official documentation: <a href="https://linux.die.net/man/1/lstopo">lstopo(1) - Linux man page</a>.</p>
+
+<blockquote>
+  <p>The term “topo” in <code class="language-plaintext highlighter-rouge">lstopo</code> stands for “topology” (referring to computer system topology).</p>
+</blockquote>
+
+<h2 id="installation">Installation</h2>
+<p>Many Linux distributions come with <code class="language-plaintext highlighter-rouge">hwloc</code> preinstalled. If your system lacks it (e.g., Ubuntu), install it with:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>apt <span class="nb">install </span>hwloc
+</code></pre></div></div>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">lstopo</code> is responsible for visually displaying the topology detected by <code class="language-plaintext highlighter-rouge">hwloc</code>.</p>
+</blockquote>
+
+<p>Alternatively, install it manually from <a href="https://www.open-mpi.org/projects/hwloc/">Portable Hardware Locality (hwloc)</a>. Download from the “Sub-Projects” section, as highlighted in the red box below:</p>
+
+<div style="text-align: center;">
+  <img alt="hwloc download page showing Sub-Projects section" src="/assets/images/f53a8c5998e7477b881de7a5ae24e656.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<h2 id="print-to-command-line">Print to Command Line</h2>
+<p>To print a nicely formatted system topology directly in the terminal, use this simple command:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>lstopo <span class="nt">--of</span> ascii <span class="nt">-p</span>
+</code></pre></div></div>
+
+<h3 id="parameter-explanations">Parameter Explanations:</h3>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">--of ascii</code>: Specifies ASCII output (uses ASCII art—characters arranged to form a diagram). For example, here’s an ASCII art door:</li>
+</ul>
+
+<div style="text-align: center;">
+  <img alt="Example of ASCII art door" src="/assets/images/6a833f8f4c29431799c81e14a4ef513d.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">-p</code>: Prints physical IDs (labeled as <code class="language-plaintext highlighter-rouge">P#</code>; use <code class="language-plaintext highlighter-rouge">-l</code> for logical IDs labeled <code class="language-plaintext highlighter-rouge">L#</code>).</li>
+</ul>
+
+<h3 id="sample-terminal-output">Sample Terminal Output:</h3>
+<div style="text-align: center;">
+  <img alt="lstopo ASCII output in terminal showing CPU caches, cores, and PCI devices" src="/assets/images/0cd7ae46cd9c40cfb72d59f4dc00300f.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>The output shows the CPU’s three-level cache, processing units within each core, and PCI devices.</p>
+
+<h2 id="generate-imagefile-formats">Generate Image/File Formats</h2>
+<p><code class="language-plaintext highlighter-rouge">lstopo</code> supports generating formats like PNG, JPG, SVG, PDF, and XML. Below is an example using SVG:</p>
+
+<div style="text-align: center;">
+  <img alt="Sample SVG topology diagram generated by lstopo" src="/assets/images/260d94ff3a554377bf24dd05a5f600ce.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<h3 id="command-to-generate-svg">Command to Generate SVG:</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">env </span><span class="nv">LANG</span><span class="o">=</span>zh_CN.UTF-8 lstopo <span class="nt">--output-format</span> svg <span class="o">&gt;</span> 1.svg
+</code></pre></div></div>
+
+<blockquote>
+  <p><code class="language-plaintext highlighter-rouge">--output-format</code> is the full name of the shorthand <code class="language-plaintext highlighter-rouge">--of</code>.</p>
+</blockquote>
+
+<h3 id="key-note-for-chinese-display">Key Note for Chinese Display:</h3>
+<p>The <code class="language-plaintext highlighter-rouge">env LANG=zh_CN.UTF-8</code> prefix ensures Chinese characters render correctly (without it, Chinese text may appear as square boxes <code class="language-plaintext highlighter-rouge">□</code>):</p>
+
+<div style="text-align: center;">
+  <img alt="Broken Chinese text (square boxes) without proper LANG setting" src="/assets/images/2f3c100fce8644cbbef1b80b398e3c83.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<h3 id="simplified-command">Simplified Command:</h3>
+<p>You can also use this shorter command to generate files (automatically detects format from the extension):</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">env </span><span class="nv">LANG</span><span class="o">=</span>zh_CN.UTF-8 lstopo 1.svg
+</code></pre></div></div>
+
+<h3 id="overwrite-existing-files">Overwrite Existing Files:</h3>
+<p>Add the <code class="language-plaintext highlighter-rouge">-f</code> flag to force overwrite existing files:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">env </span><span class="nv">LANG</span><span class="o">=</span>zh_CN.UTF-8 lstopo 1.svg <span class="nt">-f</span>
+</code></pre></div></div>
+
+<h3 id="other-formats">Other Formats:</h3>
+<p>Replace the file extension to generate other formats:</p>
+<ul>
+  <li>XML: <code class="language-plaintext highlighter-rouge">env LANG=zh_CN.UTF-8 lstopo 1.xml</code></li>
+  <li>PNG: <code class="language-plaintext highlighter-rouge">env LANG=zh_CN.UTF-8 lstopo 1.png -f</code></li>
+</ul>
+
+<p>For all supported formats, see the “OUTPUT FORMATS” section in <a href="https://linux.die.net/man/1/lstopo">lstopo(1) - Linux man page</a>.</p>
+
+<blockquote>
+  <p>Why did I show the longer <code class="language-plaintext highlighter-rouge">--output-format</code> command first? Many documents use it—likely for historical reasons. I prefer documenting multiple working methods; you never know when a specific scenario might require one over the other.</p>
+</blockquote>
+
+<h2 id="important-note-pngjpg-quality-issues">Important Note: PNG/JPG Quality Issues</h2>
+<p>PNG and JPG are common formats (e.g., for blog posts), but they tend to be blurry (not due to compression). Smaller images may look acceptable, but larger ones suffer from poor clarity:</p>
+
+<div style="text-align: center;">
+  <img alt="Blurry PNG topology diagram" src="/assets/images/1eaced78ec9044538b77254d6901d2e1.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<h3 id="solution-use-pdf-as-an-intermediate-format">Solution: Use PDF as an Intermediate Format</h3>
+<p>To get clear images:</p>
+<ol>
+  <li>Generate a PDF first.</li>
+  <li>Convert the PDF to PNG/JPG.</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="PDF to image conversion workflow" src="/assets/images/0183a38921c54a9bb4001f951c04adfb.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>The resulting image will be sharp:</p>
+
+<div style="text-align: center;">
+  <img alt="Clear image converted from PDF" src="/assets/images/251cb8232e5b4c1682aa85a1db2b3b1e.jpg" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<h3 id="why-not-svg-as-an-intermediate-format">Why Not SVG as an Intermediate Format?</h3>
+<p>On macOS, converting SVG to images often results in empty files for unknown reasons:</p>
+
+<div style="text-align: center;">
+  <img alt="Empty file after SVG to image conversion on macOS" src="/assets/images/dd6a6e4cbf7b405f8f561224a4252ff9.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>Third-party tools can fix this, but I prefer using built-in utilities when possible.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="referencesfurther-reading">References/Further Reading</h2>
+<ul>
+  <li><a href="https://www.asciiart.eu/">ASCII Art Archive</a>: An archive of ASCII art works. You may also encounter this style in comments on platforms like Douyin. A similar style called CACA Format will be covered in a future blog post.</li>
+  <li>Note: When searching for SVG-to-PNG tools, I discovered macOS’s built-in <code class="language-plaintext highlighter-rouge">qlmanage</code> (used for generating thumbnails). However, it produces square images, which may crop parts of the topology diagram.</li>
+  <li><a href="https://linux.die.net/man/1/lstopo">lstopo(1) - Linux man page</a>: Official <code class="language-plaintext highlighter-rouge">lstopo</code> manual with useful examples.</li>
+  <li><a href="https://www.open-mpi.org/projects/hwloc/tutorials/20120702-POA-hwloc-tutorial.html#tools">Hwloc tutorial</a>: Official tutorial covering <code class="language-plaintext highlighter-rouge">lstopo</code> usage, library integration, and advanced features (for intermediate/advanced users).</li>
+  <li><a href="https://docs.nvidia.com/ai-enterprise/deployment/bare-metal/latest/gds-appendix-pci-validation.html">Validate PCI Switch System Topology - NVIDIA Docs</a>: NVIDIA’s guide to validating PCI switch topology, including a brief introduction to installing and using <code class="language-plaintext highlighter-rouge">lstopo</code>.</li>
+</ul>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
