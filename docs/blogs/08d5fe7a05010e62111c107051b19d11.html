@@ -1,0 +1,242 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Solution: Missing IPv4 Address on Ethernet (eth0) in Raspberry Pi 4B (Raspbian Bookworm)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Raspbian recently upgraded from Bullseye to Bookworm last month, bringing many changes. As of writing this blog, less than 30 days have passed, so there aren’t many reference solutions available—we can only rely on previous versions or figure it out ourselves. In the future, the official team may fix this issue, or new problems may arise. If I encounter any, I’ll write a new article and link it here.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Solution: Missing IPv4 Address on Ethernet (eth0) in Raspberry Pi 4B (Raspbian Bookworm)</h1>
+        <div class="bloginfo">
+            <p class="info">2023-11-07 ｜ <a href="/research.html"> Research</a> ｜ #Words: 922 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/134226229"> 中文原版 </a></p>
+        </div>
+        <p>Raspbian recently upgraded from Bullseye to Bookworm last month, bringing many changes. As of writing this blog, less than 30 days have passed, so there aren’t many reference solutions available—we can only rely on previous versions or figure it out ourselves. In the future, the official team may fix this issue, or new problems may arise. If I encounter any, I’ll write a new article and link it here.</p>
+
+<blockquote>
+  <p>Under certain configurations, the Ethernet port name may be <code class="language-plaintext highlighter-rouge">end1</code> instead of <code class="language-plaintext highlighter-rouge">eth0</code>—replace it with your actual port name.</p>
+</blockquote>
+
+<p>In my previous article, I mentioned testing Ubuntu Server 22.04.3 LTS. Although the display worked normally, it didn’t show the IP address for <code class="language-plaintext highlighter-rouge">eth0</code> (the onboard RJ45 port). Below is the part of the boot sequence that displays IP addresses for all interfaces (I didn’t take a screenshot of <code class="language-plaintext highlighter-rouge">ifconfig</code> output):</p>
+
+<div style="text-align: center;">
+  <img alt="Ubuntu Server boot screen showing only wlan0 IP" src="/assets/images/a8d163dbb34479305b1c1672a44e4c05.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>As you can see, only the wireless network <code class="language-plaintext highlighter-rouge">wlan0</code> has an IP address.</p>
+
+<p>When I switched back to Raspbian, <code class="language-plaintext highlighter-rouge">eth0</code> appeared in the output but lacked an <code class="language-plaintext highlighter-rouge">inet</code> (IPv4) or <code class="language-plaintext highlighter-rouge">inet6</code> (IPv6) address. Here’s the <code class="language-plaintext highlighter-rouge">ifconfig</code> result:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ifconfig 
+eth0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        ether xxxxxxxxxxxxx  txqueuelen 1000  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 75  bytes 20834 <span class="o">(</span>20.3 KiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 58  bytes 9199 <span class="o">(</span>8.9 KiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</code></pre></div></div>
+
+<blockquote>
+  <p>While wireless works, the Raspberry Pi 4’s Micro SD card interface only maxes out at 46MB/s. For external SSDs or large file transfers, wireless speeds are far from peak performance (often only a quarter of the maximum). With Ethernet, speeds can stably reach 45MB/s.</p>
+</blockquote>
+
+<p>I tried several methods, which are documented below.</p>
+
+<blockquote>
+  <p>Environment: Raspberry Pi 4B 4GB + Raspbian 2023-10-10 release</p>
+</blockquote>
+
+<h2 id="three-failed-attempts">Three Failed Attempts</h2>
+<p>Although the following methods didn’t work for this specific issue, they might be useful in other scenarios—so I’ve documented them here.</p>
+
+<h3 id="1-disable-and-re-enable-eth0">1. Disable and Re-enable eth0</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ifconfig eth0 down
+<span class="nv">$ </span>ifconfig eth0 up
+</code></pre></div></div>
+
+<p>The simplest “restart trick”—it didn’t work.</p>
+
+<h3 id="2-assign-a-static-ipv4-to-eth0">2. Assign a Static IPv4 to eth0</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ifconfig eth0 xxx.xxx.x.x netmask 255.255.255.0 up
+</code></pre></div></div>
+
+<p>This occasionally worked temporarily, but the IP address disappeared after rebooting the Raspberry Pi. Here’s the post-reboot output:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ifconfig 
+eth0: <span class="nv">flags</span><span class="o">=</span>4163&lt;UP,BROADCAST,RUNNING,MULTICAST&gt;  mtu 1500
+        inet6 xxxxxxxxxxxxxxx  prefixlen 64  scopeid 0x20&lt;<span class="nb">link</span><span class="o">&gt;</span>
+        ether xxxxxxxxxxxx  txqueuelen 1000  <span class="o">(</span>Ethernet<span class="o">)</span>
+        RX packets 75  bytes 20834 <span class="o">(</span>20.3 KiB<span class="o">)</span>
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 58  bytes 9199 <span class="o">(</span>8.9 KiB<span class="o">)</span>
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+</code></pre></div></div>
+
+<p>An IPv6 address appeared, but the IPv4 address vanished after every reboot—no matter how I configured it.</p>
+
+<h3 id="3-set-eth0-speed-to-100mbps">3. Set eth0 Speed to 100Mbps</h3>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nv">$ </span>ethtool <span class="nt">-s</span> eth0 speed 100 duplex full
+</code></pre></div></div>
+
+<p>Limiting the Ethernet speed to 100Mbps can help with low-quality cables that don’t support Gigabit—but it didn’t resolve the issue here.</p>
+
+<h2 id="solution">Solution</h2>
+<p>The second method got the closest to working, so I reinstalled the system to ensure no prior modifications interfered, then continued troubleshooting. After reinstallation, the result matched the post-reboot state of the second method: only an IPv6 address was displayed, no IPv4.</p>
+
+<p>Since the second method involved network settings, I focused my research there. I discovered that Raspbian had undergone major network configuration changes—and finally found a solution.</p>
+
+<h3 id="method-1-gui-graphical-interface">Method 1: GUI (Graphical Interface)</h3>
+<p>The GUI method is more intuitive:</p>
+
+<ol>
+  <li>Select “Edit Connection…” from the network menu (it may take a moment for the window to pop up):</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Raspbian network menu with 'Edit Connection...' selected" src="/assets/images/117093c19c2e98e17ae841ae5e933f20.jpg" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<ol>
+  <li>Choose “Wired connection 1” (the second entry in the screenshot is my USB Ethernet adapter for testing):</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Connection list showing 'Wired connection 1'" src="/assets/images/a81d8b3eac280421a19ffbae2d585652.jpg" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<ol>
+  <li>You’ll see the following interface:</li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="Wired connection settings interface" src="/assets/images/079104c8a8cc3aecae8769dfc9df62d1.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<ol>
+  <li>
+    <p>Change the “-999” value to <code class="language-plaintext highlighter-rouge">0</code> or <code class="language-plaintext highlighter-rouge">1</code>. This sets the connection priority—Wi-Fi defaults to 0, and <code class="language-plaintext highlighter-rouge">-999</code> means the Ethernet interface is disabled by default. While testing showed this change didn’t always affect the outcome, it’s safer to adjust it.</p>
+  </li>
+  <li>
+    <p>Switch to the “IPv4 Settings” tab, then change the “Method” dropdown to <code class="language-plaintext highlighter-rouge">Link_Local Only</code>:</p>
+  </li>
+</ol>
+
+<div style="text-align: center;">
+  <img alt="IPv4 Settings tab with 'Link_Local Only' selected" src="/assets/images/848a45ec2393e764e50cc182c73020f2.jpg" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<ol>
+  <li>Run <code class="language-plaintext highlighter-rouge">ifconfig</code> again—you should now see an IPv4 address for <code class="language-plaintext highlighter-rouge">eth0</code> (reboot if necessary).</li>
+</ol>
+
+<h3 id="method-2-cli-command-line-interface">Method 2: CLI (Command Line Interface)</h3>
+<p>The CLI method is faster—this single command is equivalent to the GUI steps above:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo </span>nmcli c a ifname eth0 <span class="nb">type </span>ethernet ipv4.method link-local ipv6.method link-local
+</code></pre></div></div>
+
+<p><strong>Note</strong>: Replace <code class="language-plaintext highlighter-rouge">eth0</code> with your actual Ethernet port name (e.g., <code class="language-plaintext highlighter-rouge">end0</code> if applicable)!</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
