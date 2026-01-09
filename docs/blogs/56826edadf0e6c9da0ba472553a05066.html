@@ -1,0 +1,147 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How to Fix Broken sudo: Error 'sudo: /etc/sudo.conf is owned by uid 1000, should be 0'</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='The issue is that the owner and group of files like `/etc/sudo.conf` (and related directories) are no longer `root`. I searched online for solutions and tried many, but none worked—for good reason: I was stuck in a dead loop. Changing permissions with `chown` requires root privileges, which I couldn’t obtain. Worse, I hadn’t set a password for the `root` user.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How to Fix Broken sudo: Error 'sudo: /etc/sudo.conf is owned by uid 1000, should be 0'</h1>
+        <div class="bloginfo">
+            <p class="info">2025-07-21 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 312 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/148798509"> 中文原版 </a></p>
+        </div>
+        <p>Today, while deploying NFS, I accidentally changed the owner of all files in the <code class="language-plaintext highlighter-rouge">/etc</code> directory. When I tried using <code class="language-plaintext highlighter-rouge">sudo</code> afterward, I encountered the following error:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nb">sudo</span>: /etc/sudo.conf is owned by uid 1000, should be 0 
+<span class="nb">sudo</span>: /etc/sudo.conf is owned by uid 1000, should be 0 
+<span class="nb">sudo</span>: /etc/sudoers is owned by uid 1000, should be 0 
+<span class="nb">sudo</span>: no valid sudoers sources found, quitting 
+<span class="nb">sudo</span>: error initializing audit plugin sudoers_audit
+</code></pre></div></div>
+
+<p>The issue is that the owner and group of files like <code class="language-plaintext highlighter-rouge">/etc/sudo.conf</code> (and related directories) are no longer <code class="language-plaintext highlighter-rouge">root</code>. I searched online for solutions and tried many, but none worked—for good reason: I was stuck in a dead loop. Changing permissions with <code class="language-plaintext highlighter-rouge">chown</code> requires root privileges, which I couldn’t obtain. Worse, I hadn’t set a password for the <code class="language-plaintext highlighter-rouge">root</code> user.</p>
+
+<p>I started wondering if I’d have to reinstall the system. I have so much data and configuration—it would have been a nightmare.</p>
+
+<p>After rebooting multiple times, I noticed “Advanced Options” in GRUB (shown below):</p>
+
+<div style="text-align: center;">
+  <img alt="GRUB menu showing Advanced Options" src="/assets/images/58e8383fa7de40e2a458c680181467ca.jpg" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>There was a “Safe Mode” option (shown below). I figured I’d try it as a last resort:</p>
+
+<div style="text-align: center;">
+  <img alt="Safe Mode option in GRUB Advanced Options" src="/assets/images/29ea39064b1843a5843db408c827f8f4.jpg" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>This mode is essentially a command-line interface with extremely high privileges. In Safe Mode, you can use <code class="language-plaintext highlighter-rouge">chown</code> to restore the correct <code class="language-plaintext highlighter-rouge">root</code> ownership to the files you mistakenly modified. After that, <code class="language-plaintext highlighter-rouge">sudo</code> will work normally again.</p>
+
+<blockquote>
+  <p>Whether to use <code class="language-plaintext highlighter-rouge">1000:1000</code> or <code class="language-plaintext highlighter-rouge">root:root</code> depends on your specific system setup.</p>
+</blockquote>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

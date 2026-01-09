@@ -106,6 +106,13 @@
     </li>
     
     <li>
+        <h2><a class="blog" href="/blogs/56826edadf0e6c9da0ba472553a05066.html">How to Fix Broken sudo: Error 'sudo: /etc/sudo.conf is owned by uid 1000, should be 0'</a></h2>
+        <p class="info">2025-07-21 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 312</p>
+        
+        <p>The issue is that the owner and group of files like `/etc/sudo.conf` (and related directories) are no longer `root`. I searched online for solutions and tried many, but none worked—for good reason: I was stuck in a dead loop. Changing permissions with `chown` requires root privileges, which I couldn’t obtain. Worse, I hadn’t set a password for the `root` user.</p>
+    </li>
+    
+    <li>
         <h2><a class="blog" href="/blogs/d0b0b117fd87c278e75bf687c840f306.html">Ubuntu can't access Network: No DNS or APT Failure in Setting</a></h2>
         <p class="info">2025-06-30 ｜ <a href="/unix.html"> UNIX</a> ｜ #Words: 959</p>
         
