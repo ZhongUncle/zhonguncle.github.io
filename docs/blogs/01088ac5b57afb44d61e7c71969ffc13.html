@@ -1,0 +1,240 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Dynamic Programming 2/n: Practicing DP with Concrete Problems (Climbing Stairs, House Robber)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content=''>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Dynamic Programming 2/n: Practicing DP with Concrete Problems (Climbing Stairs, House Robber)</h1>
+        <div class="bloginfo">
+            <p class="info">2024-11-05 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1534 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/143441590"> 中文原版 </a></p>
+        </div>
+        <p>The classic Fibonacci sequence mentioned in the previous article is a type of one-dimensional dynamic programming. One-dimensional DP is easy to identify—it involves only one relevant attribute (superficially, a single numeric value). Besides the Fibonacci sequence, there are other common or classic one-dimensional DP problems. This article will further introduce dynamic programming through some of these problems.</p>
+
+<h2 id="climbing-stairs-problem">Climbing Stairs Problem</h2>
+<h3 id="problem-description">Problem Description</h3>
+<p>You are given an integer array <code class="language-plaintext highlighter-rouge">cost</code> where <code class="language-plaintext highlighter-rouge">cost[i]</code> is the cost of climbing to the top from the ith step. Once you pay this cost, you can choose to climb one or two steps up.</p>
+
+<p>You can start climbing from either step 0 or step 1.</p>
+
+<p>Calculate and return the minimum cost to reach the top of the stairs.</p>
+
+<h3 id="problem-analysis">Problem Analysis</h3>
+<p>This problem is an excellent DP example because it shows how to make <strong>non-obvious recursion</strong> explicit. The core of learning DP thinking is finding the smallest subproblems in recursion.</p>
+
+<p>As you may have noticed, unlike the Fibonacci sequence, the problem description does not have obvious recursion. However, if we rephrase the problem:</p>
+<blockquote>
+  <p>Start descending stairs from the nth step. You can go down 1 or 2 steps at a time. Each descent requires paying the cost of the target step. Finally, you can reach step 1 or step 0. Which path (to step 1 or step 0) has the minimum total cost?</p>
+</blockquote>
+
+<p>Now let’s analyze it using the four-step framework:</p>
+<ol>
+  <li>Relationship between base cases.</li>
+  <li>Subproblem definition.</li>
+  <li>Relate subproblem solutions to recursive structures.</li>
+  <li>Use topological sort to ensure acyclic subproblems.</li>
+</ol>
+
+<p>From the description, to minimize the total cost, each subsequent descent must have the minimum possible cost. This is the relationship between base cases.</p>
+
+<p>The subproblem is clear: when descending one step, should you go down 1 or 2 steps? The choice depends on the cost of the two possible target steps. Just like the Fibonacci sequence, we can continuously determine which option has the lower cost—the minimum total cost is the combination of the minimum costs of each subproblem (Fibonacci proceeds forward; this problem proceeds backward). Now the problem becomes familiar, and writing code becomes straightforward.</p>
+
+<p>The recursive structure can be implemented with a loop or recursive function calls. However, as mentioned in the previous article, loops are faster.</p>
+
+<p>Visually, this problem forms a tree—since we choose between two options (descend 1 or 2 steps), there must be no cycles.</p>
+
+<h3 id="code-implementation">Code Implementation</h3>
+<p>The “one-dimensional” nature is reflected in the use of a one-dimensional array (just like the Fibonacci sequence uses a one-dimensional array).</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">minCostClimbingStairs</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">cost</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">cost</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="kt">int</span> <span class="n">j</span> <span class="o">=</span> <span class="n">n</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>  <span class="c1">// Target position for descending stairs (cost is associated with the target step)</span>
+    <span class="c1">// These two lines prevent out-of-bounds access to the vector</span>
+    <span class="kt">int</span> <span class="n">dp</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">2</span><span class="p">];</span>
+    <span class="n">dp</span><span class="p">[</span><span class="n">n</span><span class="p">]</span> <span class="o">=</span> <span class="n">dp</span><span class="p">[</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    
+    <span class="k">while</span> <span class="p">(</span><span class="n">j</span> <span class="o">&gt;=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Choose the cheaper option: descend 1 step or 2 steps?</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">dp</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">])</span> <span class="p">{</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">1</span><span class="p">];</span>
+        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+            <span class="n">dp</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">=</span> <span class="n">cost</span><span class="p">[</span><span class="n">j</span><span class="p">]</span> <span class="o">+</span> <span class="n">dp</span><span class="p">[</span><span class="n">j</span> <span class="o">+</span> <span class="mi">2</span><span class="p">];</span>
+        <span class="p">}</span>
+        <span class="n">j</span><span class="o">--</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Determine which starting point (step 0 or step 1) has the minimum total cost</span>
+    <span class="k">return</span> <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&lt;</span> <span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">?</span> <span class="n">dp</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">:</span> <span class="n">dp</span><span class="p">[</span><span class="mi">1</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<h2 id="house-robber-problem">House Robber Problem</h2>
+<h3 id="problem-description-1">Problem Description</h3>
+<p>You are a professional robber planning to rob houses along a street. Each house has a certain amount of money stashed. The only constraint stopping you from robbing each of them is that adjacent houses have security systems connected, and it will automatically contact the police if two adjacent houses were broken into on the same night.</p>
+
+<p>Given an integer array representing the amount of money of each house, return the maximum amount of money you can rob tonight without alerting the police.</p>
+
+<h3 id="problem-analysis-1">Problem Analysis</h3>
+<blockquote>
+  <p>Many people’s explanations of this problem are quite misleading. They explain the solution in a “simple” way but jump directly to an iterative implementation when writing code.
+This is not ideal because it fails to train the ability to analyze problems and derive solutions. In the end, you can only accumulate experience through a large number of problems and may eventually solve new ones.</p>
+</blockquote>
+
+<p>Let’s analyze it using the four-step framework:</p>
+<ol>
+  <li>Relationship between base cases.</li>
+  <li>Subproblem definition.</li>
+  <li>Relate subproblem solutions to recursive structures.</li>
+  <li>Use topological sort to ensure acyclic subproblems.</li>
+</ol>
+
+<p>The relationship between base cases is straightforward: you cannot rob adjacent houses. The subproblem is defined as: after robbing a house, you must skip at least one house before robbing again. Alternatively, you can skip at most two houses—skipping three houses would mean you could have robbed the middle one.</p>
+
+<p>The key is how to recursive this problem.</p>
+<blockquote>
+  <p>The runtime of DP solutions is not as concise as the solutions themselves. This is probably the cost of solving difficult problems. So don’t always think about the fastest method first—find the recursive approach, then optimize.</p>
+</blockquote>
+
+<p>In the previous problem, we considered starting from step 0 or step 1. Here, we need to consider the starting scenarios: starting from the first house or the second house (starting from the third house still allows robbing the first house). The next robbery must skip at least one house. For example, if you start from the first house, the next possible robberies are houses 3 to n. Choosing between starting from the first or second house depends on the maximum value of the robbery route. What is this maximum value? In other words, how to find the maximum?</p>
+
+<p>Check each possibility. Assume you start from the first house: the next robbery can only be houses 3 or 4, giving a maximum stolen value up to that point before moving to house 5. The next robberies would be houses 5 and 6, and so on until the last two houses, where you get the maximum route value. This is recursion.</p>
+
+<p>Similarly, this tree-like graph can be solved with topological sort—there are no cycles. Now let’s write the code.</p>
+
+<h3 id="code-implementation-1">Code Implementation</h3>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">rob</span><span class="p">(</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;&amp;</span> <span class="n">num</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">int</span> <span class="n">n</span> <span class="o">=</span> <span class="n">num</span><span class="p">.</span><span class="n">size</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// Stores the maximum value after robbing the first (i-1) houses; no need to handle the case of only one house separately</span>
+    <span class="n">vector</span><span class="o">&lt;</span><span class="kt">int</span><span class="o">&gt;</span> <span class="n">result</span><span class="p">(</span><span class="n">n</span> <span class="o">+</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="n">result</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span><span class="p">[</span><span class="mi">0</span><span class="p">];</span>
+    
+    <span class="c1">// Start from the third house</span>
+    <span class="c1">// (As mentioned earlier, the starting point can only be the first or second house; the next robbery starts from the third house, indexed as 2)</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;=</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// The stolen value is the maximum of the two options:</span>
+        <span class="cm">/* Using the example above:
+           The total stolen value for the third house is either:
+           1. The maximum value from robbing the first two houses (skipping the third), or
+           2. The maximum value from robbing the first house plus the third house (skipping the second)
+           Choose the maximum of these two.
+        */</span>
+        <span class="n">result</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">max</span><span class="p">(</span><span class="n">result</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">],</span> <span class="n">result</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="n">num</span><span class="p">[</span><span class="n">i</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]);</span>
+    <span class="p">}</span>
+    
+    <span class="k">return</span> <span class="n">result</span><span class="p">[</span><span class="n">n</span><span class="p">];</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>You may wonder why we consider the case where we don’t rob a house. This is a technical choice—directly implementing the analyzed scenario makes it difficult to handle boundary cases, leading to potential out-of-bounds errors.</p>
+
+<h2 id="summary">Summary</h2>
+<p>After these examples, you may have noticed that—ignoring recursion—converting to a for loop always requires an additional array to store intermediate results. This array essentially saves the return values of recursive calls in order. This is the fundamental principle of converting recursion to iteration.</p>
+
+<p>The next article plans to cover two-dimensional DP problems. Later, I may share some interesting DP problems, as I found a DP book with really engaging examples.</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

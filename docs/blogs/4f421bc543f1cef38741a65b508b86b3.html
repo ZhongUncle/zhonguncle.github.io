@@ -1,0 +1,206 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Dynamic Programming 1/n: What Is Dynamic Programming?</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Dynamic Programming (DP for short) is a programming paradigm, not a specific algorithm. It breaks down a large problem into smaller subproblems through recursion—mathematically speaking, it can be expressed as a polynomial. This allows solving problems of different scales with minimal changes to the code (a key advantage of recursion).'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Dynamic Programming 1/n: What Is Dynamic Programming?</h1>
+        <div class="bloginfo">
+            <p class="info">2024-10-31 ｜ <a href="/research.html"> Research</a> ｜ #Words: 1069 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/143374294"> 中文原版 </a></p>
+        </div>
+        <p>I’ve heard the term “dynamic programming” a hundred times but never really understood it— I don’t even know what it’s used for. However, its frequent appearance indicates it’s worth learning.</p>
+
+<h2 id="what-is-dynamic-programming">What Is Dynamic Programming?</h2>
+<p>Before learning dynamic programming, you need to clearly understand what it is. Many textbooks dive straight into content without explaining its core idea.</p>
+
+<p>Dynamic Programming (DP for short) is a programming paradigm, not a specific algorithm. It breaks down a large problem into smaller subproblems through <strong>recursion</strong>—mathematically speaking, it can be expressed as a polynomial. This allows solving problems of different scales with minimal changes to the code (a key advantage of <strong>recursion</strong>).</p>
+
+<p>A quick note: Divide and Conquer (D&amp;C for short) also splits large problems into smaller ones, but D&amp;C uses <strong>direct splitting</strong>, while dynamic programming uses <strong>recursive splitting</strong>—it’s important to distinguish between the two. Here are two examples to illustrate:</p>
+
+<blockquote>
+  <p>Note: Dynamic programming is not recursion itself; it merely leverages recursion. Divide and Conquer can also use recursion (e.g., quicksort).</p>
+</blockquote>
+
+<p>When adding two arrays, you can split the task into n pairs and compute them together. For example, calculate <code class="language-plaintext highlighter-rouge">a[1]+b[1]</code> and <code class="language-plaintext highlighter-rouge">a[10]+b[10]</code> in the first iteration, <code class="language-plaintext highlighter-rouge">a[2]+b[2]</code> and <code class="language-plaintext highlighter-rouge">a[11]+b[11]</code> in the second, and so on until all ten elements are processed. <strong>This splitting can be sequential or random, but the split parts have no correlation</strong>—for instance, <code class="language-plaintext highlighter-rouge">a[1]</code> has no dependency on <code class="language-plaintext highlighter-rouge">a[2]</code>.</p>
+
+<p>In dynamic programming, however, each split (or most splits) has <strong>correlations</strong> or dependencies. A classic introductory example is the Fibonacci sequence. Except for the first two elements, every element in the Fibonacci sequence is the sum of the two preceding ones. Its mathematical expression is:</p>
+
+\[fib(n) = fib(n-1) + fib(n-2)\]
+
+<blockquote>
+  <p>This is also known as the Bellman equation. They are the same concept, but “dynamic programming” is commonly used in algorithms, while “Bellman equation” is used in optimization.</p>
+</blockquote>
+
+<p>We can derive the nth Fibonacci number through <strong>iteration</strong>:</p>
+
+\[1, 1, 2, 3, 5, 8, ......\]
+
+<p>From this, you can see why concepts like topological sort and critical path are related to dynamic programming—their splits involve inherent correlations. By leveraging these correlations (or constraints), we can find an optimal solution. Thus, dynamic programming is typically used to solve <strong>optimization problems</strong>. If you browse DP-related questions on LeetCode, you’ll notice many include keywords like “shortest,” “fastest,” or “most efficient.”</p>
+
+<h2 id="how-to-implement-dynamic-programming">How to Implement Dynamic Programming?</h2>
+<p>Designing a dynamic programming algorithm generally involves six steps:</p>
+<ul>
+  <li><strong>Subproblem Definition</strong>: Determine what the subproblems are. For the Fibonacci sequence, the subproblem is $fib(n) = fib_n$.</li>
+  <li><strong>Relate Subproblem Solutions to Recursive Structures</strong>: For example, calculating a Fibonacci number can be done by recursively calling the <code class="language-plaintext highlighter-rouge">fib()</code> function (or using a for loop, which is faster).</li>
+  <li><strong>Use Topological Sort to Ensure Acyclic Subproblems</strong>: This sounds abstract, but think of recursive subproblems (or function calls) as a graph—topological sorting ensures a path without cycles. The initial subproblem with an in-degree of 0 is the first call. A cyclic graph would cause an infinite loop, indicating a flawed algorithm. (I once read in a senior engineer’s memoir that a student accidentally crashed a school’s mainframe by writing a cyclic Fibonacci algorithm when first learning programming.)<br />
+    <blockquote>
+      <p>You can also use other algorithms to check for cycles.</p>
+    </blockquote>
+  </li>
+  <li><strong>Relationship Between Base Cases</strong>: This is a prerequisite for steps 1 and 2—understanding this relationship allows defining subproblems and recursive structures. For example, each Fibonacci number (after the first two) is the sum of the previous two.</li>
+  <li><strong>Solve the Original Problem Using Subproblem Solutions</strong>: Combine subproblem results to address the initial large problem.</li>
+  <li><strong>Runtime Analysis</strong>: The time complexity of the Fibonacci sequence algorithm is exponential.</li>
+</ul>
+
+<p>However, these steps can be simplified to four:</p>
+<ul>
+  <li>Relationship between base cases.</li>
+  <li>Subproblem definition.</li>
+  <li>Relate subproblem solutions to recursive structures.</li>
+  <li>Use topological sort to ensure acyclic subproblems.</li>
+</ul>
+
+<h3 id="a-deep-dive-into-runtime">A Deep Dive into Runtime</h3>
+<p><strong>The analyzed runtime of an algorithm is not directly tied to its actual execution time</strong>—this is emphasized in almost every first algorithm class. Thus, you may need to adjust the recursive structure in practice. For example, the Fibonacci sequence:</p>
+
+<p>Using recursive function calls (the code below matches our subproblem formula), calculating the 45th term takes approximately 5.58 seconds:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">int</span> <span class="nf">fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">return</span> <span class="p">(</span><span class="n">n</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">)</span> <span class="o">?</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">+</span> <span class="n">fib</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="mi">2</span><span class="p">)</span> <span class="o">:</span> <span class="mi">1</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>But using a for loop yields a massive speedup—up to 6–7 orders of magnitude faster:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">long</span> <span class="kt">int</span> <span class="nf">fib</span><span class="p">(</span><span class="kt">int</span> <span class="n">n</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">long</span> <span class="kt">int</span> <span class="n">pre_pre</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">pre</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">cur</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">if</span><span class="p">(</span><span class="n">n</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span> <span class="k">return</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="k">for</span><span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">n</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">cur</span> <span class="o">=</span> <span class="n">pre</span> <span class="o">+</span> <span class="n">pre_pre</span><span class="p">;</span>
+        <span class="n">pre_pre</span> <span class="o">=</span> <span class="n">pre</span><span class="p">;</span>
+        <span class="n">pre</span> <span class="o">=</span> <span class="n">cur</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">return</span> <span class="n">cur</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Two reasons explain this difference:</p>
+<ol>
+  <li><strong>System Overhead</strong>: Recursive function calls require allocating new function stacks, handling inputs/outputs, and managing returns—all of which add significant overhead. A for loop, by contrast, is just a sequence of addition operations, making it much faster.</li>
+  <li><strong>Redundant Calculations</strong>: Calculating <code class="language-plaintext highlighter-rouge">fib(n)</code> and <code class="language-plaintext highlighter-rouge">fib(n-1)</code> both require computing <code class="language-plaintext highlighter-rouge">fib(n-2)</code>—leading to substantial redundant work. A for loop avoids this by computing values incrementally. This optimization is called <strong>memoization</strong>, so dynamic programming is sometimes described as $DP = SRTBOT + memoization$.</li>
+</ol>
+
+<blockquote>
+  <p>SRTBOT stands for “recursive algorithms design paradigm.”</p>
+</blockquote>
+
+<p>Thus, the choice of implementation depends on the specific scenario.</p>
+
+<p>The next article will focus on practical problems. We’ll practice dynamic programming through two classic examples: <a href="/blogs/01088ac5b57afb44d61e7c71969ffc13.html">Dynamic Programming 2/n: Practicing DP with Concrete Problems (Climbing Stairs, House Robber)</a>.</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
