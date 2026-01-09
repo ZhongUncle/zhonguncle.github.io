@@ -1,0 +1,534 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>The Quirks of C printf Parameter Handling on macOS: What Happens When printf Uses %d to Print a Floating-Point Number?</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='I was extremely curious about why this happens. The `0` on 32-bit systems is easy to understand, but why do we get random numbers on 64-bit systems? You can probably make a rough guess—it’s related to memory addresses (weird random numbers almost always point to address issues.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>The Quirks of C printf Parameter Handling on macOS: What Happens When printf Uses %d to Print a Floating-Point Number?</h1>
+        <div class="bloginfo">
+            <p class="info">2024-07-26 ｜ <a href="/research.html"> Research</a> ｜ #Words: 3724 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/140699329"> 中文原版 </a></p>
+        </div>
+        <p>This morning while browsing the web, I came across a 2016 article that mentioned this piece of code:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"a = %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>It stated that when this code runs on x86 (IA-32) architecture, the output is <code class="language-plaintext highlighter-rouge">0</code>; on x86-64, the output is a different random number every time.</p>
+
+<p>I tested it, and sure enough, that’s exactly what happened:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>zhonguncle@ZhongUncle-Mac-mini <span class="nb">test</span> % ./a.out
+a <span class="o">=</span> <span class="nt">-1194089144</span>
+zhonguncle@ZhongUncle-Mac-mini <span class="nb">test</span> % ./a.out
+a <span class="o">=</span> <span class="nt">-1094355640</span>
+</code></pre></div></div>
+
+<p>I was extremely curious about why this happens. The <code class="language-plaintext highlighter-rouge">0</code> on 32-bit systems is easy to understand, but why do we get random numbers on 64-bit systems?</p>
+
+<p>You can probably make a rough guess—it’s related to memory addresses (weird random numbers almost always point to address issues, like “reading from the wrong memory location”). But blind guesses are prone to mistakes, so verification is necessary. First, I checked if anyone had researched this online.</p>
+
+<blockquote>
+  <p>Later, I found out that the original version of this problem dates back nearly 20 years. However, since most machines were 32-bit back then, the issue was manageable. Around 2008, as 64-bit machines became popular, the problem evolved to include the 64-bit behavior described above.<br /></p>
+</blockquote>
+
+<p>In the early years, China’s tech industry was still developing, and Microsoft had significant influence at the time. As a result, most research blogs and records in China focused on Windows, with many excellent resources that I’ve included in the “References/Further Reading” section at the end—feel free to check them out if you’re interested.</p>
+
+<p>Abroad, there are discussions about macOS and Linux, but they are not as in-depth. Since I couldn’t find the exact information I needed, I decided to investigate it myself.</p>
+
+<p>This article uses an Intel-based Mac for explanation. The reason on Linux is similar, and essentially the same as Windows, though with minor differences.</p>
+
+<h2 id="why-x86-32-returns-0-ia-32">Why x86-32 Returns 0 (IA-32)</h2>
+<blockquote>
+  <p>IA-32 architecture is the instruction set architecture and programming environment for Intel’s 32-bit microprocessors.<br /></p>
+</blockquote>
+
+<p>When <code class="language-plaintext highlighter-rouge">printf</code> uses <code class="language-plaintext highlighter-rouge">%d</code>, it fetches 2 bytes from the corresponding position in the stack memory.</p>
+
+<p>This makes the 32-bit behavior easy to understand: on 32-bit systems, <code class="language-plaintext highlighter-rouge">int</code> is typically 2 bytes, <code class="language-plaintext highlighter-rouge">double</code> is 4 bytes, and the machine’s registers are at most 32 bits wide.</p>
+
+<p>The hexadecimal representation of the floating-point number <code class="language-plaintext highlighter-rouge">10</code> is <code class="language-plaintext highlighter-rouge">00 00 24 40</code>, so it is pushed onto the stack in the order <code class="language-plaintext highlighter-rouge">40-24-00-00</code>, with <code class="language-plaintext highlighter-rouge">00</code> at the top of the stack. When <code class="language-plaintext highlighter-rouge">printf</code> retrieves the value for <code class="language-plaintext highlighter-rouge">%d</code>, it pops 2 bytes (4 hexadecimal digits) from the stack—<code class="language-plaintext highlighter-rouge">00-00</code>, which equals <code class="language-plaintext highlighter-rouge">0</code>.</p>
+
+<p>If you output using the following code:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"%d %d"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>You’ll find the second output is no longer <code class="language-plaintext highlighter-rouge">0</code>. This is because there is still one value left in the stack, which is <code class="language-plaintext highlighter-rouge">10</code>.</p>
+
+<p>macOS no longer supports 32-bit systems, but similar behavior occurs on 64-bit systems—this is not simply an overflow issue.</p>
+
+<h2 id="how-printf-works">How printf Works</h2>
+<p>Before diving into the 64-bit problem, we need to understand how <code class="language-plaintext highlighter-rouge">printf</code> works. The specific cause of this issue is tied to <code class="language-plaintext highlighter-rouge">printf</code>’s implementation (as you saw, it’s also related to the 32-bit case, but we didn’t need to delve into it deeply).</p>
+
+<p>For Linux and macOS, you can view the library function manual with <code class="language-plaintext highlighter-rouge">man 3 printf</code>, and you’ll find this statement about its structure:</p>
+
+<div style="text-align: center;">
+  <img alt="printf manual page showing structure description" src="/assets/images/d61929cdba0440feb8fc87478da6f347.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>In short: the function is implemented with a format string and the <code class="language-plaintext highlighter-rouge">stdarg</code> library functions.</p>
+
+<p>The <code class="language-plaintext highlighter-rouge">stdarg</code> manual includes an example at the end that implements a simplified version of <code class="language-plaintext highlighter-rouge">printf</code> (reading manuals pays off!):</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+#include</span> <span class="cpf">&lt;stdarg.h&gt;</span><span class="cp">
+</span>
+<span class="kt">void</span> <span class="nf">foo</span><span class="p">(</span><span class="kt">char</span> <span class="o">*</span><span class="n">fmt</span><span class="p">,</span> <span class="p">...)</span> <span class="p">{</span>
+    <span class="kt">va_list</span> <span class="n">ap</span><span class="p">,</span> <span class="n">ap2</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">d</span><span class="p">;</span>
+    <span class="kt">char</span> <span class="n">c</span><span class="p">,</span> <span class="o">*</span><span class="n">s</span><span class="p">;</span>
+
+    <span class="n">va_start</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="n">fmt</span><span class="p">);</span>
+    <span class="n">va_copy</span><span class="p">(</span><span class="n">ap2</span><span class="p">,</span> <span class="n">ap</span><span class="p">);</span>
+    <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">fmt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="o">*</span><span class="n">fmt</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="sc">'s'</span><span class="p">:</span>  <span class="c1">// string</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"string %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">s</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">'d'</span><span class="p">:</span>  <span class="c1">// int</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"int %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">'c'</span><span class="p">:</span>  <span class="c1">// char</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+                <span class="n">printf</span><span class="p">(</span><span class="s">"char %c</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">c</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">va_end</span><span class="p">(</span><span class="n">ap</span><span class="p">);</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="o">*</span><span class="n">fmt</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="o">*</span><span class="n">fmt</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="sc">'s'</span><span class="p">:</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap2</span><span class="p">,</span> <span class="kt">char</span> <span class="o">*</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">'d'</span><span class="p">:</span>
+                <span class="n">d</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap2</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+            <span class="k">case</span> <span class="sc">'c'</span><span class="p">:</span>
+                <span class="n">c</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap2</span><span class="p">,</span> <span class="kt">int</span><span class="p">);</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+    <span class="n">va_end</span><span class="p">(</span><span class="n">ap2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">a</span><span class="o">=</span><span class="mi">10</span><span class="p">;</span>
+    <span class="n">foo</span><span class="p">(</span><span class="s">"sdc"</span><span class="p">,</span> <span class="s">"Today"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="sc">'C'</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Here, <code class="language-plaintext highlighter-rouge">foo()</code> is our custom implementation of <code class="language-plaintext highlighter-rouge">printf</code>. In <code class="language-plaintext highlighter-rouge">foo("sdc", "Today", a, 'C');</code>, the first parameter <code class="language-plaintext highlighter-rouge">"sdc"</code> is the format string: <code class="language-plaintext highlighter-rouge">"Today"</code> corresponds to <code class="language-plaintext highlighter-rouge">s</code> (string), and the subsequent arguments map to the remaining specifiers.</p>
+
+<p>We care about the types and their corresponding values, so the output is:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>string Today
+int 10
+char C
+</code></pre></div></div>
+
+<p>As you can see, the values and their order are determined by the format string.</p>
+
+<p>Implementing this helps us understand how <code class="language-plaintext highlighter-rouge">printf</code> operates. The program above increments through the format string, matches the appropriate arguments, and prints them.</p>
+
+<p>The format string in the real <code class="language-plaintext highlighter-rouge">printf</code> is much more complex, but the core idea is the same: push the remaining arguments onto the stack from right to left, then pop them from the stack to match the format string specifiers.</p>
+
+<p>This is exactly how <code class="language-plaintext highlighter-rouge">printf</code> works. We can use this similar implementation to experiment and find the root cause!</p>
+
+<p>I couldn’t debug the system <code class="language-plaintext highlighter-rouge">printf</code> with LLDB or other tools, but I could certainly debug my own code.</p>
+
+<p>Notice in the code: the second parameter of <code class="language-plaintext highlighter-rouge">va_arg(ap2, int);</code> determines the argument type. This means passing a value of a different format will result in undefined behavior (since we didn’t write any validation logic).</p>
+
+<p>What exactly happens? Let’s test it:</p>
+
+<p>Change the integer to a floating-point number:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">foo</span><span class="p">(</span><span class="s">"sdc"</span><span class="p">,</span> <span class="s">"Today"</span><span class="p">,</span> <span class="mi">1</span><span class="p">.</span><span class="mi">2</span><span class="p">,</span> <span class="sc">'C'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Output:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>string Today
+int 67
+char X
+</code></pre></div></div>
+
+<p>Testing with any floating-point number consistently yields <code class="language-plaintext highlighter-rouge">int 67 char X</code>.</p>
+
+<p>Is this overflow? Let’s try a very large integer:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="n">foo</span><span class="p">(</span><span class="s">"sdc"</span><span class="p">,</span> <span class="s">"Today"</span><span class="p">,</span> <span class="mi">11231121212132</span><span class="p">,</span> <span class="sc">'C'</span><span class="p">);</span>
+</code></pre></div></div>
+
+<p>Output:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>string Today
+int <span class="nt">-218266908</span>
+char C
+</code></pre></div></div>
+
+<p>Even with integer overflow, <code class="language-plaintext highlighter-rouge">char C</code> remains unchanged. This means floating-point overflow may affect data outside the expected range, while integer overflow does not.</p>
+
+<p>This behavior is caused by <code class="language-plaintext highlighter-rouge">va_arg</code>: the first parameter is the variable argument list, and the second specifies the type (i.e., how to process the variables). In the code above, we specified <code class="language-plaintext highlighter-rouge">int</code>—let’s change it to <code class="language-plaintext highlighter-rouge">double</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="k">case</span> <span class="sc">'d'</span><span class="p">:</span>  <span class="c1">// int</span>
+    <span class="n">d</span> <span class="o">=</span> <span class="n">va_arg</span><span class="p">(</span><span class="n">ap</span><span class="p">,</span> <span class="kt">double</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ap</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"int %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">d</span><span class="p">);</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span><span class="n">ap</span><span class="p">);</span>
+    <span class="k">break</span><span class="p">;</span>
+</code></pre></div></div>
+
+<p>Surprisingly, the output is correct:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>string Today
+int 10
+char C
+</code></pre></div></div>
+
+<p>The manual states: if there is no next argument, or the type does not match the next argument (after promotion), random errors will occur:</p>
+
+<div style="text-align: center;">
+  <img alt="stdarg manual page warning about undefined behavior for type mismatch" src="/assets/images/cf4dd49b14c8416a8fcaf222dbbe0b26.png" style="box-shadow: 0px 0px 0px 0px; width: 90%;" />
+</div>
+
+<p>Sure enough—this is the culprit, and the behavior matches exactly.</p>
+
+<p>“Promotion” refers to converting a type to a larger range before processing, then converting it back. For example, a 64-bit <code class="language-plaintext highlighter-rouge">float</code> is first promoted to <code class="language-plaintext highlighter-rouge">double</code>, and an <code class="language-plaintext highlighter-rouge">int</code> is treated as an <code class="language-plaintext highlighter-rouge">unsigned</code> integer before processing.</p>
+
+<h2 id="64-bit-architecture">64-bit Architecture</h2>
+<blockquote>
+  <p>Intel® 64 architecture is the instruction set architecture and programming environment which is the superset of Intel’s 32-bit and 64-bit architectures. It is compatible with the IA-32 architecture.<br /></p>
+</blockquote>
+
+<p>Now let’s tackle the real question: why do we get random numbers on 64-bit systems?</p>
+
+<p>Let’s modify the code slightly:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Guess what the output is?</p>
+
+<p>Here it is:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>20 <span class="nt">-1133869736</span>
+</code></pre></div></div>
+
+<p>I didn’t reverse them—this is the actual output (only on Mac; Linux behaves differently). Why is the value of <code class="language-plaintext highlighter-rouge">b</code> printed first?</p>
+
+<p>To understand this, you need to know the program’s memory layout (you could have skipped this in the previous section, but it’s essential here). The memory layout of a running program looks roughly like this:</p>
+
+<div style="text-align: center;">
+  <img alt="Program memory layout diagram (stack, heap, etc.)" src="/assets/images/827d750a2d1c449a9260b9a380015a33.gif" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>Local variables are stored in the stack region when declared.
+So the variables are ordered from high to low addresses as <code class="language-plaintext highlighter-rouge">a</code> and <code class="language-plaintext highlighter-rouge">b</code>.</p>
+
+<p>This is also related to function calls: calling a function creates a frame on the stack to store the return address, arguments, and local variables. This includes the <code class="language-plaintext highlighter-rouge">main</code> function frame.</p>
+
+<p>Important note: the stack grows from high addresses to low addresses, which is why assembly code uses subtraction:</p>
+
+<pre><code class="language-asm">subq	$16, %rsp
+movl	$0, -4(%rbp)	
+movl	$10, -8(%rbp)
+movl	-8(%rbp), %esi
+leaq	L_.str(%rip), %rdi
+movb	$0, %al
+callq	_printf
+</code></pre>
+
+<p>x86-64 is more complex: 32-bit registers and memory sizes are similar, making processing, conversion, and movement relatively straightforward. For early 16-bit data, 32-bit registers could be split into two parts to store two 16-bit values each.</p>
+
+<p>Intel later introduced MMX (for integers), adding 64-bit <code class="language-plaintext highlighter-rouge">XMM</code> registers to x86 CPUs. This was followed by the SSE (floating-point) instruction set series, expanding <code class="language-plaintext highlighter-rouge">XMM</code> registers to 128 bits. Modern AVX series features add even more, with <code class="language-plaintext highlighter-rouge">YMM</code> and <code class="language-plaintext highlighter-rouge">ZMM</code> registers (up to 512 bits). These instruction sets are primarily used for SIMD parallel computing (GPU is another implementation of SIMD).</p>
+
+<p>On devices with YMM registers, the lower 128 bits of YMM are XMM.</p>
+
+<p>SIMD enables the same computation on multiple pairs of data with a single instruction (instead of one instruction per pair), drastically improving performance. As a result, XMM and YMM registers can be split into multiple blocks:</p>
+
+<div style="text-align: center;">
+  <img alt="XMM/YMM/ZMM register structure diagram for SIMD" src="/assets/images/0495a01e846845048960be8eb3df7545.png" style="box-shadow: 0px 0px 0px 0px; width: 50%;" />
+</div>
+
+<p>The Clang compiler directly stores floating-point numbers in XMM registers when declared:</p>
+
+<div style="text-align: center;">
+  <img alt="Clang assembly output showing floating-point number stored in xmm0 register" src="/assets/images/3b2bb76ec45047b6acd15e691e830378.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>The comment indicates it’s stored in the <code class="language-plaintext highlighter-rouge">xmm0</code> register: the front part is the storage location, and the rest are all <code class="language-plaintext highlighter-rouge">0</code>s.</p>
+
+<p>In contrast, floating-point arrays are first stored in memory (likely to facilitate parallel computing on multiple arrays):</p>
+
+<div style="text-align: center;">
+  <img alt="Clang assembly output showing floating-point array stored in memory" src="/assets/images/4b607a2cb69e42068e8190106ddd60d4.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>For comparison, a single integer <code class="language-plaintext highlighter-rouge">int</code> doesn’t even need to be stored in memory—it’s passed directly as a value:</p>
+
+<div style="text-align: center;">
+  <img alt="Clang assembly output showing integer value passed directly (no memory storage)" src="/assets/images/a1a52d1d57094b109906bcbba987315b.png" style="box-shadow: 0px 0px 0px 0px; width: 30%;" />
+</div>
+
+<p>After research, I found this behavior is related to how <code class="language-plaintext highlighter-rouge">printf</code> retrieves arguments. You also need to understand the format differences between floating-point numbers and integers.</p>
+
+<p>When <code class="language-plaintext highlighter-rouge">printf</code> pushes arguments onto the stack, the frame pointer register (<code class="language-plaintext highlighter-rouge">EBP</code>) and stack pointer register (<code class="language-plaintext highlighter-rouge">ESP</code>) point to the bottom and top of the current frame, respectively.</p>
+
+<p>Let’s write a function to get the value of <code class="language-plaintext highlighter-rouge">EBP</code>:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kt">void</span> <span class="nf">printEBP</span><span class="p">(){</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ebp</span><span class="p">;</span>
+    <span class="n">asm</span><span class="p">(</span><span class="s">"mov %%rbp, %0"</span> <span class="o">:</span> <span class="s">"=r"</span> <span class="p">(</span><span class="n">ebp</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"EBP: %lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ebp</span><span class="p">);</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Whether you use this in our custom <code class="language-plaintext highlighter-rouge">printf</code> (must be used inside the function, not before/after—otherwise the frame is different) or the initial example, you’ll observe the following:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"   %p</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="p">(</span><span class="kt">void</span><span class="o">*</span><span class="p">)</span><span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ebp</span><span class="p">;</span>
+    <span class="n">asm</span><span class="p">(</span><span class="s">"mov %%rbp, %0"</span> <span class="o">:</span> <span class="s">"=r"</span> <span class="p">(</span><span class="n">ebp</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"EBP: %lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ebp</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Output:</p>
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code>   <span class="mh">0x7ff7bfeff310</span>
+<span class="n">EBP</span><span class="o">:</span> <span class="mi">7</span><span class="n">ff7bfeff320</span>
+</code></pre></div></div>
+
+<p>You’ll notice the random number matches the address stored in <code class="language-plaintext highlighter-rouge">EBP</code> except for the last two digits. The variable <code class="language-plaintext highlighter-rouge">a</code> is located just below the previous frame pointer (the address pointed to by the <code class="language-plaintext highlighter-rouge">EBP</code> register):</p>
+
+<div style="text-align: center;">
+  <img alt="Memory layout showing variable a below EBP register address" src="/assets/images/9e3eb86048d14a978170b5bd7039c73a.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>It’s important to emphasize that the order of local variables and the actual size of their regions are determined by the compiler—you should not assume their exact positions, but the overall structure remains consistent. Many compilers randomize stack addresses to prevent buffer overflow attacks (e.g., adding an extra pointer in the stack that points to the actual location). For example, the address may fall outside the frame range:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="nl">EBP:</span> <span class="mi">7</span><span class="n">ff7bfeff320</span>
+   <span class="mh">0x7ff84f1e86c0</span>
+<span class="n">ESP</span><span class="o">:</span> <span class="mi">7</span><span class="n">ff7bfeff300</span>
+</code></pre></div></div>
+
+<p>This explains why you might get the same result multiple times—especially when running in Xcode (which may fix memory addresses temporarily to avoid issues), the address may not change at all with repeated runs in a short time. However, this does not mean it will always be the same.</p>
+
+<p>The situation is now complex: we don’t know where the compiler ultimately stores local variables or how it processes them. Let’s assume we can find the actual location and focus on this scenario.</p>
+
+<p>You can use a pointer to get the address of <code class="language-plaintext highlighter-rouge">a</code>, then retrieve its value—you’ll find the behavior is identical to the 32-bit case:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"         %x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">a</span><span class="p">);</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">ebp</span><span class="p">;</span>
+    <span class="n">asm</span><span class="p">(</span><span class="s">"mov %%rbp, %0"</span> <span class="o">:</span> <span class="s">"=r"</span> <span class="p">(</span><span class="n">ebp</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"EBP: %lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">ebp</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="o">*</span><span class="n">p</span><span class="o">=&amp;</span><span class="n">a</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"         %x</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+    <span class="kt">unsigned</span> <span class="kt">long</span> <span class="n">esp</span><span class="p">;</span>
+    <span class="n">asm</span><span class="p">(</span><span class="s">"mov %%rsp, %0"</span> <span class="o">:</span> <span class="s">"=r"</span> <span class="p">(</span><span class="n">esp</span><span class="p">));</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"ESP: %lx</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">esp</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Output:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>         be2042f0
+EBP: 7ff7be204300
+         b1e2042f0
+ESP: 7ff7be2042d0
+</code></pre></div></div>
+
+<p>The value stored in the pointer <code class="language-plaintext highlighter-rouge">p</code> (i.e., the address of variable <code class="language-plaintext highlighter-rouge">a</code>) is the random number we saw earlier. You can test that <code class="language-plaintext highlighter-rouge">*p</code> (i.e., <code class="language-plaintext highlighter-rouge">a</code>) outputs <code class="language-plaintext highlighter-rouge">0</code>, just like the 32-bit case.</p>
+
+<p>Additionally, if you change the floating-point number to a floating-point pointer, the conversion works perfectly:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span><span class="kt">int</span> <span class="nf">main</span><span class="p">()</span> <span class="p">{</span>
+    <span class="kt">double</span> <span class="o">*</span><span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"a = %d</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>Output:</p>
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>a <span class="o">=</span> 10
+</code></pre></div></div>
+
+<blockquote>
+  <p>I couldn’t get a perfectly precise answer (i.e., exactly what happens at each step) because Apple does not publish documentation for its ABI or specific implementations. This is why many people dismiss this issue with “undefined behavior”—there’s no official documentation.<br /></p>
+</blockquote>
+
+<p>My guess is that the implementation includes pointer jumps inserted between different local variables. I noticed that a declared pointer and the address it points to are adjacent (I suspect the stack frame has empty spaces—e.g., 2 bytes of padding between variables and the stack top/bottom, which may be addresses), possibly for alignment purposes.</p>
+
+<p>This may result in addresses of different lengths (I observed this during testing). I even suspect variables of different types may be stored in slightly different address regions.</p>
+
+<p>This means when directly fetching content by an <code class="language-plaintext highlighter-rouge">int</code> address, you may end up with a “shorter address + subsequent content” or a “truncated longer address”—which will definitely cause errors.</p>
+
+<p>In other words, the 64-bit issue is not about incorrect content formatting; instead, there are certain recognition and conversion mechanisms in place, and the problem lies with the addresses.</p>
+
+<p>Using a pointer ensures you get the correct address of the <code class="language-plaintext highlighter-rouge">double</code> value. This is why testing showed that simply using a pointer resolved the issue.</p>
+
+<p>Additionally, I noticed something: in some cases, the returned address is consistently <code class="language-plaintext highlighter-rouge">0x120a8</code>—this may be something specific, but I couldn’t find any documentation about it.</p>
+<blockquote>
+  <p>During testing, I manually set the lower bits of <code class="language-plaintext highlighter-rouge">xmm0</code> to 0, but the returned value was still <code class="language-plaintext highlighter-rouge">0x120a8</code>. This led me to guess that <code class="language-plaintext highlighter-rouge">0x120a8</code> is a recovery address—when an error occurs, execution jumps here and then returns to the next valid position.<br /></p>
+</blockquote>
+
+<p>This suggests that when <code class="language-plaintext highlighter-rouge">printf</code> processes two arguments, it may skip the first mismatched argument and process the second one first. Hence, the first output is the second argument (which matches the format specifier and prints correctly), and then it processes the first argument (causing the earlier issue).</p>
+
+<p>This leads me to speculate that macOS’s <code class="language-plaintext highlighter-rouge">printf</code> checks each argument against its format specifier one by one—if there’s a mismatch, it moves to the next argument until a match is found. Why this guess? Modify the program as follows:</p>
+
+<div class="language-c highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="cp">#include</span> <span class="cpf">&lt;stdio.h&gt;</span><span class="cp">
+</span>
+<span class="kt">int</span> <span class="nf">main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">double</span> <span class="n">a</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">b</span> <span class="o">=</span> <span class="mi">20</span><span class="p">;</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"%d %f</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">a</span><span class="p">,</span> <span class="n">b</span><span class="p">);</span>
+    <span class="k">return</span> <span class="mi">0</span><span class="p">;</span>
+<span class="p">}</span>
+</code></pre></div></div>
+
+<p>We set the second format specifier to floating-point, but the corresponding argument is an integer. The output is reversed:</p>
+
+<div class="language-bash highlighter-rouge"><div class="highlight"><pre class="highlight"><code>20 10.000000
+</code></pre></div></div>
+
+<p>It’s correct, but reversed—pretty weird, right?</p>
+
+<p>This is why I believe there’s something “special” about macOS’s implementation. On Linux, these behaviors result in random numbers with no discernible pattern, which piqued my curiosity even more.</p>
+
+<p>I hope these will help someone in need~</p>
+
+<h2 id="referencesfurther-reading">References/Further Reading</h2>
+
+<p><a href="https://stackoverflow.com/questions/2377733/how-does-this-program-work">How does this program work? - Stack Overflow</a>: Although this post is from 2010, it addresses the same problem as this article (including 64-bit behavior). The second-highest voted answer was very helpful to me—I referenced many of its examples (e.g., the reversed output test at the end). Unfortunately, <a href="https://stackoverflow.com/users/226621/alok-singhal">Alok Singhal</a> did not conduct in-depth research, and his reasoning was incorrect (he guessed it was due to different registers, like I did midway). However, the reversed output example helped form my final hypothesis—I wouldn’t have thought of the argument processing logic without it. Another post also guessed it was a register issue, which is why I mentioned <code class="language-plaintext highlighter-rouge">xmm</code> registers earlier, but it seems unrelated on macOS.</p>
+
+<p><a href="https://stackoverflow.com/questions/2433295/how-does-printf-handle-its-arguments">How does printf handle its arguments? - Stack Overflow</a>: This post lists several <code class="language-plaintext highlighter-rouge">printf</code> implementations and methods. Although I didn’t use them in the article, they were still helpful.</p>
+
+<p><a href="https://www.halolinux.us/assembly-programming/passing-parameters-to-printf.html">Passing Parameters to printf - Halo Linux Services</a>: This marketing article explains how <code class="language-plaintext highlighter-rouge">printf</code> retrieves arguments.</p>
+
+<p><a href="https://home.cs.colorado.edu/~rhan/CSCI_3753_Spring_2005/CSCI_3753_Spring_2005/Lectures/02_03_05_Stacks_and_Frames.pdf">Stack and Frames Demystified CSCI</a>: If you’re unfamiliar with operating systems, refer to this PPT for stack and frame concepts.</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>
