@@ -1,0 +1,539 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Introduction to MLE: How to Automatically Learn Parameters with Code (A Sample of Machine Learning)</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='Maximum Likelihood Estimation (MLE), also translated as maximum likelihood estimation, is a method for obtaining the optimal parameters of a model from sample data. For example, MLE can estimate the parameters of a probability density function (PDF). If a set of samples/datasets/statistics (likely) follow a normal distribution, we only need to find the mean and variance (or standard deviation) of the dataset to derive the probability density formula that fits the data.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Introduction to MLE: How to Automatically Learn Parameters with Code (A Sample of Machine Learning)</h1>
+        <div class="bloginfo">
+            <p class="info">2025-07-27 ｜ <a href="/research.html"> Research</a> ｜ #Words: 4252 ｜ <a
+                    href="https://blog.csdn.net/qq_33919450/article/details/149676587"> 中文原版 </a></p>
+        </div>
+        <p>Maximum Likelihood Estimation (MLE), also translated as “maximum likelihood estimation”, is a method for obtaining the optimal parameters of a model from sample data.</p>
+
+<p>For example, MLE can estimate the parameters of a probability density function (PDF). If a set of samples/datasets/statistics (likely) follow a normal distribution, we only need to find the mean and variance (or standard deviation) of the dataset to derive the probability density formula that fits the data.</p>
+
+\[f(x) = \frac{1}{\sqrt{2\pi\sigma^2}} e^{-\frac{(x - \mu)^2}{2\sigma^2}}\]
+
+<p>Where:</p>
+<ul>
+  <li>$\mu$ represents the mean</li>
+  <li>$\sigma^2$ represents the variance</li>
+  <li>$x$ is the value of the random variable</li>
+</ul>
+
+<h2 id="the-process-of-maximum-likelihood-estimation">The Process of Maximum Likelihood Estimation</h2>
+<p>The steps for MLE are as follows:</p>
+<ol>
+  <li>Determine the probability model: e.g., a normal distribution model.</li>
+  <li>Construct the likelihood function: this involves multiplying all probability density functions together.<br />
+    <blockquote>
+      <p>Alternatively, we can convert it to a logarithmic function, which turns the product into a sum—this is more convenient in some cases. Additionally, addition is computationally cheaper than multiplication for computers.<br />
+As an extra note: although the function itself is continuous, the probability density function becomes “discrete” when applied to discrete samples, which is why we can multiply them together. You’ll see this clearly in the code later.<br /></p>
+    </blockquote>
+  </li>
+  <li>Solve for the maximum value of the log-likelihood function<br />
+    <blockquote>
+      <p>For each data point, we substitute the current $x$ value into the function (e.g., the standard normal distribution function), where the parameters are the independent variables of the likelihood function. We then take the derivative to find the optimal MLE parameters.<br />
+For program implementation, the derivative tells us the direction of parameter adjustment.<br /></p>
+    </blockquote>
+  </li>
+</ol>
+
+<h2 id="demonstrating-how-machines-learn-parameters-via-mle">Demonstrating How Machines Learn Parameters via MLE</h2>
+<p>You might have found this article while studying for an exam, but once you understand the principle of MLE, it mostly comes down to memorizing formulas. So instead, we’ll demonstrate how to estimate parameters using code.</p>
+
+<p>Let’s arbitrarily choose parameters for a normal distribution PDF: $\mu = 7.2$, $\sigma = 2.8$ (which means $\sigma^2 = 7.83999$).</p>
+
+<p>We’ll start with the standard normal distribution (you can start with other values) and iteratively adjust the parameters until they match our target parameters (referred to as such below).</p>
+
+<p>First, we generate 10,000 data points using the target parameters as our sample data, then fit the parameters from this sample.<br /></p>
+<blockquote>
+  <p>The key differences from exam-style problem-solving are: 1) We need to find two parameters instead of just one, and 2) We won’t use direct differentiation to find the values.<br /></p>
+</blockquote>
+
+<p>Below are key code snippets (see comments for explanations)—the full code is provided later:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="c1"># Target distribution parameters
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">target_mu</span> <span class="o">=</span> <span class="mf">7.2</span>    <span class="c1"># Theoretical mean
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span> <span class="o">=</span> <span class="mf">2.8</span> <span class="c1"># Theoretical standard deviation
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">target_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span> <span class="o">**</span><span class="mi">2</span>  <span class="c1"># Theoretical variance
+</span>        
+        <span class="c1"># MLE estimated parameters
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> <span class="o">=</span> <span class="mf">0.0</span>       <span class="c1"># Mean estimate
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="mf">1.0</span>    <span class="c1"># Standard deviation estimate
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span><span class="o">**</span> <span class="mi">2</span>  <span class="c1"># Variance estimate
+</span></code></pre></div></div>
+
+<p>Next, generate the data:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
+        <span class="sh">"""</span><span class="s">Generate observed data</span><span class="sh">"""</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span>
+            <span class="n">loc</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">target_mu</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span>
+        <span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Generated </span><span class="si">{</span><span class="n">n_samples</span><span class="si">}</span><span class="s"> data points from N(μ=</span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">target_mu</span><span class="si">}</span><span class="s">, σ²=</span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">target_var</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">)</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="c1"># Theoretical MLE values (sample statistics)
+</span>        <span class="c1"># Note: sample statistics differ slightly from theoretical values (shown later)
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">true_mle_mu</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">true_mle_var</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">var</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">true_mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_var</span><span class="p">)</span>
+                
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">data</span>
+</code></pre></div></div>
+
+<p>Now we can perform maximum likelihood estimation:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code>    <span class="k">def</span> <span class="nf">mle_gradient_descent</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+        <span class="c1"># No separate test set available, so manually split into train/validation sets
+</span>        <span class="c1"># This is a common technique
+</span>        <span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span> <span class="o">=</span> <span class="nf">train_test_split</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        
+        <span class="c1"># Initialize parameters to starting values
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_var</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+        
+        <span class="c1"># Variables for tracking training progress and plotting
+</span>        <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">val_log_likelihoods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">epochs_record</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">best_val_ll</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="p">.</span><span class="n">inf</span>
+        <span class="n">best_mu</span><span class="p">,</span> <span class="n">best_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span>
+        
+        <span class="c1"># Counter for overfitting prevention (early stopping)
+</span>        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span> 
+        
+        <span class="c1"># Start training
+</span>        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="c1"># Convert to logarithmic scale for easier calculation
+</span>            <span class="c1"># loc=self.mle_mu: location parameter (mean)
+</span>            <span class="c1"># scale=np.sqrt(self.mle_var): scale parameter (standard deviation)
+</span>            <span class="c1"># After logarithmic conversion, we sum log-probability densities (cheaper addition)
+</span>            <span class="c1"># Note: Values closer to 0 indicate better fitting to training data
+</span>            <span class="n">train_ll</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">logpdf</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)))</span>
+            <span class="n">val_ll</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">logpdf</span><span class="p">(</span><span class="n">val_data</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)))</span>
+            
+            <span class="c1"># Record values for plotting
+</span>            <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">train_ll</span><span class="p">)</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">val_log_likelihoods</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">val_ll</span><span class="p">)</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">epochs_record</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            
+            <span class="c1"># Difference between training set and estimated mean
+</span>            <span class="n">error</span> <span class="o">=</span> <span class="n">train_data</span> <span class="o">-</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> 
+            <span class="c1"># Calculate gradient for mean
+</span>            <span class="n">grad_mu</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">error</span> <span class="o">/</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+            <span class="c1"># Squared error between training set and estimated variance
+</span>            <span class="n">mean_squared_error</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">error</span> <span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="c1"># Calculate gradient for variance
+</span>            <span class="n">grad_var</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">mean_squared_error</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="c1"># Update parameters: adjust by (learning rate * gradient)
+</span>            <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> <span class="o">+=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad_mu</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">+=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad_var</span>
+            <span class="c1"># Variance cannot be negative (set to 0 if negative)
+</span>            <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> 
+            <span class="c1"># Calculate standard deviation (used for early stopping)
+</span>            <span class="c1"># We originally defined the target in terms of standard deviation (not variance)
+</span>            <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+            
+            <span class="c1"># Early stopping (stop if validation loss worsens for 50 consecutive epochs)
+</span>            <span class="k">if</span> <span class="n">val_ll</span> <span class="o">&gt;</span> <span class="n">best_val_ll</span><span class="p">:</span>
+                <span class="n">best_val_ll</span> <span class="o">=</span> <span class="n">val_ll</span>
+                <span class="n">best_mu</span><span class="p">,</span> <span class="n">best_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span>
+                <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;=</span> <span class="mi">50</span> <span class="ow">or</span> <span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">val_ll</span> <span class="o">-</span> <span class="n">best_val_ll</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">):</span>
+                    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">Converged at epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+                    <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="n">best_mu</span><span class="p">,</span> <span class="n">best_var</span>
+                    <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+                    <span class="k">break</span>
+            
+            <span class="c1"># Print training progress every 100 epochs
+</span>            <span class="nf">if </span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s"> - </span><span class="sh">"</span>
+                      <span class="sa">f</span><span class="sh">"</span><span class="s">Train LL: </span><span class="si">{</span><span class="n">train_ll</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">, Val LL: </span><span class="si">{</span><span class="n">val_ll</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">, </span><span class="sh">"</span>
+                      <span class="sa">f</span><span class="sh">"</span><span class="s">MLE Mean: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">, MLE Variance: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span>
+</code></pre></div></div>
+
+<p>Let’s explain this section of the code:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="c1"># Calculate gradient for mean
+</span><span class="n">grad_mu</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">error</span> <span class="o">/</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+<span class="c1"># Squared error between training set and estimated variance
+</span><span class="n">mean_squared_error</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">error</span> <span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+<span class="c1"># Calculate gradient for variance
+</span><span class="n">grad_var</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">mean_squared_error</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+</code></pre></div></div>
+
+<p>In computer science, gradients and derivatives are often implemented using their basic definition: rate of change. Unlike mathematical derivatives (which involve limits), real-world implementations are simpler (as seen in the code). However, you still need to manually calculate the derivative for the variance gradient.</p>
+
+<p>First, the log-likelihood function is:
+\(\log L(\mu, \sigma^2) = -\frac{n}{2}\log(2\pi) - \frac{n}{2}\log(\sigma^2) - \frac{1}{2\sigma^2}\sum_{i=1}^n (x_i - \mu)^2\)</p>
+
+<p>Take the partial derivative with respect to $\sigma^2$ (note: $\sigma^2$, not $\sigma$):
+\(\frac{\partial \log L}{\partial \sigma^2} = -\frac{n}{2\sigma^2} + \frac{1}{2\sigma^4}\sum_{i=1}^n (x_i - \mu)^2\)</p>
+
+<p>Factor out $\frac{n}{2\sigma^2}$:
+\(\frac{\partial \log L}{\partial \sigma^2} = \frac{n}{2\sigma^2} \left( \frac{\sum (x_i - \mu)^2}{n\sigma^2} - 1 \right)\)</p>
+
+<p>The factor $n$ doesn’t affect the calculation (it’s just a constant coefficient), so we can omit it to reduce computations:
+\(\frac{\partial \log L}{\partial \sigma^2} = \frac{1}{2\sigma^2} \left( \frac{\sum (x_i - \mu)^2}{n\sigma^2} - 1 \right)\)</p>
+
+<p>While $\mu$ represents the mathematical expectation (mean) in theory, we use the sample-calculated mean in practice.</p>
+
+<blockquote>
+  <p>This is a critical concept: <strong>the learning rate must be consistent for all parameters</strong>. As you’ll see in training, the mean converges much faster than the variance (due to the squared term in variance calculations). Using different learning rates for each parameter will result in significant estimation errors.<br />
+Try it yourself—you’ll see the final parameters have huge errors.<br />
+Is there a solution? Yes—modern models often use variable learning rates (e.g., reducing the learning rate when loss decreases slowly to improve accuracy) or learning rate schedules. However, this is beyond the scope of this article and won’t be discussed further.<br /></p>
+</blockquote>
+
+<p>We can now start training.</p>
+
+<p>Below is the complete code—you can copy and run it yourself:</p>
+
+<div class="language-python highlighter-rouge"><div class="highlight"><pre class="highlight"><code><span class="kn">import</span> <span class="n">numpy</span> <span class="k">as</span> <span class="n">np</span>
+<span class="kn">import</span> <span class="n">pandas</span> <span class="k">as</span> <span class="n">pd</span>
+<span class="kn">import</span> <span class="n">matplotlib.pyplot</span> <span class="k">as</span> <span class="n">plt</span>
+<span class="kn">from</span> <span class="n">scipy</span> <span class="kn">import</span> <span class="n">stats</span>
+<span class="kn">from</span> <span class="n">sklearn.model_selection</span> <span class="kn">import</span> <span class="n">train_test_split</span>
+<span class="kn">import</span> <span class="n">os</span>
+<span class="kn">import</span> <span class="n">time</span> 
+
+<span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">seed</span><span class="p">(</span><span class="mi">42</span><span class="p">)</span>
+
+<span class="k">class</span> <span class="nc">MLENormalEstimator</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">target_mu</span> <span class="o">=</span> <span class="mf">7.2</span> 
+        <span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span> <span class="o">=</span> <span class="mf">2.8</span> 
+        <span class="n">self</span><span class="p">.</span><span class="n">target_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span> <span class="o">**</span><span class="mi">2</span> 
+        
+        <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">initial_sigma</span> <span class="o">=</span> <span class="mf">1.0</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">initial_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_sigma</span><span class="o">**</span> <span class="mi">2</span>
+        
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_sigma</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_var</span>
+        
+    <span class="k">def</span> <span class="nf">generate_data</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">n_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">):</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">data</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="n">random</span><span class="p">.</span><span class="nf">normal</span><span class="p">(</span>
+            <span class="n">loc</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">target_mu</span><span class="p">,</span>
+            <span class="n">scale</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span><span class="p">,</span>
+            <span class="n">size</span><span class="o">=</span><span class="n">n_samples</span>
+        <span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Generated </span><span class="si">{</span><span class="n">n_samples</span><span class="si">}</span><span class="s"> data points from N(μ=</span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">target_mu</span><span class="si">}</span><span class="s">, σ²=</span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">target_var</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">)</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="n">self</span><span class="p">.</span><span class="n">true_mle_mu</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">)</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">true_mle_var</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">var</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">ddof</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span> 
+        <span class="n">self</span><span class="p">.</span><span class="n">true_mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_var</span><span class="p">)</span>
+        
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">data</span>
+    
+    <span class="k">def</span> <span class="nf">mle_gradient_descent</span><span class="p">(</span><span class="n">self</span><span class="p">,</span> <span class="n">epochs</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span> <span class="n">lr</span><span class="o">=</span><span class="mf">0.05</span><span class="p">,</span> <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span><span class="p">):</span>
+        <span class="n">train_data</span><span class="p">,</span> <span class="n">val_data</span> <span class="o">=</span> <span class="nf">train_test_split</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">test_size</span><span class="o">=</span><span class="mf">0.2</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
+        
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_var</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+        
+        <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">val_log_likelihoods</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">epochs_record</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">best_val_ll</span> <span class="o">=</span> <span class="o">-</span><span class="n">np</span><span class="p">.</span><span class="n">inf</span>
+        <span class="n">best_mu</span><span class="p">,</span> <span class="n">best_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span>
+        <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+        
+        <span class="n">start_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="nf">time</span><span class="p">()</span>
+        
+        <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nf">range</span><span class="p">(</span><span class="n">epochs</span><span class="p">):</span>
+            <span class="n">train_ll</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">logpdf</span><span class="p">(</span><span class="n">train_data</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)))</span>
+            <span class="n">val_ll</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sum</span><span class="p">(</span><span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">logpdf</span><span class="p">(</span><span class="n">val_data</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">scale</span><span class="o">=</span><span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)))</span>
+            
+            <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">train_ll</span><span class="p">)</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">val_log_likelihoods</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">val_ll</span><span class="p">)</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">epochs_record</span><span class="p">.</span><span class="nf">append</span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+            
+            <span class="n">error</span> <span class="o">=</span> <span class="n">train_data</span> <span class="o">-</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span>
+            <span class="n">grad_mu</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">error</span> <span class="o">/</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+            <span class="n">mean_squared_error</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">mean</span><span class="p">(</span><span class="n">error</span> <span class="o">**</span><span class="mi">2</span><span class="p">)</span>
+            <span class="n">grad_var</span> <span class="o">=</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">))</span> <span class="o">+</span> <span class="p">(</span><span class="n">mean_squared_error</span><span class="p">)</span><span class="o">/</span><span class="p">(</span><span class="mi">2</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="o">**</span> <span class="mi">2</span><span class="p">)</span>
+            
+            <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span> <span class="o">+=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad_mu</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">+=</span> <span class="n">lr</span> <span class="o">*</span> <span class="n">grad_var</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+            <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+            
+            <span class="k">if</span> <span class="n">val_ll</span> <span class="o">&gt;</span> <span class="n">best_val_ll</span><span class="p">:</span>
+                <span class="n">best_val_ll</span> <span class="o">=</span> <span class="n">val_ll</span>
+                <span class="n">best_mu</span><span class="p">,</span> <span class="n">best_var</span> <span class="o">=</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span>
+                <span class="n">counter</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
+                <span class="k">if</span> <span class="n">counter</span> <span class="o">&gt;=</span> <span class="mi">50</span> <span class="ow">or</span> <span class="p">(</span><span class="nf">abs</span><span class="p">(</span><span class="n">val_ll</span> <span class="o">-</span> <span class="n">best_val_ll</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">tol</span><span class="p">):</span>
+                    <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">Converged at epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+                    <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span> <span class="o">=</span> <span class="n">best_mu</span><span class="p">,</span> <span class="n">best_var</span>
+                    <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">sqrt</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span>
+                    <span class="k">break</span>
+            
+            <span class="nf">if </span><span class="p">(</span><span class="n">epoch</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span> <span class="o">%</span> <span class="mi">100</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">Epoch </span><span class="si">{</span><span class="n">epoch</span><span class="o">+</span><span class="mi">1</span><span class="si">}</span><span class="s">/</span><span class="si">{</span><span class="n">epochs</span><span class="si">}</span><span class="s"> - </span><span class="sh">"</span>
+                      <span class="sa">f</span><span class="sh">"</span><span class="s">Train LL: </span><span class="si">{</span><span class="n">train_ll</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">, Val LL: </span><span class="si">{</span><span class="n">val_ll</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">, </span><span class="sh">"</span>
+                      <span class="sa">f</span><span class="sh">"</span><span class="s">MLE Mean: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s">, MLE Variance: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="n">end_time</span> <span class="o">=</span> <span class="n">time</span><span class="p">.</span><span class="nf">time</span><span class="p">()</span>
+        <span class="n">self</span><span class="p">.</span><span class="n">train_duration</span> <span class="o">=</span> <span class="n">end_time</span> <span class="o">-</span> <span class="n">start_time</span> 
+        
+        <span class="k">return</span> <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span>
+    
+    <span class="k">def</span> <span class="nf">evaluate</span><span class="p">(</span><span class="n">self</span><span class="p">):</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="se">\n</span><span class="sh">"</span> <span class="o">+</span> <span class="sh">"</span><span class="s">=</span><span class="sh">"</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">                  MAXIMUM LIKELIHOOD ESTIMATION RESULTS</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">=</span><span class="sh">"</span><span class="o">*</span><span class="mi">80</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">1. Training Duration: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">train_duration</span><span class="si">:</span><span class="p">.</span><span class="mi">4</span><span class="n">f</span><span class="si">}</span><span class="s"> seconds</span><span class="sh">"</span><span class="p">)</span> 
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">2. Target Distribution:</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Mean: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">target_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Variance: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">target_var</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">3. Theoretical MLE (Sample Statistics):</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Mean MLE: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Variance MLE: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_var</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">4. Estimated MLE:</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Estimated Mean: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Estimated Variance: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">5. Initial Parameters:</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Initial Mean: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Initial Variance: </span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">initial_var</span><span class="si">:</span><span class="p">.</span><span class="mi">6</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="se">\n</span><span class="s">6. Estimation Errors:</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Mean Error: </span><span class="si">{</span><span class="nf">abs</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_mu</span> <span class="o">-</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">)</span><span class="si">:</span><span class="p">.</span><span class="mi">8</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sa">f</span><span class="sh">"</span><span class="s">   - Variance Error: </span><span class="si">{</span><span class="nf">abs</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_var</span> <span class="o">-</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_var</span><span class="p">)</span><span class="si">:</span><span class="p">.</span><span class="mi">8</span><span class="n">f</span><span class="si">}</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">=</span><span class="sh">"</span><span class="o">*</span><span class="mi">80</span> <span class="o">+</span> <span class="sh">"</span><span class="se">\n</span><span class="sh">"</span><span class="p">)</span>
+        
+        <span class="c1"># Plot log-likelihood curve
+</span>        <span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">epochs_record</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">train_log_likelihoods</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Training Log-Likelihood</span><span class="sh">'</span><span class="p">,</span> 
+                 <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">blue</span><span class="sh">'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">epochs_record</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">val_log_likelihoods</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sh">'</span><span class="s">Validation Log-Likelihood</span><span class="sh">'</span><span class="p">,</span> 
+                 <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">orange</span><span class="sh">'</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mf">1.2</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">'</span><span class="s">Log-Likelihood During MLE Optimization</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Epoch</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Log-Likelihood (Higher = Better)</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">grid</span><span class="p">(</span><span class="bp">True</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="sh">'</span><span class="s">--</span><span class="sh">'</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.5</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">tight_layout</span><span class="p">()</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">savefig</span><span class="p">(</span><span class="sh">'</span><span class="s">corrected_mle_log_likelihood.png</span><span class="sh">'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
+        
+        <span class="c1"># Plot distribution comparison
+</span>        <span class="n">plt</span><span class="p">.</span><span class="nf">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">6</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
+        <span class="n">x_min</span> <span class="o">=</span> <span class="nf">min</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nf">min</span><span class="p">(),</span> <span class="n">self</span><span class="p">.</span><span class="n">target_mu</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span> <span class="o">-</span> <span class="mi">4</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">initial_sigma</span><span class="p">)</span>
+        <span class="n">x_max</span> <span class="o">=</span> <span class="nf">max</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">.</span><span class="nf">max</span><span class="p">(),</span> <span class="n">self</span><span class="p">.</span><span class="n">target_mu</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span> <span class="o">+</span> <span class="mi">4</span><span class="o">*</span><span class="n">self</span><span class="p">.</span><span class="n">initial_sigma</span><span class="p">)</span>
+        <span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="p">.</span><span class="nf">linspace</span><span class="p">(</span><span class="n">x_min</span><span class="p">,</span> <span class="n">x_max</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+        
+        <span class="n">plt</span><span class="p">.</span><span class="nf">hist</span><span class="p">(</span><span class="n">self</span><span class="p">.</span><span class="n">data</span><span class="p">,</span> <span class="n">bins</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">density</span><span class="o">=</span><span class="bp">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.6</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="sh">'</span><span class="s">blue</span><span class="sh">'</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="sh">'</span><span class="s">Observed Data (μ=</span><span class="si">{</span><span class="n">self</span><span class="p">.</span><span class="n">true_mle_mu</span><span class="si">:</span><span class="p">.</span><span class="mi">2</span><span class="n">f</span><span class="si">}</span><span class="s">)</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">target_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">target_sigma</span><span class="p">),</span> <span class="sh">'</span><span class="s">g-</span><span class="sh">'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="sh">'</span><span class="s">Target Distribution</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">mle_sigma</span><span class="p">),</span> <span class="sh">'</span><span class="s">r--</span><span class="sh">'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="sh">'</span><span class="s">Estimated MLE Distribution</span><span class="sh">'</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">plot</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">stats</span><span class="p">.</span><span class="n">norm</span><span class="p">.</span><span class="nf">pdf</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_mu</span><span class="p">,</span> <span class="n">self</span><span class="p">.</span><span class="n">initial_sigma</span><span class="p">),</span> <span class="sh">'</span><span class="s">purple</span><span class="sh">'</span><span class="p">,</span> <span class="n">ls</span><span class="o">=</span><span class="sh">'</span><span class="s">:</span><span class="sh">'</span><span class="p">,</span> <span class="n">lw</span><span class="o">=</span><span class="mf">1.5</span><span class="p">,</span>
+                 <span class="n">label</span><span class="o">=</span><span class="sa">f</span><span class="sh">'</span><span class="s">Initial Distribution</span><span class="sh">'</span><span class="p">)</span>
+        
+        <span class="n">plt</span><span class="p">.</span><span class="nf">title</span><span class="p">(</span><span class="sh">'</span><span class="s">Distribution Comparison</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">10</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">xlabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Value</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">ylabel</span><span class="p">(</span><span class="sh">'</span><span class="s">Probability Density</span><span class="sh">'</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">8</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">legend</span><span class="p">(</span><span class="n">fontsize</span><span class="o">=</span><span class="mi">7</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">grid</span><span class="p">(</span><span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">savefig</span><span class="p">(</span><span class="sh">'</span><span class="s">mle_distribution_comparison.png</span><span class="sh">'</span><span class="p">,</span> <span class="n">dpi</span><span class="o">=</span><span class="mi">150</span><span class="p">)</span>
+        <span class="n">plt</span><span class="p">.</span><span class="nf">close</span><span class="p">()</span>
+        
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">Generated plots:</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">1. corrected_mle_log_likelihood.png - Log-likelihood curve</span><span class="sh">"</span><span class="p">)</span>
+        <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="s">2. mle_distribution_comparison.png - Distribution comparison (with initial curve)</span><span class="sh">"</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="sh">"</span><span class="s">__main__</span><span class="sh">"</span><span class="p">:</span>
+    <span class="n">estimator</span> <span class="o">=</span> <span class="nc">MLENormalEstimator</span><span class="p">()</span>
+    <span class="n">estimator</span><span class="p">.</span><span class="nf">generate_data</span><span class="p">(</span><span class="n">n_samples</span><span class="o">=</span><span class="mi">100000</span><span class="p">)</span>
+    
+    <span class="nf">print</span><span class="p">(</span><span class="sh">"</span><span class="se">\n</span><span class="s">Starting maximum likelihood estimation...</span><span class="sh">"</span><span class="p">)</span>
+    <span class="n">estimator</span><span class="p">.</span><span class="nf">mle_gradient_descent</span><span class="p">(</span>
+        <span class="n">epochs</span><span class="o">=</span><span class="mi">10000</span><span class="p">,</span>
+        <span class="n">lr</span><span class="o">=</span><span class="mf">0.1</span><span class="p">,</span>
+        <span class="n">tol</span><span class="o">=</span><span class="mf">1e-8</span>
+    <span class="p">)</span>
+    
+    <span class="n">estimator</span><span class="p">.</span><span class="nf">evaluate</span><span class="p">()</span>    
+</code></pre></div></div>
+
+<p>The output (last part shown below) will look like this:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Epoch 9600/10000 - Train LL: -195870.32, Val LL: -49077.16, MLE Mean: 7.2181, MLE Variance: 7.8367
+Epoch 9700/10000 - Train LL: -195870.32, Val LL: -49077.16, MLE Mean: 7.2181, MLE Variance: 7.8368
+Epoch 9800/10000 - Train LL: -195870.32, Val LL: -49077.16, MLE Mean: 7.2181, MLE Variance: 7.8368
+Epoch 9900/10000 - Train LL: -195870.32, Val LL: -49077.16, MLE Mean: 7.2181, MLE Variance: 7.8368
+Epoch 10000/10000 - Train LL: -195870.32, Val LL: -49077.16, MLE Mean: 7.2181, MLE Variance: 7.8369
+
+================================================================================
+                  MAXIMUM LIKELIHOOD ESTIMATION RESULTS
+================================================================================
+1. Training Duration: 27.8044 seconds
+
+2. Target Distribution:
+   - Mean: 7.200000
+   - Variance: 7.840000
+
+3. Theoretical MLE (Sample Statistics):
+   - Mean MLE: 7.202707
+   - Variance MLE: 7.854133
+
+4. Estimated MLE:
+   - Estimated Mean: 7.218075
+   - Estimated Variance: 7.836873
+
+5. Initial Parameters:
+   - Initial Mean: 0.000000
+   - Initial Variance: 1.000000
+
+6. Estimation Errors:
+   - Mean Error: 0.01536817
+   - Variance Error: 0.01726031
+================================================================================
+
+Generated plots:
+1. corrected_mle_log_likelihood.png - Log-likelihood curve
+2. mle_distribution_comparison.png - Distribution comparison (with initial curve)
+</code></pre></div></div>
+
+<p>You can see that the “4. Estimated MLE” values are very close to both “3. Theoretical MLE (Sample Statistics)” and “2. Target Distribution”—this took only 27 seconds.</p>
+
+<p>Naturally, changing the random seed will affect training outcomes.</p>
+
+<p>If you’re willing to sacrifice some accuracy for faster training, you can lower the <code class="language-plaintext highlighter-rouge">epoch</code> value. The mean (MLE Mean) stabilizes at 1000 epochs, with subsequent training focused solely on the variance (MLE Variance):</p>
+
+<div style="text-align: center;">
+  <img alt="Log-likelihood curve showing mean convergence at 1000 epochs" src="/assets/images/fbade78e76214258b35680da7b6c375c.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>The code includes plotting functionality that visually demonstrates the fitting results:</p>
+
+<div style="text-align: center;">
+  <img alt="Distribution comparison: initial normal distribution, observed data, target distribution, and estimated MLE distribution" src="/assets/images/d5580e48f49e49b4a5a906cf683ca396.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>The dashed purple line on the far left is the standard normal distribution (initial state), the blue histogram is the sampled dataset (samples/statistics), the green line is the target distribution curve, and the dashed red line (appearing reddish-orange here) is our fitted MLE distribution curve—you can see they are nearly identical.</p>
+
+<p>I hope these will help someone in need~</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

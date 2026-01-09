@@ -11,8 +11,9 @@
  - 添加评论功能（使用 GitHub issues）✅；
  - 添加了tools目录来存放一些管理和编写博客时所需的工具✅；
  - 翻译所有的博客为英文✅；
- - 删除所有链接中的绝对地址，比如zhonguncle.github.com，使用相对地址，由jekyll生成绝对地址✅。
- - Jekyll SEO排除title的生成，因为（可能）会导致标题过长而无法爬取✅。
+ - 删除所有链接中的绝对地址，比如zhonguncle.github.com，使用相对地址，由jekyll生成绝对地址✅；
+ - Jekyll SEO排除title的生成，因为（可能）会导致标题过长而无法爬取✅；
+ - 添加LaTeX数学公式显示； 
  - 自己写个CSS（ing）；
  - 为所有图像添加Alt属性（这是个持久的工作）；
  - 移动设备上显示图片宽度错误；
