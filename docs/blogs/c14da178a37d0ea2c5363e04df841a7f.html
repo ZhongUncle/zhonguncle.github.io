@@ -94,7 +94,7 @@
 </div>
         <h1>Use gcc to learn C compilation process</h1>
         <div class="bloginfo">
-            <p class="info">2023-06-08 ｜ <a href="/c.html"> C</a> ｜ #Words: 3210 ｜ <a
+            <p class="info">2023-06-08 ｜ <a href="/c.html"> C</a> ｜ #Words: 2845 ｜ <a
                     href="https://blog.csdn.net/qq_33919450/article/details/131099518"> 中文原版 </a></p>
         </div>
         <p>Recently, I suddenly discovered something when I was learning about clang/llvm: <code class="language-plaintext highlighter-rouge">gcc</code> is a collection of tools that includes or calls all tools that convert source code into executable program, not just a simple compiler. This helped me gain a deeper understanding of “compilers”, so I wrote this article as a record.</p>
@@ -347,12 +347,6 @@ main.s:45: Error: symbol `.LFE0' is already defined
 <h3 id="using-linker-ld">Using linker <code class="language-plaintext highlighter-rouge">ld</code></h3>
 <p>To be honest, <code class="language-plaintext highlighter-rouge">ld</code> is only used for display. Even if you are handwriting assembly code, it is recommended to use <code class="language-plaintext highlighter-rouge">gcc</code> for link, rather than use <code class="language-plaintext highlighter-rouge">ld</code>. Because the reference library of Ubuntu is very complicated now, the path accessible by <code class="language-plaintext highlighter-rouge">ld</code> is empty by default and so you need to set manually. The use of <code class="language-plaintext highlighter-rouge">crt0.o</code> mentioned in the documentation and on the Internet also not work.</p>
 
-<h4 id="连接器的工作">连接器的工作</h4>
-<p>为了介绍连接器，这里需要先解释一下程序实际上是如何运行的，详细信息你可以自己看看一些专业书，这里只做简单不严谨的解释：程序本质是存放机器语言的文件，在打开之后会放进内存，不论是 swap 还是快表等任何内存存放机制，它在逻辑上是连续的，有一个程序计数器会记录当前的绝对内存地址，当内存地址到这个程序的空间内的时候，就开始调用这个程序的指令（机器语言）来进行操作。所以不论如何跳转、循环，它实际上都是连续、顺序的。</p>
-
-<p>存放指令的文件就是对象文件，但是这时候可能顺序不对、不包括引用的外部库的指令，或者有其他的问题还不能直接执行。而将这些指令按照源代码设计、顺序摆放到一起，变成一个可以放到内存中的可执行文件，这就是连接器的工作。</p>
-
-<p>此时如果用<code class="language-plaintext highlighter-rouge">file</code>查看此时的<code class="language-plaintext highlighter-rouge">main.o</code>文件，那么可以看到这是一个“relocatable（可重新分配的）”文件：</p>
 <h4 id="how-linker-work">How linker work</h4>
 <p>In order to introduce the linker, first need to explain how the program runs. You can read some professional books yourself for details. I just give a simple explanation: the essence of the program is a file that stores machine code. After executing, it will be put into the memory. Whether it is swap or any memory storage mechanism, logically it is continuous. There is a program counter that will record the current absolute memory address. When the memory address reaches the space of this program, it will start calling the instructions of this program to perform operations. So no matter how you jump or loop, it is actually continuous and sequential.</p>
 
