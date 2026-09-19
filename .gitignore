@@ -2,3 +2,9 @@
 .DS_Store
 .Trash	
 1234.md
+# Claude Code 配置文件
+.claude/*
+!.claude/skills/
+!.claude/skills/**
+CLAUDE.md
+.claude.json
