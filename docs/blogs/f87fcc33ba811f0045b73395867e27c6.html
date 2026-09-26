@@ -1,0 +1,734 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>Encoder-Decoder vs. Encoder-only vs. Decoder-only: Comparing the Three Transformer Architectures</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='The paper "Attention Is All You Need" introduced the Transformer architecture, built from an encoder and a decoder.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>Encoder-Decoder vs. Encoder-only vs. Decoder-only: Comparing the Three Transformer Architectures</h1>
+        <div class="bloginfo">
+            <p class="info">2026-09-26 ｜ <a href="/research.html"> Research</a> ｜ #Words: 3409 ｜ <a
+                    href="/assets/original/encoder-decoder%E3%80%81encoder-only%E5%92%8Cdecoder-only%E5%AF%B9%E6%AF%94.md"> 中文原版 </a></p>
+        </div>
+        <h2 id="three-transformer-architectures">Three Transformer Architectures</h2>
+
+<h3 id="the-full-transformer-architecture">The Full Transformer Architecture</h3>
+
+<p>The paper “Attention Is All You Need” introduced the Transformer architecture, built from an encoder and a decoder.</p>
+
+<h4 id="architecture-during-training">Architecture during training</h4>
+
+<p>Here’s what the Transformer looks like during training:</p>
+
+<div style="text-align: center;">
+  <img alt="The original Transformer architecture during training" src="/assets/images/截屏2026-09-19 18.36.17.png" style="box-shadow: 0px 0px 0px 0px; width: 40%;" />
+</div>
+
+<p>The left side is the encoder, the right side the decoder. The decoder has one extra piece — a masked multi-head attention block — everything else matches. That masked attention block is exactly what limits the decoder to only seeing tokens before the one it’s predicting, whereas the encoder can see everything.</p>
+
+<p><strong>This is actually the core difference between encoder and decoder — and it’s exactly what separates encoder-only from decoder-only models too.</strong></p>
+
+<p>At this point we’ve already answered the core question of this post, but what does that difference actually mean in practice?</p>
+
+<p>Say we’re training a translation model, and we already have paired training data:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Inputs (to Encoder):  我 爱 北京
+Outputs (to Decoder): I love Beijing   ← this is the "ground truth," already present in the training set
+</code></pre></div></div>
+
+<p>The training goal is for the decoder to learn: seeing <code class="language-plaintext highlighter-rouge">&lt;BOS&gt; I love</code>, predict <code class="language-plaintext highlighter-rouge">Beijing</code>. So that the decoder always has an “already generated prefix” to work with at every step, training just feeds it the ground-truth answer directly as if it were “already generated” — that’s exactly where the “Output Embedding” input comes from. It isn’t something the model generated itself; it’s the ground-truth answer from the training data, fed to the decoder as input.</p>
+
+<p>Why “shift right”?</p>
+
+<p>When the decoder predicts the $i$-th word, it should only be able to see words $1$ through $i-1$ (it must not see the very word it’s supposed to predict — that would be cheating). So the entire ground-truth sequence gets shifted one position to the right, with a <code class="language-plaintext highlighter-rouge">&lt;BOS&gt;</code> (Begin Of Sequence) token prepended:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Ground truth (Outputs):            I    love   Beijing
+                                     ↓
+Decoder's actual input (shifted): &lt;BOS&gt;  I     love
+Decoder should predict at each:     I    love   Beijing
+</code></pre></div></div>
+
+<p>In other words, the decoder’s input at position $k$ is “the answer’s $(k-1)$-th word,” and it needs to predict “the answer’s $k$-th word.” Combined with masked multi-head attention (also called causal masking), this guarantees that predicting the $i$-th word only ever uses information from words $1$ through $i-1$ — no peeking at the future whatsoever. That’s how the model gradually learns the ability to predict the next word.</p>
+
+<blockquote>
+  <p>There’s a bit of a GAN-like feel to this — it’s called teacher forcing: <strong>the “teacher” (ground truth) holds the “student’s” (model’s) hand the whole way, so the student’s own mistakes never get a chance to compound.</strong></p>
+
+  <p>In the training example above, the <code class="language-plaintext highlighter-rouge">&lt;BOS&gt; I love</code> “input” is <strong>sliced directly from the ground-truth training data.</strong> No matter how accurate the model’s own predictions are, the next step is always fed the “correct prefix.” So even if step 2 predicts <code class="language-plaintext highlighter-rouge">likes</code> instead of <code class="language-plaintext highlighter-rouge">love</code>, step 3 still gets the correct <code class="language-plaintext highlighter-rouge">love</code> to predict from — the model’s own error never gets a chance to drag it off course.</p>
+</blockquote>
+
+<p>During training, the loss at each position is computed and used to keep adjusting the fit. And because the ground truth is already fully known — there’s no actual sequential dependency at training time — losses for all positions can be computed in parallel, which is much faster than a traditional RNN (inference is a different story, as we’ll see).</p>
+
+<p>Here’s what gets updated during training:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Diagram block</th>
+      <th>What it is</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Input/Output Embedding</strong> (pink)</td>
+      <td>A “vocab-size × d_model” lookup table — each word maps to a vector, and these vectors are themselves parameters that get updated during training</td>
+    </tr>
+    <tr>
+      <td><strong>Multi-Head Attention / Masked Multi-Head Attention</strong> (orange)</td>
+      <td>Each attention head has its own $W_Q, W_K, W_V$ (projecting input into Query/Key/Value) plus a shared $W_O$ that merges the heads’ outputs — these matrices are the core trainable parameters</td>
+    </tr>
+    <tr>
+      <td><strong>Feed Forward</strong> (blue)</td>
+      <td>Two fully-connected layers (up-project then down-project); the weight matrices and biases inside are parameters, and usually make up the bulk of the model’s total parameter count</td>
+    </tr>
+    <tr>
+      <td><strong>Norm</strong> part of <strong>Add &amp; Norm</strong> (yellow)</td>
+      <td>LayerNorm has two small learnable parameters (scale γ and shift β) — tiny in count, but still parameters</td>
+    </tr>
+    <tr>
+      <td><strong>Linear</strong> (purple, at the very top)</td>
+      <td>The final matrix that maps the decoder’s output back into vocab-size dimensions, producing a score for every word</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>These parts never get updated during training:</p>
+
+<ul>
+  <li><strong>Add</strong> (the “+” in the residual connection): just a plain vector addition, no parameters involved</li>
+  <li><strong>Positional encoding</strong> (if using the original sine/cosine scheme from the paper): computed with a fixed formula, not trained (though many later models, like BERT, turned positional encoding into learnable parameters too — it varies by model)</li>
+  <li><strong>Softmax</strong>: a fixed mathematical function, no parameters</li>
+</ul>
+
+<h4 id="architecture-during-inference">Architecture during inference</h4>
+
+<p>Since the original paper describes a full encoder-decoder framework, inference uses the exact same framework (training and inference share the same architecture — otherwise the trained weights for whichever part got dropped would simply vanish, and missing a piece would hurt generation quality):</p>
+
+<div style="text-align: center;">
+  <img alt="Encoder-decoder inference loop" src="/assets/images/encoder_decoder_inference_loop_en.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<ul>
+  <li><strong>The encoder on the left runs exactly once.</strong> The source text goes in, gets processed once with bidirectional attention (meaning it can look both forward and backward), and produces a set of “encoder output vectors.” Once computed, these vectors are <strong>frozen</strong> — they never get recomputed.</li>
+  <li><strong>The decoder on the right is the one that loops.</strong> For every new token generated, it runs through “masked self-attention → cross-attention → feed forward” all over again. And at that <strong>cross-attention step, every single loop iteration re-consults that same, only-computed-once encoder output</strong> — that’s exactly what the arrow connecting the two colored blocks represents: the encoder’s output gets “borrowed” repeatedly, without the encoder itself ever being recomputed.</li>
+</ul>
+
+<p>Take the translation example from before: at inference time there’s no ready-made translation — it has to be produced one probability-guided step at a time.</p>
+
+<p>The encoder side runs once, almost identically to training:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Encoder input: 我 爱 北京
+</code></pre></div></div>
+<p>One pass of bidirectional self-attention produces a set of “encoder output vectors” — this step is nearly identical to training, since the source text is fully known and doesn’t need any “guessing.”</p>
+
+<p>The decoder’s input at inference time is its own previous output — meaning if it makes a mistake, that mistake sticks:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Decoder’s current input (generated so far)</th>
+      <th>Cross-attention looks at</th>
+      <th>Predicted next word</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Step 1</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;BOS&gt;</code></td>
+      <td>Encoder output (“我爱北京”)</td>
+      <td><code class="language-plaintext highlighter-rouge">I</code></td>
+    </tr>
+    <tr>
+      <td>Step 2</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;BOS&gt; I</code></td>
+      <td>Encoder output (“我爱北京”)</td>
+      <td><code class="language-plaintext highlighter-rouge">love</code></td>
+    </tr>
+    <tr>
+      <td>Step 3</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;BOS&gt; I love</code></td>
+      <td>Encoder output (“我爱北京”)</td>
+      <td><code class="language-plaintext highlighter-rouge">Beijing</code></td>
+    </tr>
+    <tr>
+      <td>Step 4</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;BOS&gt; I love Beijing</code></td>
+      <td>Encoder output (“我爱北京”)</td>
+      <td><code class="language-plaintext highlighter-rouge">&lt;EOS&gt;</code> (end token, stop generating)</td>
+    </tr>
+  </tbody>
+</table>
+
+<h3 id="the-encoder-only-transformer-architecture">The Encoder-only Transformer Architecture</h3>
+
+<p>A year ago, when I first learned about BERT-style encoder-only models, it hit me: if a Transformer can predict the next word or fill in a blank, could it also predict house prices? After all, a house price and its attributes (number of bedrooms, bathrooms, etc.) are a lot like a sequence of tokens, with relationships to find between them. I had Doubao implement this at the time, and it went with an encoder-only setup — essentially “blanking out” the price while keeping the rest of the text visible. In other words, the model can’t see the price, but it can see every other house attribute.</p>
+
+<blockquote>
+  <p>An encoder is fundamentally a fill-in-the-blank machine, and here we only need to predict one thing — the price — so it’s a natural fit.</p>
+</blockquote>
+
+<p>Turns out it does work — not great, but clearly better than random, with a best public score of only <a href="https://www.kaggle.com/code/zhonguncle/house-prices-prediction-using-transformer?scriptVersionId=351231485">0.13397</a>. That’s because so little of a Transformer is hand-designed; almost all of its relational knowledge is learned (i.e. emerges) from the training data. But house-price datasets are tiny — maybe a few hundred or a few thousand rows — nowhere near enough to properly train a usable Transformer.</p>
+
+<blockquote>
+  <p>I also thought of another approach — one other people have hit on too: since today’s LLMs have already learned a lot of human-like reasoning and relational structure from text, we could convert the tabular house attributes and price into a natural-language paragraph, ending with “the price is <em>__</em>” for the model to fill in. That would require fine-tuning an LLM, though, and I don’t currently have the hardware to test it.</p>
+</blockquote>
+
+<h4 id="architecture-during-training-1">Architecture during training</h4>
+
+<p>Here’s the training setup for an encoder-only Transformer:</p>
+
+<div style="text-align: center;">
+  <img alt="Encoder-only Transformer during training" src="/assets/images/encoder_only_transformer_training_en.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>Training example: (<code class="language-plaintext highlighter-rouge">这部电影太好看了</code> / “This movie was great”, label <code class="language-plaintext highlighter-rouge">positive</code>)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Module</th>
+      <th>Input</th>
+      <th>Output</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Training sample</td>
+      <td>Corpus</td>
+      <td><code class="language-plaintext highlighter-rouge">这 部 电 影 太 好 看 了</code> (8 tokens) + label <code class="language-plaintext highlighter-rouge">positive</code></td>
+      <td>Input and label come as a pair</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Embedding + positional encoding</td>
+      <td>8 tokens</td>
+      <td>8×d</td>
+      <td>Each token becomes a position-aware vector</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Encoder block × N</td>
+      <td>8×d</td>
+      <td>8×d</td>
+      <td>Bidirectional self-attention + feed-forward, repeated N times</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Encoder output vectors</td>
+      <td>8×d</td>
+      <td>8 contextual vectors</td>
+      <td>One vector per position</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Task head</td>
+      <td>8×d</td>
+      <td>Class probabilities (1×2)</td>
+      <td>Pool, then Linear + softmax; say early training gives <code class="language-plaintext highlighter-rouge">[negative 0.40, positive 0.60]</code></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Loss function</td>
+      <td>Class probabilities + label <code class="language-plaintext highlighter-rouge">positive</code></td>
+      <td>A scalar loss</td>
+      <td>Cross-entropy, −ln 0.60 ≈ 0.51</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Backpropagation</td>
+      <td>loss</td>
+      <td>Updated parameters</td>
+      <td>Gradients flow back through the task head, encoder, and embeddings — every parameter updates together</td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>Next batch</td>
+      <td>Updated model</td>
+      <td>Back to step 1</td>
+      <td>What loops here is training batches, not token-by-token generation</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="architecture-during-inference-1">Architecture during inference</h4>
+
+<p>Here’s the inference setup:</p>
+
+<div style="text-align: center;">
+  <img alt="Encoder-only Transformer during inference" src="/assets/images/encoder_only_transformer_inference_en.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Input: <code class="language-plaintext highlighter-rouge">这部电影太好看了</code> (“This movie was great”)</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Module</th>
+      <th>Input</th>
+      <th>Output</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Input tokens</td>
+      <td>A sentence</td>
+      <td><code class="language-plaintext highlighter-rouge">这 部 电 影 太 好 看 了</code> (8 tokens)</td>
+      <td>Split by character</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Embedding + positional encoding</td>
+      <td>8 tokens</td>
+      <td>8×d</td>
+      <td>Each token becomes a position-aware vector</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Encoder block × N</td>
+      <td>8×d</td>
+      <td>8×d</td>
+      <td>Bidirectional self-attention + feed-forward, repeated N times, fusing full-sentence context</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Encoder output vectors</td>
+      <td>8×d</td>
+      <td>8 contextual vectors</td>
+      <td>One vector per position</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Task head</td>
+      <td>8×d</td>
+      <td>Class probabilities (1×2)</td>
+      <td>Pool into a single 1×d sentence vector, then Linear + softmax; say this gives <code class="language-plaintext highlighter-rouge">[negative 0.03, positive 0.97]</code></td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Output prediction</td>
+      <td>Class probabilities</td>
+      <td><code class="language-plaintext highlighter-rouge">positive</code></td>
+      <td>Take the highest-probability class</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Training adds a label, a loss function, and backpropagation on top of inference — inference itself is just a single forward pass.</p>
+
+<h3 id="the-decoder-only-transformer-architecture">The Decoder-only Transformer Architecture</h3>
+
+<p>The Transformer’s biggest application today — LLMs — are all decoder-only: ChatGPT, Claude, DeepSeek, you name it.</p>
+
+<p>The architecture’s workflow actually matches how you use it directly. In a chat setting, for instance, the model generates a response to your input, and your input is simply the “already available” information.</p>
+
+<p>A decoder-only model’s core mechanism is “continuation”: because of masked self-attention, it can only see what came before, and it generates based purely on that (which makes sense — continuation never needs “future” content anyway, since there isn’t any yet).</p>
+
+<h4 id="architecture-during-training-2">Architecture during training</h4>
+
+<p>Here’s the training setup for a decoder-only Transformer:</p>
+
+<div style="text-align: center;">
+  <img alt="Decoder-only training flow" src="/assets/images/decoder_only_training_flow_en.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Example: training on “今天天气真好” (“The weather is really nice today”):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Module</th>
+      <th>Input</th>
+      <th>Output</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Training sample</td>
+      <td>Corpus</td>
+      <td><code class="language-plaintext highlighter-rouge">今 天 天 气 真 好</code> (6 tokens)</td>
+      <td>The whole sentence is fed in directly — no manual labeling needed, since the “label” is just the sequence shifted by one position</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Embedding + positional encoding</td>
+      <td>6 tokens</td>
+      <td>6×d</td>
+      <td>Each token becomes a position-aware vector</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Decoder block × N</td>
+      <td>6×d</td>
+      <td>6×d</td>
+      <td>Masked self-attention guarantees position $i$ can’t see position $i+1$ or beyond</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Linear + softmax</td>
+      <td>6×d (computed at every position)</td>
+      <td>6 vocabulary probability distributions</td>
+      <td>Position “今” predicts the next word, position “天” (the first one) predicts the next word, and so on — all 6 positions computed in parallel</td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Cross-entropy loss</td>
+      <td>6 predicted distributions + the actual next words</td>
+      <td>A scalar loss</td>
+      <td>e.g. position “今” should predict “天”, position “气” should predict “真”; sum or average the loss across all 6 positions</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Backpropagation</td>
+      <td>loss</td>
+      <td>Updated parameters</td>
+      <td>Gradients flow back through the decoder and embeddings — all parameters update together</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Next batch</td>
+      <td>Updated model</td>
+      <td>Back to step 1</td>
+      <td>What loops here is training batches</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="architecture-during-inference-2">Architecture during inference</h4>
+
+<p>Here’s the inference setup for a decoder-only Transformer:</p>
+
+<div style="text-align: center;">
+  <img alt="Decoder-only inference flow" src="/assets/images/decoder_only_inference_flow_en.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>Continuing the same example: given the prompt “今天天气” (“The weather today”), continue it.</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Step</th>
+      <th>Module</th>
+      <th>Input</th>
+      <th>Output</th>
+      <th>Purpose</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>Current sequence</td>
+      <td>Prompt</td>
+      <td><code class="language-plaintext highlighter-rouge">今 天 天 气</code> (4 tokens)</td>
+      <td>Starting sequence</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>Embedding + positional encoding</td>
+      <td>4 tokens</td>
+      <td>4×d</td>
+      <td>Each token becomes a position-aware vector</td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>Decoder block × N</td>
+      <td>4×d</td>
+      <td>4×d</td>
+      <td>Masked self-attention lets each position see only itself and everything to its left, repeated N times</td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>Linear + softmax</td>
+      <td>Vector at the last position (1×d)</td>
+      <td>Vocabulary probabilities</td>
+      <td>Only the last position’s (“气”) vector is used to predict the next word — say this gives <code class="language-plaintext highlighter-rouge">真 0.6, 不 0.2, …</code></td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>Sample and append</td>
+      <td>Vocabulary probabilities</td>
+      <td><code class="language-plaintext highlighter-rouge">今 天 天 气 真</code> (5 tokens)</td>
+      <td>Sample “真” and append it to the sequence</td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>Back to step 2</td>
+      <td><code class="language-plaintext highlighter-rouge">今 天 天 气 真</code></td>
+      <td>Run a full forward pass again</td>
+      <td>The sequence grew longer, so every position is recomputed</td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>Loop until done</td>
+      <td>Progressively longer sequence</td>
+      <td><code class="language-plaintext highlighter-rouge">今天天气真好，适合出门</code> (“The weather is great today, good day to go out”)</td>
+      <td>Stops on hitting EOS or a length limit</td>
+    </tr>
+  </tbody>
+</table>
+
+<h2 id="testing-the-differences">Testing the Differences</h2>
+
+<p>I got curious how these three architectures actually stack up on the same task, so I had an AI write two experiments to find out.</p>
+
+<h3 id="experiment-1-fill-in-the-blank-by-position">Experiment 1: fill-in-the-blank by position</h3>
+
+<h4 id="setup">Setup</h4>
+
+<p>Using rule-generated synthetic sentences, blank out one position at a time, and have all three architectures (decoder-only / encoder-only / enc-dec) fill it in. Accuracy is bucketed by blank position — early, middle, late in the sentence — with a 3-gram prefix baseline thrown in for comparison.</p>
+
+<h4 id="results">Results</h4>
+
+<p>A single test run and its output (the synthetic animal used here is “frog”):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% .venv/bin/python demo.py frog
+decoder: 420,413 params
+encoder: 420,413 params
+encdec: 949,565 params
+==============================================================================
+Original sentence: the mossy frog followed a shy deer in the pond .
+pos   answer    Decoder-only   Encoder-only   Enc-Dec
+pos1  mossy     rocky ✗        mossy          mossy          ← pure future info (determined only by the sentence-final location)
+pos2  frog      frog           frog           frog
+pos3  followed  followed       followed       followed
+pos4  a         a              a              a
+pos5  shy       shy            shy            shy            ← Decoder can infer this via the verb→object chain
+pos6  deer      deer           deer           deer
+pos7  in        in             in             in             ← Decoder can infer this via the subject→habitat chain
+pos8  the       the            the            the
+pos9  pond      pond           pond           pond
+</code></pre></div></div>
+
+<p>And the full-scale test run:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% .venv/bin/python eval.py
+decoder: 420,413 params
+encoder: 420,413 params
+encdec: 949,565 params
+
+===== Cloze Top-1 accuracy (by blank position) =====
+bucket       decoder     encoder      encdec     unigram     3gram ceiling
+early          49.0%       77.9%       78.2%        0.0%       34.6%
+mid            80.3%       87.1%       86.8%        0.0%       79.6%
+late           89.1%       90.1%       90.3%       33.0%       65.9%
+
+===== Failure cases per model (top 5) =====
+
+[decoder]
+  (early) the swift cat [?] a mossy dog in the river .  | answer=followed pred=watched
+  (early) the muddy [?] barked a lazy cat in the river .  | answer=dog pred=frog
+  (mid) the quiet fox caught a [?] fox near the lake .  | answer=muddy pred=curious
+  (late) the misty cat hunted a wild deer [?] the cave .  | answer=near pred=in
+  (early) the muddy [?] chased a gentle mouse near the forest .  | answer=fox pred=frog
+
+[encoder]
+  (early) the swift cat [?] a mossy dog in the river .  | answer=followed pred=watched
+  (mid) the quiet fox caught a [?] fox near the lake .  | answer=muddy pred=clever
+  (late) the misty cat hunted a wild deer [?] the cave .  | answer=near pred=in
+  (early) the rocky hawk [?] a hungry bear on the hill .  | answer=feared pred=spotted
+  (mid) the rocky mouse sniffed a lazy [?] near the cave .  | answer=fox pred=cat
+
+[encdec]
+  (early) the swift cat [?] a mossy dog in the river .  | answer=followed pred=watched
+  (mid) the quiet fox caught a [?] fox near the lake .  | answer=muddy pred=clever
+  (early) the rocky hawk [?] a hungry bear on the hill .  | answer=feared pred=spotted
+  (mid) the rocky mouse sniffed a lazy [?] near the cave .  | answer=fox pred=cat
+  (late) the rocky fox spotted a sleepy frog in the [?] .  | answer=field pred=forest
+</code></pre></div></div>
+
+<h4 id="conclusion">Conclusion</h4>
+
+<p>Across a 5,000-example test set, bucketed by blank position, decoder-only accuracy climbs sharply from early to mid to late blanks (49% → 80% → 89%), while encoder-containing models stay consistently high across the board (78–90%). This shows that the earlier a blank appears in the sentence, the more costly it is to “not be able to see the future.”</p>
+
+<blockquote>
+  <p>Looking at this, beyond the well-known “context rot” problem, an LLM being too small is also a real liability — you need a model that’s appropriately sized.</p>
+</blockquote>
+
+<h3 id="experiment-2-translating-into-an-inverted-pseudo-language">Experiment 2: translating into an inverted pseudo-language</h3>
+
+<p>Encoder-only doesn’t get a seat at this table, since encoders can only do fill-in-the-blank, not open-ended generation tasks like translation. So this experiment only compares the full encoder-decoder framework against decoder-only.</p>
+
+<h4 id="setup-1">Setup</h4>
+
+<p>Source and target are concatenated as <code class="language-plaintext highlighter-rouge">source &lt;SEP&gt; target</code> and fed to both decoder-only and enc-dec models. Under this setup, the decoder-only model also has full visibility into the source (the causal mask doesn’t block the input portion).</p>
+
+<blockquote>
+  <p>This lets us answer a specific question: “Is decoder-only, missing that extra piece, actually weaker than encoder-decoder?”</p>
+</blockquote>
+
+<h4 id="results-1">Results</h4>
+
+<p>Both hit 100% accuracy:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>% .venv/bin/python translate_eval.py
+encdec: 968,840 params
+[encdec] exact-match accuracy 100.0%  word-level accuracy 100.0%
+decoder: 439,688 params
+[decoder] exact-match accuracy 100.0%  word-level accuracy 100.0%
+
+===== Translation error examples =====
+
+[encdec]
+
+[decoder]
+
+saved results/translate_main.png
+</code></pre></div></div>
+
+<p>But the speed difference was huge — roughly 5-6x:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>Enc-Dec</th>
+      <th>Decoder-only</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>epoch 1 loss</td>
+      <td>0.9009</td>
+      <td>1.2425</td>
+    </tr>
+    <tr>
+      <td>epoch 3 loss</td>
+      <td>0.0009</td>
+      <td>0.0040</td>
+    </tr>
+    <tr>
+      <td>epoch 8 loss</td>
+      <td>0.0001</td>
+      <td>0.0003</td>
+    </tr>
+    <tr>
+      <td>Total time for 8 epochs</td>
+      <td>19s</td>
+      <td>111s</td>
+    </tr>
+    <tr>
+      <td>Per-epoch time (once stabilized)</td>
+      <td>~2-2.5s</td>
+      <td>~14s</td>
+    </tr>
+  </tbody>
+</table>
+
+<h4 id="conclusion-1">Conclusion</h4>
+
+<p>This confirms decoder-only isn’t inherently weaker than encoder-decoder. As long as the “future information” is folded into the unmasked prefix, it performs identically to enc-dec — and this is exactly how LLMs are actually used in practice.</p>
+
+<blockquote>
+  <p>Would be interesting to try something more complex in the future — my current hardware just isn’t up to it yet.</p>
+</blockquote>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

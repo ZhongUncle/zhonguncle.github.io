@@ -2,7 +2,7 @@
 layout: article
 category: Research
 date: 2026-09-17
-title: "Shannon Entropy, Explained"
+title: "Reading Shannon: Notes on Information Theory"
 excerpt: "In physics, entropy measures \"disorder\" or \"chaos.\" Information theory borrows this idea. But here, \"disorder\" means something more specific: how surprising a piece of information is. In other words, how random it is."
 originurl: "/assets/original/%E9%A6%99%E5%86%9C%E4%BF%A1%E6%81%AF%E8%AE%BA%E7%AC%94%E8%AE%B0.md"
 ---

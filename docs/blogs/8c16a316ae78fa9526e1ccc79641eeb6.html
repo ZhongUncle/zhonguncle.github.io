@@ -1,0 +1,798 @@
+<!doctype html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv='content-language' content='en'>
+    <title>How LLMs Learn "Relationships": A word2vec Deep Dive</title>
+    <link rel="icon" type="image/x-icon" href="/assets/images/icon.png">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    
+    <meta name='description' content='The core idea behind how today's LLMs learn "relationships" from data traces all the way back to the classic word2vec.'>
+    
+    <link rel="stylesheet" type="text/css" href="/assets/css/headerstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/blogstyle.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/style.css" />
+
+
+    <!-- Clarity tracking code for https://zhonguncle.github.io/ -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "ky7zebz4nm");
+    </script>
+
+    <!-- 数学公式 -->
+    <!-- KaTeX CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.css"
+        integrity="sha384-Pu5+C18nP5dwykLJOhd2U4Xen7rjScHN/qusop27hdd2drI+lL5KvX7YntvT8yew" crossorigin="anonymous">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/katex.min.js"
+        integrity="sha384-2B8pfmZZ6JlVoScJm/5hQfNS2TI/6hPqDZInzzPc8oHpN5SgeNOf4LzREO6p5YtZ"
+        crossorigin="anonymous"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.27/dist/contrib/auto-render.min.js"
+        integrity="sha384-hCXGrW6PitJEwbkoStFjeJxv+fSOOQKOPbJxSfM6G5sWZjAyWhXiTIIAmQqnlLlh" crossorigin="anonymous"
+        onload="renderMathInElement(document.body);"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    { left: "$$", right: "$$", display: true },
+                    { left: "$", right: "$", display: false },
+                ]
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <div class="stackedit__html">
+        <!-- 这个文件里是用来生成导航栏的 -->
+<div class="header">
+    
+        <a href="/index.html" class="headerItem">
+            Home
+        </a>
+    
+        <a href="/swift.html" class="headerItem">
+            Swift
+        </a>
+    
+        <a href="/unix.html" class="headerItem">
+            UNIX
+        </a>
+    
+        <a href="/c.html" class="headerItem">
+            C
+        </a>
+    
+        <a href="/assembly.html" class="headerItem">
+            Assembly
+        </a>
+    
+        <a href="/go.html" class="headerItem">
+            Go
+        </a>
+    
+        <a href="/web.html" class="headerItem">
+            Web
+        </a>
+    
+        <a href="/mcu.html" class="headerItem">
+            MCU
+        </a>
+    
+        <a href="/research.html" class="headerItem">
+            Research
+        </a>
+    
+        <a href="/non-tech.html" class="headerItem">
+            Non-Tech
+        </a>
+    
+</div>
+        <h1>How LLMs Learn "Relationships": A word2vec Deep Dive</h1>
+        <div class="bloginfo">
+            <p class="info">2026-09-26 ｜ <a href="/research.html"> Research</a> ｜ #Words: 4637 ｜ <a
+                    href="/assets/original/embedding%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0.md"> 中文原版 </a></p>
+        </div>
+        <p>The core idea behind how today’s LLMs learn “relationships” from data traces all the way back to the classic word2vec.</p>
+
+<h2 id="co-occurrence-matrix">Co-occurrence Matrix</h2>
+
+<p>Using a cleaned corpus, we can predict the next word just by counting the probabilistic relationship between a word and its neighbors. Here’s the classic example from CS224N:</p>
+
+<blockquote>
+  <p>The CS224N instructor is, in fact, one of the authors of GloVe.</p>
+</blockquote>
+
+<div style="text-align: center;">
+  <img alt="CS224N lecture slide on co-occurrence matrices" src="/assets/images/截屏2026-09-17 11.47.38.png" style="box-shadow: 0px 0px 0px 0px; width: 60%;" />
+</div>
+
+<p>Suppose our corpus contains only these three sentences:</p>
+
+<ul>
+  <li>I like deep learning.</li>
+  <li>I like NLP.</li>
+  <li>I enjoy flying.</li>
+</ul>
+
+<p>After deduplication, there are only 8 tokens (including the period <code class="language-plaintext highlighter-rouge">.</code>):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>{I, like, enjoy, deep, learning, NLP, flying, .}
+</code></pre></div></div>
+
+<p>Assume a window size of 1 (i.e. we only look at the 1 neighboring word on each side):</p>
+
+<ul>
+  <li>After <strong>I</strong>: “like” appears 2 times, “enjoy” appears 1 time, 3 total. So the next word is “like” with 66.7% probability, “enjoy” with 33.3%;</li>
+  <li>After <strong>like</strong>: “deep” appears 1 time, “NLP” appears 1 time, 2 total. So “deep” and “NLP” are each 50% likely to come next;</li>
+  <li>After <strong>enjoy</strong>: “flying” appears 1 time out of 1 — 100% probability;</li>
+  <li>After <strong>deep</strong>: “learning” appears 1 time out of 1 — 100% probability;</li>
+  <li>After <strong>learning</strong>: the period “.” appears 1 time out of 1 — 100% probability;</li>
+  <li>After <strong>NLP</strong>: same — the period follows with 100% probability;</li>
+  <li>After <strong>flying</strong>: same — the period follows with 100% probability.</li>
+</ul>
+
+<p>This is essentially the core algorithm behind predictive text input, also known as a Markov chain. Claude Academy has an interactive tutorial that makes this a lot more intuitive: <a href="https://support.typoraio.cn/zh/Markdown-Reference/#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">Texting a Friend: The Markov Chain Edition – Claude Academy</a>.</p>
+
+<p>But this is nowhere near enough to get to today’s LLMs:</p>
+
+<ul>
+  <li>
+    <p>LLMs use a much larger window (they can read everything that came before, not just one neighboring word);</p>
+
+    <blockquote>
+      <p>Worth noting: LLMs are decoder-only — they can only read what came before, never what comes after.</p>
+
+      <p>You might wonder what “reading what comes after” even means. Everything derived from the Transformer really only does two kinds of work: continuation and fill-in-the-blank. Fill-in-the-blank requires looking at both sides of the context, not just what came before.</p>
+
+      <p>An encoder can read in both directions; a decoder can only read what precedes it. I’ll dig into this in a separate post.</p>
+    </blockquote>
+  </li>
+  <li>
+    <p>LLMs use far more sophisticated machinery to fit far more complex patterns (billions of parameters, attention, embeddings, residual connections, and so on — not just a simple lookup table).</p>
+  </li>
+</ul>
+
+<p>But at their core, both are doing the same thing: predicting the next word (or token, really).</p>
+
+<p>You might think this example feels out of place — like it has nothing to do with embeddings or modern LLMs. So what’s the point?</p>
+
+<p>An embedding turns a sentence or a word into a vector representation so we can compute similarity between them. But look — if you drop the word itself from each row of that co-occurrence table, isn’t each remaining row already a vector?</p>
+
+<p>Take the rows for “like” and “enjoy”:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Word</th>
+      <th>Vector</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>like</td>
+      <td>[2, 0, 0, 1, 0, 1, 0, 0]</td>
+    </tr>
+    <tr>
+      <td>enjoy</td>
+      <td>[1, 0, 0, 0, 0, 0, 1, 0]</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>The cosine similarity between these two vectors is about 0.5774. That’s not especially meaningful here, though, since our corpus is only three sentences — there’s not much to learn from. We can apply SVD to reduce dimensionality (notice most entries in these vectors are 0, and once you stack them into a matrix, most of the matrix is 0 too — so it compresses nicely into a smaller one). Here we reduce down to 2 dimensions (note: at this point there’s no longer a single number that directly represents “the relationship between word A and word B”):</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Word</th>
+      <th>Dim 1</th>
+      <th>Dim 2</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>I</td>
+      <td>-1.445</td>
+      <td>-1.534</td>
+    </tr>
+    <tr>
+      <td>like</td>
+      <td>-1.639</td>
+      <td>1.688</td>
+    </tr>
+    <tr>
+      <td>enjoy</td>
+      <td>-0.707</td>
+      <td>0.734</td>
+    </tr>
+    <tr>
+      <td>deep</td>
+      <td>-0.788</td>
+      <td>-0.664</td>
+    </tr>
+    <tr>
+      <td>learning</td>
+      <td>-0.533</td>
+      <td>0.091</td>
+    </tr>
+    <tr>
+      <td>NLP</td>
+      <td>-0.841</td>
+      <td>-0.787</td>
+    </tr>
+    <tr>
+      <td>flying</td>
+      <td>-0.503</td>
+      <td>-0.431</td>
+    </tr>
+    <tr>
+      <td>.</td>
+      <td>-0.681</td>
+      <td>0.421</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Since we’re in 2D, plain Euclidean distance (the everyday distance formula) works fine. Pairwise distances:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th> </th>
+      <th>I</th>
+      <th>like</th>
+      <th>enjoy</th>
+      <th>deep</th>
+      <th>learning</th>
+      <th>NLP</th>
+      <th>flying</th>
+      <th>.</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>I</strong></td>
+      <td>0</td>
+      <td>3.228</td>
+      <td>2.385</td>
+      <td>1.091</td>
+      <td>1.864</td>
+      <td>0.960</td>
+      <td>1.450</td>
+      <td>2.100</td>
+    </tr>
+    <tr>
+      <td><strong>like</strong></td>
+      <td>3.228</td>
+      <td>0</td>
+      <td>1.334</td>
+      <td>2.501</td>
+      <td>1.943</td>
+      <td>2.600</td>
+      <td>2.404</td>
+      <td>1.588</td>
+    </tr>
+    <tr>
+      <td><strong>enjoy</strong></td>
+      <td>2.385</td>
+      <td>1.334</td>
+      <td>0</td>
+      <td>1.400</td>
+      <td>0.666</td>
+      <td>1.527</td>
+      <td>1.183</td>
+      <td>0.314</td>
+    </tr>
+    <tr>
+      <td><strong>deep</strong></td>
+      <td>1.091</td>
+      <td>2.501</td>
+      <td>1.400</td>
+      <td>0</td>
+      <td>0.797</td>
+      <td>0.135</td>
+      <td>0.367</td>
+      <td>1.090</td>
+    </tr>
+    <tr>
+      <td><strong>learning</strong></td>
+      <td>1.864</td>
+      <td>1.943</td>
+      <td>0.666</td>
+      <td>0.797</td>
+      <td>0</td>
+      <td>0.931</td>
+      <td>0.523</td>
+      <td>0.362</td>
+    </tr>
+    <tr>
+      <td><strong>NLP</strong></td>
+      <td>0.960</td>
+      <td>2.600</td>
+      <td>1.527</td>
+      <td>0.135</td>
+      <td>0.931</td>
+      <td>0</td>
+      <td>0.491</td>
+      <td>1.219</td>
+    </tr>
+    <tr>
+      <td><strong>flying</strong></td>
+      <td>1.450</td>
+      <td>2.404</td>
+      <td>1.183</td>
+      <td>0.367</td>
+      <td>0.523</td>
+      <td>0.491</td>
+      <td>0</td>
+      <td>0.871</td>
+    </tr>
+    <tr>
+      <td><strong>.</strong></td>
+      <td>2.100</td>
+      <td>1.588</td>
+      <td>0.314</td>
+      <td>1.090</td>
+      <td>0.362</td>
+      <td>1.219</td>
+      <td>0.871</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>Smaller values here mean the words are closer in meaning.</p>
+
+<p>For example, “like” and “enjoy” are both verbs, so they end up somewhat close together. But you can also find counterexamples — “enjoy” and “learning” end up even closer, even though one is a verb and the other a gerund. That’s simply because they happen to co-occur a lot in this tiny corpus.</p>
+
+<p>So it comes back to the same issue: the corpus is too small, and distances in 2D are inherently unstable. Take this as a rough intuition — the real point is understanding how text gets turned into vectors in the first place (counting neighboring-word frequency is just one approach; the underlying logic is always representing a word with some kind of vector).</p>
+
+<blockquote>
+  <p>This is actually a broader issue in model training in general: the corpus needs to be both high-quality and large. Data cleaning today is quite advanced — some of it is even automated by other models — but in the early days, corpus quality had an outsized effect on model performance.</p>
+
+  <p>In CS224N, GloVe co-author Chris Manning mentions that at the time, they were thrilled their model clearly outperformed word2vec and assumed their design was simply better. Years later, they realized the improvement was probably mostly due to a better training corpus, not the architecture.
+Timestamp <strong>52:43</strong> in <a href="https://youtu.be/gqaHkPEZAew?si=Y0OT0gEcGp-rMn8T">Stanford CS224N NLP with Deep Learning | Winter 2021 | Lecture 2 - Neural Classifiers</a>.</p>
+</blockquote>
+
+<p><strong>One more thing — Markov chains are a great way to feel the magic of probability.</strong> Probability is the foundation of large language models, and one of the foundations of information theory too. I can’t think of many other examples that let you see, this intuitively, how probability theory pulls off the marvel that is an LLM. You really do need to build an intuition for how powerful probability theory is.</p>
+
+<p>And while a lot of people will tell you embeddings are “just vectors” (i.e. linear algebra), how they actually end up distributed — and which outcome gets chosen — is fundamentally a probability question.</p>
+
+<blockquote>
+  <p>LLMs are one of humanity’s great achievements. They’re digital, but they’re the first time human intelligence and reasoning have been externalized — the same way machines externalized physical strength, letting us scale it far beyond what any human body could ever do on its own.</p>
+
+  <p>But underneath it all, it’s just probability. In the public imagination, probability has always been tangled up with gambling, fortune-telling, and mysticism — even textbooks mostly illustrate it with dice and playing cards. It’s hard to look at that and realize probability theory is capable of pulling off a wonder like this (though I suppose Las Vegas counts too).</p>
+</blockquote>
+
+<h2 id="embeddings">Embeddings</h2>
+
+<p>Now let’s talk about how embeddings actually make “relationships” emerge.</p>
+
+<p>The most direct way to see relationships emerge is to train an embedding model from scratch. I won’t dump a lot of code here — the point is the underlying idea, not the implementation. (Once you understand the idea, you can just have an AI write the implementation for you.)</p>
+
+<p>For this experiment I used the first 20MB of the Text8 dataset (running the full thing on a MacBook Air M5 would take a while). Note: the project’s actual full training run used the first 60MB; the stats in this section and the A/B experiments below are all from the 20MB subset.</p>
+
+<blockquote>
+  <p>Text8 is Matt Mahoney’s cleaned version of the March 2006 English Wikipedia dump (tags/punctuation stripped, lowercased, whitespace-tokenized — great for research).
+The first 20MB has 3,416,066 raw tokens; after dropping words with frequency below 5 (min_count=5), 3,299,364 tokens remain, with a vocabulary of 29,428 words.</p>
+</blockquote>
+
+<h3 id="preprocessing">Preprocessing</h3>
+
+<p>First we need to preprocess the dataset a bit (even though it’s already well-cleaned, training still needs a bit more prep).</p>
+
+<h4 id="subsampling">Subsampling</h4>
+
+<p>First we need to remove some high-frequency words (like “the”, “of”, “and”), because they eat up training iterations that could otherwise go to low-frequency words.</p>
+
+<p>Subsampling is the standard way to handle high-frequency words — probabilistically dropping some of them. Rather than a fixed ratio, each word’s retention probability depends on its frequency:</p>
+
+\[P(\text{keep}) = \sqrt{t / f} \qquad t = 10^{-4} \text{ (threshold)},\ f = \text{the word's frequency}\]
+
+<p>The higher a word’s frequency, the lower its retention probability. For example, “the” ends up with a retention rate of only about 4% (out of every 100 occurrences, roughly 4 are randomly kept), while a mid-frequency word like “king” is almost always kept.</p>
+
+<p>In my run:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Metric</th>
+      <th>Count</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Total tokens (after dropping low-freq words)</td>
+      <td>3,299,364</td>
+    </tr>
+    <tr>
+      <td>Retained after subsampling</td>
+      <td>1,614,418</td>
+    </tr>
+    <tr>
+      <td>High-frequency tokens dropped</td>
+      <td>1,684,946 (51.1%)</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>You can see just how dominant these high-frequency words are — over half the tokens. That means most of the word pairs generated would involve high-frequency words, and most of the training budget was going toward that. Removing them either doubles the effective number of training iterations in the same amount of time, or halves total training time.</p>
+
+<h5 id="experiment-high-frequency-words-dont-fatally-distort-the-distribution">Experiment: high-frequency words don’t fatally distort the distribution</h5>
+
+<p>Since “the” — the highest-frequency word in English — is so often followed by a noun, my initial guess was that if we kept high-frequency words, training might end up clustering nearly every noun around “the,” making it hard to distinguish relationships between the nouns themselves. In other words, I initially assumed <strong>these high-frequency words would distort the relationships between other words.</strong></p>
+
+<blockquote>
+  <p>The original paper has a footnote making a related point: syntactic patterns are a notable exception here — verbs strongly avoid following determiners, and past-tense verbs strongly avoid following “be” verbs or modals.</p>
+</blockquote>
+
+<p>So I had an AI write a quick test comparing the with-subsampling and without-subsampling cases. The result was surprising — barely any difference:</p>
+
+<div style="text-align: center;">
+  <img alt="Subsampling of frequent words: before and after" src="/assets/images/subsample_ab.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>The result was the opposite of what I predicted:</p>
+
+<ol>
+  <li>Similarity scores with subsampling were actually higher than without it (true both mid-training and at the end).</li>
+  <li>The distributions with and without subsampling look pretty similar (though subsampling gives slightly better results — no words end up crammed unnaturally close together).</li>
+</ol>
+
+<p>So what’s the actual point of subsampling, then?</p>
+
+<ol>
+  <li>
+    <p><strong>It’s faster.</strong> In this run, subsampling removed 51% of the filler tokens and still gave slightly better results — meaning roughly half the training time saved.</p>
+  </li>
+  <li>
+    <p><strong>The effective sliding window gets bigger.</strong> Some words that used to be “blocked” from pairing up by a “the” sitting between them now get paired once “the” is removed. This effectively widens the sliding window without actually changing its size.</p>
+  </li>
+  <li>
+    <p><strong>It improves low-frequency word representations.</strong> High-frequency words stop changing much after enough training samples, so continuing to train on them is wasted effort. Since the total training budget is fixed, that saved budget effectively goes to low-frequency words instead. You can see in the chart below that after subsampling, related word types cluster together noticeably better.</p>
+
+    <div style="text-align: center;">
+  <img alt="Rare word clusters: before and after" src="/assets/images/rare_clusters_ab.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+  </li>
+</ol>
+
+<h4 id="sliding-window-pairing">Sliding-window pairing</h4>
+
+<p>Following the original paper’s design: the sliding window has a radius of 5, and the further away a neighbor is, the lower its chance of being kept.</p>
+
+<p>Here’s the process:</p>
+
+<p><strong>Input</strong>: a sequence of word IDs (post-subsampling, all sentences concatenated into one long text), with window radius <code class="language-plaintext highlighter-rouge">window = 5</code>.</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>Corpus:  ... once in the land the king ruled his kingdom and the queen wore her crown ...
+</code></pre></div></div>
+
+<p>Each step centers the window on one word and looks up to 5 words in each direction (10 candidate neighbors total). But not all 10 get paired: each center word first randomly draws an “effective radius” $r$ (uniformly from 1 to 5), and only pairs with neighbors within distance $\le r$; anything farther gets skipped.</p>
+
+<div style="text-align: center;">
+  <img alt="Skip-gram sliding window over a sentence" src="/assets/images/skipgram_sliding_window.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;" />
+</div>
+
+<p>In the first step shown, the window centers on <code class="language-plaintext highlighter-rouge">king</code>, draws r = 3, and produces 6 pairs:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(king, the) (king, land) (king, the) (king, ruled) (king, his) (king, kingdom)
+</code></pre></div></div>
+
+<p>In the second step, the window slides one position right, centering on <code class="language-plaintext highlighter-rouge">ruled</code>, redraws r — this time getting r = 2 — and produces 4 pairs:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>(ruled, the) (ruled, king) (ruled, his) (ruled, kingdom)
+</code></pre></div></div>
+
+<p>This keeps sliding one position at a time across the whole corpus. The value of r determines the number of pairs:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>r = 1 → 2 pairs
+r = 2 → 4 pairs
+r = 3 → 6 pairs
+r = 4 → 8 pairs
+r = 5 → 10 pairs
+</code></pre></div></div>
+
+<p>The probability a neighbor at distance $d$ gets kept is $\dfrac{W - d + 1}{W}$ (which follows from drawing $r$ uniformly from 1 to $W$ — this matches the actual word2vec implementation). For $W = 5$:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>distance 1 (adjacent):  100% kept
+distance 3:              60% kept
+distance 5 (farthest):   20% kept
+</code></pre></div></div>
+
+<p>So each center word ends up with somewhere between 2 and 10 pairs (always an even number), averaging 6. That means, after running the sliding window over the 1.61-million-token corpus (post-subsampling) in this experiment, we ended up with roughly 9.7 million training pairs.</p>
+
+<p>From here on, training only uses these pairs — the original text file and extracted corpus are no longer needed.</p>
+
+<p>That wraps up preprocessing. Next comes actual model training.</p>
+
+<h2 id="training">Training</h2>
+
+<p>After preprocessing, we ended up with about 9.7 million <code class="language-plaintext highlighter-rouge">(center word, context word)</code> pairs. Training only needs these pairs — the original corpus is no longer necessary, since we’ve already converted it into this pair structure.</p>
+
+<h3 id="w_in-and-w_out-the-trained-weight-matrices"><code class="language-plaintext highlighter-rouge">W_in</code> and <code class="language-plaintext highlighter-rouge">W_out</code>: the trained weight matrices</h3>
+
+<p>During training, every word gets two corresponding vectors — these are the parameters (weights) actually being trained in an embedding model.</p>
+
+<p>One vector is used when the word plays the role of “center word” (<code class="language-plaintext highlighter-rouge">W_in</code>), the other when it plays the role of “context word” (<code class="language-plaintext highlighter-rouge">W_out</code>). After training, <code class="language-plaintext highlighter-rouge">W_out</code> is simply discarded, and <code class="language-plaintext highlighter-rouge">W_in</code> becomes the final set of word vectors. That’s what lets us see relationships between different words — specifically, the relationships between their “center-word” vectors.</p>
+
+<blockquote>
+  <p>This idea shows up all over the place, in computing and in human society alike.</p>
+
+  <p>In a database, for example, you can identify a record with a UUID, or you can identify it through its various attributes instead.</p>
+
+  <p>Or, as a person, you can be identified by an ID number, or by your web of relationships — whose child you are, whose partner, whose student or teacher, and so on.</p>
+</blockquote>
+
+<p>So why bother with two separate vectors?</p>
+
+<p><code class="language-plaintext highlighter-rouge">W_in</code> is like your “ID number”; <code class="language-plaintext highlighter-rouge">W_out</code> is more like “relationships.”</p>
+
+<p>Here’s an analogy. Imagine handing out ID numbers <code class="language-plaintext highlighter-rouge">1–100</code> to a group of people, assigned randomly — the numbers don’t encode rank or closeness, and once assigned they’re fixed forever. Looking at two people’s ID numbers in real life tells you nothing about their relationship.</p>
+
+<p>But an embedding’s “ID number” is different: <strong>we get to keep nudging it before it’s finalized.</strong> If I discover two people are family, I move their numbers a bit closer together; if two people are coworkers, I nudge those closer too. After tens of millions of these tiny adjustments, the once-random numbers stop being random: numbers that end up close together tend to belong to people who are actually close.</p>
+
+<p>That’s exactly what training is: <code class="language-plaintext highlighter-rouge">W_in</code> starts out as randomly assigned “numbers” (see the initialization below), and training is just the repeated process of nudging those numbers until the numbers themselves end up encoding relationships.</p>
+
+<p>Parameters need to be initialized before training starts, and a good initialization leads to better results and faster convergence:</p>
+
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">W_out</code> is initialized to <strong>all zeros</strong> — at the start, the model scores every word pair as 0, meaning “totally unsure.” A neutral starting point.</li>
+  <li><code class="language-plaintext highlighter-rouge">W_in</code> is initialized with small random values in <strong>$-0.05$ to $0.05$</strong>. It can’t be all zeros (every word would be perfectly symmetric with identical gradients, so nothing would ever differentiate), but it also can’t be too small.</li>
+</ul>
+
+<blockquote>
+  <p>What happens if it’s too small? <code class="language-plaintext highlighter-rouge">config.py</code> logs one real measurement (30MB corpus, 3 epochs):</p>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Init scale</th>
+        <th>Dims needed for 90% variance</th>
+        <th>Avg cosine (any two words)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>0.005 (original word2vec)</td>
+        <td>17</td>
+        <td>0.385</td>
+      </tr>
+      <tr>
+        <td>0.05 (this project’s default)</td>
+        <td>47</td>
+        <td>0.320</td>
+      </tr>
+      <tr>
+        <td>0.1</td>
+        <td>67</td>
+        <td>0.301</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <p>When the init scale is too small, only a dozen or so of the 100 dimensions actually end up doing any work, badly hurting the vectors’ ability to distinguish words. Everything ends up crammed together, with cosine similarities clustering around 0.99.</p>
+
+  <p>This also interacts with corpus size — a large enough corpus and enough epochs can partly work around this. That’s why the original paper used 0.005, while our smaller corpus needed to bump it up to 0.05.</p>
+</blockquote>
+
+<h3 id="negative-sampling">Negative sampling</h3>
+
+<p>Negative sampling means randomly drawing a handful of unrelated words to use as negative examples. Here we use $f^{0.75}$ negative sampling — sampling proportional to word frequency raised to the 0.75 power. Concrete example: suppose the vocabulary has just 3 words, in a 1-million-token corpus:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Word</th>
+      <th>Count</th>
+      <th>Frequency $f$</th>
+      <th>Uniform sampling ($f^0$)</th>
+      <th>Frequency-proportional ($f^1$)</th>
+      <th>$f^{0.75}$</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>the</td>
+      <td>60,000</td>
+      <td>0.06</td>
+      <td>33.3%</td>
+      <td>98.5%</td>
+      <td>96.3%</td>
+    </tr>
+    <tr>
+      <td>king</td>
+      <td>600</td>
+      <td>0.0006</td>
+      <td>33.3%</td>
+      <td>0.99%</td>
+      <td>3.0%</td>
+    </tr>
+    <tr>
+      <td>zebra</td>
+      <td>100</td>
+      <td>0.0001</td>
+      <td>33.3%</td>
+      <td>0.16%</td>
+      <td>0.8%</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>How the $f^{0.75}$ column is computed: give each word a “weight” of $f^{0.75}$, then normalize.</p>
+
+<ul>
+  <li>the: $0.06^{0.75} \approx 0.121$</li>
+  <li>king: $0.0006^{0.75} \approx 0.00382$</li>
+  <li>zebra: $0.0001^{0.75} = 0.001$</li>
+</ul>
+
+<p>Summing to $\approx 0.1258$ and dividing each weight by that sum gives the sampling probabilities: the ≈ 96.3%, king ≈ 3.0%, zebra ≈ 0.8%.</p>
+
+<p>Comparing the three columns shows what raising to the 0.75 power actually buys you:</p>
+
+<ul>
+  <li>$f^1$ (raw frequency): “the” dominates at 98.5% — negative examples are almost always the/of/and, which the model can trivially push away without learning anything useful;</li>
+  <li>$f^0$ (uniform): rare words like “zebra” get pulled 1/3 of the time, even though they have nothing to do with most center words — pushing them away is also too easy, so again nothing useful is learned;</li>
+  <li>$f^{0.75}$: “the” is still the most-sampled word (96.3%), but low-frequency words get a meaningful boost — “zebra” jumps from 0.16% to 0.8% (5x), “king” from ~1% to 3%.</li>
+</ul>
+
+<p>This “just a few negative words per step” approach is entirely a time-budget decision. You might wonder whether it’s too limited — after all, we could just use softmax and compare a word against the entire vocabulary every step, but that would make training dramatically slower. I ran a comparison experiment on exactly this later on, so you can see the difference for yourself.</p>
+
+<h3 id="how-the-weights-actually-get-trained">How the weights actually get trained</h3>
+
+<p>As mentioned, each training pair is (center word, context word), plus 5 negative words drawn via negative sampling for that step. Call them center word $c$, context word $o$, and negative words $w_1 \dots w_5$. The training step:</p>
+
+\[\begin{aligned}
+\text{score} \quad &amp; s = v_c \cdot u_x \\
+\text{probability} \quad &amp; \sigma(s) = \frac{1}{1 + e^{-s}} \\
+\text{error} \quad &amp; g = \sigma(s) - y
+\end{aligned}\]
+
+<p>The score is just a dot product between two vectors — the more alike they are, the higher the score. Sigmoid squashes any score into 0–1, turning it into a confidence that “these two really are a pair.” $y = 1$ for a true context word, $y = 0$ for a negative word.</p>
+
+<p>Training uses $g$ to decide whether to pull the two vectors closer together or push them apart. A negative $g$ pulls them together; a positive $g$ pushes them apart. The entire training process is just this one step repeated tens of millions of times.</p>
+
+<p>For example, with 5 words <code class="language-plaintext highlighter-rouge">[king, queen, the, banana, war]</code> and the training pair <code class="language-plaintext highlighter-rouge">(king, queen)</code>, suppose the dot products with king have already been computed, and the negative samples drawn happen to be “the” and “banana”:</p>
+
+<table>
+  <thead>
+    <tr>
+      <th>Question</th>
+      <th>$y$</th>
+      <th>$s$</th>
+      <th>$\sigma(s)$</th>
+      <th>$g = \sigma(s) - y$</th>
+      <th>Interpretation</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>Is queen a pair?</td>
+      <td>1</td>
+      <td>+2.0</td>
+      <td>0.881</td>
+      <td>−0.119</td>
+      <td>Already good — nudge slightly closer</td>
+    </tr>
+    <tr>
+      <td>Is “the” a pair?</td>
+      <td>0</td>
+      <td>+1.0</td>
+      <td>0.731</td>
+      <td>+0.731</td>
+      <td>Too similar — push hard apart</td>
+    </tr>
+    <tr>
+      <td>Is “banana” a pair?</td>
+      <td>0</td>
+      <td>0.0</td>
+      <td>0.500</td>
+      <td>+0.500</td>
+      <td>No idea yet — push apart moderately</td>
+    </tr>
+  </tbody>
+</table>
+
+<p>“war” wasn’t drawn for this step, so its vector doesn’t get updated this round.</p>
+
+<p>After tens of millions of interactions like this, the relative positions of “king” and “queen” settle down, and that’s when we start seeing the relationship between them emerge.</p>
+
+<blockquote>
+  <p>The <code class="language-plaintext highlighter-rouge">trace.py</code> script in my embeddingTest project can print out one real training step exactly like this table (every intermediate value maps onto the formulas above) — the numbers you see are from actual training, not a toy example.</p>
+</blockquote>
+
+<h3 id="a-few-training-loop-details">A few training-loop details</h3>
+
+<ul>
+  <li><strong>Subsampling is redone every epoch</strong>: different high-frequency words get dropped each time, so each epoch effectively sees a slightly different corpus — a mild form of data augmentation.</li>
+  <li><strong>Learning rate decays linearly</strong>: from 0.025 down to near 0.</li>
+</ul>
+
+<p>What does this look like in practice? Log from the actual training run (60MB, 2 epochs):</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>subsampling : 9,971,789 -&gt; 5,019,569 tokens (50% of high-frequency tokens dropped)
+pairs       : 30,119,260 pairs / epoch (60MB corpus; the 9.7M-pair figure earlier was from the 20MB experiment)
+speed       : ~230k pairs/sec, 273 seconds total (Apple Silicon MacBook Air, pure numpy)
+loss        : 3.69 -&gt; 2.32
+</code></pre></div></div>
+
+<p>Worth sanity-checking against theory: pure guessing gives $\sigma = 0.5$, so the loss per comparison is $\ln 2 \approx 0.693$, or about 4.16 for 6 comparisons. Loss dropping from 3.69 to 2.32 confirms the model is genuinely learning something — though <code class="language-plaintext highlighter-rouge">loss</code> here is really just a byproduct; the real payoff lives in the vectors themselves.</p>
+
+<h3 id="experiment-negative-sampling-vs-full-softmax">Experiment: negative sampling vs. full softmax</h3>
+
+<p>If negative sampling is really just a compromise because “full softmax is too expensive,” what does that compromise actually cost you? I had an AI write a comparison script (<code class="language-plaintext highlighter-rouge">compare.py</code>): the same skip-gram model, only swapping out the output layer — one version uses negative sampling, the other does full-vocabulary softmax.</p>
+
+<p>My original prediction: I figured the two would differ mainly in speed, with similar quality — after all, “sample enough times and everything gets its turn eventually.”</p>
+
+<p>I was only half right. <strong>With a small vocabulary and a small corpus (3MB), negative sampling completely fell apart</strong>: no matter how I tuned the learning rate, batch size, or step count, the word vectors collapsed into a clump — cosine similarity between any two random words hit 0.94, and nearest-neighbor results were pure noise. Softmax, meanwhile, worked fine on the exact same data. Scaling the corpus up to 30MB (vocabulary unchanged) fixed negative sampling immediately.</p>
+
+<p>The mechanism, roughly:</p>
+
+<ul>
+  <li><strong>Softmax pushes everything, every time.</strong> Every step applies a repulsive force to every non-answer word in the vocabulary — no exceptions, no relying on luck. Take the same 5 scores from before (+2.0, +1.0, 0, −1.0, −2.0); softmax converts these into probabilities $P(\text{queen}) = 0.636$, $P(\text{the}) = 0.234$, $P(\text{banana}) = 0.086$, $P(\text{war}) = 0.032$, $P(\text{king}) = 0.012$, and each word gets pushed by “probability − target value”: queen gets pulled closer by 0.364, “the” gets pushed by 0.234, “war” by only 0.032 — the push is automatically proportional to how wrong the current prediction is;</li>
+  <li><strong>Negative sampling pushes only a sample, each time.</strong> Each step only pushes 5 unrelated words away — this sparse repulsion needs a large amount of non-repeating data before it averages out statistically. On a small corpus, words simply don’t “get their turn” often enough to be pushed apart properly, so everything collapses inward.</li>
+</ul>
+
+<p>This also explains why negative sampling was designed with web-scale corpora in mind: only with enough data does the statistical average of “push a sample away” actually hold, and only then does the $O(V)$ compute it saves actually pay off.</p>
+
+<blockquote>
+  <p>One more interesting detail: the two setups can’t share a learning rate. Softmax’s gradient gets spread thin across the whole vocabulary — negative sampling’s 0.025 barely moves it. It needed 0.2 to train properly, and diverged at 1.0. Needing different learning rates is itself pretty direct evidence that these are two fundamentally different optimization problems.</p>
+</blockquote>
+
+<h2 id="summary">Summary</h2>
+
+<p>The relationships between words emerge naturally from “learning” — they’re not designed in, the way you might explicitly teach a human reasoning or logic. We never told the model what any particular dimension should mean, or how to represent relationships, identity, and so on — all of that emerges purely from the training process.</p>
+
+<blockquote>
+  <p>By “learning” here, I mean the process of fitting a statistical/probabilistic model on a large amount of training data — not that the model is actually learning on its own in any deeper sense.</p>
+</blockquote>
+
+<h2 id="extra-how-do-you-compute-sentence-similarity">Extra: how do you compute sentence similarity?</h2>
+
+<p>The simplest approach: <strong>average the vectors of every word in a sentence to get a sentence vector</strong> (called <code class="language-plaintext highlighter-rouge">mean pooling</code>), then compare sentences pairwise with cosine similarity.</p>
+
+\[\text{sentence vector} = \frac{v_{the} + v_{king} + v_{ruled} + v_{his} + v_{kingdom}}{5}\]
+
+<p>That’s exactly what <code class="language-plaintext highlighter-rouge">demo.py</code> in the project does — for example, these two sentences come out highly similar:</p>
+
+<ul>
+  <li>the king ruled his kingdom</li>
+  <li>the queen governed her empire</li>
+</ul>
+
+<p>Because king/queen, ruled/governed, and kingdom/empire already sit close together in vector space, averaging naturally lands the two sentence vectors close together too.</p>
+
+<p>But this approach has two obvious holes:</p>
+
+<ol>
+  <li><strong>It throws away word order.</strong> “I love you” and “you love I” use exactly the same words, so their averaged vectors are identical — similarity of 1 — even though the two sentences clearly mean different things (“dog bites man” vs. “man bites dog” has the same problem: one’s news, the other isn’t).</li>
+  <li><strong>Unknown words just get dropped.</strong> Any word not in the vocabulary is silently skipped, as if it didn’t exist.</li>
+</ol>
+
+<p>Sentence-embedding models like BERT and SBERT exist mainly to solve exactly these two problems.</p>
+
+<h2 id="references">References</h2>
+
+<p><a href="https://support.typoraio.cn/zh/Markdown-Reference/#%E5%8F%82%E8%80%83%E9%93%BE%E6%8E%A5">Texting a Friend: The Markov Chain Edition – Claude Academy</a> — a nicely interactive resource that helps build intuition.</p>
+
+    </div>
+    <!-- comment by utterances -->
+    <script src="https://utteranc.es/client.js" repo="ZhongUncle/zhonguncle.github.io" issue-term="url"
+        theme="github-light" crossorigin="anonymous" async>
+        </script>
+    <!-- <div class="footer__html">
+            <p>
+                You can find me in: 
+                <a href="https://blog.csdn.net/qq_33919450">CSDN</a>
+                <a href="https://github.com/ZhongUncle">GitHub</a>
+            </p>
+        </div> -->
+</body>
+
+</html>

@@ -37,7 +37,20 @@ description: 导入一篇博客到本站点：中文原版放 assets/original/�
 
 4. **删除英文版正文中与 title 重复的一级标题**（title 已由 layout 渲染，否则页面出现两个大标题）。标头后直接接正文。
 
-5. **验证**：运行 `bundle exec jekyll build` 确认构建通过。
+5. **修正图片**：运行 `tools/fiximg.sh _blogs/<英文版文件>`，将相对路径的图片引用统一改为 `/assets/images/<文件名>`（脚本支持 Markdown 和 HTML img 标签，已是 `/assets/` 开头或 http(s) 外链不受影响）。若 `assets/images/` 中存在对应的英文版配图（`_en` 后缀），英文版应引用 `_en` 版本。
+
+6. **统一图片格式**：所有图片（含 Markdown `![]()` 写法的）改为本站惯例格式，即居中 div + 去阴影 + 百分比宽度 + 英文 alt：
+   ```html
+   <div style="text-align: center;">
+     <img alt="有意义的英文描述" src="/assets/images/xxx.png" style="box-shadow: 0px 0px 0px 0px; width: 70%;">
+   </div>
+   ```
+   - 全站 CSS 默认给 img 加阴影，必须用内联 `box-shadow: 0px 0px 0px 0px` 去掉。
+   - 宽度按图片内容选 40%~80%（截图 40%~60%，流程图 70%~80%），不用 Typora 的 `zoom`。
+   - alt 写有意义的英文描述，不用文件名。
+   - 宽度列在确认计划中，等用户确认后再改。
+
+7. **验证**：运行 `bundle exec jekyll build` 确认构建通过。
 
 ## 参考样例
 

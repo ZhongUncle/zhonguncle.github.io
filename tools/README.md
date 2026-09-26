@@ -1,4 +1,11 @@
 # tools
+## fiximg.sh
+由 AI（Claude）编写。将 Markdown 文件中相对路径的图片引用（`./images/`、`../img/` 等）统一改为 `/assets/images/<文件名>`，Markdown 与 HTML img 标签均处理；`/assets/` 开头和 http(s) 链接不受影响。
+
+```
+$ fiximg.sh ../_blogs/xxx.md
+```
+
 ## badurls.sh
 用于查找所有网页中引用的其他页面链接是否正确。因为我会在修改博客的标题之后修改文件名，这就可能会导致链接错误，所以这个工具就可以用来查找哪个文件中的哪个链接出现了问题。
 
