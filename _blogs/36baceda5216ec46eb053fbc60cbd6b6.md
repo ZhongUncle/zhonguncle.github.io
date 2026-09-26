@@ -7,6 +7,8 @@ excerpt: "In physics, entropy measures \"disorder\" or \"chaos.\" Information th
 originurl: "/assets/original/%E9%A6%99%E5%86%9C%E4%BF%A1%E6%81%AF%E8%AE%BA%E7%AC%94%E8%AE%B0.md"
 ---
 
+> Translated by Claude Sonnet 5 (medium).
+
 In physics, entropy measures "disorder" or "chaos." Information theory borrows this idea. But here, "disorder" means something more specific: how surprising a piece of information is. In other words, how random it is.
 
 > "How random" isn't very precise on its own. Here's what it really means: how close the probability distribution is to a uniform distribution. The more uniform the distribution, the more random it is.
