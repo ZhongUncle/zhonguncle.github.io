@@ -1,0 +1,10 @@
+#!/bin/bash
+# pre-commit — 由 AI（Claude）编写
+# 提交前自动构建 Jekyll 站点，并将构建产物 docs/ 加入本次提交。
+# 构建失败则中止提交。
+
+set -e
+
+echo "pre-commit: running bundle exec jekyll build ..."
+bundle exec jekyll build
+git add docs/
